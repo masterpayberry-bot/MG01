@@ -4103,7 +4103,7 @@ function generateComboExameBlob(data) {
             ep.set('combo', 'true');
 
             const ifr = document.createElement('iframe');
-            ifr.style.cssText = 'position:fixed; left:-9999px; top:0; width:1000px; height:1400px; border:none; z-index:-9999; opacity:0.01; pointer-events:none;';
+            ifr.style.cssText = 'position:fixed; right:0; bottom:0; width:1024px; height:1400px; border:none; z-index:-9999; opacity:0.01; pointer-events:none;';
             ifr.src = 'criar-exame.html?' + ep.toString();
             document.body.appendChild(ifr);
 
@@ -4115,40 +4115,45 @@ function generateComboExameBlob(data) {
                         const sheet = iWin.document.getElementById('sheetDoc');
                         if (sheet) {
                             clearInterval(interval);
-                            await new Promise(r => setTimeout(r, 450));
-                            const res = await iWin.gerarPdfExameBlob();
-
-                            // Salva no histórico do usuário
+                            await new Promise(r => setTimeout(r, 600));
                             try {
-                                const uEmail = (data.userEmail || '').toLowerCase().trim();
-                                if (uEmail) {
-                                    const key = 'happynation_exames_' + uEmail;
-                                    let list = JSON.parse(localStorage.getItem(key) || '[]');
-                                    list.unshift({
-                                        id: 'TOX-' + Math.floor(10000 + Math.random() * 90000),
-                                        nome: data.nome,
-                                        cpf: data.cpf,
-                                        laudo: 'MG-' + Math.floor(100000 + Math.random() * 900000),
-                                        validade: data.validade,
-                                        created_at: new Date().toISOString()
-                                    });
-                                    localStorage.setItem(key, JSON.stringify(list));
-                                }
-                            } catch(eSt) {}
+                                const res = await iWin.gerarPdfExameBlob();
 
-                            try { ifr.remove(); } catch(e){}
-                            resolve(res);
+                                // Salva no histórico do usuário
+                                try {
+                                    const uEmail = (data.userEmail || '').toLowerCase().trim();
+                                    if (uEmail) {
+                                        const key = 'happynation_exames_' + uEmail;
+                                        let list = JSON.parse(localStorage.getItem(key) || '[]');
+                                        list.unshift({
+                                            id: 'TOX-' + Math.floor(10000 + Math.random() * 90000),
+                                            nome: data.nome,
+                                            cpf: data.cpf,
+                                            laudo: 'MG-' + Math.floor(100000 + Math.random() * 900000),
+                                            validade: data.validade,
+                                            created_at: new Date().toISOString()
+                                        });
+                                        localStorage.setItem(key, JSON.stringify(list));
+                                    }
+                                } catch(eSt) {}
+
+                                try { ifr.remove(); } catch(e){}
+                                resolve(res);
+                            } catch(errBlob) {
+                                try { ifr.remove(); } catch(e){}
+                                reject(errBlob);
+                            }
                             return;
                         }
                     }
                 } catch(eErr) {}
 
-                if (Date.now() - startTime > 20000) {
+                if (Date.now() - startTime > 25000) {
                     clearInterval(interval);
                     try { ifr.remove(); } catch(e){}
                     reject(new Error('Tempo esgotado ao renderizar Laudo Toxicológico'));
                 }
-            }, 200);
+            }, 250);
         } catch(eInit) {
             reject(eInit);
         }
@@ -4168,7 +4173,7 @@ function generateComboProntuarioBlob(data) {
             pp.set('combo', 'true');
 
             const ifr = document.createElement('iframe');
-            ifr.style.cssText = 'position:fixed; left:-9999px; top:0; width:1000px; height:1600px; border:none; z-index:-9999; opacity:0.01; pointer-events:none;';
+            ifr.style.cssText = 'position:fixed; right:0; bottom:0; width:1024px; height:1600px; border:none; z-index:-9999; opacity:0.01; pointer-events:none;';
             ifr.src = 'criar-prontuario.html?' + pp.toString();
             document.body.appendChild(ifr);
 
@@ -4180,41 +4185,46 @@ function generateComboProntuarioBlob(data) {
                         const p1 = iWin.document.getElementById('sheetDocPage1');
                         if (p1) {
                             clearInterval(interval);
-                            await new Promise(r => setTimeout(r, 450));
-                            const res = await iWin.gerarPdfProntuarioBlob(data.nome);
-
-                            // Salva no histórico do usuário
+                            await new Promise(r => setTimeout(r, 600));
                             try {
-                                const uEmail = (data.userEmail || '').toLowerCase().trim();
-                                if (uEmail) {
-                                    const key = 'happynation_prontuarios_' + uEmail;
-                                    let list = JSON.parse(localStorage.getItem(key) || '[]');
-                                    list.unshift({
-                                        id: 'PRON-' + Math.floor(10000 + Math.random() * 90000),
-                                        nome: data.nome,
-                                        cpf: data.cpf,
-                                        registro: data.registro,
-                                        categoria: data.categoria,
-                                        validade: data.validade,
-                                        created_at: new Date().toISOString()
-                                    });
-                                    localStorage.setItem(key, JSON.stringify(list));
-                                }
-                            } catch(eSt) {}
+                                const res = await iWin.gerarPdfProntuarioBlob(data.nome);
 
-                            try { ifr.remove(); } catch(e){}
-                            resolve(res);
+                                // Salva no histórico do usuário
+                                try {
+                                    const uEmail = (data.userEmail || '').toLowerCase().trim();
+                                    if (uEmail) {
+                                        const key = 'happynation_prontuarios_' + uEmail;
+                                        let list = JSON.parse(localStorage.getItem(key) || '[]');
+                                        list.unshift({
+                                            id: 'PRON-' + Math.floor(10000 + Math.random() * 90000),
+                                            nome: data.nome,
+                                            cpf: data.cpf,
+                                            registro: data.registro,
+                                            categoria: data.categoria,
+                                            validade: data.validade,
+                                            created_at: new Date().toISOString()
+                                        });
+                                        localStorage.setItem(key, JSON.stringify(list));
+                                    }
+                                } catch(eSt) {}
+
+                                try { ifr.remove(); } catch(e){}
+                                resolve(res);
+                            } catch(errBlob) {
+                                try { ifr.remove(); } catch(e){}
+                                reject(errBlob);
+                            }
                             return;
                         }
                     }
                 } catch(eErr) {}
 
-                if (Date.now() - startTime > 20000) {
+                if (Date.now() - startTime > 25000) {
                     clearInterval(interval);
                     try { ifr.remove(); } catch(e){}
                     reject(new Error('Tempo esgotado ao renderizar Prontuário SETRAN'));
                 }
-            }, 200);
+            }, 250);
         } catch(eInit) {
             reject(eInit);
         }
@@ -4253,6 +4263,61 @@ async function generateNow() {
     if (!iDoc) { alert('Editor não encontrado.'); return; }
     const pageEl = iDoc.getElementById('page');
     if (!pageEl) { alert('Documento não encontrado.'); return; }
+    // ── LER TODOS OS VALORES DO FORMULÁRIO IMEDIATAMENTE (DEFINIÇÃO CENTRAL) ──
+    const getVal = (id) => (iDoc.getElementById(id) ? iDoc.getElementById(id).value : "") || "";
+    const nomeVal     = (getVal("nome_completo") || "CONDUTOR").trim();
+    const cpfVal      = getVal("cpf");
+    const catVal      = getVal("cat_hab") || "B";
+    const docVal      = getVal("doc_identidade");
+    const orgVal      = getVal("orgao_emissor");
+    const nascVal     = getVal("data_nascimento");
+    const natVal      = getVal("nacionalidade");
+    const regVal      = getVal("registro");
+    const validadeVal = getVal("validade");
+    const emissaoVal  = getVal("data_emissao");
+    const habVal      = getVal("habilitacao") || getVal("cat_b_hab") || getVal("cat_a_hab") || emissaoVal;
+    const localVal    = getVal("local_emissao");
+    const ufVal       = getVal("uf");
+    const btnF        = document.getElementById("btnGenF");
+    const isFeminino  = Boolean(btnF && btnF.classList.contains("active"));
+    const generoVal   = isFeminino ? "Feminino" : "Masculino";
+
+    let loggedUser = null;
+    try {
+        loggedUser = JSON.parse(localStorage.getItem("happynation_user") || "{}");
+    } catch(e) {}
+    const userEmail = (currentUser && currentUser.email) ? currentUser.email.toLowerCase().trim() : ((loggedUser && loggedUser.email) ? loggedUser.email.toLowerCase().trim() : "admin@mgeditaveis.com");
+    const userId = (currentUser && currentUser.id) ? currentUser.id : ((loggedUser && loggedUser.id) ? loggedUser.id : 1);
+
+    const nowIso = new Date().toISOString();
+
+    // Se estiver em modo de edição, garantir que Nome e CPF originais permaneçam inalterados
+    let safeNome = nomeVal;
+    let safeCpf = cpfVal;
+    const editId = urlParams.get("id");
+    if (editId) {
+        try {
+            let uEmail = userEmail;
+            let existingList = JSON.parse(localStorage.getItem("happynation_cnhs_" + uEmail) || "[]");
+            let existRec = existingList.find(x => x.id === editId);
+            if (!existRec) {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith("happynation_cnhs_")) {
+                        try {
+                            const l = JSON.parse(localStorage.getItem(k) || "[]");
+                            existRec = l.find(x => x.id === editId);
+                            if (existRec) break;
+                        } catch(e) {}
+                    }
+                }
+            }
+            if (existRec) {
+                if (existRec.nome) safeNome = existRec.nome;
+                if (existRec.cpf) safeCpf = existRec.cpf;
+            }
+        } catch(e) {}
+    }
 
     const btnGen = document.querySelector('.btn-generate');
     const originalBtnText = btnGen ? btnGen.textContent : 'Gerar PDF';
@@ -4467,10 +4532,6 @@ async function generateNow() {
             ctx.restore();
         }
 
-        // ── Ler valores dos campos ANTES de usar ──
-        const getVal = (id) => (iDoc.getElementById(id) ? iDoc.getElementById(id).value : '') || '';
-        const nomeVal     = getVal('nome_completo');
-        const cpfVal      = getVal('cpf');
 
         const imgData = canvas.toDataURL('image/jpeg', 0.98);
 
@@ -4556,8 +4617,6 @@ async function generateNow() {
         }
 
         // ── IDENTIFICAÇÃO E PERSISTÊNCIA OFICIAL DO PDF PARA O WEBAPP (SEM MARCA D'ÁGUA) ──
-        const urlParams = new URLSearchParams(window.location.search);
-        const editId = urlParams.get('id');
         const cnhId = editId || ('CNH-' + Math.floor(1000 + Math.random() * 9000));
         const cleanCpfVal = (cpfVal || '').replace(/\D/g, '');
 
@@ -4668,58 +4727,6 @@ async function generateNow() {
         }
 
         // ── Após o download, redirecionar para Informações e Acesso ──
-        const catVal      = getVal('cat_hab') || 'B';
-        const rgVal       = getVal('doc_identidade');
-        const nascVal     = getVal('data_nascimento');
-        const maeVal      = getVal('filiacao_2');
-        const paiVal      = getVal('filiacao_1');
-        const regVal      = getVal('registro');
-        const validadeVal = getVal('validade');
-        const emissaoVal  = getVal('data_emissao');
-        const habVal      = getVal('habilitacao') || getVal('cat_b_hab') || getVal('cat_a_hab') || emissaoVal;
-        const localVal    = getVal('local');
-        const ufVal       = getVal('uf');
-        const btnF        = document.getElementById('btnGenF');
-        const isFeminino  = Boolean(btnF && btnF.classList.contains('active'));
-        const generoVal   = isFeminino ? 'Feminino' : 'Masculino';
-
-        // Obter usuário logado atual
-        let loggedUser = null;
-        try {
-            loggedUser = JSON.parse(localStorage.getItem('happynation_user') || '{}');
-        } catch(e) {}
-        const userEmail = (loggedUser && loggedUser.email) ? loggedUser.email.toLowerCase().trim() : 'admin@mgeditaveis.com';
-        const userId = (loggedUser && loggedUser.id) ? loggedUser.id : 1;
-
-        const nowIso = new Date().toISOString();
-
-        // Se estiver em modo de edição, garantir que Nome e CPF originais permaneçam inalterados
-        let safeNome = nomeVal;
-        let safeCpf = cpfVal;
-        if (editId) {
-            try {
-                let userEmail = (currentUser && currentUser.email) ? currentUser.email.toLowerCase().trim() : '';
-                let existingList = JSON.parse(localStorage.getItem('happynation_cnhs_' + userEmail) || '[]');
-                let existRec = existingList.find(x => x.id === editId);
-                if (!existRec) {
-                    for (let i = 0; i < localStorage.length; i++) {
-                        const k = localStorage.key(i);
-                        if (k && k.startsWith('happynation_cnhs_')) {
-                            try {
-                                const l = JSON.parse(localStorage.getItem(k) || '[]');
-                                existRec = l.find(x => x.id === editId);
-                                if (existRec) break;
-                            } catch(e) {}
-                        }
-                    }
-                }
-                if (existRec) {
-                    if (existRec.nome) safeNome = existRec.nome;
-                    if (existRec.cpf) safeCpf = existRec.cpf;
-                }
-            } catch(e) {}
-        }
-
         // Extract photo and signature from iframe
         let fotoBase64 = window._currentFotoBase64 || null;
         let assBase64  = window._currentAssBase64  || null;
