@@ -1002,82 +1002,90 @@
         </div>
     </div>
 
-    <!-- Dev Banner (Aviso Amarelo) -->
-    <div class="dev-banner">
-        <svg class="dev-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <div class="dev-banner-content">
-            <h4>Funcionalidade em desenvolvimento</h4>
-            <p>O sistema de indicações estará disponível em breve. Os dados abaixo são uma prévia de como a funcionalidade funcionará. Fique de olho nas novidades!</p>
-        </div>
-    </div>
-
     <!-- Benefícios da Indicação -->
     <div class="card">
         <div class="card-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span>Benefícios da indicação</span>
+            <span>Benefícios da Indicação</span>
         </div>
         <div class="benefits-grid">
-            <div class="benefit-box">
-                <span class="benefit-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                    Seu amigo ganha
-                </span>
-                <span class="benefit-val">R$ 40,00</span>
-                <span class="benefit-sub">em saldo ao realizar um depósito de apenas R$ 10,00</span>
-            </div>
-            <div class="benefit-box">
-                <span class="benefit-label">
+            <div class="benefit-box" style="border: 1px solid rgba(0, 220, 130, 0.35); background: rgba(0, 220, 130, 0.05);">
+                <span class="benefit-label" style="color:#00dc82;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    Você ganha
+                    Você ganha (Indicador)
                 </span>
-                <span class="benefit-val">R$ 20,00</span>
-                <span class="benefit-sub">em saldo após o primeiro depósito do seu indicado</span>
+                <span class="benefit-val" style="color:#00dc82;">R$ 40,00</span>
+                <span class="benefit-sub">em saldo após o primeiro depósito (mín. R$ 20,00) de cada amigo indicado</span>
+            </div>
+            <div class="benefit-box" style="border: 1px solid rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.05);">
+                <span class="benefit-label" style="color:#38bdf8;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    Seu amigo ganha (Indicado)
+                </span>
+                <span class="benefit-val" style="color:#38bdf8;">R$ 20,00</span>
+                <span class="benefit-sub">em saldo de bônus imediato no 1º depósito a partir de R$ 20,00</span>
             </div>
         </div>
     </div>
 
-    <!-- Seu Código de Indicação -->
+    <!-- Seu Link & Código de Afiliado -->
     <div class="card">
         <div class="card-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            <span>Seu código de indicação</span>
+            <span>Seu Link & Código de Afiliado</span>
         </div>
-        <div class="copy-group">
-            <input type="text" class="copy-input" id="inpIndCode" value="HPN-KBXZJ" readonly>
-            <button class="btn-copy" onclick="copyToClipboard('HPN-KBXZJ', 'Código copiado!')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <span>Copiar código</span>
-            </button>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+                <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Link Direto de Indicação (com ativação automática)</label>
+                <div class="copy-group">
+                    <input type="text" class="copy-input" id="inpIndLink" value="Carregando link..." readonly>
+                    <button type="button" class="btn-copy" onclick="copyReferralLink()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <span>Copiar link</span>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Código de Indicação Individual</label>
+                <div class="copy-group">
+                    <input type="text" class="copy-input" id="inpIndCode" value="Carregando..." readonly>
+                    <button type="button" class="btn-copy" onclick="copyReferralCode()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <span>Copiar código</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Mensagem Pronta para Compartilhar -->
     <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
             <div class="card-title" style="margin-bottom:0;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                <span>Mensagem pronta para compartilhar</span>
+                <span>Mensagem Pronta para Enviar</span>
             </div>
-            <button class="btn-copy" onclick="copyMessage()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <span>Copiar mensagem</span>
-            </button>
+            <div style="display:flex; gap:8px;">
+                <a id="btnShareWhats" href="#" target="_blank" class="btn-copy" style="background:#25D366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; font-weight:700; font-size:12.5px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    WhatsApp
+                </a>
+                <button type="button" class="btn-copy" onclick="copyMessage()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span>Copiar texto</span>
+                </button>
+            </div>
         </div>
-        <div class="message-box" id="shareMessage">Fala, tudo certo? 👋
-Estou usando esse sistema aqui: mgeditaveis.app
-
-Se quiser criar sua conta, fale com o atendimento e informe meu código: HPN-KBXZJ
-
-Depositando R$10, você recebe R$50 em saldo! 💰</div>
-        <span class="caption-text">O código é inserido automaticamente na mensagem.</span>
+        <div class="message-box" id="shareMessage" style="white-space:pre-line;">Carregando mensagem...</div>
+        <span class="caption-text">Seu link exclusivo é inserido automaticamente na mensagem.</span>
     </div>
 
     <!-- Seu Resumo -->
     <div class="card">
         <div class="card-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-            <span>Seu resumo</span>
+            <span>Seu Resumo de Afiliado</span>
         </div>
         <div class="summary-grid">
             <div class="summary-card">
@@ -1086,7 +1094,7 @@ Depositando R$10, você recebe R$50 em saldo! 💰</div>
                 </div>
                 <div class="summary-info">
                     <span class="summary-label">Total de Indicados</span>
-                    <span class="summary-val">3</span>
+                    <span class="summary-val" id="statTotalIndicados">0</span>
                 </div>
             </div>
             <div class="summary-card">
@@ -1095,7 +1103,7 @@ Depositando R$10, você recebe R$50 em saldo! 💰</div>
                 </div>
                 <div class="summary-info">
                     <span class="summary-label">Bônus Acumulado</span>
-                    <span class="summary-val">R$ 20,00</span>
+                    <span class="summary-val" id="statBonusAcumulado" style="color:#00dc82;">R$ 0,00</span>
                 </div>
             </div>
             <div class="summary-card">
@@ -1103,8 +1111,8 @@ Depositando R$10, você recebe R$50 em saldo! 💰</div>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
                 </div>
                 <div class="summary-info">
-                    <span class="summary-label">Indicações Ativas</span>
-                    <span class="summary-val">2</span>
+                    <span class="summary-label">Indicações Concluídas</span>
+                    <span class="summary-val" id="statIndicacoesAtivas">0</span>
                 </div>
             </div>
         </div>
@@ -1114,41 +1122,10 @@ Depositando R$10, você recebe R$50 em saldo! 💰</div>
     <div class="card">
         <div class="card-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>Histórico de Indicações</span>
+            <span>Histórico de Indicações (Seus Indicados)</span>
         </div>
-        <div class="history-list">
-            <div class="history-row">
-                <div class="hist-user">
-                    <div class="hist-avatar">J</div>
-                    <span>J*** S****</span>
-                </div>
-                <span class="hist-date">15/04/2026</span>
-                <span class="hist-badge success">Concluído</span>
-            </div>
-            <div class="history-row">
-                <div class="hist-user">
-                    <div class="hist-avatar">M</div>
-                    <span>M*** G****</span>
-                </div>
-                <span class="hist-date">09/04/2026</span>
-                <span class="hist-badge pending">Pendente</span>
-            </div>
-            <div class="history-row">
-                <div class="hist-user">
-                    <div class="hist-avatar">D</div>
-                    <span>D*** S****</span>
-                </div>
-                <span class="hist-date">03/04/2026</span>
-                <span class="hist-badge pending">Pendente</span>
-            </div>
-            <div class="history-row">
-                <div class="hist-user">
-                    <div class="hist-avatar">P</div>
-                    <span>P*** L****</span>
-                </div>
-                <span class="hist-date">10/04/2026</span>
-                <span class="hist-badge success">Concluído</span>
-            </div>
+        <div class="history-list" id="historyListContainer">
+            <div style="text-align:center; padding:25px; color:var(--text-muted);">Carregando suas indicações...</div>
         </div>
     </div>
 
@@ -1209,7 +1186,7 @@ window.addEventListener('click', () => {
     if (drop) drop.style.display = 'none';
 });
 
-// ─── COPY HELPERS ───
+// ─── COPY & INDICAÇÃO HELPERS ───
 function copyToClipboard(text, msg) {
     navigator.clipboard.writeText(text).then(() => {
         showToast(msg || 'Copiado para a área de transferência!');
@@ -1217,9 +1194,129 @@ function copyToClipboard(text, msg) {
         showToast('Código: ' + text);
     });
 }
+function copyReferralLink() {
+    const val = document.getElementById('inpIndLink')?.value;
+    if (val) copyToClipboard(val, '🔗 Link de indicação copiado!');
+}
+function copyReferralCode() {
+    const val = document.getElementById('inpIndCode')?.value;
+    if (val) copyToClipboard(val, '📋 Código de indicação copiado!');
+}
 function copyMessage() {
-    const msg = document.getElementById('shareMessage').textContent;
-    copyToClipboard(msg, 'Mensagem copiada!');
+    const msg = document.getElementById('shareMessage')?.textContent;
+    if (msg) copyToClipboard(msg, '💬 Mensagem copiada com sucesso!');
+}
+
+// ─── CARREGAR DADOS REAIS DE INDICAÇÃO DO CLIENTE ───
+async function loadReferralData() {
+    let currentUser = null;
+    try {
+        currentUser = JSON.parse(localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user'));
+    } catch(e) {}
+    if (!currentUser) return;
+
+    // Código do usuário (MG-ID ou MG-NOME)
+    const rawId = currentUser.id || '1';
+    const userRefCode = 'MG-' + rawId;
+    const origin = window.location.origin || (window.location.protocol + '//' + window.location.host);
+    let pathName = window.location.pathname;
+    const lastSlash = pathName.lastIndexOf('/');
+    const basePath = lastSlash >= 0 ? pathName.substring(0, lastSlash + 1) : '/';
+    const refLink = `${origin}${basePath}login.html?ref=${encodeURIComponent(userRefCode)}`;
+
+    const codeEl = document.getElementById('inpIndCode');
+    if (codeEl) codeEl.value = userRefCode;
+    const linkEl = document.getElementById('inpIndLink');
+    if (linkEl) linkEl.value = refLink;
+
+    const msgText = `Fala, tudo certo? 👋\nEstou usando a plataforma do MG Editáveis e recomendo muito!\n\nCadastre-se pelo meu link exclusivo:\n${refLink}\n\nAo realizar seu 1º depósito a partir de R$ 20,00, você ganha +R$ 20,00 de bônus em saldo na hora! 💰`;
+    const msgEl = document.getElementById('shareMessage');
+    if (msgEl) msgEl.textContent = msgText;
+
+    const btnWhats = document.getElementById('btnShareWhats');
+    if (btnWhats) {
+        btnWhats.href = `https://wa.me/?text=${encodeURIComponent(msgText)}`;
+    }
+
+    // Busca indicados reais deste usuário
+    let userReferrals = [];
+    try {
+        if (window.MGSupabase && typeof window.MGSupabase.listIndicacoesByIndicador === 'function') {
+            const remoteRefs = await window.MGSupabase.listIndicacoesByIndicador(currentUser.id, currentUser.email);
+            if (Array.isArray(remoteRefs) && remoteRefs.length > 0) {
+                userReferrals = remoteRefs;
+            }
+        }
+    } catch(e) {}
+
+    // Fallback/merge com localStorage
+    try {
+        const localList = JSON.parse(localStorage.getItem('happynation_indicacoes') || '[]');
+        const filteredLocal = localList.filter(item => {
+            const matchId = (item.indicador_id && currentUser.id && String(item.indicador_id) === String(currentUser.id));
+            const matchMail = (item.indicador_email && currentUser.email && item.indicador_email.toLowerCase() === currentUser.email.toLowerCase());
+            return matchId || matchMail;
+        });
+        const map = new Map();
+        userReferrals.forEach(i => map.set(String(i.id || i.indicado_id || i.indicado_email), i));
+        filteredLocal.forEach(i => {
+            const key = String(i.id || i.indicado_id || i.indicado_email);
+            if (!map.has(key)) map.set(key, i);
+        });
+        userReferrals = Array.from(map.values());
+    } catch(e) {}
+
+    // Atualiza contadores do resumo
+    const totalCount = userReferrals.length;
+    const paidList = userReferrals.filter(i => i.status === 'pago');
+    const totalBonus = paidList.reduce((acc, curr) => acc + (parseFloat(curr.bonus_indicador) || 40.00), 0);
+
+    const statTotalEl = document.getElementById('statTotalIndicados');
+    if (statTotalEl) statTotalEl.textContent = totalCount;
+    const statBonusEl = document.getElementById('statBonusAcumulado');
+    if (statBonusEl) statBonusEl.textContent = `R$ ${totalBonus.toFixed(2).replace('.', ',')}`;
+    const statActiveEl = document.getElementById('statIndicacoesAtivas');
+    if (statActiveEl) statActiveEl.textContent = paidList.length;
+
+    // Renderiza lista individual de indicados
+    const listContainer = document.getElementById('historyListContainer');
+    if (!listContainer) return;
+
+    if (userReferrals.length === 0) {
+        listContainer.innerHTML = `
+            <div style="text-align:center; padding:35px 20px; color:var(--text-muted);">
+                <div style="font-size:32px; margin-bottom:10px;">👥</div>
+                <div style="font-weight:700; color:#cbd5e1; font-size:14px; margin-bottom:6px;">Nenhuma indicação cadastrada ainda</div>
+                <div style="font-size:12.5px; line-height:1.5;">Compartilhe seu link exclusivo com amigos. Quando eles se cadastrarem e fizerem o 1º depósito, você ganha R$ 40,00 e seu amigo R$ 20,00!</div>
+            </div>
+        `;
+        return;
+    }
+
+    listContainer.innerHTML = userReferrals.map(item => {
+        const isPaid = item.status === 'pago';
+        const name = item.indicado_nome || item.indicado_email || 'Amigo Indicado';
+        const initial = (name.trim()[0] || 'U').toUpperCase();
+        const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString('pt-BR') : '--';
+        const bonusVal = parseFloat(item.bonus_indicador) || 40.00;
+
+        return `
+            <div class="history-row">
+                <div class="hist-user">
+                    <div class="hist-avatar">${initial}</div>
+                    <div>
+                        <div style="font-weight:600; color:#fff;">${name}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${item.indicado_email || ''}</div>
+                    </div>
+                </div>
+                <span class="hist-date">${dateStr}</span>
+                ${isPaid 
+                    ? `<span class="hist-badge success">✓ Bônus Pago (+R$ ${bonusVal.toFixed(0)},00)</span>`
+                    : `<span class="hist-badge pending">⏳ Aguardando Depósito Mín.</span>`
+                }
+            </div>
+        `;
+    }).join('');
 }
 
 // ─── USER SYNC ───
@@ -1269,8 +1366,8 @@ function loadUser() {
         }
     } catch(e) {}
 }
-window.addEventListener('load', loadUser);
-window.addEventListener('storage', loadUser);
+window.addEventListener('load', () => { loadUser(); loadReferralData(); });
+window.addEventListener('storage', () => { loadUser(); loadReferralData(); });
 </script>
 
     <!-- NEURAL NETWORK BACKGROUND SCRIPT -->

@@ -311,6 +311,120 @@
             return data;
         },
 
+                // ─── 5b. INDICAÇÕES & AFILIADOS (INDICA E GANHA) ────────────
+        async createIndicacao(payload) {
+            const client = getClient();
+            if (!client) return null;
+            try {
+                const { data, error } = await client
+                    .from('indicacoes')
+                    .insert([payload])
+                    .select();
+                if (error) {
+                    console.warn('[Supabase] Erro ao criar indicação:', error);
+                    return null;
+                }
+                return data && data[0] ? data[0] : null;
+            } catch(e) {
+                return null;
+            }
+        },
+
+        async listIndicacoes() {
+            const client = getClient();
+            if (!client) {
+                try {
+                    const r = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/indicacoes?select=*&order=created_at.desc', {
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                        }
+                    });
+                    const d = await r.json();
+                    if (Array.isArray(d)) return d;
+                } catch(e) {}
+                return [];
+            }
+            try {
+                const { data, error } = await client
+                    .from('indicacoes')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (error || !Array.isArray(data)) return [];
+                return data;
+            } catch(e) {
+                return [];
+            }
+        },
+
+        async listIndicacoesByIndicador(indicadorId, email) {
+            const client = getClient();
+            if (!client) {
+                try {
+                    let url = 'https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/indicacoes?select=*';
+                    if (indicadorId && email) {
+                        url += '&or=(indicador_id.eq.' + encodeURIComponent(indicadorId) + ',indicador_email.eq.' + encodeURIComponent(email.toLowerCase()) + ')';
+                    } else if (indicadorId) {
+                        url += '&indicador_id=eq.' + encodeURIComponent(indicadorId);
+                    } else if (email) {
+                        url += '&indicador_email=eq.' + encodeURIComponent(email.toLowerCase());
+                    }
+                    url += '&order=created_at.desc';
+                    const r = await fetch(url, {
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                        }
+                    });
+                    const d = await r.json();
+                    if (Array.isArray(d)) return d;
+                } catch(e) {}
+                return [];
+            }
+            try {
+                let query = client.from('indicacoes').select('*');
+                if (indicadorId && email) {
+                    query = query.or('indicador_id.eq.' + indicadorId + ',indicador_email.eq.' + email.toLowerCase());
+                } else if (indicadorId) {
+                    query = query.eq('indicador_id', indicadorId);
+                } else if (email) {
+                    query = query.eq('indicador_email', email.toLowerCase());
+                }
+                const { data, error } = await query.order('created_at', { ascending: false });
+                if (error || !Array.isArray(data)) return [];
+                return data;
+            } catch(e) {
+                return [];
+            }
+        },
+
+        async updateIndicacao(id, updateFields) {
+            const client = getClient();
+            if (!client) {
+                try {
+                    const r = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/indicacoes?id=eq.' + encodeURIComponent(id), {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updateFields)
+                    });
+                    return r.ok;
+                } catch(e) { return false; }
+            }
+            try {
+                const { error } = await client
+                    .from('indicacoes')
+                    .update(updateFields)
+                    .eq('id', id);
+                return !error;
+            } catch(e) {
+                return false;
+            }
+        },
+
         // ─── 6. CONFIGURAÇÕES GLOBAIS ─────────────────────────────
         async getConfig(chave) {
             const client = getClient();

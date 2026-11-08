@@ -896,6 +896,74 @@
                     return;
                 }
 
+                // ── VINCULAR INDICAÇÃO AUTOMATICAMENTE SE CADASTRADO POR LINK REF ──
+                try {
+                    const rawRef = localStorage.getItem('happynation_pending_ref') || sessionStorage.getItem('happynation_pending_ref');
+                    if (rawRef && newUser && newUser[0]) {
+                        const createdUser = newUser[0];
+                        const cleanRef = String(rawRef).trim();
+                        let refUser = null;
+
+                        // Tenta encontrar indicador por ID numérico (ex: MG-12 ou 12)
+                        const numericId = cleanRef.replace(/[^0-9]/g, '');
+                        if (numericId) {
+                            const { data: uFound } = await client
+                                .from('usuarios')
+                                .select('id, nome, email')
+                                .eq('id', parseInt(numericId))
+                                .limit(1);
+                            if (uFound && uFound[0]) refUser = uFound[0];
+                        }
+
+                        // Tenta encontrar por e-mail caso não tenha achado por ID
+                        if (!refUser && cleanRef.includes('@')) {
+                            const { data: uFoundMail } = await client
+                                .from('usuarios')
+                                .select('id, nome, email')
+                                .ilike('email', cleanRef.toLowerCase())
+                                .limit(1);
+                            if (uFoundMail && uFoundMail[0]) refUser = uFoundMail[0];
+                        }
+
+                        // Se encontrou o indicador e não for a mesma pessoa
+                        if (refUser && String(refUser.id) !== String(createdUser.id)) {
+                            const indPayload = {
+                                indicador_id: refUser.id,
+                                indicador_nome: refUser.nome,
+                                indicador_email: refUser.email,
+                                indicado_id: createdUser.id,
+                                indicado_nome: createdUser.nome,
+                                indicado_email: createdUser.email,
+                                codigo_ref: cleanRef,
+                                status: 'pendente',
+                                valor_deposito: 0.00,
+                                bonus_indicador: 40.00,
+                                bonus_indicado: 20.00,
+                                created_at: new Date().toISOString()
+                            };
+
+                            // Salva no Supabase
+                            if (window.MGSupabase && typeof window.MGSupabase.createIndicacao === 'function') {
+                                await window.MGSupabase.createIndicacao(indPayload);
+                            } else {
+                                try { await client.from('indicacoes').insert([indPayload]); } catch(eIns) {}
+                            }
+
+                            // Salva também no localStorage
+                            try {
+                                let lInd = JSON.parse(localStorage.getItem('happynation_indicacoes') || '[]');
+                                lInd.unshift(indPayload);
+                                localStorage.setItem('happynation_indicacoes', JSON.stringify(lInd));
+                            } catch(eLs) {}
+                        }
+
+                        localStorage.removeItem('happynation_pending_ref');
+                        sessionStorage.removeItem('happynation_pending_ref');
+                    }
+                } catch(eRef) {
+                    console.warn('[Indicação] Falha ao processar vínculo:', eRef);
+                }
+
                 const whatsUrl = 'https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, acabei de me cadastrar no MG Editáveis (' + email + ') e gostaria de solicitar a aprovação do meu cadastro.');
                 openPendingModal(nome, email, whatsUrl);
                 document.getElementById('loginEmail').value = email;
@@ -1095,7 +1163,7 @@
             animate();
         })();
     
-        // Carrega email salvo se houver
+        // Carrega email salvo se houver e detecta código de indicação
         document.addEventListener('DOMContentLoaded', () => {
             const passInput = document.getElementById('loginPassword');
             if (passInput) passInput.value = '';
@@ -1108,6 +1176,25 @@
                     }
                 }
             } catch(e) {}
+
+            // Captura código de indicação via link de afiliado (?ref=MG-123 ou ?ref=123)
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get('ref') || urlParams.get('indicacao') || urlParams.get('r');
+                if (refCode) {
+                    const cleanRef = refCode.trim();
+                    localStorage.setItem('happynation_pending_ref', cleanRef);
+                    sessionStorage.setItem('happynation_pending_ref', cleanRef);
+                    if (currentAuthMode !== 'register') {
+                        toggleAuthMode();
+                    }
+                    setTimeout(() => {
+                        showToast('🎁 Código de indicação ativado (' + cleanRef + ')! Cadastre-se e ganhe R$ 20,00 de bônus no 1º depósito.', true);
+                    }, 400);
+                }
+            } catch(eRef) {
+                console.warn('[Indicação] Erro ao ler parâmetro ref:', eRef);
+            }
         });
 
     </script>

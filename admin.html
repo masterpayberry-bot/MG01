@@ -2242,6 +2242,15 @@
                             </div>
                         </div>
                     </li>
+                    <li>
+                        <div class="nav-item" onclick="switchTab('indicados', this)">
+                            <div class="nav-item-left">
+                                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>
+                                <span>Indicados & Bônus</span>
+                            </div>
+                            <span class="nav-badge" id="badgePendingIndicados" style="background:rgba(0,220,130,0.15); color:#00dc82; font-weight:700;">0</span>
+                        </div>
+                    </li>
                 </ul>
             </div>
 
@@ -2856,6 +2865,110 @@
             </div>
 
             <!-- TAB 6: PERSONALIZAR WEBAPP (DESIGN ELEGANTE, SEPARADO E FÁCIL) -->
+            
+            <!-- TAB: INDICADOS & AFILIADOS (INDICA E GANHA R$ 40 / R$ 20) -->
+            <div class="view-panel" id="view-indicados">
+                <div class="section-header">
+                    <div class="sec-title-group">
+                        <div class="sec-title">Sistema de Indicações & Afiliados</div>
+                        <div class="sec-subtitle">Controle de quem veio por indicação, quem indicou e liberação automática de R$ 40 (Indicador) e R$ 20 (Indicado) no 1º depósito.</div>
+                    </div>
+                </div>
+
+                <!-- Resumo Geral de Indicações -->
+                <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); margin-bottom:20px;">
+                    <div class="stat-card">
+                        <div class="stat-title">Total de Indicados</div>
+                        <div class="stat-value" id="statTotalIndicados">0</div>
+                        <div class="stat-desc">Cadastros via link de indicação</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Bônus Pagos aos Indicadores</div>
+                        <div class="stat-value green" id="statBonusIndicador">R$ 0,00</div>
+                        <div class="stat-desc">R$ 40,00 por indicação qualificada</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Bônus Concedidos aos Indicados</div>
+                        <div class="stat-value blue" id="statBonusIndicado">R$ 0,00</div>
+                        <div class="stat-desc">R$ 20,00 no 1º depósito do amigo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Aguardando 1º Depósito</div>
+                        <div class="stat-value orange" id="statPendentesIndicados">0</div>
+                        <div class="stat-desc">Aguardando depósito mínimo</div>
+                    </div>
+                </div>
+
+                <!-- Configuração de Regras de Depósito Mínimo e Bônus -->
+                <div class="card" style="margin-bottom:20px;">
+                    <div class="card-header-bar">
+                        <div class="table-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            <span>Regras do Sistema de Indicação</span>
+                        </div>
+                    </div>
+                    <div style="padding:16px 20px; display:flex; flex-wrap:wrap; gap:18px; align-items:flex-end;">
+                        <div style="flex:1; min-width:200px;">
+                            <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Depósito Mínimo do Indicado (R$)</label>
+                            <input type="number" step="0.50" id="cfgRefMinDeposit" class="custom-input" value="20.00" style="width:100%; height:40px; background:#121414; border:1px solid #232729; border-radius:8px; padding:0 12px; color:#fff; font-size:14px; font-weight:700;">
+                        </div>
+                        <div style="flex:1; min-width:200px;">
+                            <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Bônus do Indicador (R$)</label>
+                            <input type="number" step="0.50" id="cfgRefBonusIndicador" class="custom-input" value="40.00" style="width:100%; height:40px; background:#121414; border:1px solid #232729; border-radius:8px; padding:0 12px; color:#fff; font-size:14px; font-weight:700;">
+                        </div>
+                        <div style="flex:1; min-width:200px;">
+                            <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Bônus do Indicado (R$)</label>
+                            <input type="number" step="0.50" id="cfgRefBonusIndicado" class="custom-input" value="20.00" style="width:100%; height:40px; background:#121414; border:1px solid #232729; border-radius:8px; padding:0 12px; color:#fff; font-size:14px; font-weight:700;">
+                        </div>
+                        <div>
+                            <button type="button" class="btn-act approve" onclick="saveIndicacaoConfig()" style="height:40px; padding:0 22px; font-weight:700; font-size:13.5px; border-radius:8px; cursor:pointer;">
+                                Salvar Regras de Bônus 💾
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Indicações -->
+                <div class="card">
+                    <div class="card-header-bar" style="flex-wrap:wrap; gap:12px;">
+                        <div class="table-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>Clientes Indicados & Vínculos</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                            <div class="tickets-filter-bar" style="margin:0;">
+                                <button type="button" class="adm-filter ind-filter active" onclick="setIndicadosFilter('all', this)">Todas</button>
+                                <button type="button" class="adm-filter ind-filter" onclick="setIndicadosFilter('pago', this)">✓ Bônus Pago</button>
+                                <button type="button" class="adm-filter ind-filter" onclick="setIndicadosFilter('pendente', this)">⏳ Pendentes</button>
+                            </div>
+                            <div class="search-box-wrap">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="text" class="search-inp" id="searchIndicadosInp" placeholder="Buscar por Indicado, Indicador ou Código..." onkeyup="renderIndicadosAdmin()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th># ID</th>
+                                    <th>Cliente Indicado</th>
+                                    <th>Indicador (Quem Indicou)</th>
+                                    <th>Código Usado</th>
+                                    <th>Data Cadastro</th>
+                                    <th>1º Depósito</th>
+                                    <th>Status Bônus</th>
+                                    <th>Ações ADM</th>
+                                </tr>
+                            </thead>
+                            <tbody id="indicadosTableBody">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div class="view-panel" id="view-custom-webapp">
                 <div class="section-header" style="margin-bottom:18px;">
                     <div class="sec-title-group">
@@ -3897,6 +4010,7 @@
         }
 
         let recargasData = JSON.parse(localStorage.getItem('happynation_admin_recargas')) || [];
+        let indicacoesData = JSON.parse(localStorage.getItem('happynation_indicacoes')) || [];
         let cnhsData = JSON.parse(localStorage.getItem('happynation_admin_cnhs')) || [];
         let examesData = [];
         let atestadosData = [];
@@ -3907,6 +4021,7 @@
             localStorage.setItem('happynation_registered_users', JSON.stringify(usersData));
             localStorage.setItem('happynation_admin_recargas', JSON.stringify(recargasData));
             localStorage.setItem('happynation_admin_cnhs', JSON.stringify(cnhsData));
+            localStorage.setItem('happynation_indicacoes', JSON.stringify(indicacoesData));
 
             // Sincroniza em tempo real com o usuário logado para o index.html e demais páginas
             try {
@@ -4034,6 +4149,9 @@
             }
             if (panelId === 'cloaker') {
                 loadCloakerConfigs();
+            }
+            if (panelId === 'indicados') {
+                renderIndicadosAdmin();
             }
         }
 
@@ -4171,6 +4289,45 @@
                     if (Array.isArray(sAt)) atestadosData = sAt;
                 } catch(eAt) {}
 
+                // 5. Busca dados de Indicações & Afiliados
+                try {
+                    let sInd = null;
+                    if (window.MGSupabase && typeof window.MGSupabase.listIndicacoes === 'function') {
+                        sInd = await window.MGSupabase.listIndicacoes();
+                    } else {
+                        const { data: qInd } = await client.from('indicacoes').select('*').order('created_at', { ascending: false });
+                        sInd = qInd;
+                    }
+                    if (Array.isArray(sInd)) {
+                        let localInd = [];
+                        try { localInd = JSON.parse(localStorage.getItem('happynation_indicacoes') || '[]'); } catch(e){}
+                        const map = new Map();
+                        sInd.forEach(item => map.set(String(item.id || item.indicado_id || item.indicado_email), item));
+                        localInd.forEach(item => {
+                            const key = String(item.id || item.indicado_id || item.indicado_email);
+                            if (!map.has(key)) map.set(key, item);
+                        });
+                        indicacoesData = Array.from(map.values());
+                        localStorage.setItem('happynation_indicacoes', JSON.stringify(indicacoesData));
+                    }
+                } catch(eInd) {
+                    console.warn('[Admin] Indicação fallback local:', eInd);
+                }
+
+                // Sincroniza inputs de regras de indicação
+                try {
+                    const savedMinDep = localStorage.getItem('happynation_ref_min_deposit') || '20.00';
+                    const savedBInd = localStorage.getItem('happynation_ref_bonus_indicador') || '40.00';
+                    const savedBAmi = localStorage.getItem('happynation_ref_bonus_indicado') || '20.00';
+                    const elMinDep = document.getElementById('cfgRefMinDeposit');
+                    const elBInd = document.getElementById('cfgRefBonusIndicador');
+                    const elBAmi = document.getElementById('cfgRefBonusIndicado');
+                    if (elMinDep && !elMinDep.matches(':focus')) elMinDep.value = savedMinDep;
+                    if (elBInd && !elBInd.matches(':focus')) elBInd.value = savedBInd;
+                    if (elBAmi && !elBAmi.matches(':focus')) elBAmi.value = savedBAmi;
+                } catch(eCfg) {}
+
+                renderIndicadosAdmin();
                 renderUsersTable();
                 renderRecargasTable();
                 renderCnhsTable();
@@ -5524,6 +5681,191 @@
             }
         }
 
+        
+        // ─── GESTÃO DO SISTEMA DE INDICAÇÕES NO ADMIN ───
+        let indicadosFilter = 'all';
+        function setIndicadosFilter(filter, el) {
+            indicadosFilter = filter;
+            document.querySelectorAll('.ind-filter').forEach(b => b.classList.remove('active'));
+            if (el) el.classList.add('active');
+            renderIndicadosAdmin();
+        }
+
+        async function saveIndicacaoConfig() {
+            const minDep = parseFloat(document.getElementById('cfgRefMinDeposit')?.value) || 20.00;
+            const bInd = parseFloat(document.getElementById('cfgRefBonusIndicador')?.value) || 40.00;
+            const bAmi = parseFloat(document.getElementById('cfgRefBonusIndicado')?.value) || 20.00;
+
+            localStorage.setItem('happynation_ref_min_deposit', minDep.toString());
+            localStorage.setItem('happynation_ref_bonus_indicador', bInd.toString());
+            localStorage.setItem('happynation_ref_bonus_indicado', bAmi.toString());
+
+            if (window.MGSupabase && typeof window.MGSupabase.setConfig === 'function') {
+                try {
+                    await window.MGSupabase.setConfig('ref_min_deposit', minDep.toString());
+                    await window.MGSupabase.setConfig('ref_bonus_indicador', bInd.toString());
+                    await window.MGSupabase.setConfig('ref_bonus_indicado', bAmi.toString());
+                } catch(e) {}
+            }
+
+            showToast('✅ Regras de bônus de indicação salvas com sucesso!');
+        }
+
+        async function manualPayReferralBonus(indId) {
+            const ind = indicacoesData.find(i => String(i.id || i.indicado_id) === String(indId));
+            if (!ind) {
+                showToast('Indicação não encontrada.');
+                return;
+            }
+            if (ind.status === 'pago') {
+                showToast('O bônus desta indicação já foi pago anteriormente!');
+                return;
+            }
+
+            const bonusIndicadorVal = parseFloat(ind.bonus_indicador) || parseFloat(localStorage.getItem('happynation_ref_bonus_indicador')) || 40.00;
+            const bonusIndicadoVal = parseFloat(ind.bonus_indicado) || parseFloat(localStorage.getItem('happynation_ref_bonus_indicado')) || 20.00;
+
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+
+            // 1. Credit Indicado
+            let indicado = usersData.find(u => (ind.indicado_id && String(u.id) === String(ind.indicado_id)) || (ind.indicado_email && u.email && u.email.toLowerCase() === ind.indicado_email.toLowerCase()));
+            if (indicado) {
+                indicado.saldo = Number(((parseFloat(indicado.saldo) || 0) + bonusIndicadoVal).toFixed(2));
+                try {
+                    await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(indicado.id)}`, {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ saldo: indicado.saldo })
+                    });
+                } catch(e) {}
+            }
+
+            // 2. Credit Indicador
+            let indicador = usersData.find(u => (ind.indicador_id && String(u.id) === String(ind.indicador_id)) || (ind.indicador_email && u.email && u.email.toLowerCase() === ind.indicador_email.toLowerCase()));
+            if (indicador) {
+                indicador.saldo = Number(((parseFloat(indicador.saldo) || 0) + bonusIndicadorVal).toFixed(2));
+                try {
+                    await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(indicador.id)}`, {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ saldo: indicador.saldo })
+                    });
+                } catch(e) {}
+            }
+
+            // 3. Marca status
+            ind.status = 'pago';
+            ind.bonus_indicador = bonusIndicadorVal;
+            ind.bonus_indicado = bonusIndicadoVal;
+            ind.pago_em = new Date().toISOString();
+
+            if (ind.id) {
+                try {
+                    await fetch(`${SUP_URL}/rest/v1/indicacoes?id=eq.${encodeURIComponent(ind.id)}`, {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            status: 'pago',
+                            bonus_indicador: bonusIndicadorVal,
+                            bonus_indicado: bonusIndicadoVal,
+                            pago_em: ind.pago_em
+                        })
+                    });
+                } catch(e) {}
+            }
+
+            saveStorage();
+            localStorage.setItem('happynation_indicacoes', JSON.stringify(indicacoesData));
+            renderUsersTable();
+            renderIndicadosAdmin();
+            showToast(`✅ Bônus liberado manualmente! +R$ ${bonusIndicadorVal.toFixed(2)} para ${ind.indicador_nome} e +R$ ${bonusIndicadoVal.toFixed(2)} para ${ind.indicado_nome}!`);
+        }
+
+        function renderIndicadosAdmin() {
+            const tbody = document.getElementById('indicadosTableBody');
+            if (!tbody) return;
+
+            const searchVal = (document.getElementById('searchIndicadosInp')?.value || '').toLowerCase().trim();
+
+            let list = [...indicacoesData];
+
+            if (indicadosFilter === 'pago') {
+                list = list.filter(i => i.status === 'pago');
+            } else if (indicadosFilter === 'pendente') {
+                list = list.filter(i => i.status !== 'pago');
+            }
+
+            if (searchVal) {
+                list = list.filter(i =>
+                    (i.indicado_nome && i.indicado_nome.toLowerCase().includes(searchVal)) ||
+                    (i.indicado_email && i.indicado_email.toLowerCase().includes(searchVal)) ||
+                    (i.indicador_nome && i.indicador_nome.toLowerCase().includes(searchVal)) ||
+                    (i.indicador_email && i.indicador_email.toLowerCase().includes(searchVal)) ||
+                    (i.codigo_ref && i.codigo_ref.toLowerCase().includes(searchVal))
+                );
+            }
+
+            const total = indicacoesData.length;
+            const pagas = indicacoesData.filter(i => i.status === 'pago');
+            const pendentes = indicacoesData.filter(i => i.status !== 'pago');
+            const totalBonusIndicador = pagas.reduce((acc, curr) => acc + (parseFloat(curr.bonus_indicador) || 40.00), 0);
+            const totalBonusIndicado = pagas.reduce((acc, curr) => acc + (parseFloat(curr.bonus_indicado) || 20.00), 0);
+
+            const statTotalEl = document.getElementById('statTotalIndicados');
+            if (statTotalEl) statTotalEl.textContent = total;
+            const statBonusIndEl = document.getElementById('statBonusIndicador');
+            if (statBonusIndEl) statBonusIndEl.textContent = `R$ ${totalBonusIndicador.toFixed(2).replace('.', ',')}`;
+            const statBonusAmiEl = document.getElementById('statBonusIndicado');
+            if (statBonusAmiEl) statBonusAmiEl.textContent = `R$ ${totalBonusIndicado.toFixed(2).replace('.', ',')}`;
+            const statPendEl = document.getElementById('statPendentesIndicados');
+            if (statPendEl) statPendEl.textContent = pendentes.length;
+
+            const badgeIndEl = document.getElementById('badgePendingIndicados');
+            if (badgeIndEl) badgeIndEl.textContent = pendentes.length;
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhum registro de indicação encontrado.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(item => {
+                const isPaid = item.status === 'pago';
+                const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString('pt-BR') : '--';
+                const paidDateStr = item.pago_em ? new Date(item.pago_em).toLocaleDateString('pt-BR') : '';
+                const depVal = parseFloat(item.valor_deposito) || 0;
+                const bIndicador = parseFloat(item.bonus_indicador) || 40.00;
+                const bIndicado = parseFloat(item.bonus_indicado) || 20.00;
+
+                const statusBadge = isPaid
+                    ? `<span class="badge approved" style="display:inline-flex; align-items:center; gap:4px; font-weight:700;">✓ Bônus Pago (R$ ${bIndicador.toFixed(0)} / R$ ${bIndicado.toFixed(0)})${paidDateStr ? ' em ' + paidDateStr : ''}</span>`
+                    : `<span class="badge pending" style="display:inline-flex; align-items:center; gap:4px; font-weight:700;">⏳ Aguardando Depósito Mín.</span>`;
+
+                const actionBtn = isPaid
+                    ? `<span style="font-size:12px; color:var(--primary); font-weight:700;">✓ Quitado</span>`
+                    : `<button class="btn-act approve" onclick="manualPayReferralBonus('${item.id || item.indicado_id}')" title="Liberar Bônus Agora" style="font-size:11.5px; padding:4px 10px;">Liberar Bônus 🎁</button>`;
+
+                return `
+                    <tr>
+                        <td><strong>#${item.id || item.indicado_id || '--'}</strong></td>
+                        <td>
+                            <div style="font-weight:700; color:#fff;">${item.indicado_nome || 'Sem Nome'}</div>
+                            <div style="font-size:11.5px; color:var(--text-muted);">${item.indicado_email || '--'}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight:700; color:#00dc82;">${item.indicador_nome || 'Indicador'}</div>
+                            <div style="font-size:11.5px; color:var(--text-muted);">${item.indicador_email || '--'}</div>
+                        </td>
+                        <td><code style="background:rgba(255,255,255,0.06); padding:3px 6px; border-radius:4px; color:#fff;">${item.codigo_ref || '--'}</code></td>
+                        <td style="font-size:12px; color:var(--text-secondary);">${dateStr}</td>
+                        <td style="font-weight:700; color:#fff;">${depVal > 0 ? 'R$ ' + depVal.toFixed(2).replace('.', ',') : '<span style="color:var(--text-muted);">Ainda não depositou</span>'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionBtn}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
         async function approveRecarga(recId) {
             const r = recargasData.find(item => String(item.id) === String(recId));
             if (r) {
@@ -5565,6 +5907,95 @@
                 renderRecargasTable();
                 renderUsersTable();
                 showToast(`✅ Pagamento PIX ${recId} aprovado e R$ ${v.toFixed(2).replace('.', ',')} adicionados ao saldo!`);
+
+                // ── BÔNUS DE INDICAÇÃO AUTOMÁTICO (R$ 40 INDICADOR / R$ 20 INDICADO) ──
+                try {
+                    const minDep = parseFloat(localStorage.getItem('happynation_ref_min_deposit')) || 20.00;
+                    const bonusIndicadorVal = parseFloat(localStorage.getItem('happynation_ref_bonus_indicador')) || 40.00;
+                    const bonusIndicadoVal = parseFloat(localStorage.getItem('happynation_ref_bonus_indicado')) || 20.00;
+
+                    if (user && v >= minDep) {
+                        let indRef = indicacoesData.find(item => {
+                            const matchId = (item.indicado_id && String(item.indicado_id) === String(user.id));
+                            const matchEmail = (item.indicado_email && user.email && item.indicado_email.toLowerCase().trim() === user.email.toLowerCase().trim());
+                            return (matchId || matchEmail) && item.status === 'pendente';
+                        });
+
+                        if (indRef) {
+                            // 1. Concede bônus ao Indicado (R$ 20,00)
+                            const novoSaldoIndicado = Number(((parseFloat(user.saldo) || 0) + bonusIndicadoVal).toFixed(2));
+                            user.saldo = novoSaldoIndicado;
+
+                            try {
+                                await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(user.id)}`, {
+                                    method: 'PATCH',
+                                    headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ saldo: novoSaldoIndicado })
+                                });
+                            } catch(eIndUser) {}
+
+                            // 2. Concede bônus ao Indicador (R$ 40,00)
+                            let indicador = usersData.find(u => {
+                                const matchId = (indRef.indicador_id && String(u.id) === String(indRef.indicador_id));
+                                const matchEmail = (indRef.indicador_email && u.email && u.email.toLowerCase().trim() === indRef.indicador_email.toLowerCase().trim());
+                                return matchId || matchEmail;
+                            });
+
+                            if (indicador) {
+                                const novoSaldoIndicador = Number(((parseFloat(indicador.saldo) || 0) + bonusIndicadorVal).toFixed(2));
+                                indicador.saldo = novoSaldoIndicador;
+
+                                try {
+                                    await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(indicador.id)}`, {
+                                        method: 'PATCH',
+                                        headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ saldo: novoSaldoIndicador })
+                                    });
+                                } catch(eIndIndicador) {}
+                            }
+
+                            // 3. Marca indicação como paga
+                            indRef.status = 'pago';
+                            indRef.valor_deposito = v;
+                            indRef.bonus_indicador = bonusIndicadorVal;
+                            indRef.bonus_indicado = bonusIndicadoVal;
+                            indRef.pago_em = new Date().toISOString();
+
+                            if (indRef.id) {
+                                try {
+                                    await fetch(`${SUP_URL}/rest/v1/indicacoes?id=eq.${encodeURIComponent(indRef.id)}`, {
+                                        method: 'PATCH',
+                                        headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            status: 'pago',
+                                            valor_deposito: v,
+                                            bonus_indicador: bonusIndicadorVal,
+                                            bonus_indicado: bonusIndicadoVal,
+                                            pago_em: indRef.pago_em
+                                        })
+                                    });
+                                } catch(ePatchInd) {}
+                            }
+
+                            saveStorage();
+                            renderIndicadosAdmin();
+
+                            setTimeout(() => {
+                                showToast(`🎉 BÔNUS DE INDICAÇÃO PAGO! +R$ ${bonusIndicadorVal.toFixed(2).replace('.', ',')} para ${indRef.indicador_nome || 'Indicador'} e +R$ ${bonusIndicadoVal.toFixed(2).replace('.', ',')} para ${user.nome}!`);
+                            }, 500);
+
+                            logAdminActivity(
+                                'recarga',
+                                'Bônus Indicação Pago',
+                                `${indRef.indicador_nome || 'Indicador'} & ${user.nome}`,
+                                `+R$ 40 / +R$ 20`,
+                                'concluido'
+                            );
+                        }
+                    }
+                } catch(eBonus) {
+                    console.warn('[Indicação] Erro no fluxo de bônus:', eBonus);
+                }
 
                 // Atualiza status da recarga no Supabase
                 const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
@@ -6295,6 +6726,7 @@
                         .on('postgres_changes', { event: '*', schema: 'public', table: 'cnhs' }, () => loadAdminDataFromSupabase())
                         .on('postgres_changes', { event: '*', schema: 'public', table: 'exames' }, () => loadAdminDataFromSupabase())
                         .on('postgres_changes', { event: '*', schema: 'public', table: 'atestados' }, () => loadAdminDataFromSupabase())
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'indicacoes' }, () => loadAdminDataFromSupabase())
                         .subscribe();
                 }
             } catch(eRt) {}
