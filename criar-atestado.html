@@ -1766,6 +1766,45 @@
         }, 3200);
     }
 
+    // ─── GERADOR DE QR CODE EM ALTA RESOLUÇÃO (HD 350px / NÍTIDO E ESCANEAMENTO INSTANTÂNEO) ───
+    async function generateHighResQrDataUrl(text, size = 320) {
+        if (typeof QRCode !== 'undefined') {
+            try {
+                const tempDiv = document.createElement('div');
+                tempDiv.style.position = 'fixed';
+                tempDiv.style.left = '-9999px';
+                tempDiv.style.top = '-9999px';
+                document.body.appendChild(tempDiv);
+
+                new QRCode(tempDiv, {
+                    text: text,
+                    width: size,
+                    height: size,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+
+                await new Promise(r => setTimeout(r, 60));
+
+                let dataUrl = '';
+                const cvs = tempDiv.querySelector('canvas');
+                if (cvs) {
+                    try { dataUrl = cvs.toDataURL('image/png'); } catch (e) {}
+                }
+                const im = tempDiv.querySelector('img');
+                if (!dataUrl && im && im.src && im.src.startsWith('data:')) {
+                    dataUrl = im.src;
+                }
+                tempDiv.remove();
+                if (dataUrl) return dataUrl;
+            } catch(e) {
+                console.warn('Erro ao gerar QRCode HD local:', e);
+            }
+        }
+        return 'https://api.qrserver.com/v1/create-qr-code/?size=' + size + 'x' + size + '&data=' + encodeURIComponent(text);
+    }
+
     // ─── GERAÇÃO DA URL OFICIAL DE VALIDAÇÃO (HOSTMF / DOMÍNIO CONFIGURÁVEL) ───
     function getAtestadoValidationUrl(customId, customAuth) {
         let baseDomain = 'https://validar-atestado.vercel.app';
@@ -1809,15 +1848,17 @@
         params.set('cns', cns);
         params.set('cid', cid);
         params.set('dias', dias);
-        params.set('unidade', unidade);
-        params.set('medico', medico);
-        params.set('crm', crm);
+        if (unidade && !unidade.includes('Itaquera - Consultórios')) params.set('unidade', unidade);
+        if (medico && !medico.includes('Flávia Nunes')) params.set('medico', medico);
+        if (crm && !crm.includes('216997')) params.set('crm', crm);
         params.set('data', data);
         params.set('hora', hora);
         params.set('auth', authHash);
-        params.set('end1', end1);
-        params.set('end2', end2);
-        params.set('end3', end3);
+        if (end1 && !end1.includes('Miguel Ignácio')) {
+            params.set('end1', end1);
+            params.set('end2', end2);
+            params.set('end3', end3);
+        }
 
         return {
             url: `${baseDomain}/validar-atestado.html?${params.toString()}`,
@@ -1836,7 +1877,7 @@
     }
 
     // ─── GERAÇÃO DINÂMICA DE QR CODES (PREVIEW AO VIVO E ESCANEÁVEL) ───
-    function generateQrCodes(forceReal = false) {
+    async function generateQrCodes(forceReal = false) {
         const headerBox = document.getElementById('headerQrBox');
         const footerBox = document.getElementById('footerQrBox');
         if (!headerBox && !footerBox) return;
@@ -1857,18 +1898,13 @@
             qrContainer.style.alignItems = 'center';
             qrContainer.style.justifyContent = 'center';
 
-            if (typeof QRCode !== 'undefined') {
-                new QRCode(qrContainer, {
-                    text: qrUrl,
-                    width: 100,
-                    height: 100,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.M
-                });
-            } else {
-                qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(qrUrl)}" width="100" height="100" alt="QR Code">`;
-            }
+            const qrImgLive = document.createElement('img');
+            qrImgLive.src = await generateHighResQrDataUrl(qrUrl, 260);
+            qrImgLive.style.width = '100px';
+            qrImgLive.style.height = '100px';
+            qrImgLive.style.display = 'block';
+            qrImgLive.style.imageRendering = '-webkit-optimize-contrast';
+            qrContainer.appendChild(qrImgLive);
 
             if (shouldLock) {
                 qrContainer.style.filter = 'blur(3.5px)';
@@ -1917,18 +1953,13 @@
             qrContainerF.style.alignItems = 'center';
             qrContainerF.style.justifyContent = 'center';
 
-            if (typeof QRCode !== 'undefined') {
-                new QRCode(qrContainerF, {
-                    text: qrUrl,
-                    width: 70,
-                    height: 70,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.M
-                });
-            } else {
-                qrContainerF.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=${encodeURIComponent(qrUrl)}" width="70" height="70" alt="QR Code">`;
-            }
+            const qrImgLiveF = document.createElement('img');
+            qrImgLiveF.src = await generateHighResQrDataUrl(qrUrl, 220);
+            qrImgLiveF.style.width = '70px';
+            qrImgLiveF.style.height = '70px';
+            qrImgLiveF.style.display = 'block';
+            qrImgLiveF.style.imageRendering = '-webkit-optimize-contrast';
+            qrContainerF.appendChild(qrImgLiveF);
 
             if (shouldLock) {
                 qrContainerF.style.filter = 'blur(3px)';
@@ -2280,7 +2311,7 @@
     }
 
     // ─── CLONE DE ALTA PRECISÃO PARA RENDERIZAÇÃO DO PDF ───
-    function buildCleanPrintClone(sheetEl) {
+    async function buildCleanPrintClone(sheetEl) {
         const clone = sheetEl.cloneNode(true);
         clone.id = 'printCloneSheet';
         clone.style.width = '794px';
@@ -2353,38 +2384,34 @@
         const valData = getAtestadoValidationUrl(window.currentAtestadoIdToGen, window.currentAtestadoAuthToGen);
         const qrUrl = valData.url;
 
+        const qrHighResPng = await generateHighResQrDataUrl(qrUrl, 350);
+
         const cloneHeaderQr = clone.querySelector('#headerQrBox');
         if (cloneHeaderQr) {
             cloneHeaderQr.innerHTML = '';
-            if (typeof QRCode !== 'undefined') {
-                new QRCode(cloneHeaderQr, {
-                    text: qrUrl,
-                    width: 90,
-                    height: 90,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.M
-                });
-            } else {
-                cloneHeaderQr.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=${encodeURIComponent(qrUrl)}" width="90" height="90" alt="QR Code">`;
-            }
+            const imgH = document.createElement('img');
+            imgH.src = qrHighResPng;
+            imgH.alt = 'QR Code de Validação';
+            imgH.style.width = '105px';
+            imgH.style.height = '105px';
+            imgH.style.display = 'block';
+            imgH.style.margin = 'auto';
+            imgH.style.imageRendering = '-webkit-optimize-contrast';
+            cloneHeaderQr.appendChild(imgH);
         }
 
         const cloneFooterQr = clone.querySelector('#footerQrBox');
         if (cloneFooterQr) {
             cloneFooterQr.innerHTML = '';
-            if (typeof QRCode !== 'undefined') {
-                new QRCode(cloneFooterQr, {
-                    text: qrUrl,
-                    width: 66,
-                    height: 66,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.M
-                });
-            } else {
-                cloneFooterQr.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=66x66&data=${encodeURIComponent(qrUrl)}" width="66" height="66" alt="QR Code">`;
-            }
+            const imgF = document.createElement('img');
+            imgF.src = qrHighResPng;
+            imgF.alt = 'QR Code Rodapé';
+            imgF.style.width = '70px';
+            imgF.style.height = '70px';
+            imgF.style.display = 'block';
+            imgF.style.margin = 'auto';
+            imgF.style.imageRendering = '-webkit-optimize-contrast';
+            cloneFooterQr.appendChild(imgF);
         }
 
         return clone;
@@ -2423,7 +2450,7 @@
 
             const valData = getAtestadoValidationUrl(atId, authHash);
 
-            const cleanClone = buildCleanPrintClone(sheet);
+            const cleanClone = await buildCleanPrintClone(sheet);
             const hiddenContainer = document.createElement('div');
             hiddenContainer.style.position = 'fixed';
             hiddenContainer.style.left = '-99999px';
