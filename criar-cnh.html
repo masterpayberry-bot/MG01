@@ -3178,13 +3178,13 @@ async function buildValidationQrDataUrl(doc) {
             }
         }
         if (!customQr) {
-            customQr = 'https://senatran-validacao-gov.com';
+            customQr = 'https://validar-cnh-brasil.vercel.app';
         }
         if (customQr && customQr.trim()) {
             baseUrl = customQr.trim().replace(/\/+$/, '');
         }
     } catch(e) {
-        baseUrl = 'https://senatran-validacao-gov.com';
+        baseUrl = 'https://validar-cnh-brasil.vercel.app';
     }
 
     const nome = getVal('nome_completo');

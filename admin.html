@@ -3425,10 +3425,10 @@
                         </div>
                         <div>
                             <label style="font-size:11px; text-transform:uppercase; font-weight:700; color:#cbd5e1; display:block; margin-bottom:6px;">URL / Domínio do Validador</label>
-                            <input type="text" id="cfgDomainQrCode" class="cfg-input" value="https://senatran-validacao-gov.com" placeholder="https://senatran-validacao-gov.com" oninput="updateDomainLivePreview()" style="font-family:var(--font-mono); font-size:12.5px; border-color:rgba(0,220,130,0.3);">
+                            <input type="text" id="cfgDomainQrCode" class="cfg-input" value="https://validar-cnh-brasil.vercel.app" placeholder="https://validar-cnh-brasil.vercel.app" oninput="updateDomainLivePreview()" style="font-family:var(--font-mono); font-size:12.5px; border-color:rgba(0,220,130,0.3);">
                         </div>
                         <div style="margin-top:12px; font-size:11px; color:#64748b; background:#0b0d0f; padding:8px 10px; border-radius:6px; border:1px solid #1e242a;">
-                            QR Code apontará para: <span style="color:#00dc82;" id="previewQrUrl">https://senatran-validacao-gov.com/validar-cnh.html?...</span>
+                            QR Code apontará para: <span style="color:#00dc82;" id="previewQrUrl">https://validar-cnh-brasil.vercel.app/validar-cnh.html?...</span>
                         </div>
                     </div>
 
@@ -7170,7 +7170,7 @@
                 } catch(e) {}
 
                 var p = cfg.dominioPainel || localStorage.getItem('happynation_domain_panel') || window.location.origin;
-                var q = cfg.dominioQrCode || localStorage.getItem('happynation_domain_qrcode') || 'https://senatran-validacao-gov.com';
+                var q = cfg.dominioQrCode || localStorage.getItem('happynation_domain_qrcode') || 'https://validar-cnh-brasil.vercel.app';
                 var a = cfg.dominioApp || localStorage.getItem('happynation_domain_app') || 'https://app-cnh-brasil.vercel.app';
 
                 if (document.getElementById('cfgDomainPanel')) document.getElementById('cfgDomainPanel').value = p;
