@@ -1,0 +1,23 @@
+{
+  "short_name": "CNH do Brasil",
+  "name": "Carteira Digital de Trânsito - CNH do Brasil",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "index.html?mode=standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1d5cc7",
+  "display": "standalone",
+  "orientation": "portrait"
+}

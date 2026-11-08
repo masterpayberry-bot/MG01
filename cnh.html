@@ -1,0 +1,2536 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+        <!-- Open Graph / Compartilhamento de Links (WhatsApp, Telegram, Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MG Editáveis | Sistema">
+    <meta property="og:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:secure_url" content="https://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MG Editáveis">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MG Editáveis | Sistema">
+    <meta name="twitter:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta name="twitter:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis — CNHs Geradas</title>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #121414;
+            --bg-header: #141716;
+            --bg-card: #191c1d;
+            --bg-card-hover: #1e2223;
+            --bg-input: #141617;
+            --border-color: #242829;
+            --border-subtle: #1e2223;
+            
+            --primary: #00dc82;
+            --primary-hover: #00c975;
+            --primary-light: rgba(0, 220, 130, 0.12);
+            --primary-border: rgba(0, 220, 130, 0.28);
+
+            --warning-bg: #fffbeb;
+            --warning-border: #fef08a;
+            --warning-text: #78350f;
+
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 14px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-page); }
+        ::-webkit-scrollbar-thumb { background: #282c2d; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #353b3c; }
+
+        /* ─── LIGHT THEME VARIABLES & OVERRIDES ─── */
+        body.light-theme {
+            --bg-page: #f6f8f7;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-subtle: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --warning-text: #92400e;
+        }
+        body.light-theme .header {
+            background: #ffffff;
+            border-bottom-color: #e2e8f0;
+        }
+        body.light-theme .brand-text {
+            color: #0f172a;
+        }
+        body.light-theme .header-link {
+            color: #475569;
+        }
+        body.light-theme .header-link:hover {
+            color: #0f172a;
+        }
+        body.light-theme .header-icon {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        body.light-theme .header-icon:hover {
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        body.light-theme .btn-voltar {
+            color: #475569;
+        }
+        body.light-theme .btn-voltar:hover {
+            color: #0f172a;
+        }
+        body.light-theme .saldo-pill {
+            background: rgba(0, 220, 130, 0.12);
+            border-color: rgba(0, 220, 130, 0.35);
+            color: #059669;
+        }
+        body.light-theme .avatar-circle {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        body.light-theme .avatar-dropdown {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+        }
+        body.light-theme .dropdown-header {
+            border-bottom-color: #e2e8f0;
+        }
+        body.light-theme .dropdown-name {
+            color: #0f172a;
+        }
+        body.light-theme .dropdown-item {
+            color: #334155;
+        }
+        body.light-theme .dropdown-item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        body.light-theme .dropdown-divider {
+            background: #e2e8f0;
+        }
+        body.light-theme .warning-banner {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+        body.light-theme .card,
+        body.light-theme .card-action,
+        body.light-theme .table-wrap,
+        body.light-theme .filter-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        body.light-theme .stat-title {
+            color: #64748b;
+        }
+        body.light-theme .stat-num {
+            color: #0f172a;
+        }
+        body.light-theme .stat-sub {
+            color: #64748b;
+        }
+        body.light-theme .action-title {
+            color: #0f172a;
+        }
+        body.light-theme .action-sub {
+            color: #64748b;
+        }
+        body.light-theme .sec-title {
+            color: #0f172a;
+        }
+        body.light-theme .filter-label {
+            color: #475569;
+        }
+        body.light-theme .filter-input {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #0f172a;
+        }
+        body.light-theme .filter-input::placeholder {
+            color: #94a3b8;
+        }
+        body.light-theme .status-pills {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+        body.light-theme .status-pill-btn {
+            color: #64748b;
+        }
+        body.light-theme .status-pill-btn:hover {
+            color: #0f172a;
+        }
+        body.light-theme .status-pill-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+            font-weight: 700;
+        }
+        body.light-theme .btn-clear-filters {
+            color: #64748b;
+        }
+        body.light-theme .btn-clear-filters:hover {
+            color: #0f172a;
+        }
+        body.light-theme .status-cell,
+        body.light-theme td.status-cell {
+            color: #00dc82 !important;
+            font-weight: 700;
+        }
+        body.light-theme thead th,
+        body.light-theme table th {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+        body.light-theme tbody td {
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+        body.light-theme tbody tr:hover td {
+            background: #f8fafc;
+        }
+        body.light-theme .id-cell {
+            color: #64748b;
+        }
+        body.light-theme .name-cell {
+            color: #0f172a;
+            font-weight: 700;
+        }
+        body.light-theme .cpf-cell {
+            color: #334155;
+        }
+        body.light-theme .date-cell {
+            color: #64748b;
+        }
+        body.light-theme .btn-edit-cnh {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            color: #000000;
+        }
+        body.light-theme .btn-edit-cnh:hover {
+            background: #f1f5f9;
+            border-color: #9ca3af;
+            color: #000000;
+        }
+        body.light-theme .btn-edit-cnh svg {
+            color: #000000;
+        }
+        body.light-theme .btn-dots {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        body.light-theme .btn-dots:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        body.light-theme .action-dropdown {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        body.light-theme .action-dropdown .dropdown-item {
+            color: #334155;
+        }
+        body.light-theme .action-dropdown .dropdown-item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        body.light-theme .table-footer {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        body.light-theme .btn-page {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        body.light-theme .btn-page:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        /* ─── HEADER (MG EDITAVEIS HEADER) ─── */
+        .header {
+            height: 62px;
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1260px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #062517;
+            box-shadow: 0 2px 10px rgba(0, 220, 130, 0.3);
+        }
+
+        .brand-logo svg {
+            width: 18px;
+            height: 18px;
+            fill: #062517;
+        }
+
+        .brand-text {
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: -0.4px;
+            color: #ffffff;
+        }
+        body.light-theme .brand-text {
+            color: #00dc82;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+        }
+
+        .saldo-pill {
+            background: #141f1a;
+            border: 1px solid #1a3f2b;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 12.5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-link {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .header-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .header-link:hover {
+            color: #ffffff;
+        }
+
+        .header-icon {
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icon svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .header-icon:hover {
+            color: #ffffff;
+        }
+
+        .btn-voltar {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-voltar:hover {
+            color: #ffffff;
+        }
+
+        .btn-voltar svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #00dc82;
+            color: #062517;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* ─── AVATAR DROPDOWN ─── */
+        .avatar-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: #191c1d;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            width: 220px;
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            animation: fadeInDrop 0.15s ease-out;
+        }
+        .avatar-dropdown.show { display: flex; }
+        @keyframes fadeInDrop {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .dropdown-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dropdown-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .dropdown-email {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            word-break: break-all;
+        }
+        .dropdown-menu {
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .dropdown-item svg { width: 15px; height: 15px; color: var(--text-secondary); }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+        .dropdown-item.danger { color: #ef4444; }
+        .dropdown-item.danger svg { color: #ef4444; }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 6px;
+        }
+
+        /* ─── MAIN CONTAINER (CENTERED WITHOUT SIDEBAR EXACTLY LIKE SCREENSHOT) ─── */
+        .page-container {
+            margin-top: 62px;
+            max-width: 980px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 24px 16px 80px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ─── WARNING ALERT BANNER ─── */
+        .warning-banner {
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: var(--radius-md);
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12.5px;
+            color: var(--warning-text);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .warning-banner svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            color: #d97706;
+        }
+
+        /* ─── METRIC CARDS ROWS ─── */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card-stat-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .stat-icon-wrap {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon-wrap.blue {
+            background: rgba(59, 130, 246, 0.12);
+            color: #3b82f6;
+        }
+
+        .stat-icon-wrap.teal {
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+        }
+
+        .stat-icon-wrap.orange {
+            background: rgba(245, 158, 11, 0.12);
+            color: #f59e0b;
+        }
+
+        .stat-icon-wrap svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .stat-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-num {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.1;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+            margin: 2px 0 4px 0;
+        }
+
+        .stat-sub {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stat-sub.green {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .stat-sub.orange {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        /* ─── ACTION CARDS ROW 2 ─── */
+        .card-action {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-action-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .action-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .action-sub {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .btn-green-action {
+            background: var(--primary);
+            color: #062517;
+            font-weight: 700;
+            font-size: 12.5px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-green-action:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(0, 220, 130, 0.3);
+        }
+
+        .btn-green-action svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ─── SECTION "CNHs Geradas" ─── */
+        .sec-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 12px;
+            margin-bottom: 2px;
+        }
+
+        /* ─── FILTERS TOOLBAR ─── */
+        .filters-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .filter-input {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            color: #fff;
+            font-family: var(--font);
+            font-size: 12.5px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .filter-input:focus {
+            border-color: var(--primary);
+        }
+
+        .filter-input::placeholder {
+            color: #55585a;
+        }
+
+        .status-pills {
+            display: flex;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 2px;
+            gap: 2px;
+        }
+
+        .status-pill-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font);
+        }
+
+        .status-pill-btn.active {
+            background: #252a2c;
+            color: #ffffff;
+        }
+
+        .btn-clear-filters {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 6px;
+            margin-left: auto;
+            transition: color 0.2s;
+            font-family: var(--font);
+        }
+
+        .btn-clear-filters:hover {
+            color: #ffffff;
+        }
+
+        /* ─── DATA TABLE (PIXEL PERFECT) ─── */
+        .table-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            text-align: left;
+        }
+
+        thead th {
+            padding: 12px 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            background: #161819;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: middle;
+            color: #cbd5e1;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .id-cell {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .name-cell {
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .cpf-cell {
+            font-family: var(--font-mono);
+            color: #cbd5e1;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-cell {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .date-cell {
+            font-size: 12px;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        /* Actions Column */
+        .actions-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .btn-edit-cnh {
+            background: #1e2224;
+            border: 1px solid #2a3032;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--font);
+            text-decoration: none;
+        }
+
+        .btn-edit-cnh:hover {
+            border-color: #3a4042;
+            color: #ffffff;
+            background: #252b2d;
+        }
+
+        .btn-edit-cnh svg {
+            width: 12px;
+            height: 12px;
+            color: #9ca3af;
+        }
+
+        .btn-dots {
+            background: #1e2224;
+            border: 1px solid #2a3032;
+            color: var(--text-secondary);
+            padding: 5px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .btn-dots:hover {
+            border-color: #3a4042;
+            color: #fff;
+        }
+
+        /* Dropdown Menu */
+        .action-dropdown {
+            position: absolute;
+            right: 0;
+            top: 34px;
+            width: 190px;
+            background: #181b1c;
+            border: 1px solid #2a3032;
+            border-radius: 8px;
+            padding: 5px;
+            z-index: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .action-dropdown.show {
+            display: flex;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .dropdown-item.danger {
+            color: #f87171;
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        /* ─── TABLE FOOTER / PAGINATION ─── */
+        .table-footer {
+            padding: 14px 18px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-page {
+            background: #232728;
+            border: 1px solid #2d3334;
+            color: #cbd5e1;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font);
+        }
+
+        .btn-page:hover {
+            background: #2b3032;
+            color: #fff;
+        }
+
+        /* ─── FLOATING CHAT BUTTON (FAB) ─── */
+        .fab-chat {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.4);
+            z-index: 99;
+            color: #062517;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .fab-chat svg {
+            width: 22px;
+            height: 22px;
+            fill: #062517;
+        }
+
+        .fab-chat:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.6);
+        }
+
+        /* Toast Container */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        @media (max-width: 860px) {
+            .grid-3 { grid-template-columns: 1fr; }
+            .header { padding: 0 16px; }
+            .page-container { padding: 16px 12px; }
+            .filters-bar { flex-direction: column; align-items: stretch; }
+            .filter-input { width: 100% !important; }
+            .status-pills { width: 100%; justify-content: center; }
+        }
+    
+        /* HIGH-TECH ANIMATED NEURAL/PLEXUS BACKGROUND */
+        .neural-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        
+    
+        /* Header and dropdown z-index fixes */
+        .header {
+            z-index: 1000 !important;
+        }
+        .avatar-dropdown {
+            z-index: 99999 !important;
+        }
+    
+
+        
+
+        /* ─── SOLID BACKGROUND SHIELD (Mantém o cinza elegante original #191c1d 100% opaco e isolado do canvas) ─── */
+        .page-container,
+        .app-container,
+        .main-wrapper,
+        .main-layout,
+        .container,
+        .workspace {
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        .card,
+        .card-action,
+        .table-wrap,
+        .editor-card,
+        .preview-canvas,
+        .auth-card,
+        .profile-card,
+        .recharge-card,
+        .support-card,
+        .chat-container,
+        .chat-sidebar,
+        .chat-main,
+        .sidebar,
+        .content,
+        .action-card,
+        .activities-card,
+        .rm-card,
+        .modal,
+        .modal-content,
+        .modal-card,
+        .dialog-card,
+        .dialog-box,
+        .custom-modal,
+        .swal2-popup {
+            background-color: #191c1d !important;
+            border-color: #232729 !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 5 !important;
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+        }
+
+        /* Linhas e cabeçalho da tabela */
+        table {
+            background-color: #191c1d !important;
+        }
+
+        thead th {
+            background-color: #161819 !important;
+            border-bottom: 1px solid #232729 !important;
+        }
+
+        tbody tr {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr td {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr:hover td {
+            background-color: #202426 !important;
+        }
+
+        .table-footer {
+            background-color: #191c1d !important;
+            border-top: 1px solid #232729 !important;
+        }
+
+        /* ─── LIGHT THEME OVERRIDES (corrige o shield para tema claro) ─── */
+        body.light-theme .card,
+        body.light-theme .card-action,
+        body.light-theme .table-wrap,
+        body.light-theme .editor-card,
+        body.light-theme .auth-card,
+        body.light-theme .profile-card,
+        body.light-theme .recharge-card,
+        body.light-theme .support-card,
+        body.light-theme .chat-container,
+        body.light-theme .chat-sidebar,
+        body.light-theme .chat-main,
+        body.light-theme .sidebar,
+        body.light-theme .content,
+        body.light-theme .action-card,
+        body.light-theme .activities-card,
+        body.light-theme .rm-card,
+        body.light-theme .modal,
+        body.light-theme .modal-content,
+        body.light-theme .modal-card,
+        body.light-theme .dialog-card,
+        body.light-theme .dialog-box,
+        body.light-theme .custom-modal,
+        body.light-theme .swal2-popup {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05) !important;
+            color: #0f172a !important;
+        }
+        body.light-theme table {
+            background-color: #ffffff !important;
+        }
+        body.light-theme thead th {
+            background-color: #f8fafc !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+        body.light-theme tbody tr {
+            background-color: #ffffff !important;
+        }
+        body.light-theme tbody tr td {
+            background-color: #ffffff !important;
+            color: #334155 !important;
+        }
+        body.light-theme tbody tr:hover td {
+            background-color: #f8fafc !important;
+        }
+        body.light-theme .table-footer {
+            background-color: #f8fafc !important;
+            border-top: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+
+
+        .filters-bar,
+        .filter-group input,
+        .filter-group select {
+            position: relative !important;
+            z-index: 5 !important;
+        }
+
+    
+
+        /* ─── LOGO DO CABEÇALHO PADRÃO OFICIAL (Ícone Folha Verde Neon + MG Editáveis Branco) ─── */
+        .header-brand {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+        }
+
+        .brand-logo {
+            width: 32px !important;
+            height: 32px !important;
+            background: #00dc82 !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.45) !important;
+        }
+
+        .brand-logo svg {
+            width: 20px !important;
+            height: 20px !important;
+            fill: #062517 !important;
+        }
+
+        .brand-text {
+            font-size: 19px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            letter-spacing: -0.4px !important;
+            white-space: nowrap !important;
+            display: inline-block !important;
+        }
+
+        .brand-text span {
+            color: #ffffff !important;
+        }
+
+    
+
+        /* ─── PÍLULA DE SALDO OFICIAL PADRÃO RECARGAS (Borda verde neon fina, ícone de cartão e texto verde vibrante) ─── */
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08) !important;
+            color: #00dc82 !important;
+            border: 1px solid #00dc82 !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            padding: 6px 14px !important;
+            border-radius: 20px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+            text-decoration: none !important;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+            cursor: pointer !important;
+            box-shadow: 0 0 10px rgba(0, 220, 130, 0.15) !important;
+        }
+
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.16) !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.35) !important;
+            transform: translateY(-1px) !important;
+            color: #00dc82 !important;
+        }
+
+        .saldo-pill svg {
+            width: 15px !important;
+            height: 15px !important;
+            stroke: #00dc82 !important;
+            stroke-width: 2.2 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .saldo-pill span {
+            color: #00dc82 !important;
+            font-weight: 700 !important;
+        }
+
+    
+        /* ─── BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS ─── */
+        .networking-fab {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 99999;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px 10px 14px;
+            background: linear-gradient(135deg, #121915 0%, #17241e 100%);
+            border: 1.5px solid #00dc82;
+            border-radius: 50px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 20px rgba(0,220,130,0.35);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1);
+            animation: pulseNetworkingGlow 2.4s infinite ease-in-out;
+            user-select: none;
+        }
+        .networking-fab:hover {
+            transform: translateY(-3px) scale(1.03);
+            border-color: #34d399;
+            box-shadow: 0 12px 30px -4px rgba(0,0,0,0.8), 0 0 32px rgba(0,220,130,0.65);
+            color: #ffffff;
+        }
+        .fab-icon-bubble {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            background: #00dc82;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #062517;
+            flex-shrink: 0;
+            box-shadow: 0 0 14px rgba(0,220,130,0.6);
+        }
+        .fab-icon-bubble svg { width: 20px; height: 20px; }
+        .fab-ping-badge {
+            position: absolute;
+            top: -2px; right: -2px;
+            width: 11px; height: 11px;
+            background: #22c55e;
+            border: 2px solid #121915;
+            border-radius: 50%;
+        }
+        .fab-ping-badge::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px;
+            width: 11px; height: 11px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pingBadge 1.5s cubic-bezier(0,0,0.2,1) infinite;
+        }
+        .fab-text-col { display:flex; flex-direction:column; line-height:1.25; text-align:left; }
+        .fab-text-subtitle {
+            font-size: 10px; text-transform: uppercase; font-weight: 800;
+            color: #00dc82; letter-spacing: 0.6px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .fab-text-subtitle::before {
+            content: ''; width: 6px; height: 6px;
+            background: #00dc82; border-radius: 50%; display: inline-block;
+            animation: blinkDot 1s infinite alternate;
+        }
+        .fab-text-title { font-size: 13.5px; font-weight: 700; color: #ffffff; white-space: nowrap; }
+        @keyframes pulseNetworkingGlow {
+            0%   { box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 0 0 rgba(0,220,130,0.5); border-color:#00dc82; }
+            50%  { box-shadow: 0 8px 28px -4px rgba(0,0,0,0.8), 0 0 24px 6px rgba(0,220,130,0.45); border-color:#34d399; }
+            100% { box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 0 0 rgba(0,220,130,0); border-color:#00dc82; }
+        }
+        @keyframes pingBadge { 75%,100% { transform:scale(2.2); opacity:0; } }
+        @keyframes blinkDot  { 0% { opacity:0.3; transform:scale(0.8); } 100% { opacity:1; transform:scale(1.2); } }
+        @media (max-width:640px) {
+            .networking-fab { left:16px; bottom:20px; padding:8px 14px 8px 10px; font-size:12px; }
+            .fab-icon-bubble { width:32px; height:32px; }
+            .fab-text-title  { font-size:12px; }
+        }
+
+        /* ─── RESPONSIVIDADE MOBILE CNH LISTA (MG EDITÁVEIS) ─── */
+        @media (max-width: 640px) {
+            .header-inner {
+                padding: 0 12px !important;
+            }
+            .header-brand {
+                gap: 8px !important;
+            }
+            .brand-logo {
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px !important;
+            }
+            .brand-text {
+                font-size: 15px !important;
+            }
+            .header-right {
+                gap: 6px !important;
+            }
+            .header-right .header-link,
+            .header-right .header-icon {
+                display: none !important;
+            }
+            .saldo-pill {
+                padding: 4px 8px !important;
+                font-size: 11px !important;
+                gap: 4px !important;
+            }
+            .saldo-pill svg {
+                width: 12px !important;
+                height: 12px !important;
+            }
+            .btn-voltar {
+                padding: 4px 6px !important;
+                font-size: 11px !important;
+                gap: 3px !important;
+            }
+            .avatar-circle {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 11px !important;
+            }
+            .page-container {
+                padding: 12px 10px 40px 10px !important;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+            .card, .card-action {
+                padding: 14px 16px !important;
+            }
+            .table-wrap {
+                border-radius: 10px !important;
+            }
+        }
+
+    </style>
+<script src="/saldo-sync.js"></script>
+<script src="/db-sync.js"></script>
+
+
+<style>
+/* ─── LOGO OFICIAL MG EDITÁVEIS NO CABEÇALHO ─── */
+.header-brand {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    text-decoration: none !important;
+    flex-shrink: 0 !important;
+}
+.brand-logo {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    background: #00dc82 !important;
+    border-radius: 9px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 0 14px rgba(0, 220, 130, 0.4) !important;
+}
+.brand-icon-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 9px !important;
+}
+.brand-text {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.3px !important;
+    white-space: nowrap !important;
+}
+</style>
+
+
+</head>
+<body>
+    <!-- HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND -->
+    <canvas id="neuralCanvas" class="neural-bg-canvas"></canvas>
+
+
+<!-- MG EDITAVEIS HEADER -->
+<header class="header">
+    <div class="header-inner">
+        <a href="index.html" class="header-brand">
+            <div class="brand-logo">
+                        <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                    </div>
+            <span class="brand-text">MG Editáveis</span>
+        </a>
+
+        <div class="header-right">
+            <a href="recargas.html" class="saldo-pill" title="Clique para recarregar saldo">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+
+            <a href="indicacoes.html" class="header-link" style="display:inline-flex; align-items:center; gap:6px; color:#94a3b8; font-size:13px; font-weight:600; text-decoration:none; white-space:nowrap; flex-shrink:0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px; height:15px; min-width:15px; min-height:15px; flex-shrink:0;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <span>Indique e Ganhe</span>
+            </a>
+
+            <div class="header-icon" onclick="showToast('Notificações')" title="Notificações">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+
+            <!-- BOTAO VOLTAR COMO NO PRINT -->
+            <a href="index.html" class="btn-voltar" title="Voltar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Voltar
+            </a>
+
+            <div class="avatar-circle" id="userHeaderAvatar" onclick="toggleAvatarDropdown(event)" title="Meu Perfil">M</div>
+
+            <!-- Avatar Dropdown -->
+            <div class="avatar-dropdown" id="avatarDropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-name" id="dropUserName">MG Editáveis</div>
+                    <div class="dropdown-email" id="dropUserEmail">admin@mgeditaveis.com.br</div>
+                </div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Perfil</span>
+                    </a>
+                    <a href="suporte.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <span>Suporte</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login.html" class="dropdown-item danger" onclick="handleLogout(event)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <span>Sair</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- PAGE CONTAINER (NO SIDEBAR - EXACTLY AS IN SCREENSHOT) -->
+<div class="page-container">
+
+    
+
+    <!-- ROW 1: 3 KPI METRIC CARDS -->
+    <div class="grid-3">
+        <!-- HOJE -->
+        <div class="card">
+            <div class="card-stat-header">
+                <div class="stat-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </div>
+                <span class="stat-title">HOJE</span>
+            </div>
+            <div class="stat-num" id="statHojeVal">0</div>
+            <div class="stat-sub green" id="statHojeSub">CNHs geradas hoje</div>
+        </div>
+
+        <!-- ESTE MÊS -->
+        <div class="card">
+            <div class="card-stat-header">
+                <div class="stat-icon-wrap blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <span class="stat-title">ESTE MÊS</span>
+            </div>
+            <div class="stat-num" id="statMesVal">0</div>
+            <div class="stat-sub">CNHs geradas no mês</div>
+        </div>
+
+        <!-- TOTAL GERAL -->
+        <div class="card">
+            <div class="card-stat-header">
+                <div class="stat-icon-wrap teal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <span class="stat-title">TOTAL GERAL</span>
+            </div>
+            <div class="stat-num" id="statTotalVal">0</div>
+            <div class="stat-sub">CNHs geradas no total</div>
+        </div>
+    </div>
+
+    <!-- ROW 2: RENOVAÇÕES + CNH FÍSICA + NOVA CNH -->
+    <div class="grid-3">
+        <!-- RENOVAÇÕES -->
+        <div class="card">
+            <div class="card-stat-header">
+                <div class="stat-icon-wrap orange">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                </div>
+                <span class="stat-title">RENOVAÇÕES</span>
+            </div>
+            <div class="stat-num" id="statRenovVal">0</div>
+            <div class="stat-sub orange">Renovações feitas hoje • R$ 20,00</div>
+        </div>
+
+        <!-- CNH FÍSICA -->
+        <div class="card-action">
+            <div class="card-action-text">
+                <div class="action-title">CNH Física</div>
+                <div class="action-sub">Solicite uma CNH física</div>
+            </div>
+            <button class="btn-green-action" onclick="showToast('CNH Física')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                Adquirir
+            </button>
+        </div>
+
+        <!-- NOVA CNH -->
+        <div class="card-action">
+            <div class="card-action-text">
+                <div class="action-title">Nova CNH</div>
+                <div class="action-sub">Crie uma nova CNH</div>
+            </div>
+            <a href="criar-cnh.html" class="btn-green-action" onclick="try{sessionStorage.removeItem('happynation_edit_cnh');localStorage.removeItem('happynation_edit_cnh');}catch(e){}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Criar CNH
+            </a>
+        </div>
+    </div>
+
+    <!-- SECTION TITLE -->
+    <div class="sec-title">CNHs Geradas</div>
+
+    <!-- FILTERS TOOLBAR -->
+    <div class="filters-bar">
+        <div class="filter-group">
+            <label class="filter-label">Nome</label>
+            <input type="text" class="filter-input" id="filterNome" placeholder="Buscar por nome" oninput="applyFilters()" style="width: 175px;">
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">CPF</label>
+            <input type="text" class="filter-input" id="filterCpf" placeholder="000.000.000-00" oninput="applyFilters()" style="width: 155px;">
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">Data</label>
+            <input type="date" class="filter-input" id="filterData" onchange="applyFilters()" style="width: 145px; color-scheme:dark;">
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">Status</label>
+            <div class="status-pills">
+                <button class="status-pill-btn active" id="btnStatusTodas" onclick="setStatusFilter('Todas', this)">Todas</button>
+                <button class="status-pill-btn" id="btnStatusAtivas" onclick="setStatusFilter('Ativa', this)">Ativas</button>
+                <button class="status-pill-btn" id="btnStatusVencidas" onclick="setStatusFilter('Vencida', this)">Vencidas</button>
+            </div>
+        </div>
+
+        <button class="btn-clear-filters" onclick="clearFilters()">Limpar Filtros</button>
+    </div>
+
+    <!-- TABLE WRAP -->
+    <div class="table-wrap">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" style="accent-color:var(--primary); cursor:pointer;"></th>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>CNH Status</th>
+                        <th>Data e Hora da Geração</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tblBody">
+                    <!-- Preenchido via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TABLE PAGINATION FOOTER -->
+        <div class="table-footer">
+            <div id="paginationInfo">Mostrando 0 de 0 CNHs</div>
+            <div class="pagination-controls">
+                <span id="pageCurrentInfo">Página 0 de 0</span>
+                <button class="btn-page" onclick="prevPage()">Anterior</button>
+                <button class="btn-page" onclick="nextPage()">Próxima</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- FLOATING THEME TOGGLE BUTTON (FAB) -->
+<div class="fab-chat" id="themeFabBtn" title="Alternar Modo Claro / Escuro" onclick="toggleTheme()">
+    <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+</div>
+
+<script>
+// ─── TEMA CLARO / ESCURO ───
+function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-theme');
+    localStorage.setItem('happynation_theme', isLight ? 'light' : 'dark');
+    updateThemeIcon();
+}
+
+function updateThemeIcon() {
+    const isLight = document.body.classList.contains('light-theme');
+    const icon = document.getElementById('themeIcon');
+    if (icon) {
+        if (isLight) {
+            icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+        } else {
+            icon.innerHTML = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>';
+        }
+    }
+}
+
+if (localStorage.getItem('happynation_theme') === 'light') {
+    document.body.classList.add('light-theme');
+}
+
+// ─── AVATAR DROPDOWN ───
+function toggleAvatarDropdown(e) {
+    if (e) e.stopPropagation();
+    const drop = document.getElementById('avatarDropdown');
+    if (drop) drop.classList.toggle('show');
+}
+
+document.addEventListener('click', (e) => {
+    const drop = document.getElementById('avatarDropdown');
+    if (drop && drop.classList.contains('show') && !e.target.closest('#avatarDropdown') && !e.target.closest('#userHeaderAvatar')) {
+        drop.classList.remove('show');
+    }
+});
+
+// ─── DADOS BASELINE (INICIALMENTE VAZIO PARA COMEÇAR A CONTAR DO 0) ───
+const BASELINE_CNHS = [];
+
+let allCnhs = [];
+let currentFilterStatus = 'Todas';
+let currentPage = 1;
+const ITEMS_PER_PAGE = 20;
+
+function showToast(featureName) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.style.cssText = 'background:#1a1d1e; border:1px solid #282c2d; border-radius:8px; padding:12px 16px; color:#fff; font-family:var(--font); box-shadow:0 6px 20px rgba(0,0,0,0.6); opacity:0; transform:translateY(10px); transition:all 0.3s cubic-bezier(0.18,0.89,0.32,1.28); min-width:230px; pointer-events:auto;';
+    toast.innerHTML = `<div style="font-size:12px; font-weight:700; color:#00dc82; margin-bottom:2px;">Em desenvolvimento</div><div style="font-size:11.5px; color:#aaa;">Ferramenta ${featureName} em breve.</div>`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; }, 10);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function loadLoggedUser() {
+    try {
+        let userStr = (localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user'));
+        if (!userStr) {
+            const defaultUser = {
+                id: 1,
+                nome: 'MG Editáveis',
+                email: 'admin@mgeditaveis.com.br',
+                phone: '(21) 99882-1029',
+                saldo: (window.MGSaldo ? window.MGSaldo.get() : 0),
+                status: 'approved',
+                logged: true
+            };
+            localStorage.setItem('happynation_user', JSON.stringify(defaultUser));
+            userStr = JSON.stringify(defaultUser);
+        }
+
+        const user = JSON.parse(userStr);
+        let adminUsers = [];
+        try { adminUsers = JSON.parse(localStorage.getItem('happynation_admin_users') || '[]'); } catch(e){}
+        let freshUser = null;
+        if (user && user.email) {
+            freshUser = adminUsers.find(u => u.email && u.email.toLowerCase() === user.email.toLowerCase());
+        }
+        // Mantém freshUser apenas se coincidir por e-mail
+        if (freshUser) {
+            user.id = freshUser.id;
+            user.nome = freshUser.nome || user.nome;
+            user.email = freshUser.email || user.email;
+            user.phone = freshUser.phone || user.phone;
+            user.saldo = (freshUser.saldo !== undefined && freshUser.saldo !== null) ? parseFloat(freshUser.saldo) : (user.saldo !== undefined ? parseFloat(user.saldo) : 0);
+            user.status = freshUser.status || 'approved';
+            localStorage.setItem('happynation_user', JSON.stringify(user));
+        }
+
+        const saldo = (window.MGSaldo ? window.MGSaldo.get() : ((user && user.saldo !== undefined && user.saldo !== null) ? parseFloat(user.saldo) : 0));
+        const saldoHeader = document.getElementById('userHeaderSaldo');
+        if (saldoHeader) saldoHeader.textContent = `Saldo R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        const avatarEl = document.getElementById('userHeaderAvatar');
+        if (avatarEl) {
+            avatarEl.textContent = (user.nome ? user.nome.charAt(0).toUpperCase() : 'M');
+        }
+
+        
+
+        loadUserCnhs(user);
+    } catch(e) {
+        console.error('Erro ao carregar usuário:', e);
+    }
+}
+
+window.addEventListener('storage', loadLoggedUser);
+
+function loadUserCnhs(user) {
+    const email = (user && user.email) ? user.email.toLowerCase().trim() : '';
+    const userId = (user && user.id) ? user.id : 1;
+    const userCnhsKey = email ? ('happynation_cnhs_' + email) : '';
+
+    const seenIds = new Set();
+    const deletedList = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+
+    // Limpar mock baseline antigo caso tenha sido salvo no localStorage
+    const FAKE_BASELINE_IDS = new Set([
+        "c0921530", "01a4e744", "801c0b56", "647ff4b5", "a4dc5098",
+        "b3037d47", "fc1f5415", "ce46be5b", "cbdefe13", "13c75ce8",
+        "b9e1e3b2", "a2ab74fc", "571d83ea", "cb042216", "27da3f18",
+        "42f1d417", "4ee7bde6", "a4471e16", "ccc0af5c", "64553606"
+    ]);
+
+    const items = [];
+
+    const addIfValid = (item) => {
+        if (!item || !item.id) return;
+        const idStr = String(item.id);
+        if (seenIds.has(idStr)) return;
+        if (deletedList.includes(idStr)) return;
+        if (FAKE_BASELINE_IDS.has(idStr)) return;
+
+        seenIds.add(idStr);
+        const parsedDados = item.dados_json ? (typeof item.dados_json === 'string' ? JSON.parse(item.dados_json) : item.dados_json) : (item.dados || item);
+        const rawItemGen = item.genero || (parsedDados && (parsedDados.genero || parsedDados.sexo)) || 'Masculino';
+        const cleanItemGen = (rawItemGen && rawItemGen !== 'null' && rawItemGen !== 'undefined') ? String(rawItemGen).trim().toLowerCase() : '';
+        const itemGen = cleanItemGen.startsWith('f') ? 'Feminino' : 'Masculino';
+        items.push(Object.assign({}, item, {
+            id: item.id,
+            nome: item.nome || item.nome_cnh || item.nomeCnh || 'Condutor',
+            cpf: item.cpf || '',
+            cat: item.cat || item.categoria || (parsedDados && (parsedDados.cat || parsedDados.categoria)) || 'B',
+            genero: itemGen,
+            status: item.status || 'Ativo',
+            created_at: item.created_at || item.data || new Date().toISOString(),
+            foto: item.foto || localStorage.getItem('happynation_foto_' + idStr) || null,
+            assinatura: item.assinatura || localStorage.getItem('happynation_ass_' + idStr) || null,
+            dados: Object.assign({}, parsedDados || {}, { genero: itemGen })
+        }));
+    };
+
+    // 1. Carrega do storage do usuário logado
+    if (userCnhsKey) {
+        try {
+            const list = JSON.parse(localStorage.getItem(userCnhsKey) || '[]');
+            if (Array.isArray(list)) list.forEach(addIfValid);
+        } catch(e) {}
+    }
+
+    // 2. Carrega de todas as chaves de usuários locais (happynation_cnhs_*)
+    for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('happynation_cnhs_')) {
+            try {
+                const list = JSON.parse(localStorage.getItem(k) || '[]');
+                if (Array.isArray(list)) list.forEach(addIfValid);
+            } catch(e) {}
+        }
+    }
+
+    // 3. Carrega de happynation_admin_cnhs
+    try {
+        const adminCnhs = JSON.parse(localStorage.getItem('happynation_admin_cnhs') || '[]');
+        if (Array.isArray(adminCnhs)) adminCnhs.forEach(addIfValid);
+    } catch(e) {}
+
+    // 4. Carrega da última CNH criada
+    try {
+        const lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || 'null');
+        if (lastCnh) addIfValid(lastCnh);
+    } catch(e) {}
+
+    allCnhs = [...items];
+    renderTable();
+
+    // 5. Buscar do backend (MySQL e JSON sincronizado)
+    const fetchUrl = 'api/index.php?action=get_user_cnhs&email=' + encodeURIComponent(email) + '&userId=' + userId;
+    fetch(fetchUrl)
+        .then(r => r.json())
+        .then(res => {
+            if (res && res.status === 'success' && res.data && Array.isArray(res.data.cnhs)) {
+                res.data.cnhs.forEach(addIfValid);
+                allCnhs = [...items];
+            }
+            renderTable();
+        })
+        .catch(() => {
+            fetch('api/db/cnhs')
+                .then(r => r.json())
+                .then(dbRes => {
+                    if (dbRes && Array.isArray(dbRes.data)) {
+                        dbRes.data.forEach(addIfValid);
+                        allCnhs = [...items];
+                    }
+                    renderTable();
+                })
+                .catch(() => {
+                    renderTable();
+                });
+        });
+}
+// ─── EDITAR CNH: salva objeto completo antes de navegar ───
+function editarCnh(cnhId) {
+    const c = allCnhs.find(x => x.id === cnhId);
+    if (!c) {
+        window.location.href = 'criar-cnh.html?id=' + encodeURIComponent(cnhId);
+        return;
+    }
+    const dObj = (c.dados && typeof c.dados === 'object' && Object.keys(c.dados).length > 0) ? c.dados : c;
+    const pVal = dObj.validade || c.validade || '';
+    const pEmissao = dObj.emissao || dObj.data_emissao || c.emissao || '';
+    const pHab = dObj.hab || dObj.habilitacao || dObj.data_1_hab || c.hab || c.habilitacao || '';
+    const pRg = dObj.rg || dObj.doc_identidade || c.rg || c.doc_identidade || '';
+    const pNasc = dObj.nasc || dObj.data_nascimento || c.nasc || c.data_nascimento || '';
+    const pReg = dObj.reg || dObj.registro || c.reg || c.registro || '';
+    const pMae = dObj.mae || dObj.filiacao_2 || dObj.filiacao_mae || c.mae || c.filiacao_2 || c.filiacao_mae || '';
+    const pPai = dObj.pai || dObj.filiacao_1 || dObj.filiacao_pai || c.pai || c.filiacao_1 || c.filiacao_pai || '';
+    const pLocal = dObj.local || dObj.cidade || dObj.municipio || c.local || c.cidade || c.municipio || '';
+    const pUf = dObj.uf || dObj.estado || c.uf || c.estado || '';
+    const pObs = dObj.obs || dObj.observacoes || dObj.observacao || c.obs || c.observacoes || c.observacao || '';
+    const rawGen = dObj.genero || dObj.sexo || c.genero || c.sexo || 'Masculino';
+    const cleanGen = (rawGen && rawGen !== 'null' && rawGen !== 'undefined') ? String(rawGen).trim().toLowerCase() : '';
+    const pGen = cleanGen.startsWith('f') ? 'Feminino' : 'Masculino';
+    const rawCat = c.cat || c.categoria || dObj.cat || dObj.categoria || 'B';
+    const pCat = String(rawCat).trim().toUpperCase();
+
+    const fotoKey = 'happynation_foto_' + cnhId;
+    const assKey  = 'happynation_ass_'  + cnhId;
+    const fotoB64 = localStorage.getItem(fotoKey) || c.foto || (c.dados && c.dados.foto) || null;
+    const assB64  = localStorage.getItem(assKey)  || c.assinatura || (c.dados && c.dados.assinatura) || null;
+
+    const record = Object.assign({}, dObj, c, {
+        id: cnhId,
+        nome: c.nome || c.nome_cnh || '',
+        nome_cnh: c.nome || c.nome_cnh || '',
+        cpf: c.cpf || '',
+        cat: pCat,
+        categoria: pCat,
+        validade: pVal,
+        emissao: pEmissao,
+        data_emissao: pEmissao,
+        hab: pHab,
+        habilitacao: pHab,
+        rg: pRg,
+        doc_identidade: pRg,
+        nasc: pNasc,
+        data_nascimento: pNasc,
+        reg: pReg,
+        registro: pReg,
+        mae: pMae,
+        filiacao_2: pMae,
+        pai: pPai,
+        filiacao_1: pPai,
+        local: pLocal,
+        cidade: pLocal,
+        municipio: pLocal,
+        uf: pUf,
+        estado: pUf,
+        obs: pObs,
+        observacoes: pObs,
+        genero: pGen,
+        sexo: pGen,
+        cat: pCat,
+        categoria: pCat,
+        cat_hab: pCat,
+        foto: fotoB64,
+        assinatura: assB64
+    });
+
+    const allCatCellIds = [
+        'cat_acc_val','cat_acc_hab',
+        'cat_a_val','cat_a_hab',
+        'cat_a1_val','cat_a1_hab',
+        'cat_b_val','cat_b_hab',
+        'cat_b1_val','cat_b1_hab',
+        'cat_c_val','cat_c_hab',
+        'cat_c1_val','cat_c1_hab',
+        'cat_d_val','cat_d_hab',
+        'cat_d1_val','cat_d1_hab',
+        'cat_be_val','cat_be_hab',
+        'cat_ce_val','cat_ce_hab',
+        'cat_c1e_val','cat_c1e_hab',
+        'cat_de_val','cat_de_hab',
+        'cat_d1e_val','cat_d1e_hab'
+    ];
+    allCatCellIds.forEach(cid => {
+        const cv = (dObj && dObj[cid] !== undefined) ? dObj[cid] : ((c && c[cid] !== undefined) ? c[cid] : '');
+        if (cv !== undefined && cv !== null) record[cid] = cv;
+    });
+
+    record.dados = Object.assign({}, record);
+
+    const payload = JSON.stringify(record);
+    try { sessionStorage.setItem('happynation_edit_cnh', payload); } catch(e) {}
+    try { localStorage.setItem('happynation_edit_cnh', payload); } catch(e) {}
+
+    const query = new URLSearchParams();
+    query.set('id', c.id || '');
+    query.set('nome', c.nome || c.nome_cnh || '');
+    query.set('cpf', c.cpf || '');
+    query.set('cat', pCat);
+    if (pVal) query.set('validade', pVal);
+    if (pEmissao) query.set('emissao', pEmissao);
+    if (pHab) query.set('hab', pHab);
+    if (pRg) query.set('rg', pRg);
+    if (pNasc) query.set('nasc', pNasc);
+    if (pReg) query.set('reg', pReg);
+    if (pMae) query.set('mae', pMae);
+    if (pPai) query.set('pai', pPai);
+    if (pLocal) query.set('local', pLocal);
+    if (pUf) query.set('uf', pUf);
+    if (pObs) query.set('obs', pObs);
+    query.set('genero', pGen);
+
+    allCatCellIds.forEach(cid => {
+        if (record[cid]) query.set(cid, record[cid]);
+    });
+
+    window.location.href = 'criar-cnh.html?' + query.toString();
+}
+
+function updateCounters() {
+    const now = new Date();
+    const todayY = now.getFullYear();
+    const todayM = now.getMonth();
+    const todayD = now.getDate();
+
+    let hojeCount = 0;
+    let mesCount = 0;
+
+    allCnhs.forEach(c => {
+        if (!c.created_at) return;
+        try {
+            const dt = new Date(c.created_at);
+            if (!isNaN(dt.getTime())) {
+                if (dt.getFullYear() === todayY && dt.getMonth() === todayM) {
+                    mesCount++;
+                    if (dt.getDate() === todayD) {
+                        hojeCount++;
+                    }
+                }
+            } else {
+                const parts = c.created_at.split(' ')[0].split(/[\/-]/);
+                if (parts.length === 3) {
+                    if (parseInt(parts[2]) === todayY && parseInt(parts[1]) - 1 === todayM) {
+                        mesCount++;
+                        if (parseInt(parts[0]) === todayD) hojeCount++;
+                    }
+                }
+            }
+        } catch(e) {}
+    });
+
+    const totalCount = allCnhs.length;
+
+    const elHoje = document.getElementById('statHojeVal');
+    if (elHoje) elHoje.textContent = hojeCount;
+
+    const elMes = document.getElementById('statMesVal');
+    if (elMes) elMes.textContent = mesCount;
+
+    const elTotal = document.getElementById('statTotalVal');
+    if (elTotal) elTotal.textContent = totalCount;
+}
+
+function renderTable() {
+    const tbody = document.getElementById('tblBody');
+    if (!tbody) return;
+
+    // Atualizar Contadores dos Cards dinamicamente
+    updateCounters();
+
+    // Filtrar CNHs
+    const queryNome = (document.getElementById('filterNome')?.value || '').toLowerCase().trim();
+    const queryCpf = (document.getElementById('filterCpf')?.value || '').toLowerCase().trim();
+    const queryData = (document.getElementById('filterData')?.value || '').trim();
+
+    let filtered = allCnhs.filter(item => {
+        if (queryNome && !item.nome.toLowerCase().includes(queryNome)) return false;
+        if (queryCpf && !item.cpf.toLowerCase().includes(queryCpf)) return false;
+        if (queryData && item.created_at && !item.created_at.startsWith(queryData)) return false;
+        if (currentFilterStatus !== 'Todas' && item.status !== currentFilterStatus) return false;
+        return true;
+    });
+
+    // Paginação
+    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIdx = startIdx + ITEMS_PER_PAGE;
+    const pageItems = filtered.slice(startIdx, endIdx);
+
+    const pagInfo = document.getElementById('paginationInfo');
+    if (pagInfo) {
+        if (filtered.length === 0) {
+            pagInfo.textContent = 'Mostrando 0 de 0 CNHs';
+        } else {
+            pagInfo.textContent = `Mostrando ${startIdx + 1}-${Math.min(endIdx, filtered.length)} de ${filtered.length} CNHs`;
+        }
+    }
+
+    const pageCur = document.getElementById('pageCurrentInfo');
+    if (pageCur) {
+        pageCur.textContent = filtered.length === 0 ? 'Página 0 de 0' : `Página ${currentPage} de ${totalPages}`;
+    }
+
+    if (pageItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:36px; color:var(--text-muted);">Nenhuma CNH encontrada com os filtros selecionados.</td></tr>`;
+        return;
+    }
+
+    let html = '';
+    pageItems.forEach(c => {
+        const d = c.created_at ? new Date(c.created_at) : new Date();
+        const dateFormatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+        html += `
+            <tr>
+                <td><input type="checkbox" style="accent-color:var(--primary); cursor:pointer;"></td>
+                <td class="id-cell">${c.id}</td>
+                <td class="name-cell" style="cursor:pointer;" onclick="window.location.href='ver-cnh.html?id=${encodeURIComponent(c.id)}&nome=${encodeURIComponent(c.nome)}&cpf=${encodeURIComponent(c.cpf)}&cat=${encodeURIComponent(c.cat || c.categoria || '')}'">${c.nome}</td>
+                <td class="cpf-cell">${c.cpf}</td>
+                <td class="status-cell">${c.status || 'Ativo'}</td>
+                <td class="date-cell">${dateFormatted}</td>
+                <td>
+                    <div class="actions-cell">
+                        <button class="btn-edit-cnh" onclick="editarCnh('${c.id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            Editar CNH
+                        </button>
+                        <button class="btn-dots" onclick="toggleDropdown(event, this)">•••</button>
+                        <div class="action-dropdown">
+                            <div class="dropdown-item" onclick="window.location.href='ver-cnh.html?id=${encodeURIComponent(c.id)}&nome=${encodeURIComponent(c.nome)}&cpf=${encodeURIComponent(c.cpf)}&cat=${encodeURIComponent(c.cat || c.categoria || '')}'">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 backward" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                Ver Informações
+                            </div>
+                            <div class="dropdown-item danger" onclick="deleteCnhRow('${c.id}')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                Excluir CNH
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+function toggleDropdown(e, btn) {
+    e.stopPropagation();
+    document.querySelectorAll('.action-dropdown').forEach(d => {
+        if (d !== btn.nextElementSibling) d.classList.remove('show');
+    });
+    const dropdown = btn.nextElementSibling;
+    if (dropdown) dropdown.classList.toggle('show');
+}
+
+document.addEventListener('click', () => {
+    document.querySelectorAll('.action-dropdown').forEach(d => d.classList.remove('show'));
+});
+
+function applyFilters() {
+    currentPage = 1;
+    renderTable();
+}
+
+function setStatusFilter(status, btn) {
+    currentFilterStatus = status;
+    document.querySelectorAll('.status-pill-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    applyFilters();
+}
+
+function clearFilters() {
+    document.getElementById('filterNome').value = '';
+    document.getElementById('filterCpf').value = '';
+    document.getElementById('filterData').value = '';
+    setStatusFilter('Todas', document.getElementById('btnStatusTodas'));
+}
+
+function toggleSelectAll(master) {
+    document.querySelectorAll('#tblBody input[type="checkbox"]').forEach(cb => {
+        cb.checked = master.checked;
+    });
+}
+
+function deleteCnhRow(cnhId) {
+    if (!confirm('Deseja realmente excluir este registro de CNH? O prontuário do cliente será cancelado.')) return;
+    const itemToDelete = allCnhs.find(c => c.id === cnhId);
+    const cleanCpf = itemToDelete ? (itemToDelete.cpf || '').replace(/\D/g, '') : '';
+    allCnhs = allCnhs.filter(c => c.id !== cnhId);
+
+    try {
+        // 1. Registra ID na lista permanente de CNHs excluídas
+        const deletedIds = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+        if (!deletedIds.includes(cnhId)) {
+            deletedIds.push(cnhId);
+            localStorage.setItem('happynation_deleted_cnhs', JSON.stringify(deletedIds));
+        }
+
+        // 2. Remove de happynation_admin_cnhs
+        const adminCnhs = JSON.parse(localStorage.getItem('happynation_admin_cnhs') || '[]');
+        const cleanAdmin = adminCnhs.filter(c => c.id !== cnhId && (cleanCpf ? (c.cpf || '').replace(/\D/g, '') !== cleanCpf : true));
+        localStorage.setItem('happynation_admin_cnhs', JSON.stringify(cleanAdmin));
+
+        // 3. Remove de todas as chaves happynation_cnhs_*
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('happynation_cnhs_')) {
+                try {
+                    const list = JSON.parse(localStorage.getItem(key) || '[]');
+                    const filtered = list.filter(c => c.id !== cnhId && (cleanCpf ? (c.cpf || '').replace(/\D/g, '') !== cleanCpf : true));
+                    localStorage.setItem(key, JSON.stringify(filtered));
+                } catch(eKey) {}
+            }
+        }
+
+        localStorage.removeItem('happynation_foto_' + cnhId);
+        localStorage.removeItem('happynation_ass_' + cnhId);
+
+        if (cleanCpf) {
+            // Registra CPF como cancelado no localStorage
+            const canceled = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+            if (!canceled.includes(cleanCpf)) {
+                canceled.push(cleanCpf);
+                localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceled));
+            }
+
+            // Se a CNH ativa no app for deste CPF, limpa os dados da CNH
+            let lastCnh = null;
+            try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(ex) {}
+            if (lastCnh && lastCnh.cpf && lastCnh.cpf.replace(/\D/g, '') === cleanCpf) {
+                localStorage.removeItem('happynation_last_cnh');
+                localStorage.removeItem('happynation_cnh_slide1');
+                localStorage.removeItem('happynation_cnh_slide2');
+                localStorage.removeItem('happynation_cnh_slide3');
+                localStorage.removeItem('happynation_cnh_slide4');
+                localStorage.removeItem('happynation_cnh_qr_url');
+            }
+        }
+    } catch(e) {}
+
+    // Notifica servidor para excluir do banco MySQL e de app/db.json
+    fetch('api/index.php?action=delete_cnh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: cnhId, cpf: cleanCpf })
+    }).catch(() => {});
+    fetch('api/db/cnhs/' + encodeURIComponent(cnhId), { method: 'DELETE' }).catch(() => {});
+
+    renderTable();
+    showToast('CNH excluída permanentemente! Prontuário cancelado.');
+}
+
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        renderTable();
+    }
+}
+
+function nextPage() {
+    currentPage++;
+    renderTable();
+}
+
+window.addEventListener('load', loadLoggedUser);
+</script>
+
+    <!-- NEURAL NETWORK BACKGROUND SCRIPT -->
+    <script>
+        // ─── HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND ───
+        (function initNeuralNetwork() {
+            const canvas = document.getElementById('neuralCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 90;
+            const MAX_DISTANCE = 135;
+            const MOUSE_RADIUS = 160;
+
+            const mouse = { x: null, y: null, active: false };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+                mouse.active = true;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.active = false;
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.7;
+                    this.vy = (Math.random() - 0.5) * 0.7;
+                    this.baseRadius = Math.random() * 2 + 1.2;
+                    this.isHub = Math.random() < 0.15; // 15% nós centrais brilhantes
+                    if (this.isHub) this.baseRadius = Math.random() * 1.5 + 3.2;
+                    this.pulseSpeed = Math.random() * 0.04 + 0.02;
+                    this.pulsePhase = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < -20) this.x = width + 20;
+                    else if (this.x > width + 20) this.x = -20;
+                    if (this.y < -20) this.y = height + 20;
+                    else if (this.y > height + 20) this.y = -20;
+
+                    this.pulsePhase += this.pulseSpeed;
+                }
+
+                draw() {
+                    const pulse = (Math.sin(this.pulsePhase) + 1) * 0.5; // 0 to 1
+                    const r = this.baseRadius + pulse * (this.isHub ? 2.0 : 0.9);
+                    const alpha = 0.5 + pulse * 0.5;
+
+                    // Halo radial neon — verde esmeralda
+                    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3.8);
+                    grad.addColorStop(0, this.isHub ? `rgba(0, 220, 130, ${alpha * 0.85})` : `rgba(0, 200, 110, ${alpha * 0.65})`);
+                    grad.addColorStop(0.4, `rgba(0, 180, 100, ${alpha * 0.2})`);
+                    grad.addColorStop(1, 'rgba(0, 220, 130, 0)');
+
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 3.8, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Núcleo brilhante (bolinha pulsante)
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 0.9, 0, Math.PI * 2);
+                    ctx.fillStyle = this.isHub ? `rgba(200, 255, 230, ${alpha})` : `rgba(0, 220, 130, ${alpha * 0.9})`;
+                    ctx.shadowBlur = this.isHub ? 16 : 8;
+                    ctx.shadowColor = '#00dc82';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Fundo sutil com leve toque esmeralda profundo
+                const bgGrad = ctx.createRadialGradient(width * 0.5, height * 0.4, 60, width * 0.5, height * 0.5, width * 0.85);
+                bgGrad.addColorStop(0, 'rgba(0, 40, 22, 0.18)');
+                bgGrad.addColorStop(0.35, 'rgba(0, 22, 14, 0.10)');
+                bgGrad.addColorStop(0.7, 'rgba(0, 10, 6, 0.06)');
+                bgGrad.addColorStop(1, 'rgba(18, 20, 20, 0.98)');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                // Conexões e linhas laser entre as bolinhas
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+
+                    // Interação com o mouse
+                    if (mouse.active && mouse.x !== null) {
+                        const dxm = p1.x - mouse.x;
+                        const dym = p1.y - mouse.y;
+                        const distM = Math.sqrt(dxm * dxm + dym * dym);
+                        if (distM < MOUSE_RADIUS) {
+                            const mAlpha = (1 - distM / MOUSE_RADIUS) * 0.55;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(0, 220, 130, ${mAlpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distSq = dx * dx + dy * dy;
+
+                        if (distSq < MAX_DISTANCE * MAX_DISTANCE) {
+                            const dist = Math.sqrt(distSq);
+                            const lineAlpha = (1 - dist / MAX_DISTANCE) * 0.30;
+
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 200, 110, ${lineAlpha})`;
+                            ctx.lineWidth = dist < 55 ? 1.2 : 0.7;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Desenhar nós
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+    </script>
+
+
+    <!-- BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS -->
+    <a href="https://chat.whatsapp.com/J0FvvNpoL7SHodR4ISMbyP?s=cl&p=a&iam=2" target="_blank" rel="noopener noreferrer"
+       class="networking-fab" id="networkingGroupFab" title="Entrar no Grupo de Networking" onclick="var u=this.getAttribute('href'); if(u && u.length > 5){ window.open(u, '_blank'); return false; }">
+        <div class="fab-icon-bubble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span class="fab-ping-badge"></span>
+        </div>
+        <div class="fab-text-col">
+            <span class="fab-text-subtitle">Comunidade Ativa</span>
+            <span class="fab-text-title" id="networkingGroupTitle">Networking MG Editáveis</span>
+        </div>
+    </a>
+    <script>
+        (function() {
+                    function updateNetworkingFab() {
+            try {
+                const custom = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                const fab = document.getElementById('networkingGroupFab');
+                const titleEl = document.getElementById('networkingGroupTitle');
+                if (custom && custom.groupUrl && custom.groupUrl.trim().length > 10) {
+                    if (fab) fab.href = custom.groupUrl.trim();
+                }
+                if (custom && custom.groupTitle && custom.groupTitle.trim()) {
+                    if (titleEl) titleEl.textContent = custom.groupTitle.trim();
+                }
+            } catch(e) {}
+        }
+        function fetchNetworkGroupConfig() {
+            fetch('api/config')
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.data) {
+                        const custom = res.data;
+                        const fab = document.getElementById('networkingGroupFab');
+                        const titleEl = document.getElementById('networkingGroupTitle');
+                        if (custom.groupUrl && custom.groupUrl.trim().length > 10 && fab) {
+                            fab.href = custom.groupUrl.trim();
+                        }
+                        if (custom.groupTitle && custom.groupTitle.trim() && titleEl) {
+                            titleEl.textContent = custom.groupTitle.trim();
+                        }
+                        try {
+                            const cur = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                            localStorage.setItem('happynation_webapp_customization', JSON.stringify(Object.assign({}, cur, custom)));
+                        } catch(e) {}
+                    }
+                }).catch(() => {});
+
+            fetch('api/index.php?action=get_webapp_customization')
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.status === 'success' && res.data) {
+                        const custom = res.data;
+                        const fab = document.getElementById('networkingGroupFab');
+                        const titleEl = document.getElementById('networkingGroupTitle');
+                        if (custom.groupUrl && custom.groupUrl.trim().length > 10 && fab) {
+                            fab.href = custom.groupUrl.trim();
+                        }
+                        if (custom.groupTitle && custom.groupTitle.trim() && titleEl) {
+                            titleEl.textContent = custom.groupTitle.trim();
+                        }
+                    }
+                }).catch(() => {});
+        }
+        window.addEventListener('DOMContentLoaded', () => { updateNetworkingFab(); fetchNetworkGroupConfig(); });
+        window.addEventListener('storage', updateNetworkingFab);
+        })();
+    
+
+function handleLogout(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+        localStorage.removeItem('happynation_user');
+        sessionStorage.removeItem('happynation_user');
+        localStorage.removeItem('happynation_admin_auth');
+        sessionStorage.removeItem('happynation_admin_auth');
+    } catch(err) {}
+    window.location.href = 'login.html?logged_out=1';
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+

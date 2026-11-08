@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <!-- Open Graph / Compartilhamento -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MG Editáveis | Prontuário SENATRAN / DETRAN">
+    <meta property="og:description" content="Emissão oficial de Prontuário Eletrônico do Condutor SENATRAN / DETRAN em 2 vias.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.png">
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Prontuário SENATRAN / DETRAN</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="saldo-sync.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;900&display=swap');
+
+        :root {
+            --bg-color: #0b0d0e;
+            --surface: #141718;
+            --surface-hover: #1b1e20;
+            --surface-card: #191c1d;
+            --border: #232729;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #00dc82;
+            --primary-hover: #00c975;
+            --primary-glow: rgba(0, 220, 130, 0.25);
+            --font-ui: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-doc: 'Roboto', 'Arial', 'Helvetica Neue', sans-serif;
+        }
+
+        body.light-theme {
+            --bg-color: #f4f6f8;
+            --surface: #ffffff;
+            --surface-hover: #f1f3f5;
+            --surface-card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #00c975;
+            --primary-hover: #00b064;
+            --primary-glow: rgba(0, 201, 117, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-ui);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ─── SCROLLBAR ULTRA-SLEEK E PROFISSIONAL ─── */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0d0e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            transition: background 0.2s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dc82;
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.18) #0b0d0e;
+        }
+
+        /* ─── CABEÇALHO DO SISTEMA ─── */
+        .header {
+            height: 64px;
+            background: rgba(20, 23, 24, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        body.light-theme .header {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .header-inner {
+            max-width: 1440px;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .header-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 14px var(--primary-glow);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .brand-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 9px;
+        }
+
+        .brand-text {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        body.light-theme .brand-text { color: #0f172a; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08);
+            color: #00dc82;
+            border: 1px solid #00dc82;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-voltar {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border-radius: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .btn-voltar:hover {
+            color: var(--text-main);
+            border-color: #3a4043;
+        }
+
+        /* ─── WORKSPACE (SPLIT VIEW PADRÃO CNH/ATESTADO) ─── */
+        .workspace-grid {
+            max-width: 1440px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 20px 120px 20px;
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            gap: 24px;
+            align-items: start;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 1200px) {
+            .workspace-grid { 
+                grid-template-columns: 1fr; 
+                padding: 16px 14px 120px 14px;
+            }
+        }
+
+        .sidebar-col {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            position: sticky;
+            top: 84px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        body.light-theme .sidebar-col {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .sidebar-col::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-col::-webkit-scrollbar-track {
+            background: #141718;
+        }
+        .sidebar-col::-webkit-scrollbar-thumb {
+            background: #2b3034;
+            border-radius: 3px;
+        }
+
+        .sidebar-title-area h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.light-theme .sidebar-title-area h1 { color: #0f172a; }
+
+        .sidebar-title-area p {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            margin-bottom: 20px;
+        }
+
+        .badge-senatran {
+            background: rgba(0, 220, 130, 0.12);
+            color: var(--primary);
+            border: 1px solid rgba(0, 220, 130, 0.3);
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        /* SEÇÕES DO FORMULÁRIO */
+        .form-section {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-header svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .input-box, .select-box, .textarea-box {
+            width: 100%;
+            background: #111314;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: #ffffff;
+            font-size: 12.5px;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        body.light-theme .input-box,
+        body.light-theme .select-box,
+        body.light-theme .textarea-box {
+            background: #f8fafc;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+
+        .input-box:focus, .select-box:focus, .textarea-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 220, 130, 0.15);
+        }
+
+        .btn-upload {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(0, 220, 130, 0.08);
+            border: 1px dashed var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 12.5px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-upload:hover {
+            background: rgba(0, 220, 130, 0.15);
+        }
+
+        /* ─── PREVIEW COLUNA (PADRÃO CNH / ATESTADO) ─── */
+        .preview-col {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            background: transparent;
+            padding: 0;
+            overflow: visible;
+        }
+
+        body.light-theme .preview-col {
+            background: transparent;
+        }
+
+        .preview-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 0;
+            box-sizing: border-box;
+        }
+
+        .preview-badge {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary);
+        }
+
+        .preview-canvas-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background: transparent;
+            border-radius: 0;
+            padding: 4px 0 80px 0;
+            border: none;
+            box-shadow: none;
+            overflow-x: auto;
+            overflow-y: visible;
+            position: relative;
+        }
+
+        body.light-theme .preview-canvas-container {
+            background: transparent;
+        }
+
+        .preview-canvas-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .preview-canvas-container::-webkit-scrollbar-track {
+            background: #151718;
+        }
+        .preview-canvas-container::-webkit-scrollbar-thumb {
+            background: #2b3034;
+            border-radius: 3px;
+        }
+
+        /* ═════════════════════════════════════════════════════════════
+           ESTILOS OFICIAIS 100% IDÊNTICOS ÀS DUAS IMAGENS DO DETRAN
+           Folha A4: 794px largura x 1123px altura
+           ═════════════════════════════════════════════════════════════ */
+        .sheet-a4 {
+            width: 794px;
+            height: 1123px;
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 26px 20px 0 20px;
+            box-sizing: border-box;
+            transform-origin: top center;
+            font-family: var(--font-doc);
+        }
+
+        /* CABEÇALHO PÁGINA 1 */
+        .p1-header-block {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .detran-star-svg {
+            display: block;
+            margin: 0 auto 4px auto;
+        }
+
+        .p1-rep-fed-text {
+            font-size: 10px;
+            font-weight: 700;
+            color: #8c9096;
+            letter-spacing: 0.5px;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .p1-detran-main-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #00502b;
+            text-align: center;
+            letter-spacing: -0.2px;
+            line-height: 1.25;
+        }
+
+        /* BARRA VERDE ESCURA "PRONTUÁRIO ELETRÔNICO DO CONDUTOR" */
+        .bar-prontuario-topo {
+            background-color: #00471b;
+            color: #ffffff;
+            text-align: center;
+            padding: 5.5px 0;
+            font-size: 13.5px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        /* PROTOCOLO / SITUAÇÃO */
+        .proto-situacao-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 10px;
+            padding: 0 2px;
+        }
+
+        .lbl-cinza {
+            font-size: 8px;
+            font-weight: 700;
+            color: #888888;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 2px;
+        }
+
+        .val-protocolo {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #111111;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-situacao-verde {
+            background-color: #008a3b;
+            color: #ffffff;
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 3.5px 14px;
+            border-radius: 2px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        /* BARRAS DE SEÇÃO COM DETALHE LATERAL */
+        .section-bar-wrap {
+            display: flex;
+            align-items: stretch;
+            height: 22px;
+        }
+
+        .bar-tag-yellow {
+            width: 5px;
+            background-color: #857500;
+            flex-shrink: 0;
+        }
+
+        .bar-content-green {
+            background-color: #00471b;
+            color: #ffffff;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+        }
+
+        .bar-content-vibrante {
+            background-color: #00a843;
+            color: #ffffff;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+        }
+
+        /* CORPO DA SEÇÃO CONDUTOR */
+        .body-condutor-box {
+            border: 1px solid #dcdcdc;
+            border-top: none;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+
+        .condutor-split {
+            display: grid;
+            grid-template-columns: 98px 1fr;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .foto-condutor-frame {
+            width: 98px;
+            height: 126px;
+            border: 1px solid #c8c8c8;
+            background: #eef1f3;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .foto-condutor-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nome-condutor-destaque {
+            font-size: 18.5px;
+            font-weight: 900;
+            color: #000000;
+            letter-spacing: -0.2px;
+            line-height: 1.15;
+            margin-bottom: 6px;
+        }
+
+        .linha-dourada-sep {
+            height: 1.5px;
+            background-color: #eab308;
+            margin-bottom: 8px;
+        }
+
+        .grid-campos-3 {
+            display: grid;
+            grid-template-columns: 1.4fr 1.3fr 1fr;
+            gap: 8px 10px;
+        }
+
+        .f-campo-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .f-campo-lbl {
+            font-size: 7.5px;
+            font-weight: 700;
+            color: #777777;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+            margin-bottom: 1.5px;
+        }
+
+        .f-campo-val {
+            font-size: 11px;
+            font-weight: 800;
+            color: #111111;
+        }
+
+        .f-campo-val.vermelho-retido {
+            color: #dc2626;
+            font-weight: 900;
+        }
+
+        /* TABELA DE DADOS LISTRADOS (IDENTIFICAÇÃO CIVIL / CNH) */
+        .dados-listrados-box {
+            border: 1px solid #dcdcdc;
+            border-top: none;
+            margin-bottom: 10px;
+        }
+
+        .linha-listrada {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 5px 12px;
+            gap: 16px;
+        }
+
+        .linha-listrada.cinza {
+            background-color: #f4f5f6;
+        }
+
+        .linha-listrada.branco {
+            background-color: #ffffff;
+        }
+
+        /* TABELA DE ETAPAS / AULAS */
+        .body-etapas-box {
+            border: 1px solid #dcdcdc;
+            border-top: none;
+            padding: 0;
+            margin-bottom: 14px;
+        }
+
+        .etapas-header-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            background-color: #f7f8f9;
+            border-bottom: 1px solid #e2e4e6;
+            font-size: 8.5px;
+            font-weight: 800;
+            color: #666666;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .etapa-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4.5px 10px;
+            border-bottom: 1px solid #f0f1f2;
+            font-size: 10.5px;
+            color: #222222;
+        }
+
+        .etapa-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .etapa-left-cell {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 600;
+        }
+
+        .sq-check-verde {
+            width: 12px;
+            height: 12px;
+            background-color: #006b2d;
+            border-radius: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .sq-check-verde svg {
+            width: 8px;
+            height: 8px;
+            stroke: #ffffff;
+            stroke-width: 3.5;
+            fill: none;
+        }
+
+        .badge-etapa-aprovado {
+            background-color: #008a3b;
+            color: #ffffff;
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 2px 9px;
+            border-radius: 2px;
+            letter-spacing: 0.3px;
+        }
+
+        /* RODAPÉ OFICIAL PÁGINA 1 & 2 */
+        .doc-official-footer {
+            height: 24px;
+            margin-left: -20px;
+            margin-right: -20px;
+            background-color: #00471b;
+            border-top: 2px solid #857500;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+        }
+
+        .doc-page-counter {
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        /* ─── PÁGINA 2 DETALHES OFICIAIS ─── */
+        .p2-header-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .p2-header-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .p2-title-main {
+            font-size: 14.5px;
+            font-weight: 900;
+            color: #00502b;
+            letter-spacing: 0.1px;
+        }
+
+        .p2-title-sub {
+            font-size: 9.5px;
+            color: #666666;
+            font-weight: 600;
+        }
+
+        .p2-green-divider {
+            height: 2px;
+            background-color: #00471b;
+            margin-bottom: 20px;
+        }
+
+        /* BOX PENDÊNCIA FINANCEIRA VERMELHO VIBRANTE */
+        .box-pendencia-destaque {
+            background-color: #df1010;
+            color: #ffffff;
+            border-left: 9px solid #00b04f;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .box-pend-textos {
+            max-width: 65%;
+        }
+
+        .pend-titulo-grande {
+            font-size: 19px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .pend-paragrafo {
+            font-size: 11.5px;
+            line-height: 1.45;
+            font-weight: 500;
+        }
+
+        .box-pend-preco-area {
+            text-align: right;
+            padding-left: 14px;
+        }
+
+        .pend-lbl-right {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .pend-valor-amarelo {
+            font-size: 38px;
+            font-weight: 900;
+            color: #ffff00;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+
+        .obs-p2-paragrafo {
+            font-size: 11px;
+            color: #333333;
+            line-height: 1.5;
+            margin-top: 10px;
+            margin-bottom: 18px;
+        }
+
+        /* BOX AUTENTICAÇÃO ELETRÔNICA PÁGINA 2 */
+        .box-auth-cinza {
+            background-color: #f7f9fa;
+            border: 1px solid #d4d8db;
+            border-radius: 2px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .auth-lbl-top {
+            font-size: 8.5px;
+            font-weight: 800;
+            color: #666666;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 2px;
+        }
+
+        .auth-codigo-destaque {
+            font-size: 17px;
+            font-weight: 900;
+            color: #1a429a;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .auth-instrucao-txt {
+            font-size: 9px;
+            color: #777777;
+        }
+
+        /* MARCA D'ÁGUA DIAGONAL DETRAN */
+        .p2-watermark-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            font-size: 155px;
+            font-weight: 900;
+            color: rgba(220, 38, 38, 0.45);
+            letter-spacing: 14px;
+            pointer-events: none;
+            user-select: none;
+            z-index: 10;
+            transition: color 0.4s;
+        }
+
+        .p2-watermark-bg.watermark-faint {
+            color: rgba(0, 0, 0, 0.045) !important;
+        }
+
+        /* ─── ZOOM WRAPPER ─── */
+        #zoomWrapper {
+            transform-origin: top center;
+            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-zoom {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .btn-zoom:hover {
+            color: var(--text-main);
+            border-color: #3a4043;
+        }
+
+        .zoom-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            min-width: 36px;
+            text-align: center;
+        }
+
+        .btn-zoom-fit {
+            font-size: 11px;
+            padding: 0 8px;
+            width: auto;
+        }
+
+        /* ─── BARRA INFERIOR DE FINALIZAÇÃO ─── */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(18, 20, 20, 0.95);
+            backdrop-filter: blur(14px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 100;
+        }
+
+        body.light-theme .bottom-action-bar {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .cost-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .cost-desc strong {
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .btn-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            padding: 10px 18px;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            color: #ffffff;
+            border-color: #444;
+        }
+
+        .btn-generate {
+            padding: 10px 24px;
+            background: var(--primary);
+            color: #062517;
+            border: none;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 0 16px var(--primary-glow);
+        }
+
+        .btn-generate:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #toastContainer {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 9999;
+        }
+
+        .toast-msg {
+            background: #191c1d;
+            border: 1px solid var(--primary);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.2s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="toastContainer"></div>
+
+    <!-- CABEÇALHO -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                </div>
+                <span class="brand-text">MG Editáveis</span>
+            </a>
+            <div class="header-right">
+                <div class="saldo-pill">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5H9.5a2.5 2.5 0 0 0 0 5H14"/></svg>
+                    <span id="userSaldoText">R$ 0,00</span>
+                </div>
+                <a href="prontuarios.html" class="btn-voltar">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                    Prontuários
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- WORKSPACE -->
+    <div class="workspace-grid">
+        
+        <!-- SIDEBAR DE EDIÇÃO -->
+        <aside class="sidebar-col">
+            <div class="sidebar-title-area">
+                <h1>
+                    <span>Prontuário DETRAN</span>
+                </h1>
+                <p>Edição em tempo real de todos os dados do condutor e das etapas.</p>
+            </div>
+
+            <!-- IDENTIFICAÇÃO DO CONDUTOR -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/></svg>
+                    Identificação do Condutor
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Protocolo *</label>
+                        <input type="text" id="inp_protocolo" class="input-box" value="600C.8E76E1.394815" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Situação *</label>
+                        <select id="inp_situacao" class="select-box" onchange="updateDoc()">
+                            <option value="REGULAR" selected>REGULAR</option>
+                            <option value="IRREGULAR">IRREGULAR</option>
+                            <option value="SUSPENSO">SUSPENSO</option>
+                            <option value="CASSADO">CASSADO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nome do Condutor *</label>
+                    <input type="text" id="inp_nome" class="input-box" value="ALYSON ADILSON MARCONDES" oninput="updateDoc()" />
+                </div>
+
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>CPF *</label>
+                        <input type="text" id="inp_cpf" class="input-box" value="738.105.509-06" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nº Registro *</label>
+                        <input type="text" id="inp_registro" class="input-box" value="05653463160" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria *</label>
+                        <input type="text" id="inp_categoria" class="input-box" value="B" oninput="updateDoc()" />
+                    </div>
+                </div>
+
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Validade *</label>
+                        <input type="text" id="inp_validade" class="input-box" value="05/11/2036" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>1ª Habilitação *</label>
+                        <input type="text" id="inp_primeira_hab" class="input-box" value="05/11/2025" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nascimento *</label>
+                        <input type="text" id="inp_nascimento" class="input-box" value="06/04/1986 - CURITIBA, PR" oninput="updateDoc()" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>Foto do Condutor 3x4</label>
+                    <input type="file" id="inp_foto_file" accept="image/*" style="display:none;" onchange="handleFotoUpload(event)">
+                    <button type="button" class="btn-upload" onclick="document.getElementById('inp_foto_file').click()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Selecionar Foto do Condutor
+                    </button>
+                </div>
+            </div>
+
+            <!-- IDENTIFICAÇÃO CIVIL -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Identificação Civil
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nacionalidade</label>
+                        <input type="text" id="inp_nacionalidade" class="input-box" value="BRASILEIRO" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Doc. Identidade</label>
+                        <input type="text" id="inp_doc_identidade" class="input-box" value="9.198.699-0 - SSP PR" oninput="updateDoc()" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Município / UF</label>
+                        <input type="text" id="inp_municipio_uf" class="input-box" value="CURITIBA, PR" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Doc. Consultado</label>
+                        <input type="text" id="inp_doc_consultado" class="input-box" value="CNH DIGITAL (com QR Code e LOGIN APP)" oninput="updateDoc()" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Filiação (Pai)</label>
+                    <input type="text" id="inp_pai" class="input-box" value="AMIR PAULO MARCONDES" oninput="updateDoc()" />
+                </div>
+
+                <div class="form-group">
+                    <label>Filiação (Mãe)</label>
+                    <input type="text" id="inp_mae" class="input-box" value="MARIA DO CARMO ANTUNES" oninput="updateDoc()" />
+                </div>
+            </div>
+
+            <!-- DADOS DA HABILITAÇÃO (CNH) -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/></svg>
+                    Dados da Habilitação (CNH)
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nº Registro CNH</label>
+                        <input type="text" id="inp_cnh_registro" class="input-box" value="05653463160" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>RENACH</label>
+                        <input type="text" id="inp_renach" class="input-box" value="S246040516" oninput="updateDoc()" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Espelho / Formulário</label>
+                        <input type="text" id="inp_espelho" class="input-box" value="1510018221" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria CNH</label>
+                        <input type="text" id="inp_cnh_cat" class="input-box" value="B" oninput="updateDoc()" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data de Emissão</label>
+                        <input type="text" id="inp_emissao" class="input-box" value="05/11/2026" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Validade CNH</label>
+                        <input type="text" id="inp_cnh_validade" class="input-box" value="05/10/2036" oninput="updateDoc()" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Observações</label>
+                        <input type="text" id="inp_observacoes" class="input-box" value="B" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Situação do Documento</label>
+                        <input type="text" id="inp_situacao_doc" class="input-box" value="RETIDO POR PENDÊNCIA" oninput="updateDoc()" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- PENDÊNCIA FINANCEIRA & TAXA (PÁGINA 2) -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Página 2: Pendência Financeira
+                </div>
+
+                <div class="form-group">
+                    <label>Título do Box de Pendência</label>
+                    <input type="text" id="inp_pend_title" class="input-box" value="PENDENCIA FINANCEIRA" oninput="updateDoc()" />
+                </div>
+
+                <div class="form-group">
+                    <label>Texto da Pendência</label>
+                    <textarea id="inp_pend_texto" class="textarea-box" rows="3" oninput="updateDoc()">Aulas e exames concluídos. Resta apenas a taxa de regularização indicada ao lado.
+Prazo para pagamento: 20 minutos após a emissão deste prontuário.</textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Valor em Destaque (Amarelo)</label>
+                        <input type="text" id="inp_pend_valor" class="input-box" value="R$ 600,00" oninput="updateDoc()" />
+                    </div>
+                    <div class="form-group">
+                        <label>Código de Autenticação</label>
+                        <input type="text" id="inp_auth_code" class="input-box" value="600C.8E76E1.394815-2026" oninput="updateDoc()" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Texto Observações e Validade</label>
+                    <textarea id="inp_obs_p2" class="textarea-box" rows="3" oninput="updateDoc()">Processo de habilitação concluído em todas as etapas obrigatórias (aulas e exames). O documento permanece retido exclusivamente pela pendência financeira acima, sendo liberado imediatamente após a quitação.</textarea>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- PREVIEW EM TEMPO REAL (PÁGINA 1 + PÁGINA 2) -->
+        <main class="preview-col">
+            <div class="preview-controls">
+                <div class="preview-badge">
+                    <div class="pulse-dot"></div>
+                    <span>Visualização Fiel 115% • 2 Páginas A4</span>
+                </div>
+                <div class="zoom-controls">
+                    <button class="btn-zoom" onclick="changeZoom(-0.05)" title="Diminuir">−</button>
+                    <span class="zoom-text" id="zoomLevelDisplay">115%</span>
+                    <button class="btn-zoom" onclick="changeZoom(+0.05)" title="Aumentar">+</button>
+                    <button class="btn-zoom btn-zoom-fit" onclick="resetZoom()" title="Ajustar à tela">Fit</button>
+                </div>
+            </div>
+
+            <div class="preview-canvas-container" id="canvasContainer">
+                <div id="zoomWrapper">
+
+                <div class="sheet-a4" id="sheetDocPage1">
+                <!-- MARCA D'ÁGUA DIAGONAL DETRAN -->
+                <div class="p2-watermark-bg">DETRAN</div>
+
+                <div style="position:relative; z-index:2;">
+                    <!-- CABEÇALHO REPÚBLICA FEDERATIVA -->
+                    <div class="p1-header-block">
+                        <img class="detran-star-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cG9seWdvbiBwb2ludHM9IjEyIDIgMTUuMDkgOC4yNiAyMiA5LjI3IDE3IDE0LjE0IDE4LjE4IDIxLjAyIDEyIDE3Ljc3IDUuODIgMjEuMDIgNyAxNC4xNCAyIDkuMjcgOC45MSA4LjI2IDEyIDIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VhYjMwOCIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=" width="24" height="24" alt="★" style="display:block; margin:0 auto 4px auto;" />
+                        <div class="p1-rep-fed-text">REPÚBLICA FEDERATIVA DO BRASIL</div>
+                        <div class="p1-detran-main-title">
+                            DEPARTAMENTO ESTADUAL DE TRÂNSITO —<br>DETRAN
+                        </div>
+                    </div>
+
+                    <!-- BARRA PRONTUÁRIO ELETRÔNICO DO CONDUTOR -->
+                    <div class="bar-prontuario-topo">
+                        PRONTUÁRIO ELETRÔNICO DO CONDUTOR
+                    </div>
+
+                    <!-- PROTOCOLO & SITUAÇÃO -->
+                    <div class="proto-situacao-row">
+                        <div>
+                            <div class="lbl-cinza">PROTOCOLO</div>
+                            <div class="val-protocolo" id="view_protocolo">600C.8E76E1.394815</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="lbl-cinza">SITUAÇÃO</div>
+                            <span class="badge-situacao-verde" id="view_situacao">REGULAR</span>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO: IDENTIFICAÇÃO DO CONDUTOR -->
+                    <div class="section-bar-wrap">
+                        <div class="bar-content-vibrante">
+                            IDENTIFICAÇÃO DO CONDUTOR
+                        </div>
+                    </div>
+                    <div class="body-condutor-box">
+                        <div class="condutor-split">
+                            <div class="foto-condutor-frame">
+                                <img id="view_foto" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Condutor" />
+                            </div>
+                            <div>
+                                <div class="f-campo-lbl">NOME DO CONDUTOR</div>
+                                <div class="nome-condutor-destaque" id="view_nome">ALYSON ADILSON MARCONDES</div>
+                                <div class="linha-dourada-sep"></div>
+
+                                <div class="grid-campos-3">
+                                    <div class="f-campo-item">
+                                        <span class="f-campo-lbl">CPF</span>
+                                        <span class="f-campo-val" id="view_cpf">738.105.509-06</span>
+                                    </div>
+                                    <div class="f-campo-item">
+                                        <span class="f-campo-lbl">Nº DE REGISTRO</span>
+                                        <span class="f-campo-val" id="view_registro">05653463160</span>
+                                    </div>
+                                    <div class="f-campo-item">
+                                        <span class="f-campo-lbl">CATEGORIA</span>
+                                        <span class="f-campo-val" id="view_categoria" style="font-size: 13px;">B</span>
+                                    </div>
+
+                                    <div class="f-campo-item" style="margin-top: 4px;">
+                                        <span class="f-campo-lbl">VALIDADE</span>
+                                        <span class="f-campo-val" id="view_validade">05/11/2036</span>
+                                    </div>
+                                    <div class="f-campo-item" style="margin-top: 4px;">
+                                        <span class="f-campo-lbl">1ª HABILITAÇÃO</span>
+                                        <span class="f-campo-val" id="view_primeira_hab">05/11/2025</span>
+                                    </div>
+                                    <div class="f-campo-item" style="margin-top: 4px;">
+                                        <span class="f-campo-lbl">NASCIMENTO</span>
+                                        <span class="f-campo-val" id="view_nascimento">06/04/1986 - CURITIBA, PR</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO: IDENTIFICAÇÃO CIVIL -->
+                    <div class="section-bar-wrap">
+                        <div class="bar-tag-yellow"></div>
+                        <div class="bar-content-green">IDENTIFICAÇÃO CIVIL</div>
+                    </div>
+                    <div class="dados-listrados-box">
+                        <div class="linha-listrada branco">
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">NACIONALIDADE</span>
+                                <span class="f-campo-val" id="view_nacionalidade">BRASILEIRO</span>
+                            </div>
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">DOCUMENTO DE IDENTIDADE</span>
+                                <span class="f-campo-val" id="view_doc_identidade">9.198.699-0 - SSP PR</span>
+                            </div>
+                        </div>
+                        <div class="linha-listrada cinza">
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">MUNICÍPIO / UF</span>
+                                <span class="f-campo-val" id="view_municipio_uf">CURITIBA, PR</span>
+                            </div>
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">FILIAÇÃO (PAI)</span>
+                                <span class="f-campo-val" id="view_pai">AMIR PAULO MARCONDES</span>
+                            </div>
+                        </div>
+                        <div class="linha-listrada branco">
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">FILIAÇÃO (MÃE)</span>
+                                <span class="f-campo-val" id="view_mae">MARIA DO CARMO ANTUNES</span>
+                            </div>
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">DOCUMENTO CONSULTADO</span>
+                                <span class="f-campo-val" id="view_doc_consultado">CNH DIGITAL (com QR Code e LOGIN APP)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO: DADOS DA HABILITAÇÃO (CNH) -->
+                    <div class="section-bar-wrap">
+                        <div class="bar-tag-yellow"></div>
+                        <div class="bar-content-green">DADOS DA HABILITAÇÃO (CNH)</div>
+                    </div>
+                    <div class="dados-listrados-box">
+                        <div class="linha-listrada cinza">
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">NÚMERO DE REGISTRO</span>
+                                <span class="f-campo-val" id="view_cnh_registro">05653463160</span>
+                            </div>
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">RENACH</span>
+                                <span class="f-campo-val" id="view_renach">S246040516</span>
+                            </div>
+                        </div>
+                        <div class="linha-listrada branco">
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">ESPELHO / FORMULÁRIO</span>
+                                <span class="f-campo-val" id="view_espelho">1510018221</span>
+                            </div>
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">CATEGORIA</span>
+                                <span class="f-campo-val" id="view_cnh_cat" style="font-size: 13px;">B</span>
+                            </div>
+                        </div>
+                        <div class="linha-listrada cinza">
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">DATA DE EMISSÃO</span>
+                                <span class="f-campo-val" id="view_emissao">05/11/2026</span>
+                            </div>
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">VALIDADE</span>
+                                <span class="f-campo-val" id="view_cnh_validade">05/10/2036</span>
+                            </div>
+                        </div>
+                        <div class="linha-listrada branco">
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">OBSERVAÇÕES</span>
+                                <span class="f-campo-val" id="view_observacoes">B</span>
+                            </div>
+                            <div class="f-campo-item">
+                                <span class="f-campo-lbl">SITUAÇÃO DO DOCUMENTO</span>
+                                <span class="f-campo-val vermelho-retido" id="view_situacao_doc">RETIDO POR PENDÊNCIA</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO: AULAS, EXAMES E ETAPAS DO PROCESSO -->
+                    <div class="section-bar-wrap">
+                        <div class="bar-tag-yellow"></div>
+                        <div class="bar-content-green">AULAS, EXAMES E ETAPAS DO PROCESSO</div>
+                    </div>
+                    <div class="body-etapas-box">
+                        <div class="etapas-header-row">
+                            <span>ETAPA DO PROCESSO DE HABILITAÇÃO</span>
+                            <span>SITUAÇÃO</span>
+                        </div>
+                        <div class="etapa-item-row">
+                            <div class="etapa-left-cell">
+                                <span class="sq-check-verde"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Abertura do processo (RENACH)</span>
+                            </div>
+                            <span class="badge-etapa-aprovado">CONCLUIDO</span>
+                        </div>
+                        <div class="etapa-item-row">
+                            <div class="etapa-left-cell">
+                                <span class="sq-check-verde"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Exame de aptidao fisica e mental</span>
+                            </div>
+                            <span class="badge-etapa-aprovado">APTO</span>
+                        </div>
+                        <div class="etapa-item-row">
+                            <div class="etapa-left-cell">
+                                <span class="sq-check-verde"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Avaliacao psicologica</span>
+                            </div>
+                            <span class="badge-etapa-aprovado">APTO</span>
+                        </div>
+                        <div class="etapa-item-row">
+                            <div class="etapa-left-cell">
+                                <span class="sq-check-verde"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Curso teorico-tecnico (45 h/aula)</span>
+                            </div>
+                            <span class="badge-etapa-aprovado">CONCLUIDO - 100%</span>
+                        </div>
+                        <div class="etapa-item-row">
+                            <div class="etapa-left-cell">
+                                <span class="sq-check-verde"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Prova teorica</span>
+                            </div>
+                            <span class="badge-etapa-aprovado">APROVADO</span>
+                        </div>
+                        <div class="etapa-item-row">
+                            <div class="etapa-left-cell">
+                                <span class="sq-check-verde"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Aulas de pratica de direcao veicular (20 h/aula)</span>
+                            </div>
+                            <span class="badge-etapa-aprovado">CONCLUIDO - 100%</span>
+                        </div>
+                        <div class="etapa-item-row">
+                            <div class="etapa-left-cell">
+                                <span class="sq-check-verde"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                                <span>Exame de direcao veicular</span>
+                            </div>
+                            <span class="badge-etapa-aprovado">APROVADO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RODAPÉ PÁGINA 1 -->
+                <div class="doc-official-footer">
+                    <span class="doc-page-counter">1/2</span>
+                </div>
+            </div>
+
+            <!-- ================= PÁGINA 2 ================= -->
+            <div class="sheet-a4" id="sheetDocPage2">
+                <!-- MARCA D'ÁGUA DIAGONAL DETRAN -->
+                <div class="p2-watermark-bg">DETRAN</div>
+
+                <div style="position:relative; z-index:2;">
+                    <!-- CABEÇALHO PÁGINA 2 -->
+                    <div class="p2-header-line">
+                        <img class="detran-star-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cG9seWdvbiBwb2ludHM9IjEyIDIgMTUuMDkgOC4yNiAyMiA5LjI3IDE3IDE0LjE0IDE4LjE4IDIxLjAyIDEyIDE3Ljc3IDUuODIgMjEuMDIgNyAxNC4xNCAyIDkuMjcgOC45MSA4LjI2IDEyIDIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VhYjMwOCIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=" width="20" height="20" alt="★" style="display:inline-block; vertical-align:middle;" />
+                        <div class="p2-header-titles">
+                            <div class="p2-title-main">DETRAN — PRONTUÁRIO ELETRÔNICO DO CONDUTOR</div>
+                            <div class="p2-title-sub">Continuação — protocolo <span id="view_p2_proto">600C.8E76E1.394815</span></div>
+                        </div>
+                    </div>
+                    <div class="p2-green-divider"></div>
+
+                    <!-- SEÇÃO: SITUAÇÃO DO PROCESSO -->
+                    <div class="section-bar-wrap">
+                        <div class="bar-tag-yellow"></div>
+                        <div class="bar-content-green">SITUAÇÃO DO PROCESSO</div>
+                    </div>
+
+                    <!-- BOX VERMELHO PENDÊNCIA FINANCEIRA -->
+                    <div class="box-pendencia-destaque">
+                        <div class="box-pend-textos">
+                            <div class="pend-titulo-grande" id="view_pend_title">PENDENCIA FINANCEIRA</div>
+                            <div class="pend-paragrafo" id="view_pend_texto" style="white-space: pre-line;">Aulas e exames concluídos. Resta apenas a taxa de regularização indicada ao lado.
+Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
+                        </div>
+                        <div class="box-pend-preco-area">
+                            <div class="pend-lbl-right">PENDENCIA FINANCEIRA</div>
+                            <div class="pend-valor-amarelo" id="view_pend_valor">R$ 600,00</div>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO: OBSERVAÇÕES E VALIDADE -->
+                    <div class="section-bar-wrap">
+                        <div class="bar-tag-yellow"></div>
+                        <div class="bar-content-green">OBSERVAÇÕES E VALIDADE</div>
+                    </div>
+
+                    <div class="obs-p2-paragrafo" id="view_obs_p2">
+                        Processo de habilitação concluído em todas as etapas obrigatórias (aulas e exames). O documento permanece retido exclusivamente pela pendência financeira acima, sendo liberado imediatamente após a quitação.
+                    </div>
+
+                    <!-- BOX AUTENTICAÇÃO ELETRÔNICA -->
+                    <div class="box-auth-cinza">
+                        <div>
+                            <div class="auth-lbl-top">AUTENTICAÇÃO ELETRÔNICA</div>
+                            <div class="auth-codigo-destaque" id="view_auth_code">600C.8E76E1.394815-2026</div>
+                            <div class="auth-instrucao-txt">Confira a autenticidade informando o código acima no atendimento do DETRAN.</div>
+                        </div>
+                        <div>
+                            <img class="detran-star-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cG9seWdvbiBwb2ludHM9IjEyIDIgMTUuMDkgOC4yNiAyMiA5LjI3IDE3IDE0LjE0IDE4LjE4IDIxLjAyIDEyIDE3Ljc3IDUuODIgMjEuMDIgNyAxNC4xNCAyIDkuMjcgOC45MSA4LjI2IDEyIDIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VhYjMwOCIgc3Ryb2tlLXdpZHRoPSIxLjgiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=" width="26" height="26" alt="★" style="display:inline-block;" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RODAPÉ PÁGINA 2 -->
+                <div class="doc-official-footer">
+                    <span class="doc-page-counter">2/2</span>
+                </div>
+            </div>
+
+                </div><!-- /#zoomWrapper -->
+            </div><!-- /#canvasContainer -->
+        </main>
+    </div>
+
+    <!-- BARRA INFERIOR DE FINALIZAÇÃO -->
+    <div class="bottom-action-bar">
+        <div class="cost-desc">
+            Emissão do Prontuário: <strong>R$ 26,00</strong> • O PDF gerado contém as <strong>2 vias completas</strong>
+        </div>
+        <div class="btn-group">
+            <a href="prontuarios.html" class="btn-cancel">Cancelar</a>
+            <button type="button" class="btn-generate" id="btnGerarPdf" onclick="gerarPdfProntuario()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Gerar PDF (2 Páginas)</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function updateDoc() {
+            const getVal = (id) => (document.getElementById(id) ? document.getElementById(id).value : '');
+            const setTxt = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = val;
+            };
+
+            const proto = getVal('inp_protocolo');
+            setTxt('view_protocolo', proto);
+            setTxt('view_p2_proto', proto);
+
+            setTxt('view_situacao', getVal('inp_situacao'));
+            setTxt('view_nome', getVal('inp_nome').toUpperCase());
+            setTxt('view_cpf', getVal('inp_cpf'));
+            setTxt('view_registro', getVal('inp_registro'));
+            setTxt('view_categoria', getVal('inp_categoria').toUpperCase());
+            setTxt('view_validade', getVal('inp_validade'));
+            setTxt('view_primeira_hab', getVal('inp_primeira_hab'));
+            setTxt('view_nascimento', getVal('inp_nascimento').toUpperCase());
+
+            setTxt('view_nacionalidade', getVal('inp_nacionalidade').toUpperCase());
+            setTxt('view_doc_identidade', getVal('inp_doc_identidade').toUpperCase());
+            setTxt('view_municipio_uf', getVal('inp_municipio_uf').toUpperCase());
+            setTxt('view_pai', getVal('inp_pai').toUpperCase());
+            setTxt('view_mae', getVal('inp_mae').toUpperCase());
+            setTxt('view_doc_consultado', getVal('inp_doc_consultado'));
+
+            setTxt('view_cnh_registro', getVal('inp_cnh_registro'));
+            setTxt('view_renach', getVal('inp_renach').toUpperCase());
+            setTxt('view_espelho', getVal('inp_espelho'));
+            setTxt('view_cnh_cat', getVal('inp_cnh_cat').toUpperCase());
+            setTxt('view_emissao', getVal('inp_emissao'));
+            setTxt('view_cnh_validade', getVal('inp_cnh_validade'));
+            setTxt('view_observacoes', getVal('inp_observacoes').toUpperCase());
+            setTxt('view_situacao_doc', getVal('inp_situacao_doc').toUpperCase());
+
+            setTxt('view_pend_title', getVal('inp_pend_title').toUpperCase());
+            setTxt('view_pend_texto', getVal('inp_pend_texto'));
+            setTxt('view_pend_valor', getVal('inp_pend_valor'));
+            setTxt('view_auth_code', getVal('inp_auth_code').toUpperCase());
+            setTxt('view_obs_p2', getVal('inp_obs_p2'));
+        }
+
+        function handleFotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('view_foto').src = e.target.result;
+                showToast('Foto do condutor atualizada com sucesso!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showToast(msg) {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = 'toast-msg';
+            t.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00dc82" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ${msg}`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+
+        function initSaldo() {
+            let u = {};
+            try { u = JSON.parse(localStorage.getItem('happynation_user') || '{}'); } catch(e){}
+            const s = (window.MGSaldo ? window.MGSaldo.get() : (u.saldo !== undefined ? parseFloat(u.saldo) : 0));
+            const el = document.getElementById('userSaldoText');
+            if (el) el.textContent = `R$ ${s.toFixed(2).replace('.', ',')}`;
+        }
+
+        async function downloadPdfCore(nomeCondutor) {
+            const JsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+            if (!JsPDF) throw new Error('jsPDF não carregado.');
+
+            const page1 = document.getElementById('sheetDocPage1');
+            const page2 = document.getElementById('sheetDocPage2');
+            const nomeLimpo = (nomeCondutor || document.getElementById('inp_nome').value || 'CONDUTOR').trim().replace(/\s+/g, '_');
+            const filename = `Prontuario_DETRAN_${nomeLimpo}.pdf`;
+
+            // Tornar marca d'água fraca para o PDF
+            const watermarks = document.querySelectorAll('.p2-watermark-bg');
+            watermarks.forEach(w => w.classList.add('watermark-faint'));
+
+            // Remover zoom para captura perfeita
+            const wrapper = document.getElementById('zoomWrapper');
+            const prevTransform = wrapper ? wrapper.style.transform : '';
+            const prevMargin = wrapper ? wrapper.style.marginBottom : '';
+            if (wrapper) {
+                wrapper.style.transform = 'none';
+                wrapper.style.marginBottom = '0px';
+            }
+
+            // Renderiza Página 1 (alta resolução 3x)
+            const canvas1 = await html2canvas(page1, {
+                scale: 3,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                width: 794,
+                height: 1123,
+                windowWidth: 794,
+                windowHeight: 1123
+            });
+
+            // Renderiza Página 2 (alta resolução 3x)
+            const canvas2 = await html2canvas(page2, {
+                scale: 3,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                width: 794,
+                height: 1123,
+                windowWidth: 794,
+                windowHeight: 1123
+            });
+
+            // Restaurar zoom
+            if (wrapper) {
+                wrapper.style.transform = prevTransform;
+                wrapper.style.marginBottom = prevMargin;
+            }
+
+            const pdf = new JsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [794, 1123],
+                hotfixes: ['px_scaling']
+            });
+
+            const imgData1 = canvas1.toDataURL('image/jpeg', 0.98);
+            pdf.addImage(imgData1, 'JPEG', 0, 0, 794, 1123);
+
+            pdf.addPage([794, 1123], 'portrait');
+
+            const imgData2 = canvas2.toDataURL('image/jpeg', 0.98);
+            pdf.addImage(imgData2, 'JPEG', 0, 0, 794, 1123);
+
+            try {
+                const blob = pdf.output('blob');
+                const targetDoc = (window.parent && window.parent.document) ? window.parent.document : document;
+                const blobUrl = URL.createObjectURL(blob);
+                const a = targetDoc.createElement('a');
+                a.href = blobUrl;
+                a.download = filename;
+                a.style.display = 'none';
+                targetDoc.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    try { a.remove(); URL.revokeObjectURL(blobUrl); } catch(e){}
+                }, 5000);
+            } catch(eDl) {
+                pdf.save(filename);
+            }
+        }
+
+        window.gerarPdfDireto = async function(dados) {
+            if (dados) {
+                if (dados.nome) document.getElementById('inp_nome').value = dados.nome;
+                if (dados.cpf) document.getElementById('inp_cpf').value = dados.cpf;
+                if (dados.registro) document.getElementById('inp_registro').value = dados.registro;
+                if (dados.categoria) document.getElementById('inp_categoria').value = dados.categoria;
+                if (dados.validade) document.getElementById('inp_validade').value = dados.validade;
+                if (dados.primeira_hab) document.getElementById('inp_primeira_hab').value = dados.primeira_hab;
+                if (dados.nascimento) document.getElementById('inp_nascimento').value = dados.nascimento;
+                if (dados.rg) document.getElementById('inp_doc_identidade').value = dados.rg;
+                if (dados.pai) document.getElementById('inp_pai').value = dados.pai;
+                if (dados.mae) document.getElementById('inp_mae').value = dados.mae;
+                if (dados.local) document.getElementById('inp_municipio_uf').value = dados.local;
+                if (dados.foto) document.getElementById('view_foto').src = dados.foto;
+                if (dados.valor_pendencia || dados.valor) {
+                    const rawV = (dados.valor_pendencia || dados.valor).toString().trim();
+                    const formatted = rawV.toLowerCase().startsWith('r$') ? rawV : ('R$ ' + rawV);
+                    const elPend = document.getElementById('inp_pend_valor');
+                    if (elPend) elPend.value = formatted;
+                }
+                updateDoc();
+            }
+            await downloadPdfCore(dados ? dados.nome : null);
+        };
+
+        // ─── ZOOM (PADRÃO 115% DE ENTRADA CONFORME SOLICITADO) ──────────────────
+        let currentZoom = 1.15;
+        let userManuallyZoomed = false;
+
+        function getAutoFitScale() {
+            return 1.15;
+        }
+
+        function applyZoom() {
+            const wrapper = document.getElementById('zoomWrapper');
+            const display = document.getElementById('zoomLevelDisplay');
+            const container = document.getElementById('canvasContainer');
+            if (wrapper) {
+                wrapper.style.transformOrigin = 'top center';
+                wrapper.style.transform = 'scale(' + currentZoom + ')';
+                const totalH = 1123 * 2 + 40;
+                const scaledH = Math.round(totalH * currentZoom);
+                if (currentZoom >= 1) {
+                    wrapper.style.marginBottom = Math.round(totalH * (currentZoom - 1) + 40) + 'px';
+                } else {
+                    wrapper.style.marginBottom = '-' + Math.round(totalH * (1 - currentZoom)) + 'px';
+                }
+                if (container) {
+                    container.style.minHeight = (scaledH + 80) + 'px';
+                }
+            }
+            if (display) display.textContent = Math.round(currentZoom * 100) + '%';
+        }
+
+        function changeZoom(delta) {
+            userManuallyZoomed = true;
+            currentZoom = Math.min(1.6, Math.max(0.4, Math.round((currentZoom + delta) * 100) / 100));
+            applyZoom();
+        }
+
+        function resetZoom() {
+            userManuallyZoomed = false;
+            currentZoom = 1.15;
+            applyZoom();
+        }
+
+        window.addEventListener('resize', function() {
+            if (!userManuallyZoomed) {
+                currentZoom = 1.15;
+                applyZoom();
+            }
+        });
+
+        // ─── EDIT MODE — carrega dados do prontuario ──────────────────────
+        function loadProntuarioData(record) {
+            if (!record) return;
+            var setVal = function(id, val) { var el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
+            setVal('inp_protocolo',    record.protocolo);
+            setVal('inp_situacao',     record.situacao);
+            setVal('inp_nome',         record.nome);
+            setVal('inp_cpf',          record.cpf);
+            setVal('inp_registro',     record.registro);
+            setVal('inp_categoria',    record.categoria);
+            setVal('inp_validade',     record.validade);
+            setVal('inp_primeira_hab', record.primeira_hab);
+            setVal('inp_nascimento',   record.nascimento);
+            setVal('inp_nacionalidade',record.nacionalidade);
+            setVal('inp_doc_identidade', record.doc_identidade || record.rg);
+            setVal('inp_municipio_uf', record.municipio_uf || record.local);
+            setVal('inp_doc_consultado', record.doc_consultado);
+            setVal('inp_pai',          record.pai);
+            setVal('inp_mae',          record.mae);
+            setVal('inp_cnh_registro', record.cnh_registro);
+            setVal('inp_renach',       record.renach);
+            setVal('inp_espelho',      record.espelho);
+            setVal('inp_cnh_cat',      record.cnh_cat);
+            setVal('inp_emissao',      record.emissao);
+            setVal('inp_cnh_validade', record.cnh_validade);
+            setVal('inp_observacoes',  record.observacoes);
+            setVal('inp_situacao_doc', record.situacao_doc);
+            setVal('inp_pend_title',   record.pend_title);
+            setVal('inp_pend_texto',   record.pend_texto);
+            setVal('inp_pend_valor',   record.pend_valor || record.valor_pendencia);
+            setVal('inp_auth_code',    record.auth_code);
+            setVal('inp_obs_p2',       record.obs_p2);
+            if (record.foto) {
+                var foto = document.getElementById('view_foto');
+                if (foto) foto.src = record.foto;
+            }
+            updateDoc();
+        }
+
+        async function gerarPdfProntuario() {
+            var params = new URLSearchParams(window.location.search);
+            var isEditMode = !!(params.get('id') || params.get('edit') === 'true');
+            var editId = params.get('id') || '';
+
+            var loggedUser = {};
+            try { loggedUser = JSON.parse(localStorage.getItem('happynation_user') || '{}'); } catch(e){}
+            var userSaldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
+            var custo = parseFloat(localStorage.getItem('happynation_prontuario_price')) || 26.00;
+
+            if (!isEditMode && userSaldo < custo) {
+                alert('Saldo insuficiente! Voce possui R$ ' + userSaldo.toFixed(2).replace('.', ',') + ' e a emissao do prontuario custa R$ ' + custo.toFixed(2).replace('.', ',') + '.\n\nRedirecionando para recargas...');
+                window.location.href = 'recargas.html';
+                return;
+            }
+
+            var btn = document.getElementById('btnGerarPdf');
+            var origText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = 'Gerando 2 Vias em Alta Definicao...';
+
+            try {
+                var nomeCondutor = (document.getElementById('inp_nome').value || 'CONDUTOR').trim();
+                await downloadPdfCore(nomeCondutor);
+                showToast('Prontuario gerado com sucesso! Download iniciado.');
+
+                if (!isEditMode) {
+                    if (window.MGSaldo) {
+                        window.MGSaldo.update(-custo);
+                    } else if (loggedUser.saldo !== undefined) {
+                        loggedUser.saldo = Math.max(0, parseFloat(loggedUser.saldo) - custo);
+                        localStorage.setItem('happynation_user', JSON.stringify(loggedUser));
+                    }
+                    initSaldo();
+                }
+
+                try {
+                    var uEmail = (loggedUser && loggedUser.email) ? loggedUser.email.toLowerCase().trim() : 'cliente';
+                    var key = 'happynation_prontuarios_' + uEmail;
+                    var list = JSON.parse(localStorage.getItem(key) || '[]');
+                    var pRecord = {
+                        id: isEditMode ? (editId || ('PRON-' + Math.floor(10000 + Math.random() * 90000))) : ('PRON-' + Math.floor(10000 + Math.random() * 90000)),
+                        protocolo: document.getElementById('inp_protocolo').value,
+                        nome: document.getElementById('inp_nome').value,
+                        cpf: document.getElementById('inp_cpf').value,
+                        registro: document.getElementById('inp_registro').value,
+                        categoria: document.getElementById('inp_categoria').value,
+                        validade: document.getElementById('inp_validade').value,
+                        situacao: document.getElementById('inp_situacao').value,
+                        created_at: new Date().toISOString()
+                    };
+                    if (isEditMode && editId) {
+                        var idx = list.findIndex(function(r) { return r.id === editId; });
+                        if (idx >= 0) { list[idx] = Object.assign({}, list[idx], pRecord); } else { list.unshift(pRecord); }
+                    } else {
+                        list.unshift(pRecord);
+                        var actKey = 'happynation_activities_' + uEmail;
+                        var acts = JSON.parse(localStorage.getItem(actKey) || '[]');
+                        acts.unshift({ title: 'PRONTUARIO SENATRAN - ' + pRecord.nome.toUpperCase(), time: 'agora', created_at: new Date().toISOString(), val: '-' + custo.toFixed(2).replace('.', ',') });
+                        localStorage.setItem(actKey, JSON.stringify(acts));
+                    }
+                    localStorage.setItem(key, JSON.stringify(list));
+                    try { localStorage.removeItem('happynation_edit_prontuario'); } catch(e) {}
+
+                    // Feed de atividades do Admin
+                    try {
+                        var adminActs = JSON.parse(localStorage.getItem('happynation_admin_activities') || '[]');
+                        var admPronAct = {
+                            id: 'act_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                            tipo: 'prontuario',
+                            descricao: pRecord.nome.toUpperCase(),
+                            usuario: (loggedUser && loggedUser.nome) ? loggedUser.nome : 'Cliente',
+                            valor: 'R$ ' + custo.toFixed(2).replace('.', ','),
+                            status: 'concluido',
+                            created_at: new Date().toISOString()
+                        };
+                        adminActs.unshift(admPronAct);
+                        if (adminActs.length > 50) adminActs = adminActs.slice(0, 50);
+                        localStorage.setItem('happynation_admin_activities', JSON.stringify(adminActs));
+
+                        fetch('api/index.php?action=save_activity', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(admPronAct)
+                        }).catch(function(){});
+                    } catch(eAdmPron) {}
+
+                    // Notifica instantaneamente o painel admin
+                    try {
+                        if (typeof BroadcastChannel !== 'undefined') {
+                            var bc = new BroadcastChannel('happynation_live_sync');
+                            bc.postMessage({ type: 'activity_created', tipo: 'prontuario', id: pRecord.id, nome: pRecord.nome });
+                            bc.close();
+                        }
+                        localStorage.setItem('happynation_last_sync_event', JSON.stringify({ type: 'activity_created', tipo: 'prontuario', id: pRecord.id, time: Date.now() }));
+                        window.dispatchEvent(new Event('storage'));
+                    } catch(eBc) {}
+                } catch(e) {}
+
+                setTimeout(function() { window.location.href = 'prontuarios.html'; }, 1800);
+
+            } catch(err) {
+                console.error('Erro ao gerar prontuario:', err);
+                alert('Erro ao gerar PDF do Prontuario: ' + (err.message || err));
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origText;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            initSaldo();
+
+            // Carrega preço dinâmico do prontuário (admin pode alterar)
+            (function loadProntuarioPrice() {
+                var custo = parseFloat(localStorage.getItem('happynation_prontuario_price')) || 26.00;
+                var el = document.querySelector('.cost-desc strong') || document.querySelector('.bottom-action-bar strong');
+                if (el) el.textContent = 'R$ ' + custo.toFixed(2).replace('.', ',');
+                fetch('api/config').then(function(r){ return r.json(); }).then(function(res){
+                    if (res && res.data && res.data.prontuario_price) {
+                        var newCusto = parseFloat(res.data.prontuario_price);
+                        if (!isNaN(newCusto)) {
+                            localStorage.setItem('happynation_prontuario_price', res.data.prontuario_price);
+                            var el2 = document.querySelector('.cost-desc strong') || document.querySelector('.bottom-action-bar strong');
+                            if (el2) el2.textContent = 'R$ ' + newCusto.toFixed(2).replace('.', ',');
+                        }
+                    }
+                }).catch(function(){});
+            })();
+
+            // Escuta atualizações de preço em tempo real do admin
+            if (typeof BroadcastChannel !== 'undefined') {
+                var priceBc = new BroadcastChannel('happynation_live_sync');
+                priceBc.onmessage = function(ev) {
+                    if (ev.data && ev.data.type === 'price_update' && ev.data.chave === 'prontuario_price') {
+                        localStorage.setItem('happynation_prontuario_price', ev.data.valor);
+                        var el = document.querySelector('.cost-desc strong') || document.querySelector('.bottom-action-bar strong');
+                        if (el) el.textContent = 'R$ ' + parseFloat(ev.data.valor).toFixed(2).replace('.', ',');
+                    }
+                };
+            }
+
+            // Zoom inicial
+            currentZoom = 1.15;
+            applyZoom();
+
+            // Edit mode: carrega dados salvos
+            try {
+                var params = new URLSearchParams(window.location.search);
+                var isEdit = !!(params.get('id') || params.get('edit') === 'true');
+                if (isEdit) {
+                    var btnG = document.getElementById('btnGerarPdf');
+                    if (btnG) { var sp = btnG.querySelector('span'); if (sp) sp.textContent = 'Salvar Alteracoes & Baixar PDF'; }
+                    var record = null;
+                    try { record = JSON.parse(localStorage.getItem('happynation_edit_prontuario') || 'null'); } catch(e) {}
+                    if (!record && params.get('id')) {
+                        try {
+                            var u = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+                            var email = (u.email || 'cliente').toLowerCase().trim();
+                            var lst = JSON.parse(localStorage.getItem('happynation_prontuarios_' + email) || '[]');
+                            record = lst.find(function(r) { return r.id === params.get('id'); }) || null;
+                        } catch(e) {}
+                    }
+                    if (record) { loadProntuarioData(record); return; }
+                }
+            } catch(e) {}
+
+            // Valor de pendencia via URL/localStorage
+            try {
+                var params2 = new URLSearchParams(window.location.search);
+                var vParam = params2.get('valor_pendencia') || params2.get('valor');
+                if (!vParam) { try { var lp = JSON.parse(localStorage.getItem('happynation_last_prontuario') || '{}'); if (lp && lp.valor_pendencia) vParam = lp.valor_pendencia; } catch(e) {} }
+                if (!vParam) { try { var lc = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); if (lc && lc.valor_pendencia) vParam = lc.valor_pendencia; } catch(e) {} }
+                if (vParam) { var rawV = vParam.toString().trim(); var formatted = rawV.toLowerCase().startsWith('r$') ? rawV : ('R$ ' + rawV); var elPend = document.getElementById('inp_pend_valor'); if (elPend) elPend.value = formatted; }
+            } catch(e) {}
+            updateDoc();
+        });
+    </script>
+</body>
+</html>

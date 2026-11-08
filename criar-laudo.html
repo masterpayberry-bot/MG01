@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <!-- Open Graph / Compartilhamento -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MG Editáveis | Ed. Livro - Atestado Médico">
+    <meta property="og:description" content="Geração e Emissão de Atestado Médico Oficial UPA 24h.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.png">
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Atestado Médico UPA 24h (Ed. Livro)</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="assets/template_atestado_b64.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-color: #0b0d0e;
+            --surface: #141718;
+            --surface-hover: #1b1e20;
+            --border: #232729;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #00dc82;
+            --primary-hover: #00c975;
+            --primary-glow: rgba(0, 220, 130, 0.25);
+            --danger: #ff4757;
+            --warning: #ffb142;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body.light-theme {
+            --bg-color: #f4f6f8;
+            --surface: #ffffff;
+            --surface-hover: #f1f3f5;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #00c975;
+            --primary-hover: #00b064;
+            --primary-glow: rgba(0, 201, 117, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ─── CABEÇALHO PADRÃO MG EDITÁVEIS ─── */
+        .header {
+            height: 64px;
+            background: rgba(20, 23, 24, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        body.light-theme .header {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .header-inner {
+            max-width: 1300px;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .header-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0 14px var(--primary-glow);
+        }
+
+        .brand-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .brand-text {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        body.light-theme .brand-text {
+            color: #0f172a;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08);
+            color: #00dc82;
+            border: 1px solid #00dc82;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.16);
+            transform: translateY(-1px);
+        }
+
+        .btn-header-voltar {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-header-voltar:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .avatar-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #062517;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        /* ─── CONTEÚDO PRINCIPAL ─── */
+        .main-wrapper {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 20px 80px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* BANNER DE AVISO */
+        .notice-banner {
+            background: #fffbeb;
+            border: 1px solid #fef08a;
+            color: #854d0e;
+            padding: 12px 18px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .notice-banner svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            stroke: #d97706;
+        }
+
+        /* ─── PAINEL DE CONTROLE / FERRAMENTAS ─── */
+        .toolbar-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .toolbar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            background: #191c1d;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .btn-zoom {
+            background: none;
+            border: none;
+            color: #fff;
+            padding: 7px 14px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: background 0.15s;
+        }
+
+        .btn-zoom:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .zoom-text {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 0 10px;
+            color: var(--text-muted);
+            min-width: 54px;
+            text-align: center;
+        }
+
+        .quick-pills {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .pill-btn {
+            background: #191c1d;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pill-btn:hover {
+            border-color: #384042;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-action-primary {
+            background: var(--primary);
+            color: #062517;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 10px 22px;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 18px var(--primary-glow);
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .btn-action-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 22px rgba(0, 220, 130, 0.45);
+        }
+
+        .btn-action-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Dicas / Presets Bar */
+        .presets-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        .preset-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preset-title {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .btn-opt {
+            background: #191c1d;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-opt.active {
+            background: rgba(0, 220, 130, 0.15);
+            border-color: #00dc82;
+            color: #00dc82;
+        }
+
+        /* ─── CANVAS DE PREVIEW / DOCUMENTO ─── */
+        .preview-canvas-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            background: #000;
+            border-radius: 12px;
+            padding: 24px 0;
+            border: 1px solid var(--border);
+            overflow: auto;
+            position: relative;
+        }
+
+        body.light-theme .preview-canvas-container {
+            background: #e2e8f0;
+        }
+
+        #zoomWrapper {
+            transition: transform 0.15s ease-out;
+            transform-origin: top center;
+        }
+
+        /* ─── FOLHA A4 DO ATESTADO (794px x 1123px) ─── */
+        .sheet-a4 {
+            width: 794px;
+            height: 1123px;
+            max-height: 1123px;
+            background: #ffffff;
+            color: #000000;
+            padding: 36px 48px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+            position: relative;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13.5px;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Inputs diretos no documento */
+        .sheet-a4 input, .sheet-a4 textarea {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000000;
+            background: transparent;
+            border: 1px dashed transparent;
+            outline: none;
+            padding: 1px 3px;
+            margin: 0;
+            box-sizing: border-box;
+            border-radius: 3px;
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+
+        .sheet-a4 input:hover, .sheet-a4 textarea:hover {
+            border-color: rgba(0, 102, 204, 0.35);
+            background: rgba(0, 102, 204, 0.04);
+        }
+
+        .sheet-a4 input:focus, .sheet-a4 textarea:focus {
+            border-color: #0066cc !important;
+            background: rgba(0, 102, 204, 0.08) !important;
+        }
+
+        /* ─── CABEÇALHO DO ATESTADO (UPA 24h + ENDEREÇO + QR CODE) ─── */
+        .atestado-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .upa-logo-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upa-text-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .upa-title-main {
+            font-size: 38px;
+            font-weight: 900;
+            line-height: 0.9;
+            color: #008744;
+            display: flex;
+            align-items: center;
+            letter-spacing: -1px;
+        }
+
+        .upa-p-circle {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upa-blue-24h {
+            color: #005b9f;
+            font-size: 32px;
+            font-weight: 800;
+            margin-left: 2px;
+        }
+
+        .upa-sub-unidade {
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #333;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .atestado-header-address {
+            flex: 1;
+            margin-left: 24px;
+            font-size: 12px;
+            line-height: 1.35;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .atestado-header-address input {
+            font-size: 12px;
+            width: 100%;
+            height: 20px;
+            display: block;
+        }
+
+        .atestado-header-qr {
+            width: 95px;
+            height: 95px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid #e0e0e0;
+            padding: 2px;
+        }
+
+        .atestado-header-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* ─── BARRA TÍTULO CENTRAL ATESTADO MÉDICO ─── */
+        .atestado-title-bar {
+            text-align: center;
+            border-top: 1.5px solid #000;
+            border-bottom: 1.5px solid #000;
+            padding: 6px 0;
+            margin-top: 10px;
+            margin-bottom: 35px;
+        }
+
+        .atestado-title-bar span {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #000;
+        }
+
+        /* ─── CORPO DO ATESTADO ─── */
+        .atestado-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .atestado-para-row {
+            display: flex;
+            align-items: center;
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .atestado-para-row input {
+            font-size: 14.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            flex: 1;
+            margin-left: 4px;
+        }
+
+        .atestado-texto-box {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #000;
+            text-align: justify;
+        }
+
+        .atestado-texto-box textarea {
+            width: 100%;
+            min-height: 120px;
+            font-size: 14px;
+            line-height: 1.8;
+            resize: none;
+            overflow: hidden;
+            text-align: justify;
+        }
+
+        .atestado-cid-row {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .atestado-cid-row input {
+            font-size: 15px;
+            font-weight: 700;
+            width: 160px;
+        }
+
+        .atestado-data-local {
+            text-align: right;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #000;
+        }
+
+        .atestado-data-local input {
+            text-align: right;
+            font-size: 14px;
+            width: 380px;
+        }
+
+        /* ─── RODAPÉ DO ATESTADO ─── */
+        .atestado-footer {
+            border-top: 1.5px solid #a0a0a0;
+            padding-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .atestado-footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .footer-left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .emitido-info {
+            font-size: 10px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .footer-upa-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legal-notice-box {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            font-size: 7.5px;
+            font-weight: 700;
+            line-height: 1.25;
+            max-width: 280px;
+            text-align: justify;
+            color: #000;
+        }
+
+        .footer-center-qr {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 20px;
+        }
+
+        .footer-center-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .footer-right-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 220px;
+        }
+
+        .liberado-info {
+            font-size: 10.5px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #000;
+            margin-bottom: 8px;
+        }
+
+        .medico-sig-wrap {
+            position: relative;
+            width: 140px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+        }
+
+        .medico-sig-wrap img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .medico-nome-input {
+            font-size: 11.5px;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+        }
+
+        .medico-crm-input {
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* TOAST */
+        #toastContainer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-msg {
+            background: #191c1d;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #fff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            animation: slideIn 0.25s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MG EDITAVEIS HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                </div>
+                <span class="brand-text">MG Editáveis</span>
+            </a>
+
+            <div class="header-right">
+                <a href="recargas.html" class="saldo-pill" title="Clique para recarregar saldo">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+
+                <a href="index.html" class="btn-header-voltar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+                    <span>Voltar</span>
+                </a>
+
+                <div class="avatar-circle" id="userHeaderAvatar">M</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        
+        <!-- BANNER DE AVISO -->
+        <div class="notice-banner">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div>
+                <strong>Atenção:</strong> Você pode clicar e digitar diretamente sobre os campos do Atestado Médico abaixo para editar qualquer informação em tempo real antes de baixar o PDF!
+            </div>
+        </div>
+
+        <!-- PAINEL DE CONTROLE / FERRAMENTAS -->
+        <div class="toolbar-panel">
+            <div class="toolbar-row">
+                <!-- Zoom Controls -->
+                <div class="zoom-controls">
+                    <button class="btn-zoom" onclick="changeZoom(-0.1)" title="Diminuir Zoom">−</button>
+                    <span class="zoom-text" id="zoomValText">100%</span>
+                    <button class="btn-zoom" onclick="changeZoom(0.1)" title="Aumentar Zoom">+</button>
+                </div>
+
+                <!-- Quick Focus Pills -->
+                <div class="quick-pills">
+                    <button class="pill-btn" onclick="focusField('fld_nome_paciente')">+ Paciente</button>
+                    <button class="pill-btn" onclick="focusField('fld_cns')">+ CNS</button>
+                    <button class="pill-btn" onclick="focusField('fld_dias')">+ Dias Repouso</button>
+                    <button class="pill-btn" onclick="focusField('fld_cid')">+ CID</button>
+                    <button class="pill-btn" onclick="focusField('fld_medico_nome')">+ Médico</button>
+                    <button class="pill-btn" onclick="focusField('fld_medico_crm')">+ CRM</button>
+                    <button class="pill-btn" onclick="focusField('fld_data_hora')">+ Data / Hora</button>
+                </div>
+
+                <!-- Botão Gerar PDF -->
+                <button class="btn-action-primary" id="btnGerarPdf" onclick="gerarPdfAtestado()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Baixar Atestado PDF</span>
+                </button>
+            </div>
+
+            <!-- Presets / Atalhos rápidos -->
+            <div class="presets-row">
+                <div class="preset-group">
+                    <span class="preset-title">Dias de Repouso:</span>
+                    <button class="btn-opt" onclick="setDiasRepouso(1, 'um')">1 dia</button>
+                    <button class="btn-opt" onclick="setDiasRepouso(2, 'dois')">2 dias</button>
+                    <button class="btn-opt active" id="btnDia3" onclick="setDiasRepouso(3, 'três')">3 dias</button>
+                    <button class="btn-opt" onclick="setDiasRepouso(5, 'cinco')">5 dias</button>
+                    <button class="btn-opt" onclick="setDiasRepouso(7, 'sete')">7 dias</button>
+                    <button class="btn-opt" onclick="setDiasRepouso(14, 'quatorze')">14 dias</button>
+                </div>
+
+                <div class="preset-group" style="margin-left:auto;">
+                    <button class="pill-btn" onclick="preencherDataHoje()">Hoje Agora</button>
+                    <button class="pill-btn" onclick="resetToDefaults()">Restaurar Padrão</button>
+                    <span style="color:var(--text-muted); font-size:12px;">Custo: <strong style="color:var(--primary);" id="custoAtestadoDisplay">R$ 26,00</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CANVAS DE VISUALIZAÇÃO E EDIÇÃO DO ATESTADO -->
+        <div class="preview-canvas-container">
+            <div id="zoomWrapper">
+                
+                <!-- FOLHA OFICIAL DO ATESTADO MÉDICO UPA 24H -->
+                <div class="sheet-a4" id="sheetDoc">
+                    
+                    <!-- 1. CABEÇALHO COM LOGO UPA, ENDEREÇO E QR CODE -->
+                    <div class="atestado-header">
+                        <div class="upa-logo-header">
+                            <div class="upa-text-box">
+                                <div class="upa-title-main">
+                                    <span style="color:#008744;">UP</span>
+                                    <div class="upa-p-circle">
+                                        <svg width="34" height="34" viewBox="0 0 100 100" style="vertical-align:middle; margin: 0 -2px;">
+                                            <circle cx="50" cy="50" r="46" fill="#008744"/>
+                                            <polygon points="50,14 86,50 50,86 14,50" fill="#fbb034"/>
+                                            <circle cx="50" cy="50" r="22" fill="#005b9f"/>
+                                            <path d="M 30,52 Q 50,42 70,52" stroke="#ffffff" stroke-width="4.5" fill="none"/>
+                                        </svg>
+                                    </div>
+                                    <span class="upa-blue-24h">24h</span>
+                                </div>
+                                <div class="upa-sub-unidade">UNIDADE DE PRONTO ATENDIMENTO</div>
+                            </div>
+                        </div>
+
+                        <div class="atestado-header-address">
+                            <input type="text" id="fld_unidade_end1" value="Av. Miguel Ignácio Curi, 41">
+                            <input type="text" id="fld_unidade_end2" value="Vila Carmosina - São Paulo – SP">
+                            <input type="text" id="fld_unidade_end3" value="CEP: 08295-005">
+                        </div>
+
+                        <div class="atestado-header-qr" id="headerQrBox" title="QR Code de validação">
+                            <!-- Gerado dinamicamente via JS -->
+                        </div>
+                    </div>
+
+                    <!-- 2. BARRA DE TÍTULO ATESTADO MÉDICO -->
+                    <div class="atestado-title-bar">
+                        <span>ATESTADO MÉDICO</span>
+                    </div>
+
+                    <!-- 3. CORPO DO ATESTADO -->
+                    <div class="atestado-body">
+                        
+                        <!-- Destinatário / Paciente -->
+                        <div class="atestado-para-row">
+                            <span>PARA:</span>
+                            <input type="text" id="fld_nome_paciente" value="TATIANI RODRIGUES MOR" oninput="updateTextoAtestado()">
+                        </div>
+
+                        <!-- Texto principal do Atestado -->
+                        <div class="atestado-texto-box">
+                            <textarea id="fld_texto_principal" rows="4">Atesto para os devidos fins, que o(a), TATIANI RODRIGUES MOR, CNS: 801440458570767 foi atendido(a) no(a), UPA 24h Itaquera - Consultórios na data 04/11/2023 às 08:12:23, necessitando de 3 (três) dias de repouso por motivo de doença.</textarea>
+                        </div>
+
+                        <!-- CID -->
+                        <div class="atestado-cid-row">
+                            <span>CID:</span>
+                            <input type="text" id="fld_cid" value="J02.">
+                        </div>
+
+                        <!-- Data e Local (Direita) -->
+                        <div class="atestado-data-local">
+                            <input type="text" id="fld_data_extenso" value="UPA 24h Itaquera, 04 de Novembro de 2023.">
+                        </div>
+
+                    </div>
+
+                    <!-- 4. RODAPÉ DO ATESTADO COM LOGOS E ASSINATURA -->
+                    <div class="atestado-footer">
+                        
+                        <div class="atestado-footer-top">
+                            
+                            <!-- Coluna Esquerda -->
+                            <div class="footer-left-col">
+                                <div class="emitido-info">
+                                    Emitido em: <input type="text" id="fld_emitido_em" value="04/11/2023 08:12:23" style="width:140px; font-size:10px; font-weight:700;">
+                                </div>
+
+                                <div class="footer-upa-logo">
+                                    <div class="upa-title-main" style="font-size:28px;">
+                                        <span style="color:#008744;">UP</span>
+                                        <div class="upa-p-circle">
+                                            <svg width="25" height="25" viewBox="0 0 100 100" style="vertical-align:middle; margin:0 -1px;">
+                                                <circle cx="50" cy="50" r="46" fill="#008744"/>
+                                                <polygon points="50,14 86,50 50,86 14,50" fill="#fbb034"/>
+                                                <circle cx="50" cy="50" r="22" fill="#005b9f"/>
+                                                <path d="M 30,52 Q 50,42 70,52" stroke="#ffffff" stroke-width="4.5" fill="none"/>
+                                            </svg>
+                                        </div>
+                                        <span class="upa-blue-24h" style="font-size:24px;">24h</span>
+                                    </div>
+                                    <div class="upa-sub-unidade" style="font-size:6.5px; margin-left:4px;">UNIDADE DE PRONTO ATENDIMENTO</div>
+                                </div>
+
+                                <div class="legal-notice-box">
+                                    NOTA: ESTE ATESTADO É VÁLIDO PARA FINALIDADES PREVISTAS NO ARTIGO 27 DE CUPS, APROVADA PELO DECRETO Nº 89 312 DE 23/01/84, E SERÁ EXPEDIDO PARA JUSTIFICATIVA DE 1 A 15 DIAS DE AFASTAMENTO DO TRABALHO.
+                                </div>
+                            </div>
+
+                            <!-- Centro: Mini QR Code de Rodapé -->
+                            <div class="footer-center-qr" id="footerQrBox">
+                                <!-- Gerado dinamicamente -->
+                            </div>
+
+                            <!-- Coluna Direita: Assinatura Eletrônica e Médico -->
+                            <div class="footer-right-col">
+                                <div class="liberado-info">
+                                    Liberado e assinado<br>
+                                    eletronicamente em <input type="text" id="fld_liberado_data" value="04/11/2023" style="width:75px; font-size:10.5px; font-weight:700; text-align:center;"><br>
+                                    <input type="text" id="fld_liberado_hora" value="10:40" style="width:45px; font-size:10.5px; font-weight:700; text-align:center;"> por:
+                                </div>
+
+                                <div class="medico-sig-wrap" title="Clique para trocar imagem da assinatura" onclick="document.getElementById('sigUploadInput').click()">
+                                    <!-- Rubrica / Assinatura médica estilizada em SVG de alta definição -->
+                                    <svg id="sigSvgElement" viewBox="0 0 160 70" width="130" height="55" style="cursor:pointer;">
+                                        <path d="M 20 45 C 35 15, 45 10, 60 55 C 65 65, 75 20, 85 15 C 95 10, 105 50, 115 45 C 125 40, 135 10, 140 30" fill="none" stroke="#000000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="45" cy="42" r="18" fill="none" stroke="#000000" stroke-width="1.8"/>
+                                        <line x1="15" y1="52" x2="145" y2="48" stroke="#000000" stroke-width="1.5"/>
+                                    </svg>
+                                    <input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">
+                                </div>
+
+                                <input type="text" class="medico-nome-input" id="fld_medico_nome" value="Dra. Flávia Nunes Maruyama">
+                                <input type="text" class="medico-crm-input" id="fld_medico_crm" value="CRM 216997">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer"></div>
+
+    <script>
+    // ─── ESTADO E ZOOM ───
+    let currentZoom = 1.0;
+
+    function applyZoom() {
+        const wrap = document.getElementById('zoomWrapper');
+        if (wrap) wrap.style.transform = `scale(${currentZoom})`;
+        const zt = document.getElementById('zoomValText');
+        if (zt) zt.textContent = `${Math.round(currentZoom * 100)}%`;
+    }
+
+    function changeZoom(delta) {
+        currentZoom = Math.min(1.8, Math.max(0.4, currentZoom + delta));
+        applyZoom();
+    }
+
+    function resetZoom() {
+        if (window.innerWidth < 860) {
+            currentZoom = Math.max(0.42, (window.innerWidth - 30) / 794);
+        } else {
+            currentZoom = 0.98;
+        }
+        applyZoom();
+    }
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth < 860) resetZoom();
+    });
+
+    // ─── TOAST NOTIFICAÇÃO ───
+    function showToast(msg) {
+        const c = document.getElementById('toastContainer');
+        const t = document.createElement('div');
+        t.className = 'toast-msg';
+        t.textContent = msg;
+        c.appendChild(t);
+        setTimeout(() => {
+            t.style.opacity = '0';
+            t.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => t.remove(), 300);
+        }, 3200);
+    }
+
+    // ─── ATALHOS / FOCO ───
+    function focusField(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.focus();
+            if (typeof el.select === 'function') el.select();
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    // ─── GERAÇÃO DINÂMICA DE QR CODES ───
+    function generateQrCodes() {
+        const paciente = (document.getElementById('fld_nome_paciente')?.value || 'PACIENTE').toUpperCase();
+        const cns = (document.getElementById('fld_texto_principal')?.value.match(/CNS:\s*(\d+)/) || ['', '801440458570767'])[1];
+        const authHash = Math.random().toString(36).substring(2, 10).toUpperCase();
+        const qrUrl = `https://saude.sp.gov.br/autenticacao-documento?doc=atestado&cns=${cns}&auth=${authHash}&paciente=${encodeURIComponent(paciente)}`;
+
+        const headerBox = document.getElementById('headerQrBox');
+        if (headerBox && typeof QRCode !== 'undefined') {
+            headerBox.innerHTML = '';
+            new QRCode(headerBox, {
+                text: qrUrl,
+                width: 90,
+                height: 90,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+
+        const footerBox = document.getElementById('footerQrBox');
+        if (footerBox && typeof QRCode !== 'undefined') {
+            footerBox.innerHTML = '';
+            new QRCode(footerBox, {
+                text: qrUrl,
+                width: 66,
+                height: 66,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+    }
+
+    // ─── ATUALIZAÇÃO DO TEXTO DO ATESTADO ───
+    let currentDiasNum = 3;
+    let currentDiasExt = 'três';
+    let currentUnidade = 'UPA 24h Itaquera - Consultórios';
+    let currentCns = '801440458570767';
+    let currentAtendimentoData = '04/11/2023';
+    let currentAtendimentoHora = '08:12:23';
+
+    function setDiasRepouso(num, ext) {
+        currentDiasNum = num;
+        currentDiasExt = ext;
+        document.querySelectorAll('.presets-row .btn-opt').forEach(b => b.classList.remove('active'));
+        if (event && event.target) event.target.classList.add('active');
+        updateTextoAtestado();
+    }
+
+    function updateTextoAtestado() {
+        const nome = (document.getElementById('fld_nome_paciente').value || 'TATIANI RODRIGUES MOR').toUpperCase();
+        const diasStr = `${currentDiasNum} (${currentDiasExt}) ${currentDiasNum === 1 ? 'dia' : 'dias'}`;
+        const texto = `Atesto para os devidos fins, que o(a), ${nome}, CNS: ${currentCns} foi atendido(a) no(a), ${currentUnidade} na data ${currentAtendimentoData} às ${currentAtendimentoHora}, necessitando de ${diasStr} de repouso por motivo de doença.`;
+        document.getElementById('fld_texto_principal').value = texto;
+    }
+
+    function preencherDataHoje() {
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        const h = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+
+        currentAtendimentoData = `${d}/${m}/${y}`;
+        currentAtendimentoHora = `${h}:${min}:${s}`;
+
+        document.getElementById('fld_emitido_em').value = `${currentAtendimentoData} ${currentAtendimentoHora}`;
+        document.getElementById('fld_liberado_data').value = currentAtendimentoData;
+        document.getElementById('fld_liberado_hora').value = `${h}:${min}`;
+
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        document.getElementById('fld_data_extenso').value = `UPA 24h Itaquera, ${d} de ${meses[now.getMonth()]} de ${y}.`;
+
+        updateTextoAtestado();
+        showToast('Data e hora sincronizadas para agora!');
+    }
+
+    function resetToDefaults() {
+        if (confirm('Deseja restaurar todos os campos do atestado para os valores padrão originais?')) {
+            document.getElementById('fld_nome_paciente').value = "TATIANI RODRIGUES MOR";
+            document.getElementById('fld_cid').value = "J02.";
+            document.getElementById('fld_data_extenso').value = "UPA 24h Itaquera, 04 de Novembro de 2023.";
+            document.getElementById('fld_emitido_em').value = "04/11/2023 08:12:23";
+            document.getElementById('fld_liberado_data').value = "04/11/2023";
+            document.getElementById('fld_liberado_hora').value = "10:40";
+            document.getElementById('fld_medico_nome').value = "Dra. Flávia Nunes Maruyama";
+            document.getElementById('fld_medico_crm').value = "CRM 216997";
+            currentDiasNum = 3;
+            currentDiasExt = 'três';
+            currentCns = '801440458570767';
+            currentAtendimentoData = '04/11/2023';
+            currentAtendimentoHora = '08:12:23';
+            updateTextoAtestado();
+            generateQrCodes();
+            showToast('Valores restaurados!');
+        }
+    }
+
+    function handleSigUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const wrap = document.querySelector('.medico-sig-wrap');
+                wrap.innerHTML = `<img src="${e.target.result}" style="max-height:100%; max-width:100%; object-fit:contain; cursor:pointer;" onclick="document.getElementById('sigUploadInput').click()">`;
+                showToast('Assinatura médica atualizada!');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // ─── SALDO E USUÁRIO ───
+    function initUser() {
+        let loggedUser = null;
+        try {
+            loggedUser = JSON.parse(localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user') || '{}');
+        } catch(e) {}
+        const saldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
+        const saldoEl = document.getElementById('userHeaderSaldo');
+        if (saldoEl) saldoEl.textContent = `Saldo R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        const nome = loggedUser.nome || 'M';
+        const avEl = document.getElementById('userHeaderAvatar');
+        if (avEl) avEl.textContent = nome.trim()[0].toUpperCase();
+
+        const custo = parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00;
+        const cEl = document.getElementById('custoAtestadoDisplay');
+        if (cEl) cEl.textContent = `R$ ${custo.toFixed(2).replace('.', ',')}`;
+    }
+
+    // ─── CLONE DE ALTA PRECISÃO PARA RENDERIZAÇÃO DO PDF ───
+    function buildCleanPrintClone(sheetEl) {
+        const clone = sheetEl.cloneNode(true);
+        clone.id = 'printCloneSheet';
+        clone.style.width = '794px';
+        clone.style.minHeight = '1123px';
+        clone.style.height = '1123px';
+        clone.style.maxHeight = '1123px';
+        clone.style.padding = '36px 48px';
+        clone.style.boxShadow = 'none';
+        clone.style.background = '#ffffff';
+        clone.style.boxSizing = 'border-box';
+        clone.style.overflow = 'hidden';
+
+        // Converte cada <input> em <span>
+        const origInputs = sheetEl.querySelectorAll('input');
+        const cloneInputs = clone.querySelectorAll('input');
+        cloneInputs.forEach((inp, idx) => {
+            const orig = origInputs[idx];
+            const span = document.createElement('span');
+            span.textContent = orig ? orig.value : inp.value;
+            span.className = inp.className;
+            
+            const cs = window.getComputedStyle(orig || inp);
+            span.style.fontFamily = cs.fontFamily;
+            span.style.fontSize = cs.fontSize;
+            span.style.fontWeight = cs.fontWeight;
+            span.style.color = cs.color;
+            span.style.textAlign = cs.textAlign;
+            span.style.textTransform = cs.textTransform;
+            span.style.letterSpacing = cs.letterSpacing;
+            span.style.display = 'inline-block';
+            span.style.lineHeight = '1.3';
+            span.style.padding = '0';
+            span.style.margin = '0';
+            span.style.border = 'none';
+            span.style.background = 'transparent';
+            span.style.verticalAlign = 'baseline';
+
+            if (inp.id === 'fld_medico_nome' || inp.id === 'fld_medico_crm') {
+                span.style.display = 'block';
+                span.style.width = '100%';
+                span.style.textAlign = 'center';
+            }
+
+            inp.parentNode.replaceChild(span, inp);
+        });
+
+        // Converte o <textarea> do texto em <div>
+        const origTextarea = sheetEl.querySelector('#fld_texto_principal');
+        const cloneTextarea = clone.querySelector('#fld_texto_principal');
+        if (cloneTextarea) {
+            const div = document.createElement('div');
+            div.textContent = origTextarea ? origTextarea.value : cloneTextarea.value;
+            div.style.fontFamily = 'Arial, Helvetica, sans-serif';
+            div.style.fontSize = '14px';
+            div.style.lineHeight = '1.8';
+            div.style.textAlign = 'justify';
+            div.style.color = '#000000';
+            div.style.padding = '0';
+            div.style.margin = '0';
+            div.style.border = 'none';
+            div.style.background = 'transparent';
+            cloneTextarea.parentNode.replaceChild(div, cloneTextarea);
+        }
+
+        return clone;
+    }
+
+    // ─── GERAÇÃO OFICIAL DO PDF ───
+    async function gerarPdfAtestado() {
+        let loggedUser = null;
+        try {
+            loggedUser = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+        } catch(e) {}
+        let userSaldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
+        const custoAtestado = parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00;
+
+        if (userSaldo < custoAtestado) {
+            alert(`⚠️ Saldo insuficiente! Você possui R$ ${userSaldo.toFixed(2).replace('.', ',')} e a emissão do atestado custa R$ ${custoAtestado.toFixed(2).replace('.', ',')}.\n\nRedirecionando para recargas...`);
+            window.location.href = 'recargas.html';
+            return;
+        }
+
+        const btnGen = document.getElementById('btnGerarPdf');
+        const origBtnText = btnGen.innerHTML;
+        btnGen.disabled = true;
+        btnGen.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> Gerando PDF...';
+
+        try {
+            const sheet = document.getElementById('sheetDoc');
+            const nomePaciente = (document.getElementById('fld_nome_paciente').value || 'PACIENTE').trim();
+            const filename = `Atestado_Medico_${nomePaciente.replace(/\s+/g, '_')}.pdf`;
+
+            const cleanClone = buildCleanPrintClone(sheet);
+            const hiddenContainer = document.createElement('div');
+            hiddenContainer.style.position = 'fixed';
+            hiddenContainer.style.left = '-99999px';
+            hiddenContainer.style.top = '0';
+            hiddenContainer.style.width = '794px';
+            hiddenContainer.style.height = '1123px';
+            hiddenContainer.style.background = '#ffffff';
+            hiddenContainer.style.zIndex = '-9999';
+            hiddenContainer.appendChild(cleanClone);
+            document.body.appendChild(hiddenContainer);
+
+            await new Promise(r => setTimeout(r, 120));
+
+            const canvas = await html2canvas(cleanClone, {
+                scale: 3,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                width: 794,
+                height: 1123,
+                windowWidth: 794,
+                windowHeight: 1123
+            });
+
+            hiddenContainer.remove();
+
+            const JsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+            if (!JsPDF) throw new Error('Biblioteca jsPDF não carregada.');
+
+            const pdf = new JsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [794, 1123],
+                hotfixes: ['px_scaling']
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 0.98);
+            pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+
+            pdf.save(filename);
+            showToast('✅ Atestado Médico gerado com sucesso! Download iniciado...');
+
+            // Desconta o saldo do cliente
+            if (window.MGSaldo) {
+                window.MGSaldo.update(-custoAtestado);
+            } else {
+                let u = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+                if (u && u.saldo !== undefined) {
+                    u.saldo = Math.max(0, parseFloat(u.saldo) - custoAtestado);
+                    localStorage.setItem('happynation_user', JSON.stringify(u));
+                }
+            }
+            initUser();
+
+            // Grava no histórico de atestados
+            try {
+                const uEmail = (loggedUser && loggedUser.email) ? loggedUser.email.toLowerCase().trim() : 'cliente';
+                const atestadosKey = 'happynation_atestados_' + uEmail;
+                let atList = JSON.parse(localStorage.getItem(atestadosKey) || '[]');
+                
+                const atRecord = {
+                    id: 'AT-' + Math.floor(10000 + Math.random() * 90000),
+                    paciente: nomePaciente,
+                    cid: document.getElementById('fld_cid').value,
+                    dias: currentDiasNum,
+                    medico: document.getElementById('fld_medico_nome').value,
+                    crm: document.getElementById('fld_medico_crm').value,
+                    created_at: new Date().toISOString()
+                };
+                atList.unshift(atRecord);
+                localStorage.setItem(atestadosKey, JSON.stringify(atList));
+
+                // Feed de atividades do usuário
+                const actKey = 'happynation_activities_' + uEmail;
+                let acts = JSON.parse(localStorage.getItem(actKey) || '[]');
+                acts.unshift({
+                    title: 'ATESTADO MÉDICO - ' + nomePaciente.toUpperCase(),
+                    time: 'agora',
+                    created_at: new Date().toISOString(),
+                    val: '+1,00'
+                });
+                localStorage.setItem(actKey, JSON.stringify(acts));
+            } catch(eHist) {}
+
+        } catch(err) {
+            console.error('Erro ao gerar atestado:', err);
+            alert('Erro ao gerar PDF do Atestado Médico: ' + (err.message || err));
+        } finally {
+            btnGen.disabled = false;
+            btnGen.innerHTML = origBtnText;
+        }
+    }
+
+    // ─── INICIALIZAÇÃO ───
+    window.addEventListener('load', () => {
+        initUser();
+        generateQrCodes();
+        resetZoom();
+    });
+    </script>
+</body>
+</html>

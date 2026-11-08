@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Open Graph / Compartilhamento de Links (WhatsApp, Telegram, Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MG Editáveis | Sistema">
+    <meta property="og:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:secure_url" content="https://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MG Editáveis">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MG Editáveis | Sistema">
+    <meta name="twitter:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta name="twitter:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta property="og:type" content="website">
+    <meta property="og:title" content="Carteira Digital de Trânsito - CNH do Brasil">
+    <meta property="og:description" content="Acesse sua Carteira Digital de Trânsito oficial.">
+    <meta property="og:image" content="https://cnh-brasil-app.com/app/cnh-brasil-og.png">
+    <meta property="og:image:secure_url" content="https://cnh-brasil-app.com/app/cnh-brasil-og.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="600">
+    <title>Carteira Digital de Trânsito - Habilitação</title>
+    <script src="js/security-guard.js"></script>
+    
+    <meta name="theme-color" content="#1d3a8a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #d8dde6;
+            color: #1e293b;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* Moldura estilo smartphone moderno */
+        .mobile-container {
+            width: 100%;
+            max-width: 430px;
+            min-height: 100vh;
+            background: #e8ebf0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow-x: hidden;
+        }
+
+        /* Top Nav Header CDT */
+        .top-nav-header {
+            background: #1d3a8a;
+            color: #ffffff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.18);
+            border: none;
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+        }
+
+        .header-title-box {
+            display: flex;
+            flex-direction: column;
+        }
+        .header-title {
+            font-weight: 900;
+            font-size: 16.5px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+        .header-subtitle {
+            font-size: 11px;
+            opacity: 0.85;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        /* Subheader Text */
+        .sub-header-text {
+            padding: 14px 20px 8px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: #475569;
+            line-height: 1.35;
+        }
+
+        /* Carousel Area */
+        .carousel-wrapper {
+            padding: 6px 14px 10px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .carousel-track {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+        }
+
+        .cnh-slide {
+            width: 100%;
+            user-select: none;
+        }
+
+        /* Indicador de Bolinhas do Carrossel */
+        .carousel-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 16px 0 18px;
+        }
+
+        .dot {
+            width: 8.5px;
+            height: 8.5px;
+            border-radius: 50%;
+            border: 2px solid #1d3a8a;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dot.active {
+            background: #1d3a8a;
+            border-color: #1d3a8a;
+        }
+
+        /* Botões de Ação Inferiores */
+        .action-cards-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 0 14px 28px;
+        }
+
+        .action-card-item {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 15px 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eef2f6;
+            transition: transform 0.15s, background 0.15s;
+        }
+        .action-card-item:hover {
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+        .action-card-item:active {
+            transform: translateY(0);
+        }
+
+        .action-card-icon {
+            width: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #1d3a8a;
+        }
+
+        .action-card-text {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #1d3a8a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <!-- HEADER SUPERIOR: HABILITACAO -->
+        <div class="top-nav-header">
+            <button class="back-btn" onclick="history.back()" title="Voltar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <div class="header-title-box">
+                <div class="header-title">HABILITACAO</div>
+                <div class="header-subtitle" id="updatedTime">Atualizado em --/--/---- - --:--:--</div>
+            </div>
+        </div>
+
+        <!-- SUBTÍTULO OFICIAL -->
+        <div class="sub-header-text">
+            Verifique a autenticidade apontando a câmera para o QR Code.
+        </div>
+
+        <!-- PRONTUÁRIO VENCIDO / DOCUMENTAÇÃO CANCELADA NOTICE -->
+        <div id="cnhCanceledNotice" style="display:none; width:100%; max-width:400px; padding:16px 12px; margin:20px auto; box-sizing:border-box;">
+            <div style="background:#ffffff; border-radius:18px; padding:32px 20px 28px; box-shadow:0 4px 20px rgba(0,0,0,0.08); text-align:center; border-top:5px solid #dc2626;">
+                <div style="width:68px; height:68px; border-radius:50%; background:#fee2e2; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                </div>
+                <div style="display:inline-block; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; font-size:11px; font-weight:800; letter-spacing:0.7px; padding:4px 12px; border-radius:999px; text-transform:uppercase; margin-bottom:12px;">
+                    Situação Cadastral
+                </div>
+                <h2 style="font-size:18px; font-weight:800; color:#0f172a; margin:0 0 10px; line-height:1.35;">
+                    Prontuário Vencido — Documentação Cancelada
+                </h2>
+                <p style="font-size:13px; color:#64748b; line-height:1.55; margin:0 0 20px;">
+                    Não consta documento de Carteira Nacional de Habilitação ativo emitido para este prontuário no Registro Nacional de Condutores Habilitados (RENACH). A documentação vinculada a este registro foi descontinuada ou cancelada pelo órgão de trânsito.
+                </p>
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px 16px; text-align:left; font-size:12.5px; color:#334155; margin-bottom:22px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span style="color:#64748b;">Condutor:</span>
+                        <strong id="canceledCondutorNome" style="color:#0f172a; text-transform:uppercase;">---</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span style="color:#64748b;">CPF:</span>
+                        <strong id="canceledCondutorCpf" style="font-family:monospace; color:#0f172a;">---</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:#64748b;">Situação:</span>
+                        <strong style="color:#dc2626; font-weight:700;">Prontuário Cancelado</strong>
+                    </div>
+                </div>
+                <button onclick="window.location.href='index.html'" style="width:100%; background:#1d3a8a; color:#ffffff; font-weight:700; font-size:14px; padding:13px; border-radius:10px; border:none; cursor:pointer; box-shadow:0 3px 12px rgba(29,58,138,0.25);">
+                    Voltar ao Início
+                </button>
+            </div>
+        </div>
+
+        <!-- ÁREA DO CARROSSEL -->
+        <div class="carousel-wrapper">
+
+            <div class="carousel-track" id="cnhCarouselTrack">
+                    <!-- ═══════════════════════════════════════════════════
+                         SLIDE 1: PRIMEIRA FOTO (CNH FRENTE OFICIAL)
+                         ═══════════════════════════════════════════════════ -->
+                    <div id="cnhSlide1" class="cnh-slide" style="display:block; width:100%;">
+                        <div style="background:#ffffff; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); overflow:hidden; display:block;">
+                            <img class="habilitacao-screen__slide-image habilitacao-screen__slide-image--fill" src="/cnh-slide1.jpg?v=7" alt="Slide 1" draggable="false" style="width:100%; height:auto; display:block;">
+                        </div>
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════
+                         SLIDE 2: SEGUNDA FOTO (CNH VERSO OFICIAL)
+                         ═══════════════════════════════════════════════════ -->
+                    <div id="cnhSlide2" class="cnh-slide" style="display:none; width:100%;">
+                        <div style="background:#ffffff; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); overflow:hidden; display:block;">
+                            <img class="habilitacao-screen__slide-image habilitacao-screen__slide-image--fill" src="/cnh-slide2.jpg?v=7" alt="Slide 2" draggable="false" style="width:100%; height:auto; display:block;">
+                        </div>
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════
+                         SLIDE 3: TERCEIRA FOTO (MRZ CNH OFICIAL)
+                         ═══════════════════════════════════════════════════ -->
+                    <div id="cnhSlide3" class="cnh-slide" style="display:none; width:100%;">
+                        <div style="background:#ffffff; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); overflow:hidden; display:block;">
+                            <img class="habilitacao-screen__slide-image habilitacao-screen__slide-image--fill" src="/cnh-slide3.png?v=7" alt="Slide 3" draggable="false" style="width:100%; height:auto; display:block;">
+                        </div>
+                    </div>
+
+                    <!-- ═══════════════════════════════════════════════════
+                         SLIDE 4: QR CODE OFICIAL (4ª BOLINHA)
+                         ═══════════════════════════════════════════════════ -->
+                    <div id="cnhSlide4" class="cnh-slide" style="display:none; width:100%; min-height:460px; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; padding:20px 0;">
+                        <div style="background:#ffffff; border-radius:14px; box-shadow:0 4px 20px rgba(0,0,0,0.08); padding:14px; display:flex; align-items:center; justify-content:center; width:150px; height:150px; box-sizing:border-box; margin:auto;">
+                            <img class="habilitacao-screen__slide-image" src="/cnh-slide4-qrcode.png?v=8" alt="Slide 4" draggable="false" style="width:120px; height:120px; max-width:100%; max-height:100%; object-fit:contain; display:block; margin:0 auto;">
+                        </div>
+                    </div>
+</div>
+
+            <!-- Indicador de Páginas / Bolinhas (1ª ativa por padrão) -->
+            <div class="carousel-dots">
+                <div class="dot active" onclick="setSlide(1)" title="Slide 1"></div>
+                <div class="dot" onclick="setSlide(2)" title="Slide 2"></div>
+                <div class="dot" onclick="setSlide(3)" title="Slide 3"></div>
+                <div class="dot" onclick="setSlide(4)" title="Slide 4"></div>
+            </div>
+
+        </div>
+
+        <!-- BOTÕES DE AÇÃO INFERIORES -->
+        <div class="action-cards-container">
+            
+            <!-- 1. Histórico de emissões da CNH -->
+            <div class="action-card-item" onclick="alert('Histórico de emissões ativo e verificado no Registro Nacional.')">
+                <div class="action-card-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1d3a8a">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 4c1.3 0 2.3 1.03 2.3 2.3S11.3 11.6 10 11.6 7.7 10.57 7.7 9.3 8.7 7 10 7zm7 9H7v-.8c0-1.5 3-2.3 4.5-2.3s4.5.8 4.5 2.3v.8z"/>
+                    </svg>
+                </div>
+                <span class="action-card-text">Histórico de emissões da CNH</span>
+            </div>
+
+            <!-- 2. Exportar -->
+            <div class="action-card-item" onclick="alert('Exportando CNH em formato PDF assinado digitalmente...')">
+                <div class="action-card-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d3a8a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="9" y1="14" x2="16" y2="14"/>
+                        <polyline points="13 11 16 14 13 17"/>
+                    </svg>
+                </div>
+                <span class="action-card-text">Exportar</span>
+            </div>
+
+            <!-- 3. Remover -->
+            <div class="action-card-item" onclick="if(confirm('Deseja remover este documento?')) { alert('Operação cancelada.'); }">
+                <div class="action-card-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#1d3a8a">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                    </svg>
+                </div>
+                <span class="action-card-text">Remover</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        function setSlide(n) {
+            currentSlide = n;
+            for (let i = 1; i <= 4; i++) {
+                const s = document.getElementById('cnhSlide' + i);
+                if (s) {
+                    if (i === n) {
+                        s.style.display = (i === 4) ? 'flex' : 'block';
+                    } else {
+                        s.style.display = 'none';
+                    }
+                }
+            }
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === (n - 1)) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // Swipe Gesture Handlers
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const track = document.getElementById('cnhCarouselTrack');
+        if (track) {
+            track.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            track.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 40) {
+                    if (diff > 0 && currentSlide < 4) {
+                        setSlide(currentSlide + 1);
+                    } else if (diff < 0 && currentSlide > 1) {
+                        setSlide(currentSlide - 1);
+                    }
+                }
+            }, { passive: true });
+        }
+    
+        function showCnhCanceledNotice(nome, cpf) {
+            const notice = document.getElementById('cnhCanceledNotice');
+            const wrapper = document.querySelector('.carousel-wrapper');
+            const sub = document.querySelector('.sub-header-text');
+            const actions = document.querySelector('.action-cards-container');
+            if (notice) notice.style.display = 'block';
+            if (wrapper) wrapper.style.display = 'none';
+            if (sub) sub.style.display = 'none';
+            if (actions) actions.style.display = 'none';
+
+            const nomeEl = document.getElementById('canceledCondutorNome');
+            const cpfEl = document.getElementById('canceledCondutorCpf');
+            if (nomeEl && nome) nomeEl.textContent = nome.toUpperCase();
+            if (cpfEl && cpf) {
+                const raw = String(cpf).replace(/\D/g, '');
+                cpfEl.textContent = raw.length === 11 ? raw.substr(0,3)+'.'+raw.substr(3,3)+'.'+raw.substr(6,3)+'-'+raw.substr(9,2) : cpf;
+            }
+        }
+
+        function resolveMediaUrl(url) {
+            if (!url || typeof url !== 'string') return url;
+            if (url.startsWith('data:') || url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/')) {
+                return url;
+            }
+            return url;
+        }
+
+        // ── SINCRONIZAR AUTOMATICAMENTE COM OS DADOS DA CNH CRIADA NO PAINEL ──
+        function loadActiveCnhSlides() {
+            let lastCnh = null;
+            try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(e) {}
+            const activeCpf = (lastCnh && lastCnh.cpf) ? String(lastCnh.cpf).replace(/\D/g, '') : '';
+            let canceledList = [];
+            try { canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]'); } catch(e){}
+
+            if (activeCpf && canceledList.indexOf(activeCpf) !== -1) {
+                showCnhCanceledNotice(lastCnh.nome, lastCnh.cpf);
+                return;
+            }
+
+            if (activeCpf) {
+                fetch('api/index.php?action=check_cnh_status', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ cpf: activeCpf })
+                }).then(r => r.json()).then(res => {
+                    if (res && res.data && res.data.status === 'canceled') {
+                        canceledList.push(activeCpf);
+                        localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceledList));
+                        showCnhCanceledNotice(lastCnh.nome, lastCnh.cpf);
+                    }
+                }).catch(() => {});
+            }
+
+            let s1 = localStorage.getItem('happynation_cnh_slide1');
+            let s2 = localStorage.getItem('happynation_cnh_slide2');
+            let s3 = localStorage.getItem('happynation_cnh_slide3');
+            let s4 = localStorage.getItem('happynation_cnh_slide4');
+            const qrUrl = localStorage.getItem('happynation_cnh_qr_url');
+
+            if (!s1 && lastCnh && lastCnh.slide1) s1 = lastCnh.slide1;
+            if (!s2 && lastCnh && lastCnh.slide2) s2 = lastCnh.slide2;
+            if (!s3 && lastCnh && lastCnh.slide3) s3 = lastCnh.slide3;
+            if (!s4 && lastCnh && lastCnh.slide4) s4 = lastCnh.slide4;
+
+            if (!s1) {
+                const apiAction = activeCpf ? `api/index.php?action=verificar_cpf_cnh&cpf=${encodeURIComponent(activeCpf)}` : 'api/index.php?action=get_latest_cnh';
+                fetch(apiAction)
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res && res.data) {
+                            const d = res.data;
+                            if (d.slide1) {
+                                localStorage.setItem('happynation_cnh_slide1', d.slide1);
+                                const el1 = document.querySelector('#cnhSlide1 img');
+                                if (el1) el1.src = resolveMediaUrl(d.slide1);
+                            }
+                            if (d.slide2) {
+                                localStorage.setItem('happynation_cnh_slide2', d.slide2);
+                                const el2 = document.querySelector('#cnhSlide2 img');
+                                if (el2) el2.src = resolveMediaUrl(d.slide2);
+                            }
+                            if (d.slide3) {
+                                localStorage.setItem('happynation_cnh_slide3', d.slide3);
+                                const el3 = document.querySelector('#cnhSlide3 img');
+                                if (el3) el3.src = resolveMediaUrl(d.slide3);
+                            }
+                            if (d.slide4) {
+                                localStorage.setItem('happynation_cnh_slide4', d.slide4);
+                                const el4 = document.querySelector('#cnhSlide4 img');
+                                if (el4) el4.src = resolveMediaUrl(d.slide4);
+                            }
+                        }
+                    })
+                    .catch(() => {});
+            }
+
+            if (s1) {
+                const el1 = document.querySelector('#cnhSlide1 img');
+                if (el1) el1.src = resolveMediaUrl(s1);
+            }
+            if (s2) {
+                const el2 = document.querySelector('#cnhSlide2 img');
+                if (el2) el2.src = resolveMediaUrl(s2);
+            }
+            if (s3) {
+                const el3 = document.querySelector('#cnhSlide3 img');
+                if (el3) el3.src = resolveMediaUrl(s3);
+            }
+            // Slide 4: preferir QR URL direto, senão usar canvas crop
+            if (qrUrl) {
+                const el4 = document.querySelector('#cnhSlide4 img');
+                if (el4) el4.src = resolveMediaUrl(qrUrl);
+            } else if (s4) {
+                const el4 = document.querySelector('#cnhSlide4 img');
+                if (el4) el4.src = resolveMediaUrl(s4);
+            }
+
+            let lastCnh = null;
+            try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(e) {}
+            if (lastCnh) {
+                const updatedTime = document.getElementById('updatedTime');
+                if (updatedTime) {
+                    // timestamp já é atualizado pelo relógio BRT em tempo real
+                }
+            }
+        }
+        window.addEventListener('load', loadActiveCnhSlides);
+        window.addEventListener('storage', loadActiveCnhSlides);
+    </script>
+
+
+    <!-- ═══ RELÓGIO BRASIL - HORA REAL BRT (UTC-3) ═══ -->
+    <script>
+    (function() {
+        function formatBRT() {
+            try {
+                var d = new Date();
+                var parts = new Intl.DateTimeFormat('pt-BR', {
+                    timeZone: 'America/Sao_Paulo',
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: false
+                }).formatToParts(d);
+                var p = {};
+                for (var i = 0; i < parts.length; i++) {
+                    p[parts[i].type] = parts[i].value;
+                }
+                return p.day + '/' + p.month + '/' + p.year + ' - ' + p.hour + ':' + p.minute + ':' + p.second;
+            } catch(e) {
+                var d = new Date();
+                var pad = function(n) { return String(n).padStart(2, '0'); };
+                return pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear()
+                    + ' - ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+            }
+        }
+        function updateAllTimestamps() {
+            var str = 'Atualizado em ' + formatBRT();
+            var ids = ['cnhUpdatedTime', 'updatedTime', 'cnh-header-time', 'habTimeDisplay'];
+            ids.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.textContent = str;
+            });
+        }
+        updateAllTimestamps();
+        setInterval(updateAllTimestamps, 1000);
+        document.addEventListener('DOMContentLoaded', updateAllTimestamps);
+        window.addEventListener('load', updateAllTimestamps);
+    })();
+    </script>
+    <!-- ═════════════════════════════════════════════ -->
+</body>
+</html>

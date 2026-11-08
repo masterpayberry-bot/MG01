@@ -1,0 +1,1221 @@
+{
+    "users": [
+        {
+            "id": 6,
+            "nome": "Joao gomes",
+            "email": "mgsupabase@gmail.com",
+            "phone": "47991477590",
+            "saldo": 0,
+            "cnhsCount": 0,
+            "status": "pending",
+            "created_at": "2026-11-03 19:17:48",
+            "updated_at": "2026-11-08T02:17:51+01:00"
+        },
+        {
+            "id": 5,
+            "nome": "RENATO ALVES VELOSO",
+            "email": "renato.veloso@gmail.com",
+            "phone": "(41) 98833-1020",
+            "saldo": 120,
+            "cnhsCount": 0,
+            "status": "blocked",
+            "created_at": "2026-11-03 19:15:26",
+            "updated_at": "2026-11-08T02:17:51+01:00"
+        },
+        {
+            "id": 4,
+            "nome": "CARLOS EDUARDO ROCHA",
+            "email": "carlosedu@hotmail.com",
+            "phone": "(11) 97401-2299",
+            "saldo": 0,
+            "cnhsCount": 0,
+            "status": "pending",
+            "created_at": "2026-11-03 19:15:26",
+            "updated_at": "2026-11-08T02:17:51+01:00"
+        },
+        {
+            "id": 2,
+            "nome": "Administrador Alternativo",
+            "email": "moritzpj@gmail.com",
+            "phone": "(21) 99882-1029",
+            "saldo": 1144,
+            "cnhsCount": 0,
+            "status": "approved",
+            "created_at": "2026-11-03 19:15:26",
+            "updated_at": "2026-11-08T02:17:51+01:00"
+        },
+        {
+            "id": 1,
+            "nome": "Administrador Geral MG",
+            "email": "MG",
+            "phone": "(21) 99882-1029",
+            "saldo": 9401,
+            "cnhsCount": 6,
+            "status": "approved",
+            "created_at": "2026-11-03 19:15:26",
+            "updated_at": "2026-11-08T02:17:51+01:00"
+        },
+        {
+            "id": 11,
+            "nome": "fenix",
+            "email": "desmanchedono@gmail.com",
+            "phone": "41991083187",
+            "saldo": 24934,
+            "cnhsCount": 0,
+            "status": "approved",
+            "created_at": "2026-11-05 15:37:40",
+            "updated_at": "2026-11-08T02:17:51+01:00",
+            "register_ip": "82.23.26.174"
+        },
+        {
+            "id": 10,
+            "nome": "Johnny de Oliveira",
+            "email": "onpadinho@gmail.com",
+            "phone": "13981188678",
+            "saldo": 5005,
+            "cnhsCount": 0,
+            "status": "approved",
+            "created_at": "2026-11-05 14:47:32",
+            "updated_at": "2026-11-08T02:17:51+01:00",
+            "register_ip": "2804:389:202b:5b00:5f3:3a2b:957c:a510"
+        },
+        {
+            "id": 9,
+            "nome": "Raimundo silva",
+            "email": "francabranco304@gmail.com",
+            "phone": "3599812648",
+            "saldo": 500,
+            "cnhsCount": 0,
+            "status": "approved",
+            "created_at": "2026-11-04 15:40:32",
+            "updated_at": "2026-11-08T02:17:51+01:00",
+            "register_ip": "177.22.127.178"
+        },
+        {
+            "saldo": 0,
+            "id": "1793918052_17b5dc",
+            "updated_at": "2026-11-08T02:17:51+01:00",
+            "created_at": "2026-11-05T23:34:12+01:00"
+        },
+        {
+            "id": 8,
+            "nome": "Wave Fusion Studios",
+            "email": "schotwyd0010@proton.me",
+            "phone": "43996270032",
+            "saldo": 0,
+            "role": "client",
+            "status": "approved",
+            "register_ip": "187.94.156.239",
+            "last_ip": "187.94.156.239",
+            "created_at": "2026-11-03 20:40:40",
+            "updated_at": "2026-11-08T02:17:51+01:00",
+            "cnhsCount": 0
+        },
+        {
+            "id": 7,
+            "nome": "João Gui",
+            "email": "mgsujkkpabase@gmail.com",
+            "phone": "49991055876",
+            "saldo": 0,
+            "cnhsCount": 0,
+            "status": "approved",
+            "created_at": "2026-11-03 20:26:42",
+            "updated_at": "2026-11-08T02:17:51+01:00",
+            "role": "client",
+            "register_ip": "2804:30c:334f:3101:7dfa:c020:581c:5307",
+            "last_ip": "2804:30c:334f:3101:7dfa:c020:581c:5307"
+        },
+        {
+            "saldo": 0,
+            "id": "1793835966_8eb276",
+            "updated_at": "2026-11-08T02:17:51+01:00",
+            "created_at": "2026-11-05T00:46:06+01:00"
+        },
+        {
+            "id": 3,
+            "nome": "Lucas Francisco",
+            "email": "lucas.francisco@gmail.com",
+            "phone": "(21) 98712-4410",
+            "saldo": 0,
+            "cnhsCount": 0,
+            "status": "approved",
+            "updated_at": "2026-11-08T02:17:51+01:00",
+            "created_at": "2026-11-05T01:54:43+01:00"
+        }
+    ],
+    "cnhs": [
+        {
+            "id": "CNH-8683",
+            "user": "Administrador Geral MG",
+            "nomeCnh": "MARIANA SOUZA SILVA",
+            "cpf": "382.914.508-42",
+            "data": "07\/11\/2026, 21:53:20",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T01:53:07+01:00",
+            "user_id": 1,
+            "user_nome": "Administrador Geral MG",
+            "nome_cnh": "MARIANA SOUZA SILVA",
+            "rg": "38.492.105-8 SSP SP",
+            "categoria": "B",
+            "valor_pendencia": "500,00",
+            "valor_cobrado": 26,
+            "dados_json": "{\"id\":\"CNH-8683\",\"user_email\":\"mg\",\"nome\":\"MARIANA SOUZA SILVA\",\"nome_cnh\":\"MARIANA SOUZA SILVA\",\"cpf\":\"382.914.508-42\",\"cat\":\"B\",\"categoria\":\"B\",\"cat_hab\":\"B\",\"rg\":\"38.492.105-8 SSP SP\",\"doc_identidade\":\"38.492.105-8 SSP SP\",\"nasc\":\"14\\\/08\\\/1992, SÃO PAULO, SP\",\"data_nascimento\":\"14\\\/08\\\/1992, SÃO PAULO, SP\",\"mae\":\"MARIA HELENA SOUZA SILVA\",\"filiacao_2\":\"MARIA HELENA SOUZA SILVA\",\"pai\":\"ROBERTO SILVA\",\"filiacao_1\":\"ROBERTO SILVA\",\"reg\":\"06824915037\",\"registro\":\"06824915037\",\"validade\":\"22\\\/10\\\/2034\",\"emissao\":\"22\\\/10\\\/2024\",\"data_emissao\":\"22\\\/10\\\/2024\",\"hab\":\"18\\\/09\\\/2014\",\"habilitacao\":\"18\\\/09\\\/2014\",\"local\":\"SÃO PAULO, SP\",\"cidade\":\"SÃO PAULO, SP\",\"municipio\":\"SÃO PAULO, SP\",\"uf\":\"SÃO PAULO\",\"estado\":\"SÃO PAULO\",\"observacoes\":\"EAR\",\"genero\":\"Feminino\",\"sexo\":\"Feminino\",\"valor_pendencia\":\"500,00\",\"senha\":\"840169\",\"status\":\"Ativo\",\"valor_cobrado\":26,\"created_at\":\"2026-11-08T00:53:20.058Z\",\"filename\":\"CNH_MARIANA_SOUZA_SILVA.pdf\",\"foto\":null,\"assinatura\":null,\"slide1\":\"uploads\\\/cnhs\\\/slide1_38291450842.jpg?v=1794099187\",\"slide2\":\"uploads\\\/cnhs\\\/slide2_38291450842.jpg?v=1794099187\",\"slide3\":\"uploads\\\/cnhs\\\/slide3_38291450842.jpg?v=1794099187\",\"slide4\":\"uploads\\\/cnhs\\\/slide4_38291450842.png?v=1794099187\",\"cat_acc_val\":\"\",\"cat_acc_hab\":\"\",\"cat_a_val\":\"\",\"cat_a_hab\":\"\",\"cat_a1_val\":\"\",\"cat_a1_hab\":\"\",\"cat_b_val\":\"\",\"cat_b_hab\":\"\",\"cat_b1_val\":\"\",\"cat_b1_hab\":\"\",\"cat_c_val\":\"\",\"cat_c_hab\":\"\",\"cat_c1_val\":\"\",\"cat_c1_hab\":\"\",\"cat_d_val\":\"\",\"cat_d_hab\":\"\",\"cat_d1_val\":\"\",\"cat_d1_hab\":\"\",\"cat_be_val\":\"\",\"cat_be_hab\":\"\",\"cat_ce_val\":\"\",\"cat_ce_hab\":\"\",\"cat_c1e_val\":\"\",\"cat_c1e_hab\":\"\",\"cat_de_val\":\"\",\"cat_de_hab\":\"\",\"cat_d1e_val\":\"\",\"cat_d1e_hab\":\"\"}"
+        },
+        {
+            "id": "CNH-3948",
+            "user": "MG Editáveis",
+            "cpf": "382.914.508-42",
+            "data": "2026-11-06T22:44:18+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-8669",
+            "cpf": "026.008.410-75",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-7515",
+            "cpf": "795.575.895-15",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-7072",
+            "cpf": "795.575.895-15",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-4460",
+            "cpf": "112.687.177-03",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-1440",
+            "cpf": "121.080.379-85",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-4548",
+            "cpf": "121.080.379-85",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-8887",
+            "cpf": "121.080.379-85",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-6178",
+            "cpf": "121.080.379-85",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-5064",
+            "cpf": "118.000.839-12",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-3621",
+            "cpf": "118.000.839-12",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-9275",
+            "cpf": "118.000.839-12",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-9456",
+            "cpf": "121.080.379-85",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-6728",
+            "cpf": "299.320.250-20",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-2698",
+            "cpf": "019.476.930-10",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-2488",
+            "cpf": "299.320.250-20",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-6260",
+            "cpf": "019.476.930-10",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "1793671647_6c3630",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-3642",
+            "user": "MORITZ PJL",
+            "cpf": "316.892.918-26",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-6627",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-7069",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-1897",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-7869",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-5626",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-8171",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-8615",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-6508",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-7632",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-6166",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-7382",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-2201",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-4988",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-2926",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-4075",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-7028",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-7449",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-9825",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-5457",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-2206",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-3664",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-3110",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-3579",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-5359",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-2288",
+            "user": "MORITZ PJL",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-1493",
+            "user": "Administrador Geral MG",
+            "cpf": "738.105.509-06",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-3477",
+            "user": "Administrador Alternativo",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-3260",
+            "user": "Administrador Geral MG",
+            "cpf": "005.166.653-75",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-5811",
+            "user": "Administrador Geral MG",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-1603",
+            "user": "Administrador Geral MG",
+            "cpf": "088.261.576-93",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-2494",
+            "user": "Administrador Geral MG",
+            "cpf": "150.623.717-75",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-8070",
+            "user": "Administrador Geral MG",
+            "cpf": "019.476.930-17",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-3179",
+            "user": "Administrador Geral MG",
+            "cpf": "118.000.839-12",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-5655",
+            "user": "Administrador Geral MG",
+            "cpf": "121.080.379-85",
+            "data": "2026-11-08T01:17:02+01:00",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-8605",
+            "user": "MG Editáveis",
+            "nomeCnh": "MARIANA SOUZA SILVA",
+            "cpf": "382.914.508-42",
+            "data": "07\/11\/2026, 21:31:28",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-9138",
+            "user": "MG Editáveis",
+            "nomeCnh": "MARIANA SOUZA SILVA",
+            "cpf": "382.914.508-42",
+            "data": "07\/11\/2026, 21:34:13",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-9918",
+            "user": "MG Editáveis",
+            "nomeCnh": "MARIANA SOUZA SILVA",
+            "cpf": "382.914.508-42",
+            "data": "07\/11\/2026, 21:36:25",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "CNH-2500",
+            "user": "Administrador Geral MG",
+            "nomeCnh": "PAULO AUGUSTO DA SILVA ALVES",
+            "cpf": "046.228.331-31",
+            "data": "07\/11\/2026, 22:17:59",
+            "valor": "R$ 26,00",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T02:17:50+01:00"
+        }
+    ],
+    "exames": [],
+    "recargas": [
+        {
+            "id": "REC-4090",
+            "user": "CARLOS EDUARDO ROCHA",
+            "valor": 100,
+            "metodo": "PIX Copia e Cola",
+            "data": "2026-10-09 13:10:00",
+            "status": "pending",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-04T23:12:40+01:00"
+        },
+        {
+            "id": "REC-4089",
+            "user": "Administrador Geral MG",
+            "valor": 500,
+            "metodo": "PIX Instantâneo",
+            "data": "2026-10-09 11:20:00",
+            "status": "approved",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-04T23:12:40+01:00"
+        },
+        {
+            "id": "REC-4091",
+            "user": "LUCAS FRANCISCO DA SILVA",
+            "valor": 200,
+            "metodo": "PIX QrCode",
+            "data": "2026-10-09 13:50:00",
+            "status": "pending",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-04T20:19:16+01:00"
+        },
+        {
+            "id": "1793971326_93acf1",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-06T14:22:06+01:00"
+        },
+        {
+            "id": "1794097433_d36977",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T01:23:53+01:00"
+        }
+    ],
+    "tickets": [
+        {
+            "id": "t_1",
+            "assunto": "[TTG] TT",
+            "descricao": "PRECISO DE AJUDA COM A EMISSÃO",
+            "data": "27 de dez. de 2025",
+            "status": "Resolvido",
+            "mensagens": [
+                {
+                    "autor": "user",
+                    "texto": "PRECISO DE AJUDA COM A EMISSÃO",
+                    "data": "27\/12\/2025 14:20"
+                },
+                {
+                    "autor": "suporte",
+                    "texto": "Olá! Como posso ajudar você hoje?",
+                    "data": "27\/12\/2025 14:25"
+                }
+            ],
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-04T04:52:51+01:00"
+        }
+    ],
+    "activities": [
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-04T19:23:13.671Z",
+            "id": "1793820184_c40d9c",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-04T19:43:40.908Z",
+            "id": "1793821411_9d1d39",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-04T21:17:39.765Z",
+            "id": "1793827049_01b2a4",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T05:24:11.614Z",
+            "id": "1793597052476_i0g09u",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T03:38:00.637Z",
+            "id": "1793590681493_dj2mko",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T03:20:37.766Z",
+            "id": "1793589638602_n309u9",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T02:46:34.936Z",
+            "id": "1793587596564_kqvlgj",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T02:31:06.623Z",
+            "id": "1793586667436_n17igt",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T02:02:11.440Z",
+            "id": "1793584932313_g9bu9s",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T01:10:00.006Z",
+            "id": "1793581801027_50l5lu",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T00:54:02.983Z",
+            "id": "1793580843835_nkvmbs",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T00:52:48.928Z",
+            "id": "1793580769749_4nz84l",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-02T00:52:48.928Z",
+            "id": "1793580769128_y1itbk",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-01T23:25:56.970Z",
+            "id": "1793575557912_g7338s",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-01T23:24:42.406Z",
+            "id": "1793575483242_wihdhi",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-01T23:22:46.625Z",
+            "id": "1793575367516_bak8gg",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ALCEU JEFERSON ANTUNES",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-04T22:20:20.518Z",
+            "id": "1793830810_c80ce3",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ALCEU JEFERSON ANTUNES",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-04T22:38:38.948Z",
+            "id": "1793831908_d9de29",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ALCEU JEFERSON ANTUNES",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-04T22:42:11.365Z",
+            "id": "1793832120_0441b8",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ALCEU JEFERSON ANTUNES",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-04T22:43:00.714Z",
+            "id": "1793832170_9d741c",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ALCEU JEFERSON ANTUNES",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-04T22:43:31.477Z",
+            "id": "1793832201_ccf8ee",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T17:22:30.430Z",
+            "id": "1793726540_1c47ce",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T16:48:40.245Z",
+            "id": "1793724510_bc3bd4",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JOSÉ LUIZ FERNANDES DA SILVA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T15:47:51.377Z",
+            "id": "1793720872_c0745c",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "LUCAS FRANCISCO DA SILVA",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T05:51:48.690Z",
+            "id": "1793685099_3b591f",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "LUCAS FRANCISCO DA SILVA",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T05:51:08.392Z",
+            "id": "1793685059_7f46e2",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "LUCAS FRANCISCO DA SILVA",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T05:42:13.615Z",
+            "id": "1793684524_ceaac9",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "LUCAS FRANCISCO DA SILVA",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T05:50:22.408Z",
+            "id": "1793685013_1a698a",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "LUCAS FRANCISCO DA SILVA",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T06:02:48.764Z",
+            "id": "1793685759_e05388",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "MORITZ PJL",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-03T17:32:32.152Z",
+            "id": "1793727143_aefed8",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ALYSON ADILSON MARCONDES",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-05T15:14:18.247Z",
+            "id": "1793891647_6f9ac9",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-05T00:29:44.491Z",
+            "id": "1793838574_177c30",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "JEREMIAS DA CONCEICAO BARBOSA",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-05T00:30:21.636Z",
+            "id": "1793838611_02cd4a",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ALYSON ADILSON MARCONDES",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 25,00",
+            "status": "concluido",
+            "created_at": "2026-11-05T14:36:39.982Z",
+            "id": "1793889389_666a14",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARIANA SOUZA SILVA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T20:10:48.439Z",
+            "id": "1793995836_8e687f",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARIANA SOUZA SILVA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T20:10:26.440Z",
+            "id": "1793995814_34a584",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARIANA SOUZA SILVA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T20:05:32.556Z",
+            "id": "1793995520_6210c7",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARIANA SOUZA SILVA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T20:03:49.734Z",
+            "id": "1793995417_dff29b",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ADRIANO SILVA COSTA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T14:07:57.833Z",
+            "id": "1793974066_138309",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ROBERTO DA SILVA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T14:25:04.501Z",
+            "id": "1793975092_09055e",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "ROBERTO DA SILVA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T14:30:18.489Z",
+            "id": "1793975406_4cfbf9",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "LUIZ OTAVIO MIRANDA DE SOUZA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T15:07:22.122Z",
+            "id": "1793977630_bfbe64",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARCIO DA SILVA MORAES",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T16:47:53.009Z",
+            "id": "1793983661_5d8659",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARIANA SOUZA SILVA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-06T20:16:00.769Z",
+            "id": "1793996149_f31e73",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARIANA SOUZA SILVA",
+            "usuario": "MG Editáveis",
+            "valor": "R$ 20,00",
+            "status": "concluido",
+            "created_at": "2026-11-08T00:24:32.798Z",
+            "id": "1794097460_225f09",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARIANA SOUZA SILVA",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-08T00:53:20.080Z",
+            "id": "1794099187_4a1ab9",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "tipo": "cnh",
+            "descricao": "MARIANA SOUZA SILVA",
+            "usuario": "Administrador Geral MG",
+            "valor": "R$ 26,00",
+            "status": "concluido",
+            "created_at": "2026-11-08T00:53:20.080Z",
+            "id": "1794099187_ea513f",
+            "updated_at": "2026-11-08T02:17:50+01:00"
+        },
+        {
+            "id": "1794099275_3deb8e",
+            "updated_at": "2026-11-08T02:17:50+01:00",
+            "created_at": "2026-11-08T01:54:35+01:00"
+        }
+    ],
+    "roadmap": [
+        {
+            "id": "rm_1793917743132_3012",
+            "title": "CNH Digital + APP",
+            "tag": "RG",
+            "desc": "RG Digital + APP pra validação .",
+            "status": "desenvolvimento",
+            "priority": "alta",
+            "nextDelivery": true,
+            "created_at": "2026-11-05T22:29:03.132Z"
+        }
+    ],
+    "blocked_ips": []
+}

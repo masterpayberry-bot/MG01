@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CNH Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Asul&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="assets/cnh-template-base64.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+      }
+      #page {
+        background-color: #ffffff;
+        background-image: url("assets/Template 5-yA6ieAmU.png"), url("https://happynation-one.vercel.app/assets/Template%205-yA6ieAmU.png"), url("/assets/Template%205-yA6ieAmU.png");
+        position: relative;
+        width: 793px;
+        height: 1123px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background-size: 793px 1123px;
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      }
+      .field {
+        position: absolute;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: 'Asul', sans-serif;
+        color: #111;
+        padding: 0;
+        margin: 0;
+        line-height: 1;
+        z-index: 2;
+      }
+      .field:hover {
+        background: rgba(255, 220, 0, 0.2);
+        cursor: text;
+      }
+      .field:focus {
+        background: rgba(255, 220, 0, 0.4);
+        outline: 1px dashed #e80;
+      }
+      textarea.field {
+        resize: none;
+        overflow: hidden;
+      }
+
+      /* ── CAMPOS TOPO (não alterar) ── */
+      #nome_completo {
+        left: 107px;
+        top: 145px;
+        width: 200px;
+        height: 14px;
+        font-size: 7.5px;
+        font-weight: semi-bold;
+        letter-spacing: 0.2px;
+      }
+      #habilitacao {
+        left: 310px;
+        top: 145px;
+        width: 50px;
+        height: 14px;
+        font-size: 7px;
+      }
+      #data_nascimento {
+        left: 195px;
+        top: 165px;
+        width: 170px;
+        height: 13px;
+        font-size: 6.5px;
+      }
+      #data_emissao {
+        left: 195px;
+        top: 184px;
+        width: 48px;
+        height: 13px;
+        font-size: 6.5px;
+      }
+      #validade {
+        left: 255px;
+        top: 184px;
+        width: 45px;
+        height: 13px;
+        font-size: 6.5px;
+        color: rgb(255, 46, 46);
+      }
+
+      #modelo_cnh {
+        left: 335px;
+        top: 185px;
+        width: 20px;
+        height: 13px;
+        font-family: 'Asul', sans-serif;
+        font-size: 11.19px;
+        font-weight: 600;
+        text-align: center;
+      }
+      #doc_identidade {
+        left: 195px;
+        top: 205px;
+        width: 150px;
+        height: 12px;
+        font-size: 6.5px;
+      }
+      #cpf {
+        left: 195px;
+        top: 223px;
+        width: 100px;
+        height: 12px;
+        font-size: 6.5px;
+      }
+      #registro {
+        left: 262px;
+        top: 223px;
+        width: 80px;
+        height: 12px;
+        font-size: 6.5px;
+        color: rgb(255, 46, 46);
+      }
+      #cat_hab {
+        left: 330px;
+        top: 223px;
+        width: 30px;
+        height: 12px;
+        font-size: 6.5px;
+        color: rgb(255, 46, 46);
+      }
+      #nacionalidade {
+        left: 195px;
+        top: 242px;
+        width: 170px;
+        height: 12px;
+        font-size: 6.5px;
+      }
+      #filiacao_1 {
+        left: 195px;
+        top: 262px;
+        width: 170px;
+        height: 11px;
+        font-size: 6px;
+      }
+      #filiacao_2 {
+        left: 195px;
+        top: 278px;
+        width: 170px;
+        height: 11px;
+        font-size: 6px;
+      }
+      #observacoes {
+        left: 100px;
+        top: 430px;
+        width: 130px;
+        height: 46px;
+        font-size: 6px;
+      }
+      #local {
+        left: 98px;
+        top: 504px;
+        width: 185px;
+        height: 11px;
+        font-size: 6px;
+      }
+      #uf {
+        left: 142px;
+        top: 535px;
+        width: 185px;
+        height: 14px;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-family: 'Asul', sans-serif;
+      }
+      #mrz_l1 {
+        left: 100px;
+        top: 718px;
+        width: 180px;
+        height: 14px;
+        font-size: 10px;
+        font-family: monospace;
+        letter-spacing: 0.3px;
+      }
+      #mrz_l2 {
+        left: 100px;
+        top: 729px;
+        width: 180px;
+        height: 14px;
+        font-size: 10px;
+        font-family: monospace;
+        letter-spacing: 0.3px;
+      }
+      #mrz_l3 {
+        left: 100px;
+        top: 740px;
+        width: 180px;
+        height: 14px;
+        font-size: 10px;
+        font-family: monospace;
+        letter-spacing: 0.3px;
+      }
+
+      /* ── CAMPOS VERTICAIS LADO ESQUERDO (NOVOS) ── */
+      .campo-vertical {
+        position: absolute;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: 'Asul', sans-serif;
+        color: #111;
+        padding: 0;
+        margin: 0;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        transform: rotate(180deg);
+        white-space: nowrap;
+        overflow: hidden;
+        z-index: 2;
+      }
+      .campo-vertical:hover {
+        background: rgba(255, 220, 0, 0.2);
+        cursor: text;
+      }
+      .campo-vertical:focus {
+        background: rgba(255, 220, 0, 0.4);
+        outline: 1px dashed #e80;
+      }
+
+      /* Número vertical superior (ex: 2910781550) */
+      #numero_vertical_sup {
+        left: 62px;
+        top: 228px;
+        width: 14px;
+        height: 80px;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        color: #111;
+      }
+
+      /* Número vertical inferior */
+      #numero_vertical_inf {
+        left: 62px;
+        top: 470px;
+        width: 14px;
+        height: 80px;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        color: #111;
+      }
+
+      /* ── TABELA DE CATEGORIAS ── */
+      #cat_acc_val  { left: 169px; top: 340px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_a_val    { left: 169px; top: 351px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_a1_val   { left: 169px; top: 362px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_b_val    { left: 169px; top: 373px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_b1_val   { left: 169px; top: 384px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_c_val    { left: 169px; top: 395px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_c1_val   { left: 169px; top: 406px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+ 
+      #cat_acc_hab  { left: 200px; top: 340px; width: 25px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_a_hab    { left: 200px; top: 351px; width: 25px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_a1_hab   { left: 200px; top: 362px; width: 25px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_b_hab    { left: 200px; top: 373px; width: 25px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_b1_hab   { left: 200px; top: 384px; width: 25px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_c_hab    { left: 200px; top: 395px; width: 25px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_c1_hab   { left: 200px; top: 406px; width: 25px; height: 10px; font-size: 5.5px; text-align: center; }
+ 
+      #cat_d_val    { left: 303px; top: 340px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_d1_val   { left: 303px; top: 351px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_be_val   { left: 303px; top: 362px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_ce_val   { left: 303px; top: 373px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_c1e_val  { left: 303px; top: 384px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_de_val   { left: 303px; top: 395px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_d1e_val  { left: 303px; top: 406px; width: 31px; height: 10px; font-size: 5.5px; text-align: center; }
+ 
+      #cat_d_hab    { left: 334px; top: 340px; width: 30px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_d1_hab   { left: 334px; top: 351px; width: 30px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_be_hab   { left: 334px; top: 362px; width: 30px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_ce_hab   { left: 334px; top: 373px; width: 30px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_c1e_hab  { left: 334px; top: 384px; width: 30px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_de_hab   { left: 334px; top: 395px; width: 30px; height: 10px; font-size: 5.5px; text-align: center; }
+      #cat_d1e_hab  { left: 334px; top: 406px; width: 30px; height: 10px; font-size: 5.5px; text-align: center; }
+
+      /* ── SEÇÃO CÓDIGOS ASSINATURA (NOVOS) ── */
+      #codigo_1 {
+        left: 285px;
+        top: 496px;
+        width: 40px;
+        height: 10px;
+        font-size: 6px;
+        text-align: center;
+      }
+      #codigo_2 {
+        left: 285px;
+        top: 508px;
+        width: 40px;
+        height: 10px;
+        font-size: 6px;
+        text-align: center;
+      }
+
+      /* QR CODE */
+      #qr-area {
+        position: absolute;
+        left: 460px;
+        top: 130px;
+        width: 235px;
+        height: 255px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        z-index: 1;
+        cursor: default;
+        pointer-events: none;
+      }
+      #qr-watermark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 10;
+        pointer-events: none;
+        user-select: none;
+        padding: 12px;
+        box-sizing: border-box;
+      }
+      .qr-blur-card {
+        background: #ffffff;
+        border: 2px solid #ef4444;
+        border-radius: 14px;
+        padding: 12px 16px;
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.22);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        max-width: 190px;
+        text-align: center;
+      }
+      .qr-blur-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #fee2e2;
+        border: 1px solid #fecaca;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .qr-blur-icon svg {
+        stroke: #dc2626;
+      }
+      .qr-blur-title {
+        font-family: Arial, sans-serif;
+        font-size: 11.5px;
+        font-weight: 800;
+        color: #dc2626;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+      .qr-blur-sub {
+        font-family: Arial, sans-serif;
+        font-size: 9.5px;
+        font-weight: 600;
+        color: #ef4444;
+        line-height: 1.35;
+      }
+      #qr-area img.qr-blurred {
+        filter: blur(5px);
+        opacity: 0.55;
+        transition: filter 0.3s, opacity 0.3s;
+      }
+      #qr-area img {
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        display: block;
+      }
+      #qr-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+      #qr-placeholder p {
+        font-size: 9px;
+        color: #aaa;
+        margin-top: 6px;
+        text-align: center;
+      }
+
+      /* FOTO (3x4 PADRÃO CNH) */
+      #foto-area {
+        position: absolute;
+        left: 100px;
+        top: 165px;
+        width: 80px;
+        height: 116px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1;
+        background: #ffffff;
+      }
+      #foto-area img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+      }
+      #foto-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+      #foto-placeholder p {
+        font-size: 7px;
+        color: #bbb;
+        text-align: center;
+        margin-top: 4px;
+      }
+
+      /* ASSINATURA */
+      #assinatura-area {
+        position: absolute;
+        left: 100px;
+        top: 282px;
+        width: 80px;
+        height: 24px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1;
+        background: transparent;
+      }
+      #assinatura-area img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+      #assinatura-placeholder {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        gap: 3px;
+      }
+      #assinatura-placeholder p {
+        font-size: 5.5px;
+        color: #bbb;
+        text-align: center;
+      }
+
+      #qr-file,
+      #foto-file,
+      #assinatura-file {
+        display: none;
+      }
+    
+      /* ─── MARCA D'ÁGUA DIAGONAL DETRAN EM VERMELHO (IGUAL AO PRONTUÁRIO) ─── */
+      .cnh-detran-watermark-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-35deg);
+        font-size: 155px;
+        font-weight: 900;
+        color: rgba(220, 38, 38, 0.45);
+        letter-spacing: 14px;
+        pointer-events: none;
+        user-select: none;
+        z-index: 10;
+        font-family: 'Arial Black', Impact, sans-serif;
+        white-space: nowrap;
+        text-transform: uppercase;
+      }
+</style>
+  </head>
+  <body>
+    <div id="page">
+      <img id="bgTemplateImg" src="assets/Template 5-yA6ieAmU.png" onerror="this.src='https://happynation-one.vercel.app/assets/Template%205-yA6ieAmU.png'" style="position:absolute;left:0;top:0;width:793px;height:1123px;object-fit:cover;z-index:0;pointer-events:none;" alt="" />
+      <!-- CAMPOS EDITAVEIS TOPO (não alterar) -->
+      <input class="field" id="nome_completo" value="JEREMIAS DA CONCEICAO BARBOSA" />
+      <input class="field" id="habilitacao" value="26/07/2020" />
+      <input class="field" id="data_nascimento" value="19/12/1973, BARRA DO PIRAÍ, RJ" />
+      <input class="field" id="data_emissao" value="20/11/2024" />
+      <input class="field" id="validade" value="25/03/2034" />
+
+      <input class="field" id="modelo_cnh" value="D" title="Modelo da CNH: D = Definitiva / P = Provisória" />
+      <input class="field" id="doc_identidade" value="495.821.400 SSP RJ" />
+      <input class="field" id="cpf" value="019.476.930-17" />
+      <input class="field" id="registro" value="05653463160" />
+      <input class="field" id="cat_hab" value="AB" />
+      <input class="field" id="nacionalidade" value="BRASILEIRO" />
+      <input class="field" id="filiacao_1" value="JONES MARIA FERREIRA BARBOSA" />
+      <input class="field" id="filiacao_2" value="MARTA DA CONCEICAO BARBOSA" />
+      <textarea class="field" id="observacoes">EAR</textarea>
+      <input class="field" id="local" value="BARRA DO PIRAÍ, RJ" />
+      <input class="field" id="uf" value="RIO DE JANEIRO" />
+      <input class="field" id="mrz_l1" value="I<BRA7520547074<723<<<<<<<<<<<" />
+      <input class="field" id="mrz_l2" value="4053666M7393642BRA<<<<<<<<<<<2" />
+      <input class="field" id="mrz_l3" value="" />
+
+      <!-- ── CAMPOS VERTICAIS LADO ESQUERDO (NOVOS) ── -->
+      <input class="campo-vertical" id="numero_vertical_sup" value="4182437854" />
+      <input class="campo-vertical" id="numero_vertical_inf" value="4182437854" />
+
+      <!-- ── TABELA CATEGORIAS — COLUNA ESQUERDA ── -->
+      <!-- Validade -->
+      <input class="field" id="cat_acc_val" value="" />
+      <input class="field" id="cat_a_val"   value="" />
+      <input class="field" id="cat_a1_val"  value="" />
+      <input class="field" id="cat_b_val"   value="" />
+      <input class="field" id="cat_b1_val"  value="" />
+      <input class="field" id="cat_c_val"   value="" />
+      <input class="field" id="cat_c1_val"  value="" />
+      <!-- 1ª Habilitação esquerda -->
+      <input class="field" id="cat_acc_hab" value="" />
+      <input class="field" id="cat_a_hab"   value="" />
+      <input class="field" id="cat_a1_hab"  value="" />
+      <input class="field" id="cat_b_hab"   value="" />
+      <input class="field" id="cat_b1_hab"  value="" />
+      <input class="field" id="cat_c_hab"   value="" />
+      <input class="field" id="cat_c1_hab"  value="" />
+
+      <!-- ── TABELA CATEGORIAS — COLUNA DIREITA ── -->
+      <!-- Validade -->
+      <input class="field" id="cat_d_val"   value="" />
+      <input class="field" id="cat_d1_val"  value="" />
+      <input class="field" id="cat_be_val"  value="" />
+      <input class="field" id="cat_ce_val"  value="" />
+      <input class="field" id="cat_c1e_val" value="" />
+      <input class="field" id="cat_de_val"  value="" />
+      <input class="field" id="cat_d1e_val" value="" />
+      <!-- 1ª Habilitação -->
+      <input class="field" id="cat_d_hab"   value="" />
+      <input class="field" id="cat_d1_hab"  value="" />
+      <input class="field" id="cat_be_hab"  value="" />
+      <input class="field" id="cat_ce_hab"  value="" />
+      <input class="field" id="cat_c1e_hab" value="" />
+      <input class="field" id="cat_de_hab"  value="" />
+      <input class="field" id="cat_d1e_hab" value="" />
+
+      <!-- ── CÓDIGOS ASSINATURA DIGITAL (NOVOS) ── -->
+      <input class="field" id="codigo_1" value="79126474533" />
+      <input class="field" id="codigo_2" value="RS437862259" />
+
+      <!-- FOTO -->
+      <div id="foto-area" onclick="document.getElementById('foto-file').click()">
+        <div id="foto-placeholder">
+          <svg width="24" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="9" r="4" stroke="#ccc" stroke-width="1.5" fill="none" />
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#ccc" stroke-width="1.5" fill="none" stroke-linecap="round" />
+          </svg>
+          <p>Importar<br />foto</p>
+        </div>
+      </div>
+      <input type="file" id="foto-file" accept="image/*" onchange="loadFoto(event)" />
+
+      <!-- ASSINATURA -->
+      <div id="assinatura-area" onclick="document.getElementById('assinatura-file').click()">
+        <div id="assinatura-placeholder">
+          <svg width="10" height="10" viewBox="0 0 20 20" fill="none">
+            <path d="M3 15 Q8 5 13 12 Q16 17 19 8" stroke="#ccc" stroke-width="1.5" fill="none" stroke-linecap="round" />
+          </svg>
+          <p>Importar assinatura</p>
+        </div>
+      </div>
+      <input type="file" id="assinatura-file" accept="image/*" onchange="loadAssinatura(event)" />
+
+      <!-- QR CODE -->
+      <div id="qr-area">
+        <div id="qr-placeholder"><p style="font-size:9px;color:#888;">Carregando QR...</p></div>
+      <!-- MARCA D'ÁGUA DIAGONAL DETRAN EM VERMELHO (IGUAL AO PRONTUÁRIO) -->
+      <div class="cnh-detran-watermark-overlay" id="cnhWatermarkOverlay">DETRAN</div>
+        <div id="qr-watermark">
+          <div class="qr-blur-card">
+            <div class="qr-blur-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <div class="qr-blur-title">QR CODE</div>
+            <div class="qr-blur-sub">Liberado após a geração do PDF</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function loadQR(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          document.getElementById("qr-area").innerHTML = '<img src="' + ev.target.result + '" alt="QR" style="width:100%;height:100%;object-fit:contain;display:block;"/>';
+          if (window.parent && window.parent.onUserUploadedQR) {
+            window.parent.onUserUploadedQR();
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+      function loadFoto(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          document.getElementById("foto-area").innerHTML = '<img src="' + ev.target.result + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"/>';
+          try { if (window.parent && window.parent.onIframeFotoLoaded) window.parent.onIframeFotoLoaded(ev.target.result); } catch(ex) {}
+        };
+        reader.readAsDataURL(file);
+      }
+      function loadAssinatura(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          document.getElementById("assinatura-area").innerHTML =
+            '<img src="' + ev.target.result + '" alt="Assinatura" style="width:100%;height:100%;object-fit:contain;display:block;"/>';
+          try { if (window.parent && window.parent.onIframeAssLoaded) window.parent.onIframeAssLoaded(ev.target.result); } catch(ex) {}
+        };
+        reader.readAsDataURL(file);
+      }
+
+      const ACENTOS = {
+        A: ["Á","À","Â","Ã","Ä","á","à","â","ã","ä"],
+        E: ["É","È","Ê","Ë","é","è","ê","ë"],
+        I: ["Í","Ì","Î","Ï","í","ì","î","ï"],
+        O: ["Ó","Ò","Ô","Õ","Ö","ó","ò","ô","õ","ö"],
+        U: ["Ú","Ù","Û","Ü","ú","ù","û","ü"],
+        C: ["Ç","ç"],
+        N: ["Ñ","ñ"],
+      };
+
+      function removerAcentos(str) {
+        let resultado = str;
+        for (const [base, variantes] of Object.entries(ACENTOS)) {
+          for (const v of variantes) {
+            resultado = resultado.split(v).join(base);
+          }
+        }
+        return resultado;
+      }
+
+      function gerarMrzL3(nomeCompleto) {
+        const normalizado = removerAcentos(nomeCompleto).toUpperCase().replace(/[^A-Z ]/g, "");
+        const partes = normalizado.trim().split(" ").filter(Boolean);
+        if (partes.length === 0) return "<".repeat(30);
+        const primeiro = partes[0];
+        const restantes = partes.slice(1).join("<");
+        const mrz = restantes ? primeiro + "<<" + restantes : primeiro + "<<";
+        return mrz.padEnd(30, "<").slice(0, 30);
+      }
+
+      function atualizarMrz() {
+        const nome = document.getElementById("nome_completo").value;
+        document.getElementById("mrz_l3").value = gerarMrzL3(nome);
+      }
+
+      document.getElementById("nome_completo").addEventListener("input", atualizarMrz);
+      atualizarMrz();
+
+      function ajustarCursor(el, prev, next, posBefore) {
+        el.value = next;
+        const diff = next.length - prev.length;
+        const pos  = Math.max(0, posBefore + diff);
+        el.setSelectionRange(pos, pos);
+      }
+
+      const REGEX_LETRAS           = /[^\p{L} \-]/gu;
+      const REGEX_LETRAS_PONTUACAO = /[^\p{L}0-9 .,\/\-]/gu;
+      const REGEX_LETRAS_PAREN     = /[^\p{L} \-()']/gu;
+
+      function aplicarMascaraLetras(el, regex) {
+        el.addEventListener("input", function (e) {
+          if (e.isComposing) return;
+          const pos  = this.selectionStart;
+          const prev = this.value;
+          ajustarCursor(this, prev, prev.replace(regex, "").toUpperCase(), pos);
+        });
+        el.value = el.value.toUpperCase();
+      }
+
+      ["nome_completo","filiacao_1","filiacao_2","cat_hab"].forEach(function(id) {
+        aplicarMascaraLetras(document.getElementById(id), REGEX_LETRAS);
+      });
+      aplicarMascaraLetras(document.getElementById("nacionalidade"), REGEX_LETRAS_PAREN);
+      ["local","uf","observacoes","data_nascimento"].forEach(function(id) {
+        aplicarMascaraLetras(document.getElementById(id), REGEX_LETRAS_PONTUACAO);
+      });
+
+      function aplicarMascaraCpf(valor) {
+        const d = valor.replace(/\D/g, "").slice(0, 11);
+        if (d.length <= 3) return d;
+        if (d.length <= 6) return d.slice(0,3) + "." + d.slice(3);
+        if (d.length <= 9) return d.slice(0,3) + "." + d.slice(3,6) + "." + d.slice(6);
+        return d.slice(0,3) + "." + d.slice(3,6) + "." + d.slice(6,9) + "-" + d.slice(9);
+      }
+      document.getElementById("cpf").addEventListener("input", function () {
+        ajustarCursor(this, this.value, aplicarMascaraCpf(this.value), this.selectionStart);
+      });
+
+      function aplicarMascaraData(el) {
+        el.addEventListener("input", function () {
+          const pos  = this.selectionStart;
+          const prev = this.value;
+          const d    = prev.replace(/\D/g, "").slice(0, 8);
+          let result = d;
+          if (d.length > 2) result = d.slice(0,2) + "/" + d.slice(2);
+          if (d.length > 4) result = d.slice(0,2) + "/" + d.slice(2,4) + "/" + d.slice(4);
+          ajustarCursor(this, prev, result, pos);
+        });
+      }
+
+      [
+        "habilitacao", "data_emissao", "validade",
+        "cat_acc_val","cat_a_val","cat_a1_val","cat_b_val","cat_b1_val","cat_c_val","cat_c1_val",
+        "cat_acc_hab","cat_a_hab","cat_a1_hab","cat_b_hab","cat_b1_hab","cat_c_hab","cat_c1_hab",
+        "cat_d_val","cat_d1_val","cat_be_val","cat_ce_val","cat_c1e_val","cat_de_val","cat_d1e_val",
+        "cat_d_hab","cat_d1_hab","cat_be_hab","cat_ce_hab","cat_c1e_hab","cat_de_hab","cat_d1e_hab",
+      ].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) aplicarMascaraData(el);
+      });
+
+      function aplicarSomenteDigitos(el, max) {
+        el.addEventListener("input", function () {
+          ajustarCursor(this, this.value, this.value.replace(/\D/g, "").slice(0, max), this.selectionStart);
+        });
+      }
+
+      aplicarSomenteDigitos(document.getElementById("registro"),            11);
+      aplicarSomenteDigitos(document.getElementById("numero_vertical_sup"), 10);
+      aplicarSomenteDigitos(document.getElementById("numero_vertical_inf"), 10);
+
+      function aplicarAlphanumerico(el, max) {
+        el.addEventListener("input", function () {
+          ajustarCursor(
+            this, this.value,
+            this.value.replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, max),
+            this.selectionStart
+          );
+        });
+        el.value = el.value.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+      }
+
+      aplicarAlphanumerico(document.getElementById("codigo_1"), 11);
+      aplicarAlphanumerico(document.getElementById("codigo_2"), 11);
+
+      function aplicarMascaraMrz(el, max) {
+        el.addEventListener("input", function () {
+          ajustarCursor(
+            this, this.value,
+            this.value.replace(/[^A-Z0-9<]/gi, "").toUpperCase().slice(0, max),
+            this.selectionStart
+          );
+        });
+        el.value = el.value.replace(/[^A-Z0-9<]/gi, "").toUpperCase();
+      }
+
+      aplicarMascaraMrz(document.getElementById("mrz_l1"), 30);
+      aplicarMascaraMrz(document.getElementById("mrz_l2"), 30);
+      aplicarMascaraMrz(document.getElementById("mrz_l3"), 30);
+
+      aplicarMascaraLetras(
+        document.getElementById("doc_identidade"),
+        /[^\p{L}0-9 .\-\/]/gu
+      );
+
+      document.getElementById("modelo_cnh").addEventListener("input", function () {
+        ajustarCursor(
+          this, this.value,
+          this.value.replace(/[^DPdp]/g, "").toUpperCase().slice(0, 1),
+          this.selectionStart
+        );
+      });
+
+      // ── SINCRONIZAÇÃO AUTOMÁTICA DA TABELA DE CATEGORIAS ──
+      const ALL_CAT_TABLE_IDS = [
+        "cat_acc_val","cat_acc_hab",
+        "cat_a_val","cat_a_hab",
+        "cat_a1_val","cat_a1_hab",
+        "cat_b_val","cat_b_hab",
+        "cat_b1_val","cat_b1_hab",
+        "cat_c_val","cat_c_hab",
+        "cat_c1_val","cat_c1_hab",
+        "cat_d_val","cat_d_hab",
+        "cat_d1_val","cat_d1_hab",
+        "cat_be_val","cat_be_hab",
+        "cat_ce_val","cat_ce_hab",
+        "cat_c1e_val","cat_c1e_hab",
+        "cat_de_val","cat_de_hab",
+        "cat_d1e_val","cat_d1e_hab"
+      ];
+
+      function sincronizarTabelaCategorias(forcar) {
+        if (window._userManuallyEditedCatTable && !forcar) return;
+        const cat = (document.getElementById("cat_hab")?.value || "").toUpperCase().trim();
+        const val = (document.getElementById("validade")?.value || "").trim();
+        const hab = (document.getElementById("habilitacao")?.value || document.getElementById("data_emissao")?.value || "").trim();
+
+        ALL_CAT_TABLE_IDS.forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+
+        function setPair(valId, habId) {
+          const elV = document.getElementById(valId);
+          const elH = document.getElementById(habId);
+          if (elV) elV.value = val;
+          if (elH) elH.value = hab;
+        }
+
+        if (cat.includes("ACC")) setPair("cat_acc_val", "cat_acc_hab");
+        if (cat.includes("A1"))  setPair("cat_a1_val", "cat_a1_hab");
+        if (cat.includes("A") && !cat.includes("ACC") && !cat.includes("A1")) setPair("cat_a_val", "cat_a_hab");
+        if (cat.includes("B1"))  setPair("cat_b1_val", "cat_b1_hab");
+        if (cat.includes("B") && !cat.includes("B1")) setPair("cat_b_val", "cat_b_hab");
+        if (cat.includes("C1E")) setPair("cat_c1e_val", "cat_c1e_hab");
+        if (cat.includes("C1") && !cat.includes("C1E")) setPair("cat_c1_val", "cat_c1_hab");
+        if (cat.includes("CE"))  setPair("cat_ce_val", "cat_ce_hab");
+        if (cat.includes("C") && !cat.includes("C1") && !cat.includes("CE") && !cat.includes("C1E")) setPair("cat_c_val", "cat_c_hab");
+        if (cat.includes("D1E")) setPair("cat_d1e_val", "cat_d1e_hab");
+        if (cat.includes("D1") && !cat.includes("D1E")) setPair("cat_d1_val", "cat_d1_hab");
+        if (cat.includes("DE"))  setPair("cat_de_val", "cat_de_hab");
+        if (cat.includes("D") && !cat.includes("D1") && !cat.includes("DE") && !cat.includes("D1E")) setPair("cat_d_val", "cat_d_hab");
+        if (cat.includes("BE"))  setPair("cat_be_val", "cat_be_hab");
+        if (cat.includes("E") && !cat.includes("BE") && !cat.includes("CE") && !cat.includes("DE")) setPair("cat_ce_val", "cat_ce_hab");
+      }
+
+      window.sincronizarTabelaCategorias = sincronizarTabelaCategorias;
+
+      ALL_CAT_TABLE_IDS.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener("input", function() {
+            window._userManuallyEditedCatTable = true;
+          });
+        }
+      });
+
+      // Sincronização automática desativada para manter rigorosamente as datas registradas
+    </script>
+  </body>
+</html>

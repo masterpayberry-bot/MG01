@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MG Editáveis | Exames Toxicológicos">
+    <meta property="og:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis — Exames Toxicológicos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="saldo-sync.js"></script>
+
+    <style>
+        :root {
+            --bg-page: #121414;
+            --bg-header: #141716;
+            --bg-card: #191c1d;
+            --bg-card-hover: #1e2223;
+            --bg-input: #141617;
+            --border-color: #242829;
+            --border-subtle: #1e2223;
+            --primary: #00dc82;
+            --primary-hover: #00c975;
+            --primary-light: rgba(0, 220, 130, 0.12);
+            --primary-border: rgba(0, 220, 130, 0.28);
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 14px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-page); }
+        ::-webkit-scrollbar-thumb { background: #282c2d; border-radius: 3px; }
+
+        /* Light Theme */
+        body.light-theme {
+            --bg-page: #f6f8f7;
+            --bg-header: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8fafc;
+            --bg-input: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-subtle: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+        }
+        body.light-theme .header {
+            background: #ffffff;
+            border-bottom-color: #e2e8f0;
+        }
+        body.light-theme .brand-text { color: #0f172a; }
+        body.light-theme .card,
+        body.light-theme .table-wrap,
+        body.light-theme .filter-card {
+            background: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            color: #0f172a !important;
+        }
+        body.light-theme .stat-title,
+        body.light-theme .stat-sub { color: #64748b; }
+        body.light-theme .stat-num { color: #0f172a; }
+        body.light-theme thead th {
+            background: #f8fafc;
+            border-bottom-color: #e2e8f0;
+            color: #475569;
+        }
+        body.light-theme tbody td {
+            background: #ffffff;
+            border-bottom-color: #f1f5f9;
+            color: #334155;
+        }
+        body.light-theme tbody tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            height: 64px;
+            backdrop-filter: blur(8px);
+        }
+        .header-inner {
+            max-width: 1320px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: #00dc82;
+            border-radius: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.45);
+            overflow: hidden;
+        }
+        .brand-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .brand-text {
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.4px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08);
+            color: #00dc82;
+            border: 1px solid #00dc82;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+        }
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-voltar:hover {
+            color: var(--text-primary);
+            border-color: var(--primary);
+        }
+        .avatar-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #232729;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Container */
+        .page-container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Grid Top Metrics */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 768px) {
+            .grid-3 { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            position: relative;
+        }
+        .card-stat-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .stat-icon-wrap {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(0, 220, 130, 0.12);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stat-icon-wrap svg { width: 16px; height: 16px; }
+        .stat-icon-wrap.blue { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        .stat-icon-wrap.purple { background: rgba(168, 85, 247, 0.12); color: #a855f7; }
+        .stat-title {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .stat-num {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .stat-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Action Row: Novo Exame */
+        .action-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .action-banner-text h2 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .action-banner-text p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .btn-novo-exame {
+            background: var(--primary);
+            color: #062517;
+            font-size: 13.5px;
+            font-weight: 800;
+            padding: 10px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(0, 220, 130, 0.35);
+            transition: all 0.2s;
+        }
+        .btn-novo-exame:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Filter bar */
+        .filter-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .filter-input {
+            flex: 1;
+            min-width: 240px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            outline: none;
+            font-family: var(--font);
+        }
+        .filter-input:focus { border-color: var(--primary); }
+
+        /* Table */
+        .table-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        thead th {
+            background: #161819;
+            padding: 12px 18px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+        }
+        tbody td {
+            padding: 14px 18px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+        }
+        tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(0, 220, 130, 0.12);
+            color: var(--primary);
+            border: 1px solid rgba(0, 220, 130, 0.25);
+        }
+        .btn-table-action {
+            background: #232729;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 6px;
+            transition: all 0.15s;
+        }
+        .btn-table-action:hover {
+            background: #2b3034;
+            border-color: var(--primary);
+        }
+        .empty-state {
+            padding: 48px 24px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .empty-state svg { width: 44px; height: 44px; stroke: var(--text-muted); margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img" onerror="this.style.display='none'">
+                </div>
+                <span class="brand-text">MG Editáveis</span>
+            </a>
+
+            <div class="header-right">
+                <a href="recargas.html" class="saldo-pill" title="Seu Saldo Atual">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+
+                <a href="index.html" class="btn-voltar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Início
+                </a>
+
+                <div class="avatar-circle">M</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-container">
+
+        <!-- Top Metrics -->
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-stat-header">
+                    <div class="stat-icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+                    </div>
+                    <span class="stat-title">HOJE</span>
+                </div>
+                <div class="stat-num" id="statHoje">0</div>
+                <div class="stat-sub">Laudos emitidos hoje</div>
+            </div>
+
+            <div class="card">
+                <div class="card-stat-header">
+                    <div class="stat-icon-wrap blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <span class="stat-title">ESTE MÊS</span>
+                </div>
+                <div class="stat-num" id="statMes">0</div>
+                <div class="stat-sub">Laudos emitidos no mês</div>
+            </div>
+
+            <div class="card">
+                <div class="card-stat-header">
+                    <div class="stat-icon-wrap purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <span class="stat-title">TOTAL GERAL</span>
+                </div>
+                <div class="stat-num" id="statTotal">0</div>
+                <div class="stat-sub">Histórico total de exames</div>
+            </div>
+        </div>
+
+        <!-- Action Banner -->
+        <div class="action-banner">
+            <div class="action-banner-text">
+                <h2>Gerenciador de Exames Toxicológicos</h2>
+                <p>Emita e personalize laudos com layout idêntico ao modelo oficial Psychemedics Brasil CONTRAN.</p>
+            </div>
+            <a href="criar-exame.html" class="btn-novo-exame">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Novo Exame
+            </a>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-card">
+            <input type="text" id="filtroInput" class="filter-input" placeholder="Buscar por Nome, CPF ou Laudo Nº..." oninput="filtrarTabela()">
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+            <table id="examesTable">
+                <thead>
+                    <tr>
+                        <th>NOME DO CONDUTOR</th>
+                        <th>CPF</th>
+                        <th>LAUDO Nº</th>
+                        <th>DATA</th>
+                        <th>RESULTADO</th>
+                        <th style="text-align: right;">AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody id="examesTbody">
+                    <!-- Dynamic rows -->
+                </tbody>
+            </table>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <p style="font-weight: 600; font-size: 15px; margin-bottom: 6px;">Nenhum exame emitido ainda</p>
+                <p style="font-size: 13px;">Clique em "Novo Exame" para emitir seu primeiro laudo toxicológico.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function loadExames() {
+            let list = [];
+            try {
+                const raw = localStorage.getItem('happynation_exames');
+                if (raw) list = JSON.parse(raw);
+            } catch(e) {}
+
+            // Update stats
+            document.getElementById('statTotal').textContent = list.length;
+            document.getElementById('statMes').textContent = list.length;
+            document.getElementById('statHoje').textContent = list.length > 0 ? 1 : 0;
+
+            const tbody = document.getElementById('examesTbody');
+            const empty = document.getElementById('emptyState');
+
+            if (!list || list.length === 0) {
+                tbody.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            tbody.innerHTML = list.map(item => `
+                <tr>
+                    <td style="font-weight:700;">${item.nome || '---'}</td>
+                    <td>${item.cpf || '---'}</td>
+                    <td style="color:#00dc82; font-family:var(--font-mono); font-weight:700;">${item.laudo || '---'}</td>
+                    <td>${item.data || '---'}</td>
+                    <td><span class="status-badge">${item.resultado || 'Negativo'}</span></td>
+                    <td style="text-align: right;">
+                        <a href="criar-exame.html?nome=${encodeURIComponent(item.nome || '')}&cpf=${encodeURIComponent(item.cpf || '')}&laudo=${encodeURIComponent(item.laudo || '')}" class="btn-table-action">
+                            ✏️ Editar
+                        </a>
+                        <button type="button" class="btn-table-action" onclick="deleteExam('${item.id}')" style="color:#ef4444;">
+                            🗑️ Excluir
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteExam(id) {
+            if (!confirm('Deseja realmente remover este exame do histórico?')) return;
+            try {
+                const raw = localStorage.getItem('happynation_exames');
+                let list = raw ? JSON.parse(raw) : [];
+                list = list.filter(item => item.id !== id);
+                localStorage.setItem('happynation_exames', JSON.stringify(list));
+                loadExames();
+            } catch(e) {}
+        }
+
+        function filtrarTabela() {
+            const query = document.getElementById('filtroInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#examesTbody tr');
+            rows.forEach(r => {
+                const text = r.textContent.toLowerCase();
+                r.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        (function initTheme() {
+            try {
+                if (localStorage.getItem('happynation_theme') === 'light') {
+                    document.body.classList.add('light-theme');
+                }
+            } catch(e) {}
+        })();
+
+        document.addEventListener('DOMContentLoaded', loadExames);
+    </script>
+</body>
+</html>

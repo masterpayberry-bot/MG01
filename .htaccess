@@ -1,0 +1,82 @@
+# ============================================================
+# .htaccess — CONFIGURAÇÃO OFICIAL XAMPP / APACHE (MG Editáveis)
+# ============================================================
+
+Require all granted
+Options -Indexes +FollowSymLinks
+DirectoryIndex index.html index.php
+
+# Fallback gracioso para evitar tela 404 branca do Apache
+ErrorDocument 404 /index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Roteamento exclusivo do WebApp / Aplicativo cnh-brasil-app.com
+    RewriteCond %{HTTP_HOST} (cnh-brasil-app\.com|cnh-brasil-web-app\.com) [NC]
+    RewriteCond %{REQUEST_URI} ^/?$
+    RewriteRule ^$ app/index.html [L,QSA]
+
+    # Roteamento exclusivo do Painel de Clientes e Admin
+    RewriteCond %{HTTP_HOST} (painel\.mgeditaveis\.com|paineldocsmg\.com|painel-mg-editaveis\.com) [NC]
+    RewriteCond %{REQUEST_URI} ^/?$
+    RewriteRule ^$ index.html [L,QSA]
+
+    # Roteamento direto do domínio de Validação senatran-validacao-gov.com
+    RewriteCond %{HTTP_HOST} (senatran-validacao-gov\.com|consulta-senatran\.com) [NC]
+    RewriteCond %{REQUEST_URI} ^/?$
+    RewriteRule ^$ validar-cnh.html [L,QSA]
+
+    # -------------------------------------------------------------
+    # ROTEAMENTO MULTI-DOMINIOS (HostMF / VPS)
+    # -------------------------------------------------------------
+    # Se o dominio contiver termos de validacao/qrcode, entrega o validador
+    RewriteCond %{HTTP_HOST} (valida|qrcode|consulta|verifi) [NC]
+    RewriteCond %{REQUEST_URI} ^/?$
+    RewriteRule ^$ validar-cnh.html [L,QSA]
+
+    # Se o dominio contiver termos de aplicativo/cdt/carteira, entrega o app
+    RewriteCond %{HTTP_HOST} (app|cdt|carteira) [NC]
+    RewriteCond %{REQUEST_URI} ^/?$
+    RewriteRule ^$ app/index.html [L,QSA]
+
+    # 1. Rotas REST da API (Compatibilidade Total com o Servidor Node e XAMPP)
+    RewriteRule ^api/config/?$ api/config/index.php [L,QSA]
+    RewriteRule ^api/db/(.*)$ api/db/index.php?path=$1 [L,QSA]
+
+    # 2. Rotas Amigáveis da CNH e Aplicativo
+    RewriteRule ^app/?$ app/index.html [L,NC,QSA]
+    RewriteRule ^verificador/?$ validar-cnh.html [L,NC,QSA]
+
+    # Rota amigável e Proteção de Cloaker do Admin (Server-Side com admin.php)
+    RewriteRule ^admin_([a-zA-Z0-9_\-]+)/?$ admin.php?admin_slug=$1 [L,NC,QSA]
+    RewriteRule ^admin/?$ admin.php [L,NC,QSA]
+    RewriteRule ^admin\.html$ admin.php [L,NC,QSA]
+    RewriteRule ^client/admin/?$ admin.php [L,NC,QSA]
+
+    # Rotas amigáveis para todas as páginas do sistema
+    RewriteRule ^login/?$ login.html [L,NC,QSA]
+    RewriteRule ^cnh/?$ cnh.html [L,NC,QSA]
+    RewriteRule ^criar-cnh/?$ criar-cnh.html [L,NC,QSA]
+    RewriteRule ^ver-cnh/?$ ver-cnh.html [L,NC,QSA]
+    RewriteRule ^recargas/?$ recargas.html [L,NC,QSA]
+    RewriteRule ^perfil/?$ perfil.html [L,NC,QSA]
+    RewriteRule ^suporte/?$ suporte.html [L,NC,QSA]
+    RewriteRule ^indicacoes/?$ indicacoes.html [L,NC,QSA]
+    RewriteRule ^habilitacao/?$ habilitacao.html [L,NC,QSA]
+    RewriteRule ^dashboard/?$ index.html [L,NC,QSA]
+    RewriteRule ^painel/?$ index.html [L,NC,QSA]
+
+    # Permite acessar qualquer página com ou sem a extensão .html
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^(.*)$ $1.html [L,QSA]
+</IfModule>
+
+# Cabeçalhos CORS e Tipos MIME
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
+</IfModule>

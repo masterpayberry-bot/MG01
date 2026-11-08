@@ -1,0 +1,2394 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+            <!-- Open Graph / Compartilhamento de Links (WhatsApp Banner Grande em Cima) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MG Editáveis">
+    <meta property="og:title" content="MG Editáveis • Sistema de Gestão Digital">
+    <meta property="og:description" content="Acesse seu painel exclusivo com segurança e agilidade para emissão e controle de documentos em tempo real.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.jpg">
+    <meta property="og:image:secure_url" content="https://painel-mg-editaveis.com/og-image.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MG Editáveis • Sistema de Gestão Digital">
+    <!-- Twitter Card (Força o Banner Grande em Cima no WhatsApp e Telegram) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MG Editáveis • Sistema de Gestão Digital">
+    <meta name="twitter:description" content="Acesse seu painel exclusivo com segurança e agilidade para emissão e controle de documentos em tempo real.">
+    <meta name="twitter:image" content="http://painel-mg-editaveis.com/og-image.jpg">
+    <link rel="image_src" href="http://painel-mg-editaveis.com/og-image.jpg">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- SISTEMA CLOAKER: PROTEÇÃO DE ACESSO DO INDEX / WEBAPP -->
+    <script>
+        (function() {
+            try {
+                function checkCloaker(cfg) {
+                    if (cfg && cfg.indexEnabled === true && cfg.indexKey) {
+                        var param = cfg.indexParam || 'token';
+                        var expected = cfg.indexKey;
+                        var urlParams = new URLSearchParams(window.location.search);
+                        var provided = urlParams.get(param);
+
+                        if (provided === expected) {
+                            sessionStorage.setItem('happynation_index_cloaker_passed', expected);
+                        } else if (sessionStorage.getItem('happynation_index_cloaker_passed') !== expected) {
+                            var dest = cfg.indexRedirect || 'https://google.com';
+                            window.location.replace(dest);
+                        }
+                    }
+                }
+                var raw = localStorage.getItem('happynation_cloaker_index') || localStorage.getItem('happynation_cloaker');
+                if (raw) {
+                    try {
+                        var cLocal = JSON.parse(raw);
+                        if (cLocal && cLocal.indexEnabled === true) checkCloaker(cLocal);
+                    } catch(e){}
+                }
+                fetch('api/config').then(function(r){ return r.json(); }).then(function(res){
+                    if (res && res.data) {
+                        var c = {
+                            indexEnabled: res.data.cloakerIndexEnabled === true,
+                            indexParam: res.data.cloakerIndexParam || 'token',
+                            indexKey: res.data.cloakerIndexKey || 'vip_171',
+                            indexRedirect: res.data.cloakerIndexRedirect || 'https://google.com'
+                        };
+                        localStorage.setItem('happynation_cloaker_index', JSON.stringify(c));
+                        if (c.indexEnabled === true) {
+                            checkCloaker(c);
+                        }
+                    }
+                }).catch(function(){});
+            } catch(e) {}
+        })();
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | APP</title>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #121414;
+            --bg-card: #191c1d;
+            --bg-card-hover: #1f2325;
+            --bg-input: #121416;
+            --border-color: #232729;
+            --border-subtle: #282d31;
+            --primary: #00dc82;
+            --primary-dark: #00b368;
+            --text-primary: #ffffff;
+            --text-secondary: #9aa2a6;
+            --text-muted: #5f686c;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body.light-theme {
+            --bg-page: #f6f8f7;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --bg-input: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-subtle: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #121414; }
+        ::-webkit-scrollbar-thumb { background: #262a2c; border-radius: 3px; }
+
+        /* ─── HEADER ─── */
+        .header {
+            height: 60px;
+            background: rgba(21, 23, 24, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000 !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+        body.light-theme .header {
+            background: #ffffff;
+            border-bottom-color: #e2e8f0;
+        }
+
+        .header-inner {
+            max-width: 1260px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #00dc82;
+            flex-shrink: 0;
+        }
+        .brand-logo {
+            width: 28px;
+            height: 28px;
+            background: #00dc82;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .brand-logo svg {
+            width: 17px;
+            height: 17px;
+            fill: #062517;
+        }
+        .brand-text {
+            font-size: 17px;
+            font-weight: 700;
+            color: #00dc82;
+            letter-spacing: -0.3px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .header-admin-pill {
+            color: #ff4757 !important;
+            font-weight: 700;
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 20px;
+            padding: 5px 12px;
+            background: rgba(255, 71, 87, 0.08);
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .header-admin-pill:hover {
+            background: rgba(255, 71, 87, 0.18);
+            border-color: rgba(255, 71, 87, 0.5);
+            color: #ff6b81 !important;
+        }
+
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08);
+            color: #00dc82;
+            border: 1px solid rgba(0, 220, 130, 0.3);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.15);
+        }
+
+        .header-link {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color .2s;
+            cursor: pointer;
+        }
+        .header-link:hover { color: #fff; }
+        body.light-theme .header-link:hover { color: #0f172a; }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: color 0.15s;
+        }
+        .header-icon:hover { color: #fff; }
+        .header-icon svg { width: 18px; height: 18px; }
+
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #00dc82;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #062517;
+            cursor: pointer;
+        }
+
+        /* ─── AVATAR DROPDOWN ─── */
+        .avatar-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            width: 220px;
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .avatar-dropdown.show { display: flex; }
+        .dropdown-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dropdown-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .dropdown-email {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            word-break: break-all;
+        }
+        .dropdown-menu {
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .dropdown-item svg { width: 15px; height: 15px; color: var(--text-secondary); }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+        .dropdown-item.danger { color: #ef4444; }
+        .dropdown-item.danger svg { color: #ef4444; }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 6px;
+        }
+
+        /* ─── LAYOUT: SIDEBAR + CONTENT ─── */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 24px 20px 80px 20px;
+            width: 100%;
+        }
+
+        .app-content-layout {
+            display: flex;
+            gap: 24px;
+            width: 100%;
+        }
+
+        /* ─── SIDEBAR FERRAMENTAS ─── */
+        .sidebar {
+            width: 195px;
+            flex-shrink: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 8px;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        body.light-theme .sidebar {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+            padding: 4px 12px 10px 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            transition: all 0.18s ease;
+            cursor: pointer;
+        }
+        .nav-item span {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .nav-item svg {
+            width: 17px;
+            height: 17px;
+            stroke: #00dc82;
+            color: #00dc82;
+            stroke-width: 2.2;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 6px rgba(0, 220, 130, 0.45));
+            transition: transform 0.18s ease, filter 0.18s ease;
+        }
+        .nav-item:hover {
+            background: rgba(0, 220, 130, 0.08);
+            color: #ffffff;
+            transform: translateX(3px);
+        }
+        .nav-item:hover svg {
+            stroke: #34d399;
+            color: #34d399;
+            filter: drop-shadow(0 0 10px rgba(0, 220, 130, 0.7));
+            transform: scale(1.1);
+        }
+        body.light-theme .nav-item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .nav-item svg {
+            width: 16px;
+            height: 16px;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        /* ─── MAIN CONTENT ─── */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-header-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .section-header-title svg {
+            width: 14px;
+            height: 14px;
+            color: #00dc82;
+        }
+
+        /* ─── AÇÕES RÁPIDAS (4 CARDS) ─── */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .action-card:hover {
+            border-color: #00dc82;
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .action-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-icon-box.green {
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+        }
+        .action-icon-box.gray {
+            background: rgba(154, 162, 166, 0.1);
+            color: #9aa2a6;
+        }
+        .action-icon-box.blue {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+        }
+        .action-icon-box svg { width: 17px; height: 17px; }
+
+        .action-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        /* ─── ÚLTIMAS ATIVIDADES ─── */
+        .activities-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .activity-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 18px;
+            border-bottom: 1px solid #202426;
+            transition: background 0.15s;
+        }
+        body.light-theme .activity-row {
+            border-bottom-color: #f1f5f9;
+        }
+        .activity-row:last-child {
+            border-bottom: none;
+        }
+        .activity-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .act-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .act-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: rgba(0, 220, 130, 0.1);
+            color: #00dc82;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .act-icon svg { width: 14px; height: 14px; }
+
+        .act-icon.cnh {
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+        }
+        .act-icon.atestado {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+        }
+        .act-icon.exame {
+            background: rgba(168, 85, 247, 0.12);
+            color: #a855f7;
+        }
+
+        .act-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .act-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+        .act-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .act-badge {
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+        .act-badge.cnh {
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+        }
+        .act-badge.atestado {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+        }
+        .act-badge.exame {
+            background: rgba(168, 85, 247, 0.12);
+            color: #a855f7;
+        }
+
+        /* ─── PRÓXIMAS ATUALIZAÇÕES (COMPACTO, MODERNO & ORGANIZADO) ─── */
+        .roadmap-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .roadmap-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .roadmap-header-row .section-header-title {
+            margin-bottom: 0;
+        }
+
+        .roadmap-pills-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            padding: 0;
+            border: none;
+            flex-wrap: wrap;
+        }
+
+        .rm-arrow {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            user-select: none;
+            opacity: 0.6;
+        }
+
+        .rm-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            user-select: none;
+            letter-spacing: -0.1px;
+            transition: all 0.15s;
+        }
+        .rm-pill.blue {
+            background: rgba(56, 189, 248, 0.10);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+        .rm-pill.amber {
+            background: rgba(245, 158, 11, 0.10);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+        .rm-pill.purple {
+            background: rgba(168, 85, 247, 0.10);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.25);
+        }
+
+        .roadmap-group-header {
+            font-size: 11.5px;
+            font-weight: 700;
+            margin: 12px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .roadmap-group-header.blue { color: #38bdf8; }
+        .roadmap-group-header.amber { color: #fbbf24; }
+        .roadmap-group-header.purple { color: #c084fc; }
+
+        .group-count {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 10.5px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 1px 7px;
+            border-radius: 10px;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+        body.light-theme .group-count {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #64748b;
+        }
+
+        .roadmap-cards-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        @media (max-width: 768px) {
+            .roadmap-cards-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .rm-card {
+            background: var(--bg-card);
+            border: 1px solid #232729;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 6px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        body.light-theme .rm-card {
+            background: #ffffff !important;
+            border-color: #e2e8f0 !important;
+        }
+        .rm-card:hover {
+            border-color: rgba(0, 220, 130, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+        }
+
+        .rm-card.border-blue {
+            border-left: 3.5px solid #38bdf8 !important;
+        }
+        .rm-card.border-amber {
+            border-left: 3.5px solid #f59e0b !important;
+        }
+        .rm-card.border-purple {
+            border-left: 3.5px solid #a855f7 !important;
+        }
+
+        .rm-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 1px;
+        }
+
+        .badge-proxima-entrega {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+            border: 1px solid rgba(0, 220, 130, 0.35);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            letter-spacing: 0.2px;
+        }
+
+        .rm-card-tag {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 2px 7px;
+            border-radius: 6px;
+            margin-left: auto;
+        }
+        body.light-theme .rm-card-tag {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+
+        .rm-card-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.35;
+            letter-spacing: -0.2px;
+        }
+
+        .rm-card-sub {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            opacity: 0.88;
+        }
+
+        .rm-card-priority {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        body.light-theme .rm-card-priority {
+            border-top-color: rgba(0, 0, 0, 0.05);
+        }
+        .rm-dot {
+            font-size: 8px;
+            line-height: 1;
+        }
+        .rm-dot.amber { color: #f59e0b; }
+        .rm-dot.gray { color: #64748b; }
+
+        /* Floating Theme Toggle (FAB) */
+        .fab-theme-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 42px;
+            height: 42px;
+            background: #00dc82;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.4);
+            z-index: 99;
+            color: #062517;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .fab-theme-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.6);
+        }
+        .fab-theme-btn svg { width: 18px; height: 18px; }
+
+        /* ─── TOAST NOTIFICATION (EXACT TO SCREENSHOT) ─── */
+        .custom-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #191c1d;
+            border: 1px solid #232729;
+            border-radius: 8px;
+            padding: 12px 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            display: none;
+            flex-direction: column;
+            gap: 3px;
+            z-index: 9999;
+            animation: toastIn 0.2s ease-out;
+            max-width: 320px;
+        }
+        body.light-theme .custom-toast {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        .toast-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .toast-msg {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+        }
+        @keyframes toastIn {
+            from { transform: translateY(12px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 900px) {
+            .app-container { flex-direction: column; gap: 16px; }
+            .app-content-layout { flex-direction: column; gap: 16px; }
+            .sidebar { width: 100%; }
+            .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    
+        .neural-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+    
+        /* Header and dropdown z-index fixes */
+        .header {
+            z-index: 1000 !important;
+        }
+        .avatar-dropdown {
+            z-index: 99999 !important;
+        }
+    
+
+        
+
+        /* ─── SOLID BACKGROUND SHIELD (Mantém o cinza elegante original #191c1d 100% opaco e isolado do canvas) ─── */
+        .page-container,
+        .app-container,
+        .main-wrapper,
+        .main-layout,
+        .container,
+        .workspace {
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        .card,
+        .card-action,
+        .table-wrap,
+        .editor-card,
+        .preview-canvas,
+        .auth-card,
+        .profile-card,
+        .recharge-card,
+        .support-card,
+        .chat-container,
+        .chat-sidebar,
+        .chat-main,
+        .sidebar,
+        .content,
+        .action-card,
+        .activities-card,
+        .rm-card,
+        .modal,
+        .modal-content,
+        .modal-card,
+        .dialog-card,
+        .dialog-box,
+        .custom-modal,
+        .swal2-popup {
+            background-color: #191c1d !important;
+            border-color: #232729 !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 5 !important;
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+        }
+
+        /* Linhas e cabeçalho da tabela */
+        table {
+            background-color: #191c1d !important;
+        }
+
+        thead th {
+            background-color: #161819 !important;
+            border-bottom: 1px solid #232729 !important;
+        }
+
+        tbody tr {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr td {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr:hover td {
+            background-color: #202426 !important;
+        }
+
+        .table-footer {
+            background-color: #191c1d !important;
+            border-top: 1px solid #232729 !important;
+        }
+
+        /* ─── LIGHT THEME OVERRIDES (corrige o shield para tema claro) ─── */
+        body.light-theme .card,
+        body.light-theme .card-action,
+        body.light-theme .table-wrap,
+        body.light-theme .editor-card,
+        body.light-theme .auth-card,
+        body.light-theme .profile-card,
+        body.light-theme .recharge-card,
+        body.light-theme .support-card,
+        body.light-theme .chat-container,
+        body.light-theme .chat-sidebar,
+        body.light-theme .chat-main,
+        body.light-theme .sidebar,
+        body.light-theme .content,
+        body.light-theme .action-card,
+        body.light-theme .activities-card,
+        body.light-theme .rm-card,
+        body.light-theme .modal,
+        body.light-theme .modal-content,
+        body.light-theme .modal-card,
+        body.light-theme .dialog-card,
+        body.light-theme .dialog-box,
+        body.light-theme .custom-modal,
+        body.light-theme .swal2-popup {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05) !important;
+            color: #0f172a !important;
+        }
+        body.light-theme table {
+            background-color: #ffffff !important;
+        }
+        body.light-theme thead th {
+            background-color: #f8fafc !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+        body.light-theme tbody tr {
+            background-color: #ffffff !important;
+        }
+        body.light-theme tbody tr td {
+            background-color: #ffffff !important;
+            color: #334155 !important;
+        }
+        body.light-theme tbody tr:hover td {
+            background-color: #f8fafc !important;
+        }
+        body.light-theme .table-footer {
+            background-color: #f8fafc !important;
+            border-top: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+
+        /* ─── LIGHT THEME: TEXTO E ÍCONES (logo, nav, header) ─── */
+        body.light-theme .brand-text,
+        body.light-theme .brand-text span {
+            color: #0f172a !important;
+        }
+        body.light-theme .nav-item,
+        body.light-theme .nav-item span {
+            color: #1e293b !important;
+        }
+        body.light-theme .nav-item:hover,
+        body.light-theme .nav-item:hover span {
+            color: #0f172a !important;
+        }
+        body.light-theme .header-icon,
+        body.light-theme .header-icon:hover {
+            color: #475569 !important;
+        }
+        body.light-theme .header-link {
+            color: #475569 !important;
+        }
+        body.light-theme .sidebar-title {
+            color: #94a3b8 !important;
+        }
+        body.light-theme .action-title {
+            color: #1e293b !important;
+        }
+        body.light-theme .section-header-title {
+            color: #1e293b !important;
+        }
+        body.light-theme .act-name {
+            color: #1e293b !important;
+        }
+        body.light-theme .act-time {
+            color: #94a3b8 !important;
+        }
+        body.light-theme .rm-card-title {
+            color: #1e293b !important;
+        }
+        body.light-theme .rm-card-sub {
+            color: #64748b !important;
+        }
+        body.light-theme .rm-card-priority {
+            color: #94a3b8 !important;
+        }
+        body.light-theme .rm-arrow {
+            color: #94a3b8 !important;
+        }
+        body.light-theme .activity-row {
+            border-bottom-color: #f1f5f9 !important;
+        }
+        body.light-theme .activity-row:hover {
+            background: rgba(0,0,0,0.025) !important;
+        }
+
+        .filters-bar,
+        .filter-group input,
+        .filter-group select {
+            position: relative !important;
+            z-index: 5 !important;
+        }
+
+    
+        /* ─── BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS ─── */
+        .networking-fab {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 99999;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px 10px 14px;
+            background: linear-gradient(135deg, #121915 0%, #17241e 100%);
+            border: 1.5px solid #00dc82;
+            border-radius: 50px;
+            color: #ffffff;
+            text-decoration: none;
+            font-family: var(--font);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 220, 130, 0.35);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            animation: pulseNetworkingGlow 2.4s infinite ease-in-out;
+            user-select: none;
+        }
+
+        .networking-fab:hover {
+            transform: translateY(-3px) scale(1.03);
+            border-color: #34d399;
+            box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.8), 0 0 32px rgba(0, 220, 130, 0.65);
+            color: #ffffff;
+        }
+
+        /* Ícone animado com badge pulsante */
+        .fab-icon-bubble {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            background: #00dc82;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #062517;
+            flex-shrink: 0;
+            box-shadow: 0 0 14px rgba(0, 220, 130, 0.6);
+        }
+
+        .fab-icon-bubble svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .fab-ping-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 11px;
+            height: 11px;
+            background: #22c55e;
+            border: 2px solid #121915;
+            border-radius: 50%;
+        }
+
+        .fab-ping-badge::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pingBadge 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .fab-text-col {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+            text-align: left;
+        }
+
+        .fab-text-subtitle {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: #00dc82;
+            letter-spacing: 0.6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .fab-text-subtitle::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #00dc82;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blinkDot 1s infinite alternate;
+        }
+
+        .fab-text-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        /* Animações de pulsação e piscar */
+        @keyframes pulseNetworkingGlow {
+            0% {
+                box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.7), 0 0 0 0 rgba(0, 220, 130, 0.5);
+                border-color: #00dc82;
+            }
+            50% {
+                box-shadow: 0 8px 28px -4px rgba(0, 0, 0, 0.8), 0 0 24px 6px rgba(0, 220, 130, 0.45);
+                border-color: #34d399;
+            }
+            100% {
+                box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.7), 0 0 0 0 rgba(0, 220, 130, 0);
+                border-color: #00dc82;
+            }
+        }
+
+        @keyframes pingBadge {
+            75%, 100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes blinkDot {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @media (max-width: 640px) {
+            .networking-fab {
+                left: 16px;
+                bottom: 20px;
+                padding: 8px 14px 8px 10px;
+                font-size: 12px;
+            }
+            .fab-icon-bubble {
+                width: 32px;
+                height: 32px;
+            }
+            .fab-text-title {
+                font-size: 12px;
+            }
+        }
+
+    
+        /* ─── BANNER DE BOAS-VINDAS DINÂMICO ─── */
+        .welcome-hero-banner {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 45%, #16a34a 100%);
+            border-radius: 14px;
+            padding: 22px 28px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -6px rgba(34, 197, 94, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15);
+            transition: all 0.25s ease;
+        }
+
+        .welcome-hero-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .welcome-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 800;
+            color: #0a0a0a;
+            letter-spacing: -0.4px;
+            line-height: 1.25;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-wave-hand {
+            display: inline-block;
+            font-size: 26px;
+            animation: waveAnimation 2s infinite ease-in-out;
+            transform-origin: 70% 70%;
+        }
+
+        .welcome-subtitle {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: rgba(0,0,0,0.75);
+            line-height: 1.45;
+            position: relative;
+            z-index: 1;
+            opacity: 0.95;
+        }
+
+        @keyframes waveAnimation {
+            0% { transform: rotate(0deg); }
+            10% { transform: rotate(14deg); }
+            20% { transform: rotate(-8deg); }
+            30% { transform: rotate(14deg); }
+            40% { transform: rotate(-4deg); }
+            50% { transform: rotate(10deg); }
+            60% { transform: rotate(0deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @media (max-width: 640px) {
+            .welcome-hero-banner {
+                padding: 16px 18px;
+                margin-bottom: 20px;
+            }
+            .welcome-title-row {
+                font-size: 19px;
+            }
+            .welcome-subtitle {
+                font-size: 12px;
+            }
+
+            /* Header Mobile Elegante */
+            .header-inner {
+                padding: 0 12px !important;
+            }
+            .header-brand {
+                gap: 8px !important;
+            }
+            .brand-logo {
+                width: 28px !important;
+                height: 28px !important;
+            }
+            .brand-logo svg {
+                width: 17px !important;
+                height: 17px !important;
+            }
+            .brand-text {
+                font-size: 15.5px !important;
+            }
+            .header-right {
+                gap: 8px !important;
+            }
+            .saldo-pill {
+                padding: 5px 10px !important;
+                font-size: 12px !important;
+                gap: 4px !important;
+            }
+            .avatar-circle {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 12.5px !important;
+            }
+        }
+
+    
+
+        /* ─── LOGO DO CABEÇALHO PADRÃO OFICIAL (Ícone Folha Verde Neon + MG Editáveis Branco) ─── */
+        .header-brand {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+        }
+
+        .brand-logo {
+            width: 32px !important;
+            height: 32px !important;
+            background: #00dc82 !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.45) !important;
+        }
+
+        .brand-logo svg {
+            width: 20px !important;
+            height: 20px !important;
+            fill: #062517 !important;
+        }
+
+        .brand-text {
+            font-size: 19px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            letter-spacing: -0.4px !important;
+            white-space: nowrap !important;
+            display: inline-block !important;
+        }
+
+        .brand-text span {
+            color: #ffffff !important;
+        }
+
+    
+
+        /* ─── PÍLULA DE SALDO OFICIAL PADRÃO RECARGAS (Borda verde neon fina, ícone de cartão e texto verde vibrante) ─── */
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08) !important;
+            color: #00dc82 !important;
+            border: 1px solid #00dc82 !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            padding: 6px 14px !important;
+            border-radius: 20px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+            text-decoration: none !important;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+            cursor: pointer !important;
+            box-shadow: 0 0 10px rgba(0, 220, 130, 0.15) !important;
+        }
+
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.16) !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.35) !important;
+            transform: translateY(-1px) !important;
+            color: #00dc82 !important;
+        }
+
+        .saldo-pill svg {
+            width: 15px !important;
+            height: 15px !important;
+            stroke: #00dc82 !important;
+            stroke-width: 2.2 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .saldo-pill span {
+            color: #00dc82 !important;
+            font-weight: 700 !important;
+        }
+
+    </style>
+<script src="/db-sync.js"></script>
+<script src="/saldo-sync.js"></script>
+
+
+<style>
+/* ─── LOGO OFICIAL MG EDITÁVEIS NO CABEÇALHO ─── */
+.header-brand {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    text-decoration: none !important;
+    flex-shrink: 0 !important;
+}
+.brand-logo {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    background: #00dc82 !important;
+    border-radius: 9px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 0 14px rgba(0, 220, 130, 0.4) !important;
+}
+.brand-icon-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 9px !important;
+}
+.brand-text {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.3px !important;
+    white-space: nowrap !important;
+}
+</style>
+
+
+</head>
+<body>
+    <!-- HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND -->
+    <canvas id="neuralCanvas" class="neural-bg-canvas"></canvas>
+
+<!-- ─── HEADER ─── -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                        <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                    </div>
+                <span class="brand-text">MG Editáveis</span>
+            </a>
+
+            <div class="header-right">
+                <a href="recargas.html" class="saldo-pill" title="Clique para recarregar saldo">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+
+                <a href="indicacoes.html" class="header-link" style="display:inline-flex; align-items:center; gap:6px; color:#94a3b8; font-size:13px; font-weight:600; text-decoration:none; padding:6px 12px; border-radius:8px; white-space:nowrap; flex-shrink:0; transition:0.2s;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px; height:15px; min-width:15px; min-height:15px; flex-shrink:0;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <span>Indique e Ganhe</span>
+                </a>
+
+                <div class="avatar-circle" id="userHeaderAvatar" onclick="toggleAvatarDropdown(event)" title="Meu Perfil">M</div>
+
+                <div class="avatar-dropdown" id="avatarDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">MG Editáveis</div>
+                        <div class="dropdown-email" id="dropUserEmail">admin@mgeditaveis.com.br</div>
+                        <div class="dropdown-phone" id="dropUserPhone" style="font-size:11.5px; color:#00dc82; font-weight:600; margin-top:4px; display:flex; align-items:center; gap:5px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <span id="dropUserPhoneText">(21) 99882-1029</span>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Perfil</span>
+                        </a>
+                        <a href="recargas.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            <span>Recargas</span>
+                        </a>
+                        <a href="suporte.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                            <span>Suporte</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="login.html" class="dropdown-item danger" onclick="handleLogout(event)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span>Sair</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── APP CONTAINER ─── -->
+    <div class="app-container">
+
+        <!-- BANNER DE BOAS-VINDAS DINÂMICO (SEMPRE NO TOPO DE TUDO!) -->
+        <div class="welcome-hero-banner" id="welcomeHeroBanner">
+            <div class="welcome-title-row">
+                <span>Bem-vindo(a), <span id="welcomeUserName">CLIENTE</span>!</span>
+                <span class="welcome-wave-hand">👋</span>
+            </div>
+            <p class="welcome-subtitle">Acompanhe suas recargas, histórico e adquira novos pacotes.</p>
+        </div>
+
+        <div class="app-content-layout">
+            <!-- LEFT SIDEBAR: FERRAMENTAS -->
+            <aside class="sidebar">
+                <div class="sidebar-title">Ferramentas</div>
+            <a href="cnh.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
+                <span>CNH</span>
+            </a>
+            <a href="exames.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>
+                <span>Exame</span>
+            </a>
+            <a href="atestados.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                <span>Atestado</span>
+            </a>
+            <a href="prontuario.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>Prontuario SETRAN</span>
+            </a>
+
+            <a href="rg.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>
+                <span>RG Digital</span>
+            </a>
+            <a href="recargas.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <span>Recargas</span>
+            </a>
+            <a href="suporte.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                <span>Suporte</span>
+            </a>
+            <a href="perfil.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Perfil</span>
+            </a>
+            </aside>
+
+            <!-- RIGHT MAIN CONTENT -->
+            <main class="main-content">
+
+
+            <!-- 1. AÇÕES RÁPIDAS -->
+            <section>
+                <div class="section-header-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    <span>Ações Rápidas</span>
+                </div>
+
+                <div class="quick-actions-grid">
+                    <a href="criar-cnh.html" class="action-card">
+                        <div class="action-icon-box green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                        </div>
+                        <span class="action-title">Gerar CNH</span>
+                    </a>
+
+                    <a href="criar-exame.html" class="action-card">
+                        <div class="action-icon-box green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/></svg>
+                        </div>
+                        <span class="action-title">Gerar Exame</span>
+                    </a>
+
+                    <a href="criar-atestado.html" class="action-card">
+                        <div class="action-icon-box green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <span class="action-title">Gerar Atestado</span>
+                    </a>
+                    <a href="criar-prontuario.html" class="action-card">
+                        <div class="action-icon-box green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <span class="action-title">Prontuario SETRAN</span>
+                    </a>
+
+                    <a href="criar-rg.html" class="action-card">
+                        <div class="action-icon-box green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>
+                        </div>
+                        <span class="action-title">Gerar RG Digital</span>
+                    </a>
+
+                    <a href="recargas.html" class="action-card">
+                        <div class="action-icon-box green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        </div>
+                        <span class="action-title">Fazer Recarga</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 2. ÚLTIMAS ATIVIDADES -->
+            <section>
+                <div class="section-header-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span>Últimas Atividades</span>
+                </div>
+
+                <div class="activities-card" id="recentActivitiesList">
+                    <div class="activity-row">
+                        <div class="act-left">
+                            <div class="act-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
+                            <div class="act-info">
+                                <span class="act-name">CNH - EDUARDO CHUCHOVD MARTINS</span>
+                                <span class="act-time">há 18 horas</span>
+                            </div>
+                        </div>
+                        <div class="act-badge">+1 CNH</div>
+                    </div>
+
+                    <div class="activity-row">
+                        <div class="act-left">
+                            <div class="act-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
+                            <div class="act-info">
+                                <span class="act-name">CNH - DANILO DA SILVA DOS SANTOS</span>
+                                <span class="act-time">há 1 dia</span>
+                            </div>
+                        </div>
+                        <div class="act-badge">+1 CNH</div>
+                    </div>
+
+                    <div class="activity-row">
+                        <div class="act-left">
+                            <div class="act-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
+                            <div class="act-info">
+                                <span class="act-name">CNH - VALDEMIR JOSE DA SILVA</span>
+                                <span class="act-time">há 1 dia</span>
+                            </div>
+                        </div>
+                        <div class="act-badge">+1 CNH</div>
+                    </div>
+
+                    <div class="activity-row">
+                        <div class="act-left">
+                            <div class="act-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
+                            <div class="act-info">
+                                <span class="act-name">CNH - BRUNO ALEXANDRE PIRES DE SOUZA</span>
+                                <span class="act-time">há 1 dia</span>
+                            </div>
+                        </div>
+                        <div class="act-badge">+1 CNH</div>
+                    </div>
+
+                    <div class="activity-row">
+                        <div class="act-left">
+                            <div class="act-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
+                            <div class="act-info">
+                                <span class="act-name">CNH - JOSE MAIUR MOURA ALVES DA SILVA</span>
+                                <span class="act-time">há 1 dia</span>
+                            </div>
+                        </div>
+                        <div class="act-badge">+1 CNH</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. PRÓXIMAS ATUALIZAÇÕES -->
+            <section class="roadmap-container" id="roadmapContainer">
+
+                <!-- Dynamic roadmap rendered by renderRoadmap() -->
+                <div id="roadmapBody"></div>
+            </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Floating Theme Toggle (FAB) -->
+    <button class="fab-theme-btn" onclick="toggleTheme()" title="Alternar tema Claro / Escuro">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+
+    <!-- Custom Toast Box (matching screenshot exactly) -->
+    <div class="custom-toast" id="customToast">
+        <span class="toast-title" id="toastTitle">Em desenvolvimento</span>
+        <span class="toast-msg" id="toastMsg">Ferramenta Hospedagens em breve.</span>
+    </div>
+
+    <script>
+        let toastTimeout = null;
+
+        function triggerToast(title, message) {
+            const toast = document.getElementById('customToast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMsg').textContent = message;
+
+            toast.style.display = 'flex';
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3200);
+        }
+
+        function toggleAvatarDropdown(e) {
+            if (e) e.stopPropagation();
+            const drop = document.getElementById('avatarDropdown');
+            drop.classList.toggle('show');
+        }
+
+        document.addEventListener('click', (e) => {
+            const drop = document.getElementById('avatarDropdown');
+            const avatar = document.getElementById('userHeaderAvatar');
+            if (drop && avatar && !drop.contains(e.target) && !avatar.contains(e.target)) {
+                drop.classList.remove('show');
+            }
+        });
+
+        function handleLogout(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+        localStorage.removeItem('happynation_user');
+        sessionStorage.removeItem('happynation_user');
+        localStorage.removeItem('happynation_admin_auth');
+        sessionStorage.removeItem('happynation_admin_auth');
+    } catch(err) {}
+    window.location.href = 'login.html?logged_out=1';
+}
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-theme');
+            localStorage.setItem('happynation_theme', isLight ? 'light' : 'dark');
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('happynation_theme');
+            if (saved === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        }
+
+        function initUserData() {
+            let user = null;
+            try {
+                user = JSON.parse((localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user')) || '{}');
+            } catch(e) {}
+
+            // Sincroniza dados com o banco local caso exista alteração
+            try {
+                const adminUsers = JSON.parse(localStorage.getItem('happynation_admin_users') || '[]');
+                if (Array.isArray(adminUsers) && adminUsers.length > 0 && user && user.email) {
+                    const matching = adminUsers.find(u => u.email && u.email.toLowerCase() === user.email.toLowerCase());
+                    if (matching) {
+                        if (matching.saldo !== undefined && matching.saldo !== null) {
+                            user.saldo = Number(matching.saldo);
+                        }
+                        if (matching.nome) user.nome = matching.nome;
+                        if (matching.phone) user.phone = matching.phone;
+                        localStorage.setItem('happynation_user', JSON.stringify(user));
+                    }
+                }
+            } catch(e) {}
+
+            const saldo = (window.MGSaldo ? window.MGSaldo.get() : ((user && user.saldo !== undefined && user.saldo !== null) ? Number(user.saldo) : 0));
+            const rawNome = (user && (user.nome || user.name)) ? (user.nome || user.name).trim() : 'Cliente';
+            const email = (user && user.email) ? user.email.trim() : 'cliente@mgeditaveis.com';
+            const phone = (user && user.phone) ? user.phone.trim() : '';
+
+            // Extrai o primeiro nome cadastrado pelo cliente (ex: "Moritz", "Lucas", "Carlos")
+            const nameParts = rawNome.split(/\s+/);
+            const firstName = (nameParts.length > 0 && nameParts[0]) ? nameParts[0] : 'CLIENTE';
+            const welcomeFirstName = firstName.toUpperCase();
+
+            // Atualiza o texto do Banner de Boas-Vindas SEMPRE com o primeiro nome
+            const welcomeEl = document.getElementById('welcomeUserName');
+            if (welcomeEl) {
+                welcomeEl.textContent = welcomeFirstName;
+            }
+
+            const formattedSaldo = 'Saldo R$ ' + saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const headerSaldo = document.getElementById('userHeaderSaldo');
+            if (headerSaldo) headerSaldo.textContent = formattedSaldo;
+
+            const dropNome = document.getElementById('dropUserName');
+            if (dropNome) dropNome.textContent = rawNome;
+
+            const dropEmail = document.getElementById('dropUserEmail');
+            if (dropEmail) dropEmail.textContent = email;
+
+            const dropPhoneText = document.getElementById('dropUserPhoneText');
+            if (dropPhoneText) {
+                dropPhoneText.textContent = phone || 'Sem telefone';
+            }
+
+            const initialLetter = firstName.charAt(0).toUpperCase() || 'C';
+            const avatarEl = document.getElementById('userHeaderAvatar');
+            if (avatarEl) avatarEl.textContent = initialLetter;
+
+            // Renderizar SEMPRE exatamente as 5 atividades mais recentes
+            renderRecentActivities(email);
+        }
+
+        function formatTimeAgo(dateStr) {
+            if (!dateStr) return 'agora mesmo';
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return 'agora mesmo';
+                const diffMs = Date.now() - d.getTime();
+                if (diffMs < 0) return 'agora mesmo';
+                const diffMins = Math.floor(diffMs / 60000);
+                if (diffMins < 2) return 'agora mesmo';
+                if (diffMins < 60) return `há ${diffMins} min`;
+                const diffHours = Math.floor(diffMins / 60);
+                if (diffHours < 24) return `há ${diffHours} ${diffHours === 1 ? 'hora' : 'horas'}`;
+                const diffDays = Math.floor(diffHours / 24);
+                return `há ${diffDays} ${diffDays === 1 ? 'dia' : 'dias'}`;
+            } catch(e) {
+                return 'agora mesmo';
+            }
+        }
+
+        const DEFAULT_ACTIVITIES = [
+            { tipo: "CNH", nome: "EDUARDO CHUCHOVD MARTINS", time: "há 18 horas", link: "cnh.html", badgeClass: "cnh", badgeText: "+1 CNH" },
+            { tipo: "CNH", nome: "DANILO DA SILVA DOS SANTOS", time: "há 1 dia", link: "cnh.html", badgeClass: "cnh", badgeText: "+1 CNH" },
+            { tipo: "CNH", nome: "VALDEMIR JOSE DA SILVA", time: "há 1 dia", link: "cnh.html", badgeClass: "cnh", badgeText: "+1 CNH" },
+            { tipo: "CNH", nome: "BRUNO ALEXANDRE PIRES DE SOUZA", time: "há 1 dia", link: "cnh.html", badgeClass: "cnh", badgeText: "+1 CNH" },
+            { tipo: "CNH", nome: "JOSE MAIUR MOURA ALVES DA SILVA", time: "há 1 dia", link: "cnh.html", badgeClass: "cnh", badgeText: "+1 CNH" }
+        ];
+
+        function renderRecentActivities(email) {
+            const list = document.getElementById('recentActivitiesList');
+            if (!list) return;
+
+            let activities = [];
+            const seenIds = new Set();
+            const emailNorm = (email || '').toLowerCase().trim();
+
+            const addAct = (item, tipo, fallbackBadge) => {
+                if (!item) return;
+                const id = String(item.id || item.codigo || item.laudo || Math.random());
+                if (seenIds.has(id)) return;
+                seenIds.add(id);
+
+                let rawNome = item.nome || item.nome_cnh || item.nomeCnh || item.paciente || item.condutor || 'DOCUMENTO';
+                let timeStr = formatTimeAgo(item.created_at || item.data);
+                let link = 'cnh.html';
+                let badgeClass = 'cnh';
+                let badgeText = '+1 CNH';
+
+                if (tipo === 'CNH') {
+                    link = 'ver-cnh.html?id=' + encodeURIComponent(id);
+                    badgeClass = 'cnh';
+                    badgeText = '+1 CNH';
+                } else if (tipo === 'EXAME') {
+                    link = 'ver-exame.html?id=' + encodeURIComponent(id);
+                    badgeClass = 'exame';
+                    badgeText = '+1 EXAME';
+                } else if (tipo === 'ATESTADO') {
+                    link = 'ver-atestado.html?id=' + encodeURIComponent(id);
+                    badgeClass = 'atestado';
+                    badgeText = '+1 ATESTADO';
+                } else if (tipo === 'RG') {
+                    link = 'ver-rg.html?id=' + encodeURIComponent(id);
+                    badgeClass = 'cnh';
+                    badgeText = '+1 RG';
+                }
+
+                activities.push({
+                    id: id,
+                    tipo: tipo,
+                    nome: String(rawNome).toUpperCase(),
+                    timestamp: (item.created_at || item.data) ? new Date(item.created_at || item.data).getTime() : 0,
+                    time: timeStr,
+                    link: link,
+                    badgeClass: badgeClass,
+                    badgeText: badgeText
+                });
+            };
+
+            // 1. Carregar CNHs
+            try {
+                if (emailNorm) {
+                    const localCnhs = JSON.parse(localStorage.getItem('happynation_cnhs_' + emailNorm) || '[]');
+                    if (Array.isArray(localCnhs)) localCnhs.forEach(item => addAct(item, 'CNH'));
+                }
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_cnhs_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'CNH'));
+                    }
+                }
+                const adminCnhs = JSON.parse(localStorage.getItem('happynation_admin_cnhs') || '[]');
+                if (Array.isArray(adminCnhs)) adminCnhs.forEach(item => addAct(item, 'CNH'));
+            } catch(e) {}
+
+            // 2. Carregar ATESTADOS MÉDICOS
+            try {
+                if (emailNorm) {
+                    const localAtestados = JSON.parse(localStorage.getItem('happynation_atestados_' + emailNorm) || '[]');
+                    if (Array.isArray(localAtestados)) localAtestados.forEach(item => addAct(item, 'ATESTADO'));
+                }
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_atestados_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'ATESTADO'));
+                    }
+                }
+                const adminAtestados = JSON.parse(localStorage.getItem('happynation_admin_atestados') || '[]');
+                if (Array.isArray(adminAtestados)) adminAtestados.forEach(item => addAct(item, 'ATESTADO'));
+            } catch(e) {}
+
+            // 3. Carregar EXAMES TOXICOLÓGICOS
+            try {
+                if (emailNorm) {
+                    const localExames = JSON.parse(localStorage.getItem('happynation_exames_' + emailNorm) || '[]');
+                    if (Array.isArray(localExames)) localExames.forEach(item => addAct(item, 'EXAME'));
+                }
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_exames_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'EXAME'));
+                    }
+                }
+                const adminExames = JSON.parse(localStorage.getItem('happynation_admin_exames') || '[]');
+                if (Array.isArray(adminExames)) adminExames.forEach(item => addAct(item, 'EXAME'));
+            } catch(e) {}
+
+            // Ordena todas as atividades reais por ordem cronológica decrescente
+            activities.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            // Se ainda não tiver 5 atividades reais, completa com demonstrativos da plataforma
+            for (let i = 0; i < DEFAULT_ACTIVITIES.length && activities.length < 5; i++) {
+                activities.push(DEFAULT_ACTIVITIES[i]);
+            }
+
+            // Exatamente 5 itens
+            activities = activities.slice(0, 5);
+
+            // Renderizar na tela com ícones e badges temáticos
+            list.innerHTML = activities.map(act => {
+                let iconSvg = '';
+                if (act.tipo === 'ATESTADO') {
+                    iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>`;
+                } else if (act.tipo === 'EXAME') {
+                    iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
+                } else {
+                    iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`;
+                }
+
+                return `
+                    <div class="activity-row" onclick="window.location.href='${act.link || 'cnh.html'}'" style="cursor:pointer;" title="Visualizar documento">
+                        <div class="act-left">
+                            <div class="act-icon ${act.badgeClass || 'cnh'}">
+                                ${iconSvg}
+                            </div>
+                            <div class="act-info">
+                                <span class="act-name">${act.tipo} - ${act.nome}</span>
+                                <span class="act-time">${act.time}</span>
+                            </div>
+                        </div>
+                        <div class="act-badge ${act.badgeClass || 'cnh'}">${act.badgeText}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initUserData();
+        });
+
+        // Atualização em tempo real caso valores, telefone ou dados sejam alterados no Admin
+        window.addEventListener('storage', () => {
+            initUserData();
+        });
+    
+        // ─── HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND ───
+        (function initNeuralNetwork() {
+            const canvas = document.getElementById('neuralCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 90;
+            const MAX_DISTANCE = 135;
+            const MOUSE_RADIUS = 160;
+
+            const mouse = { x: null, y: null, active: false };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+                mouse.active = true;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.active = false;
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.7;
+                    this.vy = (Math.random() - 0.5) * 0.7;
+                    this.baseRadius = Math.random() * 2 + 1.2;
+                    this.isHub = Math.random() < 0.15; // 15% nós centrais brilhantes
+                    if (this.isHub) this.baseRadius = Math.random() * 1.5 + 3.2;
+                    this.pulseSpeed = Math.random() * 0.04 + 0.02;
+                    this.pulsePhase = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < -20) this.x = width + 20;
+                    else if (this.x > width + 20) this.x = -20;
+                    if (this.y < -20) this.y = height + 20;
+                    else if (this.y > height + 20) this.y = -20;
+
+                    this.pulsePhase += this.pulseSpeed;
+                }
+
+                draw() {
+                    const pulse = (Math.sin(this.pulsePhase) + 1) * 0.5; // 0 to 1
+                    const r = this.baseRadius + pulse * (this.isHub ? 2.0 : 0.9);
+                    const alpha = 0.5 + pulse * 0.5;
+
+                    // Halo radial neon — verde esmeralda
+                    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3.8);
+                    grad.addColorStop(0, this.isHub ? `rgba(0, 220, 130, ${alpha * 0.85})` : `rgba(0, 200, 110, ${alpha * 0.65})`);
+                    grad.addColorStop(0.4, `rgba(0, 180, 100, ${alpha * 0.2})`);
+                    grad.addColorStop(1, 'rgba(0, 220, 130, 0)');
+
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 3.8, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Núcleo brilhante (bolinha pulsante)
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 0.9, 0, Math.PI * 2);
+                    ctx.fillStyle = this.isHub ? `rgba(200, 255, 230, ${alpha})` : `rgba(0, 220, 130, ${alpha * 0.9})`;
+                    ctx.shadowBlur = this.isHub ? 16 : 8;
+                    ctx.shadowColor = '#00dc82';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Fundo sutil com leve toque esmeralda profundo
+                const bgGrad = ctx.createRadialGradient(width * 0.5, height * 0.4, 60, width * 0.5, height * 0.5, width * 0.85);
+                bgGrad.addColorStop(0, 'rgba(0, 40, 22, 0.18)');
+                bgGrad.addColorStop(0.35, 'rgba(0, 22, 14, 0.10)');
+                bgGrad.addColorStop(0.7, 'rgba(0, 10, 6, 0.06)');
+                bgGrad.addColorStop(1, 'rgba(18, 20, 20, 0.98)');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                // Conexões e linhas laser entre as bolinhas
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+
+                    // Interação com o mouse
+                    if (mouse.active && mouse.x !== null) {
+                        const dxm = p1.x - mouse.x;
+                        const dym = p1.y - mouse.y;
+                        const distM = Math.sqrt(dxm * dxm + dym * dym);
+                        if (distM < MOUSE_RADIUS) {
+                            const mAlpha = (1 - distM / MOUSE_RADIUS) * 0.55;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(0, 220, 130, ${mAlpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distSq = dx * dx + dy * dy;
+
+                        if (distSq < MAX_DISTANCE * MAX_DISTANCE) {
+                            const dist = Math.sqrt(distSq);
+                            const lineAlpha = (1 - dist / MAX_DISTANCE) * 0.30;
+
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 200, 110, ${lineAlpha})`;
+                            ctx.lineWidth = dist < 55 ? 1.2 : 0.7;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Desenhar nós
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+
+    </script>
+
+    <!-- BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS -->
+    <a href="https://chat.whatsapp.com/J0FvvNpoL7SHodR4ISMbyP?s=cl&p=a&iam=2" target="_blank" rel="noopener noreferrer" class="networking-fab" id="networkingGroupFab" title="Entrar no Grupo de Networking" onclick="var u=this.getAttribute('href'); if(u && u.length > 5){ window.open(u, '_blank'); return false; }">
+        <div class="fab-icon-bubble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span class="fab-ping-badge"></span>
+        </div>
+        <div class="fab-text-col">
+            <span class="fab-text-subtitle">Comunidade Ativa</span>
+            <span class="fab-text-title" id="networkingGroupTitle">Networking MG Editáveis</span>
+        </div>
+    </a>
+
+    <script>
+
+        // ─── SINCRONIZAÇÃO EM TEMPO REAL DO GRUPO DE NETWORKING ───
+                function updateNetworkingFab() {
+            try {
+                const custom = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                const fab = document.getElementById('networkingGroupFab');
+                const titleEl = document.getElementById('networkingGroupTitle');
+                if (custom && custom.groupUrl && custom.groupUrl.trim().length > 10) {
+                    if (fab) fab.href = custom.groupUrl.trim();
+                }
+                if (custom && custom.groupTitle && custom.groupTitle.trim()) {
+                    if (titleEl) titleEl.textContent = custom.groupTitle.trim();
+                }
+            } catch(e) {}
+        }
+        function fetchNetworkGroupConfig() {
+            fetch('api/config')
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.data) {
+                        const custom = res.data;
+                        const fab = document.getElementById('networkingGroupFab');
+                        const titleEl = document.getElementById('networkingGroupTitle');
+                        if (custom.groupUrl && custom.groupUrl.trim().length > 10 && fab) {
+                            fab.href = custom.groupUrl.trim();
+                        }
+                        if (custom.groupTitle && custom.groupTitle.trim() && titleEl) {
+                            titleEl.textContent = custom.groupTitle.trim();
+                        }
+                        try {
+                            const cur = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                            localStorage.setItem('happynation_webapp_customization', JSON.stringify(Object.assign({}, cur, custom)));
+                        } catch(e) {}
+                    }
+                }).catch(() => {});
+
+            fetch('api/index.php?action=get_webapp_customization')
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.status === 'success' && res.data) {
+                        const custom = res.data;
+                        const fab = document.getElementById('networkingGroupFab');
+                        const titleEl = document.getElementById('networkingGroupTitle');
+                        if (custom.groupUrl && custom.groupUrl.trim().length > 10 && fab) {
+                            fab.href = custom.groupUrl.trim();
+                        }
+                        if (custom.groupTitle && custom.groupTitle.trim() && titleEl) {
+                            titleEl.textContent = custom.groupTitle.trim();
+                        }
+                    }
+                }).catch(() => {});
+        }
+        window.addEventListener('DOMContentLoaded', () => { updateNetworkingFab(); fetchNetworkGroupConfig(); });
+        window.addEventListener('storage', updateNetworkingFab);
+
+    
+        // ─── PRÓXIMAS ATUALIZAÇÕES — Carregamento Dinâmico do Admin ───────────────
+        const DEFAULT_ROADMAP = [
+            { id: 1, status: 'planejado',    tag: 'CHAs',  priority: 'media',  nextDelivery: true,
+              title: 'Sistema de GERADOR de CHA (Carteira de Habilitação Alternativa)',
+              desc:  'Estrutura inicial para geração de CHAs dentro da plataforma.' },
+            { id: 2, status: 'planejado',    tag: 'RG',    priority: 'media',  nextDelivery: false,
+              title: 'Geração de Exame',
+              desc:  'Implementação do sistema completo para criação de RG.' },
+            { id: 3, status: 'desenvolvimento', tag: 'Geral', priority: 'media', nextDelivery: false,
+              title: 'Consultas e Puxadas',
+              desc:  'Funcionalidade futura para consulta de dados e integração com serviços externos.' },
+            { id: 4, status: 'testes',       tag: 'Geral', priority: 'baixa', nextDelivery: false,
+              title: 'Compra de Hospedagens e E-mails Personalizados',
+              desc:  '' }
+        ];
+
+        function renderRoadmap() {
+            let items = null;
+            try {
+                const saved = localStorage.getItem('happynation_roadmap');
+                if (saved !== null) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) items = parsed;
+                }
+            } catch(e) {}
+
+            if (items === null) {
+                const wasCleared = localStorage.getItem('happynation_roadmap_cleared');
+                items = wasCleared ? [] : DEFAULT_ROADMAP;
+            }
+
+            let delList = [];
+            try { delList = JSON.parse(localStorage.getItem('happynation_deleted_roadmap') || '[]'); } catch(e) {}
+            const delSet = new Set(delList.map(String));
+
+            // Deduplicação estrita de itens por ID e por Título
+            const seenIds = new Set();
+            const seenTitles = new Set();
+            const cleanItems = [];
+
+            for (const it of (items || [])) {
+                if (!it) continue;
+                const idStr = it.id ? String(it.id) : '';
+                const titleNorm = (it.title || '').trim().toLowerCase();
+
+                if (idStr && delSet.has(idStr)) continue;
+                if (idStr && seenIds.has(idStr)) continue;
+                if (titleNorm && seenTitles.has(titleNorm)) continue;
+
+                if (idStr) seenIds.add(idStr);
+                if (titleNorm) seenTitles.add(titleNorm);
+                cleanItems.push(it);
+            }
+
+            items = cleanItems;
+
+            const container = document.getElementById('roadmapBody');
+            if (!container) return;
+
+            const groups = [
+                { key: 'planejado',       label: 'Planejado',         cls: 'blue',   pillCls: 'blue',   borderCls: 'border-blue'   },
+                { key: 'desenvolvimento', label: 'Em Desenvolvimento', cls: 'amber',  pillCls: 'amber',  borderCls: 'border-amber'  },
+                { key: 'testes',          label: 'Em Testes',         cls: 'purple', pillCls: 'purple', borderCls: 'border-purple' },
+            ];
+
+            const priorityDot   = { 'alta': 'amber', 'media': 'amber', 'baixa': 'gray' };
+            const priorityLabel = { 'alta': 'Prioridade Alta', 'media': 'Prioridade Média', 'baixa': 'Prioridade Baixa' };
+
+            // Sleek Header with Title on Left and Pills on Right
+            let headerHTML = `
+                <div class="roadmap-header-row">
+                    <div class="section-header-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px; height:16px; color:#00dc82;"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2-13 4.2-1.9 1.1-3 2.8-3 2.8s3.5-1.5 7-1.5 5 1.5z"/></svg>
+                        <span>Próximas Atualizações</span>
+                    </div>
+                    <div class="roadmap-pills-bar">
+            `;
+            let hasPill = false;
+            groups.forEach((g) => {
+                const count = items.filter(x => x.status === g.key).length;
+                if (count > 0) {
+                    if (hasPill) headerHTML += '<span class="rm-arrow">→</span>';
+                    headerHTML += `<span class="rm-pill ${g.pillCls}">● ${g.label} &nbsp;${count}</span>`;
+                    hasPill = true;
+                }
+            });
+            headerHTML += `
+                    </div>
+                </div>
+            `;
+
+            // Groups with Compact 2-Column Grid
+            let groupsHTML = '';
+            groups.forEach(g => {
+                const cards = items.filter(x => x.status === g.key);
+                if (!cards.length) return;
+                const cnt = cards.length === 1 ? '1 item' : cards.length + ' itens';
+                groupsHTML += `<div class="roadmap-group-header ${g.cls}"><span>● ${g.label}</span><span class="group-count">${cnt}</span></div>`;
+                groupsHTML += '<div class="roadmap-cards-list">';
+                cards.forEach(c => {
+                    const dotCls = priorityDot[c.priority] || 'gray';
+                    const prioLbl = priorityLabel[c.priority] || 'Prioridade Média';
+                    groupsHTML += `<div class="rm-card ${g.borderCls}">
+                        <div class="rm-card-top">
+                            ${c.nextDelivery ? '<span class="badge-proxima-entrega">☆ Próxima entrega</span>' : ''}
+                            ${c.tag ? `<span class="rm-card-tag">${c.tag}</span>` : ''}
+                        </div>
+                        <div class="rm-card-title">${c.title}</div>
+                        ${c.desc ? `<div class="rm-card-sub">${c.desc}</div>` : ''}
+                        <div class="rm-card-priority">
+                            <span class="rm-dot ${dotCls}">●</span>
+                            <span>${prioLbl}</span>
+                        </div>
+                    </div>`;
+                });
+                groupsHTML += '</div>';
+            });
+
+            container.innerHTML = headerHTML + groupsHTML;
+        }
+
+        renderRoadmap();
+</script>
+</body>
+</html>
+
+
+
+
+

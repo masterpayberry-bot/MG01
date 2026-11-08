@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- AUTO-REDIRECT SE JÁ ESTIVER LOGADO -->
+    <script>
+        (function() {
+            try {
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('logged_out') === '1') {
+                    try {
+                        localStorage.removeItem('happynation_user');
+                        sessionStorage.removeItem('happynation_user');
+                        localStorage.removeItem('happynation_admin_auth');
+                        sessionStorage.removeItem('happynation_admin_auth');
+                    } catch(e) {}
+                    return;
+                }
+                var user = null;
+                var rawLocal = localStorage.getItem('happynation_user');
+                var rawSession = sessionStorage.getItem('happynation_user');
+                if (rawLocal) { try { user = JSON.parse(rawLocal); } catch(e) {} }
+                if (!user && rawSession) { try { user = JSON.parse(rawSession); } catch(e) {} }
+                if (user && (user.logged === true || user.id) && user.email) {
+                    window.location.replace('index.html');
+                }
+            } catch(e) {}
+        })();
+    </script>
+
+            <!-- Open Graph / Compartilhamento de Links (WhatsApp Banner Grande em Cima) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MG Editáveis">
+    <meta property="og:title" content="MG Editáveis • Sistema de Gestão Digital">
+    <meta property="og:description" content="Acesse seu painel exclusivo com segurança e agilidade para emissão e controle de documentos em tempo real.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.jpg">
+    <meta property="og:image:secure_url" content="https://painel-mg-editaveis.com/og-image.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MG Editáveis • Sistema de Gestão Digital">
+    <!-- Twitter Card (Força o Banner Grande em Cima no WhatsApp e Telegram) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MG Editáveis • Sistema de Gestão Digital">
+    <meta name="twitter:description" content="Acesse seu painel exclusivo com segurança e agilidade para emissão e controle de documentos em tempo real.">
+    <meta name="twitter:image" content="http://painel-mg-editaveis.com/og-image.jpg">
+    <link rel="image_src" href="http://painel-mg-editaveis.com/og-image.jpg">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Login</title>
+    <script src="js/security-guard.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #121414;
+            --bg-card: #191c1d;
+            --bg-input: #121416;
+            --border-color: #232729;
+            --border-input: #282d31;
+            --primary: #00dc82;
+            --primary-dark: #00b368;
+            --primary-glow: rgba(0, 220, 130, 0.35);
+            --text-primary: #ffffff;
+            --text-secondary: #9aa2a6;
+            --text-muted: #5f686c;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background-color: #121414;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .login-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 70px;
+            max-width: 960px;
+            width: 100%;
+        }
+
+        /* ─── LEFT BRANDING SECTION ─── */
+        .brand-section {
+            flex: 1;
+            max-width: 440px;
+        }
+
+        .brand-logo-box {
+            width: 58px;
+            height: 58px;
+            background: #00dc82;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            box-shadow: 0 0 25px rgba(0, 220, 130, 0.45);
+            flex-shrink: 0;
+        }
+
+        .brand-logo-box svg {
+            width: 34px;
+            height: 34px;
+            fill: #061f12;
+            display: block;
+        }
+
+        .brand-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .brand-system {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: #00dc82;
+            margin-top: 4px;
+            margin-bottom: 22px;
+            text-transform: uppercase;
+        }
+
+        .brand-desc {
+            font-size: 14px;
+            line-height: 1.55;
+            color: #9aa2a6;
+            margin-bottom: 28px;
+        }
+
+        .bullet-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .bullet-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            color: #9aa2a6;
+            line-height: 1.45;
+        }
+
+        .bullet-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00dc82;
+            flex-shrink: 0;
+            margin-top: 6px;
+            box-shadow: 0 0 8px rgba(0, 220, 130, 0.6);
+        }
+
+        /* ─── RIGHT CARD SECTION ─── */
+        .auth-card-wrapper {
+            flex: 1;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .auth-card {
+            background: #101213;
+            border: 1px solid #23282b;
+            border-radius: 16px;
+            padding: 34px 30px;
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.04);
+            position: relative;
+            z-index: 10;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+            margin-bottom: 6px;
+        }
+
+        .card-subtitle {
+            font-size: 12.5px;
+            color: #71787e;
+            margin-bottom: 26px;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9aa2a6;
+            margin-bottom: 8px;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #16191a;
+            border: 1px solid #282e32;
+            border-radius: 9px;
+            padding: 12px 14px;
+            font-family: var(--font);
+            font-size: 13.5px;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input::placeholder {
+            color: #454b52;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 220, 130, 0.15);
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #71787e;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .toggle-password-btn:hover {
+            color: #ffffff;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #00dc82 0%, #10b981 100%);
+            color: #062517;
+            border: none;
+            border-radius: 9px;
+            padding: 13px;
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.3);
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.45);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .auth-footer {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 11.5px;
+            color: #5f686c;
+            line-height: 1.6;
+        }
+
+        .auth-footer a {
+            color: #00dc82;
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.15s;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .toast-box {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .toast-box.error {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #f87171;
+        }
+
+        .toast-box.success {
+            background: rgba(0, 220, 130, 0.12);
+            border: 1px solid rgba(0, 220, 130, 0.35);
+            color: #00dc82;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 45px 18px 40px 18px !important;
+                align-items: flex-start !important;
+            }
+            .login-layout {
+                flex-direction: column;
+                gap: 32px;
+                margin-top: 10px;
+            }
+            .brand-section {
+                text-align: center;
+                max-width: 100%;
+                padding-top: 30px !important;
+            }
+            .brand-logo-box {
+                width: 72px !important;
+                height: 72px !important;
+                background: #00dc82 !important;
+                border-radius: 22px !important;
+                margin: 10px auto 22px auto !important;
+                box-shadow: 0 0 38px rgba(0, 220, 130, 0.6) !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            .brand-logo-box svg {
+                width: 44px !important;
+                height: 44px !important;
+                fill: #061f12 !important;
+                display: block !important;
+            }
+            .bullet-list {
+                align-items: flex-start;
+                text-align: left;
+            }
+        }
+    
+        /* HIGH-TECH ANIMATED NEURAL/PLEXUS BACKGROUND */
+        .neural-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        
+    
+        /* Header and dropdown z-index fixes */
+        .header {
+            z-index: 1000 !important;
+        }
+        .avatar-dropdown {
+            z-index: 99999 !important;
+        }
+    
+
+        
+
+        /* ─── SOLID BACKGROUND SHIELD (Mantém o cinza elegante original #191c1d 100% opaco e isolado do canvas) ─── */
+        .page-container,
+        .app-container,
+        .main-wrapper,
+        .main-layout,
+        .container,
+        .workspace {
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        .card,
+        .card-action,
+        .table-wrap,
+        .editor-card,
+        .preview-canvas,
+        .auth-card,
+        .profile-card,
+        .recharge-card,
+        .support-card,
+        .chat-container,
+        .chat-sidebar,
+        .chat-main,
+        .sidebar,
+        .content,
+        .action-card,
+        .activities-card,
+        .rm-card,
+        .modal,
+        .modal-content,
+        .modal-card,
+        .dialog-card,
+        .dialog-box,
+        .custom-modal,
+        .swal2-popup {
+            background-color: #191c1d !important;
+            border-color: #232729 !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 5 !important;
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+        }
+
+        /* Linhas e cabeçalho da tabela */
+        table {
+            background-color: #191c1d !important;
+        }
+
+        thead th {
+            background-color: #161819 !important;
+            border-bottom: 1px solid #232729 !important;
+        }
+
+        tbody tr {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr td {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr:hover td {
+            background-color: #202426 !important;
+        }
+
+        .table-footer {
+            background-color: #191c1d !important;
+            border-top: 1px solid #232729 !important;
+        }
+
+        /* ─── LIGHT THEME OVERRIDES (corrige o shield para tema claro) ─── */
+        body.light-theme .card,
+        body.light-theme .card-action,
+        body.light-theme .table-wrap,
+        body.light-theme .editor-card,
+        body.light-theme .auth-card,
+        body.light-theme .profile-card,
+        body.light-theme .recharge-card,
+        body.light-theme .support-card,
+        body.light-theme .chat-container,
+        body.light-theme .chat-sidebar,
+        body.light-theme .chat-main,
+        body.light-theme .sidebar,
+        body.light-theme .content,
+        body.light-theme .action-card,
+        body.light-theme .activities-card,
+        body.light-theme .rm-card,
+        body.light-theme .modal,
+        body.light-theme .modal-content,
+        body.light-theme .modal-card,
+        body.light-theme .dialog-card,
+        body.light-theme .dialog-box,
+        body.light-theme .custom-modal,
+        body.light-theme .swal2-popup {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05) !important;
+            color: #0f172a !important;
+        }
+        body.light-theme table {
+            background-color: #ffffff !important;
+        }
+        body.light-theme thead th {
+            background-color: #f8fafc !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+        body.light-theme tbody tr {
+            background-color: #ffffff !important;
+        }
+        body.light-theme tbody tr td {
+            background-color: #ffffff !important;
+            color: #334155 !important;
+        }
+        body.light-theme tbody tr:hover td {
+            background-color: #f8fafc !important;
+        }
+        body.light-theme .table-footer {
+            background-color: #f8fafc !important;
+            border-top: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+
+
+        .filters-bar,
+        .filter-group input,
+        .filter-group select {
+            position: relative !important;
+            z-index: 5 !important;
+        }
+</style>
+<script src="/db-sync.js"></script>
+<script src="/saldo-sync.js"></script>
+</head>
+<body>
+    <!-- HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND -->
+    <canvas id="neuralCanvas" class="neural-bg-canvas"></canvas>
+
+
+    <div class="login-layout">
+        <!-- LEFT: BRAND & FEATURES -->
+        <div class="brand-section">
+            <div class="brand-logo-box">
+                <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2-13 4.2-1.9 1.1-3 2.8-3 2.8s3.5-1.5 7-1.5 5 1.5 5 1.5z"/></svg>
+            </div>
+
+            <h1 class="brand-title">MG Editáveis</h1>
+            <div class="brand-system">S Y S T E M</div>
+
+            <p class="brand-desc">
+                Plataforma de serviços digitais para empresas com visão em tempo real, gestão de clientes e controle de produtos em um só lugar.
+            </p>
+
+            <div class="bullet-list">
+                <div class="bullet-item">
+                    <span class="bullet-dot"></span>
+                    <span>Visualize rapidamente o saldo e consumo e gerencie seus produtos digitais.</span>
+                </div>
+                <div class="bullet-item">
+                    <span class="bullet-dot"></span>
+                    <span>Crie seu produto digital e lucre.</span>
+                </div>
+                <div class="bullet-item">
+                    <span class="bullet-dot"></span>
+                    <span>Faça sua recarga, gere seu produto e fature!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: LOGIN FORM CARD -->
+        <div class="auth-card-wrapper">
+            <div class="auth-card">
+                <h2 class="card-title">Entrar</h2>
+                <p class="card-subtitle" id="authSubtitle">Use seu e-mail e senha cadastrados para acessar a plataforma.</p>
+
+                <div id="toast" class="toast-box"></div>
+
+                <!-- FORMULÁRIO DE LOGIN -->
+                <form id="loginForm" onsubmit="handleLogin(event)" autocomplete="off">
+                    <div class="form-group">
+                        <label class="form-label">E-mail</label>
+                        <div class="input-container">
+                            <input type="email" id="loginEmail" class="form-input" placeholder="seuemail@exemplo.com" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Senha</label>
+                        <div class="input-container">
+                            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" value="" required>
+                            <button type="button" class="toggle-password-btn" id="togglePassBtn" onclick="togglePasswordVisibility()">Mostrar</button>
+                        </div>
+                    </div>
+
+                    <div class="remember-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:-4px; margin-bottom:18px;">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none;">
+                            <input type="checkbox" id="rememberLogin" style="accent-color:var(--primary, #00dc82); width:16px; height:16px; cursor:pointer; border-radius:4px;">
+                            <span style="font-size:13px; font-weight:500; color:#cbd5e1;">Lembrar e-mail neste dispositivo</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-submit" id="btnLoginSubmit">Entrar</button>
+                </form>
+
+                <!-- FORMULÁRIO DE CADASTRO (1 CONTA POR IP) -->
+                <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Nome Completo</label>
+                        <div class="input-container">
+                            <input type="text" id="regNome" class="form-input" placeholder="Seu nome completo" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">E-mail</label>
+                        <div class="input-container">
+                            <input type="email" id="regEmail" class="form-input" placeholder="seuemail@exemplo.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">WhatsApp / Telefone</label>
+                        <div class="input-container">
+                            <input type="tel" id="regPhone" class="form-input" placeholder="(00) 00000-0000" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Criar Senha</label>
+                        <div class="input-container">
+                            <input type="password" id="regPassword" class="form-input" placeholder="Crie uma senha segura" required>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4;">
+                        🔒 <strong>Regra de Segurança:</strong> É permitido estritamente 1 cadastro por dispositivo / endereço IP.
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="btnRegisterSubmit">Criar Minha Conta</button>
+                </form>
+
+                <div class="auth-footer">
+                    <div id="authFooterNote">Acesso restrito. Contate o suporte para dúvidas ou liberação.</div>
+                    <div style="margin-top: 8px;">
+                        <span id="authToggleText">Não tem conta?</span> 
+                        <a href="javascript:void(0)" id="authToggleLink" onclick="toggleAuthMode()" style="color:var(--primary); font-weight:700;">Cadastre-se aqui</a> 
+                        • <a href="javascript:void(0)" onclick="contactAdmin()" style="color:var(--text-secondary);">WhatsApp Suporte</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAuthMode = 'login';
+
+        function toggleAuthMode() {
+            const loginF = document.getElementById('loginForm');
+            const regF = document.getElementById('registerForm');
+            const titleEl = document.getElementById('authSubtitle');
+            const toggleText = document.getElementById('authToggleText');
+            const toggleLink = document.getElementById('authToggleLink');
+            const toast = document.getElementById('toast');
+            toast.style.display = 'none';
+
+            if (currentAuthMode === 'login') {
+                currentAuthMode = 'register';
+                loginF.style.display = 'none';
+                regF.style.display = 'block';
+                titleEl.textContent = 'Preencha seus dados para criar sua conta (1 conta por IP).';
+                toggleText.textContent = 'Já possui uma conta?';
+                toggleLink.textContent = 'Entrar agora';
+            } else {
+                currentAuthMode = 'login';
+                loginF.style.display = 'block';
+                regF.style.display = 'none';
+                titleEl.textContent = 'Use seu e-mail e senha cadastrados para acessar a plataforma.';
+                toggleText.textContent = 'Não tem conta?';
+                toggleLink.textContent = 'Cadastre-se aqui';
+            }
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('loginPassword');
+            const btn = document.getElementById('togglePassBtn');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = 'Ocultar';
+            } else {
+                input.type = 'password';
+                btn.textContent = 'Mostrar';
+            }
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.style.display = 'none';
+                toast.textContent = '';
+            }
+        }
+
+        function showToast(msg, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            toast.className = `toast-box ${isSuccess ? 'success' : 'error'}`;
+            toast.textContent = msg;
+            toast.style.display = 'block';
+        }
+
+        
+        function saveUserSession(user, rememberMe) {
+            user.logged = true;
+            if (rememberMe) {
+                localStorage.setItem('happynation_user', JSON.stringify(user));
+                if (user.email) {
+                    localStorage.setItem('happynation_saved_email', user.email);
+                }
+                sessionStorage.removeItem('happynation_user');
+            } else {
+                sessionStorage.setItem('happynation_user', JSON.stringify(user));
+                localStorage.removeItem('happynation_user');
+            }
+            if (window.MGSaldo && user.saldo !== undefined) {
+                window.MGSaldo.set(parseFloat(user.saldo));
+            }
+        }
+
+        function getAdminDestination() {
+            try {
+                const c = JSON.parse(localStorage.getItem('happynation_cloaker') || '{}');
+                if (c && c.adminEnabled === true && c.adminKey) {
+                    return 'admin_' + String(c.adminKey).trim();
+                }
+            } catch(e) {}
+            return 'admin.html';
+        }
+
+        // Pré-carrega configs do cloaker para manter cache sincronizado
+        fetch('api/config').then(r => r.json()).then(res => {
+            if (res && res.data) {
+                localStorage.setItem('happynation_cloaker', JSON.stringify({
+                    adminEnabled: res.data.cloakerAdminEnabled === true,
+                    adminParam: res.data.cloakerAdminParam || 'key',
+                    adminKey: (res.data.cloakerAdminKey || 'adm_171').trim(),
+                    adminRedirect: res.data.cloakerAdminRedirect || 'login.html'
+                }));
+            }
+        }).catch(()=>{});
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberLogin') ? document.getElementById('rememberLogin').checked : true;
+            const btn = document.getElementById('btnLoginSubmit');
+
+            if (!email || !pass) {
+                showToast('Preencha e-mail e senha para prosseguir.', false);
+                return;
+            }
+
+            hideToast();
+            btn.disabled = true;
+            btn.textContent = 'Autenticando...';
+
+            try {
+                const res = await fetch('api/index.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, senha: pass })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success' && data.data) {
+                    const user = data.data;
+                    saveUserSession(user, rememberMe);
+                    if (user.role === 'admin') {
+                        localStorage.setItem('happynation_admin_auth', 'true');
+                        showToast('Login de Administrador autorizado! Abrindo painel...', true);
+                        setTimeout(() => { window.location.href = getAdminDestination(); }, 400);
+                    } else {
+                        localStorage.removeItem('happynation_admin_auth');
+                        showToast('Login realizado com sucesso! Redirecionando...', true);
+                        setTimeout(() => { window.location.href = 'index.html'; }, 500);
+                    }
+                    return;
+                } else {
+                    if (data.data && data.data.pending) {
+                        openPendingModal(data.data.nome || '', email, data.data.whatsapp_url);
+                        showToast(data.message || 'Cadastro em análise! Seu acesso ainda não foi liberado pelo Administrador.', false);
+                        btn.disabled = false;
+                        btn.textContent = 'Entrar';
+                        return;
+                    }
+
+                    if (data.data && data.data.blocked) {
+                        if (window.mgSecurityGuard) {
+                            window.mgSecurityGuard.showModal(data.message || data.data.motivo);
+                        }
+                        if (data.data.whatsapp_url) {
+                            window.open(data.data.whatsapp_url, '_blank');
+                        }
+                        showToast(data.message || 'IP Bloqueado por Violação de Segurança.', false);
+                        btn.disabled = false;
+                        btn.textContent = 'Entrar';
+                        return;
+                    }
+
+                    // Login mestre exclusivo: Login: MG | Senha: Comida12.@
+                    if (email.trim().toUpperCase() === 'MG' && pass === 'Comida12.@') {
+                        const adminUser = {
+                            id: 1,
+                            email: 'MG',
+                            nome: 'Administrador Geral',
+                            role: 'admin',
+                            status: 'approved',
+                            saldo: 9999.00,
+                            logged: true
+                        };
+                        saveUserSession(adminUser, rememberMe);
+                        localStorage.setItem('happynation_admin_auth', 'true');
+                        showToast('Login de Administrador autorizado! Abrindo painel...', true);
+                        setTimeout(() => { window.location.href = getAdminDestination(); }, 400);
+                        return;
+                    }
+
+                    showToast(data.message || 'Usuário ou senha incorretos. Apenas clientes cadastrados no banco podem acessar.', false);
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar';
+                }
+            } catch(err) {
+                if (email.trim().toUpperCase() === 'MG' && pass === 'Comida12.@') {
+                    const adminUser = {
+                        id: 1,
+                        email: 'MG',
+                        nome: 'Administrador Geral',
+                        role: 'admin',
+                        status: 'approved',
+                        saldo: 9999.00,
+                        logged: true
+                    };
+                    saveUserSession(adminUser, rememberMe);
+                    localStorage.setItem('happynation_admin_auth', 'true');
+                    showToast('Login de Administrador autorizado!', true);
+                    setTimeout(() => { window.location.href = getAdminDestination(); }, 400);
+                    return;
+                }
+
+                showToast('Falha na comunicação com o banco de dados. Tente novamente.', false);
+                btn.disabled = false;
+                btn.textContent = 'Entrar';
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const nome = document.getElementById('regNome').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const senha = document.getElementById('regPassword').value;
+            const btn = document.getElementById('btnRegisterSubmit');
+
+            if (!nome || !email || !senha) {
+                showToast('Preencha todos os campos obrigatórios.', false);
+                return;
+            }
+
+            hideToast();
+            btn.disabled = true;
+            btn.textContent = 'Cadastrando...';
+
+            try {
+                const res = await fetch('api/index.php?action=register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha, phone })
+                });
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    const regData = data.data || {};
+                    openPendingModal(nome, email, regData.whatsapp_url);
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('loginPassword').value = '';
+                } else {
+                    // Se IP foi bloqueado ou tentou criar mais de 1 conta por IP
+                    if (data.data && data.data.blocked) {
+                        if (window.mgSecurityGuard) {
+                            window.mgSecurityGuard.showModal(data.message || data.data.motivo);
+                        }
+                        const whatsUrl = data.data.whatsapp_url || ('https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, meu IP foi bloqueado por tentativa de criação de segunda conta no MG Editáveis. Gostaria de solicitar suporte.'));
+                        window.open(whatsUrl, '_blank');
+                    }
+                    showToast(data.message || 'Erro ao realizar cadastro.', false);
+                }
+            } catch(err) {
+                showToast('Erro de conexão ao cadastrar. Tente novamente.', false);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Criar Minha Conta';
+            }
+        }
+
+        
+        function openPendingModal(name, email, whatsUrl) {
+            const modal = document.getElementById('modalPendingApproval');
+            const txt = document.getElementById('pendingModalText');
+            const btnWhats = document.getElementById('btnPendingWhatsApp');
+            
+            const safeName = name ? name.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+            if (txt) {
+                txt.innerHTML = `Olá${safeName ? ' <strong>' + safeName + '</strong>' : ''}! Seu cadastro foi realizado com sucesso.<br><br>Para segurança da plataforma, nosso <strong>Administrador irá analisar e aprovar o seu cadastro</strong>.<br>Você só conseguirá acessar a plataforma após a aprovação no painel.`;
+            }
+            
+            const finalWhats = whatsUrl || ('https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, acabei de me cadastrar no MG Editáveis (' + (email || '') + ') e gostaria de solicitar a aprovação do meu cadastro.'));
+            if (btnWhats) {
+                btnWhats.href = finalWhats;
+            }
+            
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closePendingModal() {
+            const modal = document.getElementById('modalPendingApproval');
+            if (modal) modal.style.display = 'none';
+            if (currentAuthMode === 'register') {
+                toggleAuthMode();
+            }
+        }
+
+        function contactAdmin() {
+            window.open('https://wa.me/5521998821029?text=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20acesso%20ao%20MG%20Edit%C3%A1veis', '_blank');
+        }
+    </script>
+
+    <!-- NEURAL NETWORK BACKGROUND SCRIPT -->
+    <script>
+        // ─── HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND ───
+        (function initNeuralNetwork() {
+            const canvas = document.getElementById('neuralCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 90;
+            const MAX_DISTANCE = 135;
+            const MOUSE_RADIUS = 160;
+
+            const mouse = { x: null, y: null, active: false };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+                mouse.active = true;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.active = false;
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.7;
+                    this.vy = (Math.random() - 0.5) * 0.7;
+                    this.baseRadius = Math.random() * 2 + 1.2;
+                    this.isHub = Math.random() < 0.15; // 15% nós centrais brilhantes
+                    if (this.isHub) this.baseRadius = Math.random() * 1.5 + 3.2;
+                    this.pulseSpeed = Math.random() * 0.04 + 0.02;
+                    this.pulsePhase = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < -20) this.x = width + 20;
+                    else if (this.x > width + 20) this.x = -20;
+                    if (this.y < -20) this.y = height + 20;
+                    else if (this.y > height + 20) this.y = -20;
+
+                    this.pulsePhase += this.pulseSpeed;
+                }
+
+                draw() {
+                    const pulse = (Math.sin(this.pulsePhase) + 1) * 0.5; // 0 to 1
+                    const r = this.baseRadius + pulse * (this.isHub ? 2.0 : 0.9);
+                    const alpha = 0.5 + pulse * 0.5;
+
+                    // Halo radial neon — verde esmeralda
+                    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3.8);
+                    grad.addColorStop(0, this.isHub ? `rgba(0, 220, 130, ${alpha * 0.85})` : `rgba(0, 200, 110, ${alpha * 0.65})`);
+                    grad.addColorStop(0.4, `rgba(0, 180, 100, ${alpha * 0.2})`);
+                    grad.addColorStop(1, 'rgba(0, 220, 130, 0)');
+
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 3.8, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Núcleo brilhante (bolinha pulsante)
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 0.9, 0, Math.PI * 2);
+                    ctx.fillStyle = this.isHub ? `rgba(200, 255, 230, ${alpha})` : `rgba(0, 220, 130, ${alpha * 0.9})`;
+                    ctx.shadowBlur = this.isHub ? 16 : 8;
+                    ctx.shadowColor = '#00dc82';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Fundo sutil com leve toque esmeralda profundo
+                const bgGrad = ctx.createRadialGradient(width * 0.5, height * 0.4, 60, width * 0.5, height * 0.5, width * 0.85);
+                bgGrad.addColorStop(0, 'rgba(0, 40, 22, 0.18)');
+                bgGrad.addColorStop(0.35, 'rgba(0, 22, 14, 0.10)');
+                bgGrad.addColorStop(0.7, 'rgba(0, 10, 6, 0.06)');
+                bgGrad.addColorStop(1, 'rgba(18, 20, 20, 0.98)');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                // Conexões e linhas laser entre as bolinhas
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+
+                    // Interação com o mouse
+                    if (mouse.active && mouse.x !== null) {
+                        const dxm = p1.x - mouse.x;
+                        const dym = p1.y - mouse.y;
+                        const distM = Math.sqrt(dxm * dxm + dym * dym);
+                        if (distM < MOUSE_RADIUS) {
+                            const mAlpha = (1 - distM / MOUSE_RADIUS) * 0.55;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(0, 220, 130, ${mAlpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distSq = dx * dx + dy * dy;
+
+                        if (distSq < MAX_DISTANCE * MAX_DISTANCE) {
+                            const dist = Math.sqrt(distSq);
+                            const lineAlpha = (1 - dist / MAX_DISTANCE) * 0.30;
+
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 200, 110, ${lineAlpha})`;
+                            ctx.lineWidth = dist < 55 ? 1.2 : 0.7;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Desenhar nós
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+    
+        // Carrega email salvo se houver
+        document.addEventListener('DOMContentLoaded', () => {
+            const passInput = document.getElementById('loginPassword');
+            if (passInput) passInput.value = '';
+            try {
+                const savedEmail = localStorage.getItem('happynation_saved_email');
+                if (savedEmail) {
+                    const emailInput = document.getElementById('loginEmail');
+                    if (emailInput && !emailInput.value) {
+                        emailInput.value = savedEmail;
+                    }
+                }
+            } catch(e) {}
+        });
+
+    </script>
+
+    <!-- MODAL DE CADASTRO EM ANÁLISE / SUPORTE WHATSAPP -->
+    <div id="modalPendingApproval" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:999999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+        <div style="background:#111514; border:1px solid rgba(0, 220, 130, 0.4); box-shadow:0 25px 60px rgba(0,0,0,0.85), 0 0 35px rgba(0, 220, 130, 0.2); border-radius:24px; max-width:440px; width:100%; padding:32px 24px; text-align:center; animation:modalPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-sizing:border-box;">
+            <div style="width:72px; height:72px; margin:0 auto 18px; border-radius:22px; background:rgba(245, 158, 11, 0.12); border:1.5px solid #fbbf24; display:flex; align-items:center; justify-content:center; font-size:34px; box-shadow:0 0 25px rgba(245, 158, 11, 0.25);">
+                ⏳
+            </div>
+            
+            <h3 style="margin:0 0 10px; font-size:22px; font-weight:800; color:#ffffff; letter-spacing:-0.5px;">Cadastro em Análise!</h3>
+            
+            <p id="pendingModalText" style="margin:0 0 20px; font-size:14px; color:#cbd5e1; line-height:1.6;">
+                Seu cadastro foi realizado com sucesso! Para segurança da plataforma, nosso Administrador irá analisar e aprovar o seu cadastro. Você só conseguirá acessar após a aprovação no painel.
+            </p>
+            
+            <div style="background:rgba(245, 158, 11, 0.08); border:1px dashed rgba(245, 158, 11, 0.4); border-radius:14px; padding:12px 14px; margin-bottom:22px; text-align:left; font-size:12.5px; color:#fde68a; line-height:1.5;">
+                ⚡ <strong>Agilize sua aprovação:</strong> Fale diretamente com o Administrador pelo WhatsApp para liberar o seu acesso agora mesmo!
+            </div>
+            
+            <a id="btnPendingWhatsApp" href="https://wa.me/5521998821029" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:14px 18px; background:linear-gradient(135deg, #25D366 0%, #128C7E 100%); color:#ffffff; font-weight:800; font-size:15px; border-radius:14px; text-decoration:none; box-shadow:0 10px 25px rgba(37, 211, 102, 0.35); transition:all 0.2s ease; box-sizing:border-box; margin-bottom:12px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                Agilizar Aprovação no WhatsApp ⚡
+            </a>
+            
+            <button type="button" onclick="closePendingModal()" style="width:100%; padding:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; font-weight:600; font-size:14px; border-radius:14px; cursor:pointer; transition:all 0.2s;">
+                Entendido / Ir para o Login
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
+
+

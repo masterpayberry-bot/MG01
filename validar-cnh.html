@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+        <!-- Open Graph / Compartilhamento de Links (WhatsApp, Telegram, Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MG Editáveis | Sistema">
+    <meta property="og:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:secure_url" content="https://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MG Editáveis">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MG Editáveis | Sistema">
+    <meta name="twitter:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta name="twitter:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Consulta SENATRAN - Detalhamento de CNH</title>
+    <script src="js/security-guard.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fa;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Container centralizado para mobile e desktop */
+        .phone-wrapper {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin: 0 auto;
+            padding: 0;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        /* Top Header Verde Oficial SENATRAN / CDT (#84bd00) */
+        .green-banner {
+            background: #84bd00;
+            color: #ffffff;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
+
+        .banner-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .banner-btn:active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .banner-title {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            text-align: center;
+            flex: 1;
+            color: #ffffff;
+        }
+
+        /* Header com Identificação SENATRAN */
+        .senatran-header {
+            text-align: center;
+            padding: 24px 20px 14px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #ffffff;
+        }
+
+        .cnh-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: #1a1a1a;
+            letter-spacing: 0.8px;
+            margin-bottom: 2px;
+            line-height: 1.1;
+        }
+
+        .senatran-sub {
+            font-size: 13.5px;
+            color: #757575;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        /* Foto do Condutor Oficial 3x4 */
+        .driver-photo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .driver-photo {
+            width: 108px;
+            height: 140px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #d1d5db;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .driver-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .driver-photo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Lista Oficial de Campos */
+        .fields-list {
+            padding: 6px 20px 36px 20px;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+        }
+
+        .field-item {
+            border-bottom: 1px solid #efefef;
+            padding: 12px 0 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .field-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Label em verde-oliva suave oficial do CDT SENATRAN */
+        .field-label {
+            font-size: 13px;
+            color: #7b9948;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        /* Valor em preto forte negrito */
+        .field-value {
+            font-size: 15.5px;
+            font-weight: 700;
+            color: #111827;
+            word-break: break-word;
+            line-height: 1.35;
+            letter-spacing: 0.1px;
+            min-height: 20px;
+        }
+
+        /* Rodapé de autenticação governamental */
+        .gov-footer-badge {
+            margin-top: 10px;
+            padding: 16px 20px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .gov-footer-badge svg {
+            width: 16px;
+            height: 16px;
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-wrapper">
+    <!-- Top Bar Oficial Verde CDT / SENATRAN -->
+    <header class="green-banner">
+        <button class="banner-btn" onclick="if (window.history.length > 1) window.history.back(); else window.close();" title="Voltar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+        <div class="banner-title" id="topBannerTitle">Detalhamento</div>
+        <div style="width: 38px;"></div>
+    </header>
+
+    <!-- Header com Identificação SENATRAN -->
+    <div class="senatran-header">
+        <div class="cnh-title">CNH</div>
+        <div class="senatran-sub">SENATRAN</div>
+
+        <div class="driver-photo-container">
+            <div class="driver-photo" id="driverPhoto">
+                <svg viewBox="0 0 100 125" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="125" fill="#f0f0f0"/>
+                    <circle cx="50" cy="46" r="23" fill="#c0c0c0"/>
+                    <path d="M16 118 c0 -22 15 -36 34 -36 s34 14 34 36 Z" fill="#c0c0c0"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista Oficial de Campos -->
+    <div class="fields-list">
+        <div class="field-item">
+            <div class="field-label">Nome</div>
+            <div class="field-value" id="valNome">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Gênero</div>
+            <div class="field-value" id="valGenero">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Doc. Identidade/Órg. Emissor/UF</div>
+            <div class="field-value" id="valRG">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">CPF</div>
+            <div class="field-value" id="valCPF">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Data de Nascimento</div>
+            <div class="field-value" id="valNasc">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Filiação Pai</div>
+            <div class="field-value" id="valPai">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Filiação Mãe</div>
+            <div class="field-value" id="valMae">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Permissão</div>
+            <div class="field-value" id="valPermissao">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">ACC</div>
+            <div class="field-value" id="valACC">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Cat. Hab.</div>
+            <div class="field-value" id="valCat">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Nº Registro</div>
+            <div class="field-value" id="valReg">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Validade</div>
+            <div class="field-value" id="valValidade">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">1ª Habilitação</div>
+            <div class="field-value" id="val1Hab">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Observações</div>
+            <div class="field-value" id="valObs">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Local</div>
+            <div class="field-value" id="valLocal">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">UF</div>
+            <div class="field-value" id="valUF">---</div>
+        </div>
+
+        <div class="field-item">
+            <div class="field-label">Data de Emissão</div>
+            <div class="field-value" id="valEmissao">---</div>
+        </div>
+    </div>
+
+    <!-- Badge de Validação Oficial -->
+    <div class="gov-footer-badge">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        <span>Documento Autenticado Oficialmente pela SENATRAN</span>
+    </div>
+</div>
+
+<script>
+window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+
+    const nome = params.get('nome');
+    const cpf = params.get('cpf');
+    const rg = params.get('rg');
+    const genero = params.get('genero') || params.get('sexo');
+    const nasc = params.get('nasc');
+    const mae = params.get('mae');
+    const pai = params.get('pai');
+    const cat = params.get('cat');
+    const reg = params.get('reg');
+    const validade = params.get('validade');
+    const hab = params.get('hab');
+    const emissao = params.get('emissao');
+    const local = params.get('local');
+    const uf = params.get('uf');
+    const obs = params.get('obs');
+    const foto = params.get('foto');
+
+    if (nome) document.getElementById('valNome').textContent = nome.toUpperCase();
+    if (cpf) document.getElementById('valCPF').textContent = cpf;
+    if (rg) document.getElementById('valRG').textContent = rg.toUpperCase();
+    if (genero) document.getElementById('valGenero').textContent = genero;
+    if (nasc) document.getElementById('valNasc').textContent = nasc;
+    if (mae) document.getElementById('valMae').textContent = mae.toUpperCase();
+    if (pai) document.getElementById('valPai').textContent = pai.toUpperCase();
+    if (cat) document.getElementById('valCat').textContent = cat.toUpperCase();
+    if (reg) document.getElementById('valReg').textContent = reg;
+    if (validade) document.getElementById('valValidade').textContent = validade;
+    if (hab) document.getElementById('val1Hab').textContent = hab;
+    if (local) document.getElementById('valLocal').textContent = local.toUpperCase();
+    if (uf) document.getElementById('valUF').textContent = uf.toUpperCase();
+    if (obs) document.getElementById('valObs').textContent = obs;
+    if (emissao) {
+        document.getElementById('valEmissao').textContent = emissao;
+        document.getElementById('valPermissao').textContent = emissao;
+    }
+
+    if (foto) {
+        document.getElementById('driverPhoto').innerHTML = `<img src="${foto}" alt="Foto Condutor" />`;
+    }
+
+    // Se tiver CPF, busca no banco para preencher campos faltantes ou foto oficial
+    if (cpf) {
+        const cleanCpf = cpf.replace(/\D/g, '');
+        if (cleanCpf.length === 11) {
+            fetch(`api/index.php?action=verificar_cpf_cnh&cpf=${encodeURIComponent(cleanCpf)}`)
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.status === 'success' && res.data) {
+                        const d = res.data;
+                        if (d.nome && (!nome || nome === '---')) document.getElementById('valNome').textContent = d.nome.toUpperCase();
+                        if (d.cpf && (!cpf || cpf === '---')) document.getElementById('valCPF').textContent = d.cpf;
+                        if (d.rg && (!rg || rg === '---')) document.getElementById('valRG').textContent = d.rg.toUpperCase();
+                        if (d.categoria && (!cat || cat === '---')) document.getElementById('valCat').textContent = d.categoria.toUpperCase();
+                        if (d.registro && (!reg || reg === '---')) document.getElementById('valReg').textContent = d.registro;
+                        if (d.validade && (!validade || validade === '---')) document.getElementById('valValidade').textContent = d.validade;
+                        if (d.data_emissao && (!emissao || emissao === '---')) {
+                            document.getElementById('valEmissao').textContent = d.data_emissao;
+                            document.getElementById('valPermissao').textContent = d.data_emissao;
+                        }
+                        if (d.data_1_hab && (!hab || hab === '---')) document.getElementById('val1Hab').textContent = d.data_1_hab;
+                        if (d.local && (!local || local === '---')) document.getElementById('valLocal').textContent = d.local.toUpperCase();
+                        if (d.uf && (!uf || uf === '---')) document.getElementById('valUF').textContent = d.uf.toUpperCase();
+                        if (d.filiacao_mae && (!mae || mae === '---')) document.getElementById('valMae').textContent = d.filiacao_mae.toUpperCase();
+                        if (d.filiacao_pai && (!pai || pai === '---')) document.getElementById('valPai').textContent = d.filiacao_pai.toUpperCase();
+                        if (d.genero && (!genero || genero === '---')) document.getElementById('valGenero').textContent = d.genero;
+
+                        if (d.foto && (!foto || foto === '')) {
+                            document.getElementById('driverPhoto').innerHTML = `<img src="${d.foto}" alt="Foto Condutor" />`;
+                        }
+                    }
+                })
+                .catch(() => {});
+        }
+    }
+});
+</script>
+
+</body>
+</html>

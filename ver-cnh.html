@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+        <!-- Open Graph / Compartilhamento de Links (WhatsApp, Telegram, Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MG Editáveis | Sistema">
+    <meta property="og:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:secure_url" content="https://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MG Editáveis">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MG Editáveis | Sistema">
+    <meta name="twitter:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta name="twitter:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | APP</title>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-page: #121414;
+            --bg-header: #151718;
+            --bg-card: #191c1d;
+            --bg-input: #121414;
+            --border-color: #232729;
+            --border-subtle: #2b3034;
+            --primary: #00dc82;
+            --primary-dark: #00b368;
+            --text-primary: #ffffff;
+            --text-secondary: #9aa2a6;
+            --text-muted: #5f686c;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* ─── LIGHT THEME (MATCHES SCREENSHOT EXACTLY) ─── */
+        body.light-theme {
+            --bg-page: #f6f8f7;
+            --bg-header: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-subtle: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #121414; }
+        ::-webkit-scrollbar-thumb { background: #262a2c; border-radius: 3px; }
+
+        /* ─── HEADER (MG EDITAVEIS HEADER) ─── */
+        .header {
+            height: 60px;
+            background: #151718;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+        }
+        body.light-theme .header {
+            background: #ffffff;
+            border-bottom-color: #e2e8f0;
+        }
+
+        .header-inner {
+            width: 100%;
+            max-width: 1260px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #00dc82;
+        }
+
+        .brand-logo {
+            width: 28px;
+            height: 28px;
+            background: #00dc82;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand-logo svg {
+            width: 17px;
+            height: 17px;
+            fill: #062517;
+        }
+        .brand-text {
+            font-size: 17px;
+            font-weight: 700;
+            color: #00dc82;
+            letter-spacing: -0.3px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+        }
+
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08);
+            color: #00dc82;
+            border: 1px solid rgba(0, 220, 130, 0.3);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-link {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color .2s;
+            cursor: pointer;
+        }
+        .header-link:hover { color: #fff; }
+        body.light-theme .header-link:hover { color: #0f172a; }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: color 0.15s;
+        }
+        .header-icon:hover { color: #fff; }
+        .header-icon svg { width: 18px; height: 18px; }
+
+        .btn-voltar-header {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.15s;
+            cursor: pointer;
+        }
+        .btn-voltar-header:hover { color: #fff; }
+        body.light-theme .btn-voltar-header:hover { color: #0f172a; }
+        .btn-voltar-header svg { width: 14px; height: 14px; }
+
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #00dc82;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #062517;
+            cursor: pointer;
+        }
+
+        /* ─── AVATAR DROPDOWN ─── */
+        .avatar-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: #191c1d;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            width: 220px;
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            animation: fadeInDrop 0.15s ease-out;
+        }
+        body.light-theme .avatar-dropdown {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+        }
+        .avatar-dropdown.show { display: flex; }
+        @keyframes fadeInDrop {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .dropdown-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dropdown-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .dropdown-email {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            word-break: break-all;
+        }
+        .dropdown-menu {
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .dropdown-item svg { width: 15px; height: 15px; color: var(--text-secondary); }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+        body.light-theme .dropdown-item:hover { background: #f1f5f9; }
+        .dropdown-item.danger { color: #ef4444; }
+        .dropdown-item.danger svg { color: #ef4444; }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 6px;
+        }
+
+        /* ─── MAIN CONTAINER (MATCHES SCREENSHOT) ─── */
+        .page-container {
+            max-width: 660px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 24px 16px 80px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Top Title & Navigation Row */
+        .page-top-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2px;
+        }
+        .btn-edit-top {
+            background: #1e2224;
+            color: #ffffff;
+            font-weight: 600;
+            border: 1px solid #2a3032;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 7px 12px;
+            font-size: 12.5px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-edit-top:hover {
+            background: #252b2d;
+            border-color: #3a4042;
+            color: #ffffff;
+        }
+        body.light-theme .btn-edit-top {
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #d1d5db;
+        }
+        body.light-theme .btn-edit-top:hover {
+            background: #f1f5f9;
+            border-color: #9ca3af;
+            color: #000000;
+        }
+        .btn-top-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #9aa2a6;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        .btn-top-back:hover { color: var(--text-primary); }
+        .btn-top-back svg { width: 14px; height: 14px; }
+        .page-main-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
+
+        /* ─── CARD COMPONENT ─── */
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px 20px;
+        }
+        body.light-theme .info-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-sec-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        /* Card 1: Dados CNH */
+        .cnh-data-body {
+            display: flex;
+            align-items: flex-start;
+            gap: 22px;
+        }
+        .photo-col {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .field-sublabel {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .cnh-photo-frame {
+            width: 86px;
+            height: 108px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #232729;
+            border: 1px solid #2f3438;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        body.light-theme .cnh-photo-frame {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+        .cnh-photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-grid-col {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 14px 20px;
+            flex: 1;
+        }
+        .info-field {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .field-main-val {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+        .status-gerada-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11.5px;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        /* Card 2: Links e Download */
+        .link-block-item {
+            margin-bottom: 16px;
+        }
+        .link-block-item:last-child {
+            margin-bottom: 0;
+        }
+        .link-instruct-txt {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .link-title-bold {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+        .link-sub-desc {
+            font-size: 11.5px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .input-actions-wrap {
+            display: flex;
+            align-items: center;
+            background: #121414;
+            border: 1px solid #232729;
+            border-radius: 6px;
+            padding-right: 4px;
+            transition: border-color 0.15s;
+        }
+        body.light-theme .input-actions-wrap {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        .link-field-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            padding: 9px 12px;
+            font-family: var(--font);
+            outline: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        body.light-theme .link-field-input {
+            color: #334155;
+        }
+        .btn-action-icon {
+            background: none;
+            border: none;
+            color: #9aa2a6;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+        .btn-action-icon:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        body.light-theme .btn-action-icon:hover {
+            color: #0f172a;
+            background: #e2e8f0;
+        }
+        .btn-action-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-green-download-pdf {
+            background: #00dc82;
+            color: #062517;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            font-family: var(--font);
+            transition: all 0.15s;
+            box-shadow: 0 4px 14px rgba(0, 220, 130, 0.25);
+        }
+        .btn-green-download-pdf:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(0, 220, 130, 0.4);
+        }
+        .btn-green-download-pdf svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Card 3: Dados de Acesso */
+        .access-pill-tabs {
+            display: inline-flex;
+            background: #121414;
+            border: 1px solid #232729;
+            border-radius: 6px;
+            padding: 3px;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+        body.light-theme .access-pill-tabs {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+        .pill-tab-btn {
+            background: none;
+            border: none;
+            color: #889096;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all 0.15s;
+        }
+        .pill-tab-btn.active {
+            background: #232729;
+            color: #ffffff;
+        }
+        body.light-theme .pill-tab-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+        .form-group-item {
+            margin-bottom: 14px;
+        }
+        .field-label-desc {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .simple-form-inp {
+            width: 100%;
+            background: #121414;
+            border: 1px solid #232729;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12.5px;
+            padding: 9px 12px;
+            font-family: var(--font);
+            outline: none;
+        }
+        body.light-theme .simple-form-inp {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #0f172a;
+        }
+        .pass-row-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pass-inp {
+            flex: 1;
+            font-family: monospace;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .btn-gen-pass-action {
+            background: #232729;
+            border: 1px solid #2f3438;
+            color: #c5cbcf;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 9px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            font-family: var(--font);
+            transition: all 0.15s;
+        }
+        .btn-gen-pass-action:hover {
+            background: #2b3034;
+            color: #ffffff;
+        }
+        body.light-theme .btn-gen-pass-action {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #334155;
+        }
+        body.light-theme .btn-gen-pass-action:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .btn-gen-pass-action svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Card 4: Mensagem para o Cliente */
+        .msg-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .btn-copy-msg-pill {
+            background: #232729;
+            border: 1px solid #2f3438;
+            color: #c5cbcf;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font);
+            transition: all 0.15s;
+        }
+        .btn-copy-msg-pill:hover {
+            background: #2b3034;
+            color: #ffffff;
+        }
+        body.light-theme .btn-copy-msg-pill {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #334155;
+        }
+        body.light-theme .btn-copy-msg-pill:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .btn-copy-msg-pill svg {
+            width: 13px;
+            height: 13px;
+        }
+        .message-display-box {
+            background: #121414;
+            border: 1px solid #232729;
+            border-radius: 8px;
+            padding: 16px;
+            color: #cbd5e1;
+            font-size: 12px;
+            line-height: 1.7;
+            white-space: pre-line;
+            font-family: var(--font);
+        }
+        body.light-theme .message-display-box {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #334155;
+        }
+
+        /* ─── FLOATING THEME TOGGLE (FAB) ─── */
+        .fab-chat {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: #00dc82;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.4);
+            z-index: 99;
+            color: #062517;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .fab-chat svg {
+            width: 22px;
+            height: 22px;
+            fill: #062517;
+        }
+        .fab-chat:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.6);
+        }
+    
+        /* HIGH-TECH ANIMATED NEURAL/PLEXUS BACKGROUND */
+        .neural-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        
+    
+        /* Header and dropdown z-index fixes */
+        .header {
+            z-index: 1000 !important;
+        }
+        .avatar-dropdown {
+            z-index: 99999 !important;
+        }
+    
+
+        
+
+        /* ─── SOLID BACKGROUND SHIELD (Mantém o cinza elegante original #191c1d 100% opaco e isolado do canvas) ─── */
+        .page-container,
+        .app-container,
+        .main-wrapper,
+        .main-layout,
+        .container,
+        .workspace {
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        .card,
+        .card-action,
+        .table-wrap,
+        .editor-card,
+        .preview-canvas,
+        .auth-card,
+        .profile-card,
+        .recharge-card,
+        .support-card,
+        .chat-container,
+        .chat-sidebar,
+        .chat-main,
+        .sidebar,
+        .content,
+        .action-card,
+        .activities-card,
+        .rm-card,
+        .modal,
+        .modal-content,
+        .modal-card,
+        .dialog-card,
+        .dialog-box,
+        .custom-modal,
+        .swal2-popup {
+            background-color: #191c1d !important;
+            border-color: #232729 !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 5 !important;
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+        }
+
+        /* Linhas e cabeçalho da tabela */
+        table {
+            background-color: #191c1d !important;
+        }
+
+        thead th {
+            background-color: #161819 !important;
+            border-bottom: 1px solid #232729 !important;
+        }
+
+        tbody tr {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr td {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr:hover td {
+            background-color: #202426 !important;
+        }
+
+        .table-footer {
+            background-color: #191c1d !important;
+            border-top: 1px solid #232729 !important;
+        }
+
+        /* ─── LIGHT THEME OVERRIDES (corrige o shield para tema claro) ─── */
+        body.light-theme .card,
+        body.light-theme .card-action,
+        body.light-theme .table-wrap,
+        body.light-theme .editor-card,
+        body.light-theme .auth-card,
+        body.light-theme .profile-card,
+        body.light-theme .recharge-card,
+        body.light-theme .support-card,
+        body.light-theme .chat-container,
+        body.light-theme .chat-sidebar,
+        body.light-theme .chat-main,
+        body.light-theme .sidebar,
+        body.light-theme .content,
+        body.light-theme .action-card,
+        body.light-theme .activities-card,
+        body.light-theme .rm-card,
+        body.light-theme .modal,
+        body.light-theme .modal-content,
+        body.light-theme .modal-card,
+        body.light-theme .dialog-card,
+        body.light-theme .dialog-box,
+        body.light-theme .custom-modal,
+        body.light-theme .swal2-popup {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05) !important;
+            color: #0f172a !important;
+        }
+        body.light-theme table {
+            background-color: #ffffff !important;
+        }
+        body.light-theme thead th {
+            background-color: #f8fafc !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+        body.light-theme tbody tr {
+            background-color: #ffffff !important;
+        }
+        body.light-theme tbody tr td {
+            background-color: #ffffff !important;
+            color: #334155 !important;
+        }
+        body.light-theme tbody tr:hover td {
+            background-color: #f8fafc !important;
+        }
+        body.light-theme .table-footer {
+            background-color: #f8fafc !important;
+            border-top: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+
+
+        .filters-bar,
+        .filter-group input,
+        .filter-group select {
+            position: relative !important;
+            z-index: 5 !important;
+        }
+
+    
+
+        /* ─── LOGO DO CABEÇALHO PADRÃO OFICIAL (Ícone Folha Verde Neon + MG Editáveis Branco) ─── */
+        .header-brand {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+        }
+
+        .brand-logo {
+            width: 32px !important;
+            height: 32px !important;
+            background: #00dc82 !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.45) !important;
+        }
+
+        .brand-logo svg {
+            width: 20px !important;
+            height: 20px !important;
+            fill: #062517 !important;
+        }
+
+        .brand-text {
+            font-size: 19px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            letter-spacing: -0.4px !important;
+            white-space: nowrap !important;
+            display: inline-block !important;
+        }
+
+        .brand-text span {
+            color: #ffffff !important;
+        }
+
+    
+
+        /* ─── PÍLULA DE SALDO OFICIAL PADRÃO RECARGAS (Borda verde neon fina, ícone de cartão e texto verde vibrante) ─── */
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08) !important;
+            color: #00dc82 !important;
+            border: 1px solid #00dc82 !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            padding: 6px 14px !important;
+            border-radius: 20px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+            text-decoration: none !important;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+            cursor: pointer !important;
+            box-shadow: 0 0 10px rgba(0, 220, 130, 0.15) !important;
+        }
+
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.16) !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.35) !important;
+            transform: translateY(-1px) !important;
+            color: #00dc82 !important;
+        }
+
+        .saldo-pill svg {
+            width: 15px !important;
+            height: 15px !important;
+            stroke: #00dc82 !important;
+            stroke-width: 2.2 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .saldo-pill span {
+            color: #00dc82 !important;
+            font-weight: 700 !important;
+        }
+
+    
+        /* ─── BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS ─── */
+        .networking-fab {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 99999;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px 10px 14px;
+            background: linear-gradient(135deg, #121915 0%, #17241e 100%);
+            border: 1.5px solid #00dc82;
+            border-radius: 50px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 20px rgba(0,220,130,0.35);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1);
+            animation: pulseNetworkingGlow 2.4s infinite ease-in-out;
+            user-select: none;
+        }
+        .networking-fab:hover {
+            transform: translateY(-3px) scale(1.03);
+            border-color: #34d399;
+            box-shadow: 0 12px 30px -4px rgba(0,0,0,0.8), 0 0 32px rgba(0,220,130,0.65);
+            color: #ffffff;
+        }
+        .fab-icon-bubble {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            background: #00dc82;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #062517;
+            flex-shrink: 0;
+            box-shadow: 0 0 14px rgba(0,220,130,0.6);
+        }
+        .fab-icon-bubble svg { width: 20px; height: 20px; }
+        .fab-ping-badge {
+            position: absolute;
+            top: -2px; right: -2px;
+            width: 11px; height: 11px;
+            background: #22c55e;
+            border: 2px solid #121915;
+            border-radius: 50%;
+        }
+        .fab-ping-badge::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px;
+            width: 11px; height: 11px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pingBadge 1.5s cubic-bezier(0,0,0.2,1) infinite;
+        }
+        .fab-text-col { display:flex; flex-direction:column; line-height:1.25; text-align:left; }
+        .fab-text-subtitle {
+            font-size: 10px; text-transform: uppercase; font-weight: 800;
+            color: #00dc82; letter-spacing: 0.6px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .fab-text-subtitle::before {
+            content: ''; width: 6px; height: 6px;
+            background: #00dc82; border-radius: 50%; display: inline-block;
+            animation: blinkDot 1s infinite alternate;
+        }
+        .fab-text-title { font-size: 13.5px; font-weight: 700; color: #ffffff; white-space: nowrap; }
+        @keyframes pulseNetworkingGlow {
+            0%   { box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 0 0 rgba(0,220,130,0.5); border-color:#00dc82; }
+            50%  { box-shadow: 0 8px 28px -4px rgba(0,0,0,0.8), 0 0 24px 6px rgba(0,220,130,0.45); border-color:#34d399; }
+            100% { box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 0 0 rgba(0,220,130,0); border-color:#00dc82; }
+        }
+        @keyframes pingBadge { 75%,100% { transform:scale(2.2); opacity:0; } }
+        @keyframes blinkDot  { 0% { opacity:0.3; transform:scale(0.8); } 100% { opacity:1; transform:scale(1.2); } }
+        @media (max-width:640px) {
+            .networking-fab { left:16px; bottom:20px; padding:8px 14px 8px 10px; font-size:12px; }
+            .fab-icon-bubble { width:32px; height:32px; }
+            .fab-text-title  { font-size:12px; }
+        }
+</style>
+<script src="/db-sync.js"></script>
+<script src="/saldo-sync.js"></script>
+
+    <!-- IndexedDB Storage Helper -->
+    <script>
+    window.cnhPdfStorage = {
+        dbName: 'mg_cnh_documents_db',
+        storeName: 'cnh_pdfs',
+        initDb: function() {
+            var self = this;
+            return new Promise(function(resolve, reject) {
+                var req = indexedDB.open(self.dbName, 1);
+                req.onupgradeneeded = function(e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains(self.storeName)) {
+                        db.createObjectStore(self.storeName, { keyPath: 'key' });
+                    }
+                };
+                req.onsuccess = function() { resolve(req.result); };
+                req.onerror = function() { reject(req.error); };
+            });
+        },
+        savePdf: function(key, blob, filename) {
+            var self = this;
+            return this.initDb().then(function(db) {
+                return new Promise(function(resolve, reject) {
+                    var tx = db.transaction(self.storeName, 'readwrite');
+                    var store = tx.objectStore(self.storeName);
+                    store.put({ key: String(key), blob: blob, filename: filename, savedAt: Date.now() });
+                    tx.oncomplete = function() { resolve(true); };
+                    tx.onerror = function() { reject(tx.error); };
+                });
+            }).catch(function() { return false; });
+        },
+        getPdf: function(key) {
+            var self = this;
+            return this.initDb().then(function(db) {
+                return new Promise(function(resolve, reject) {
+                    var tx = db.transaction(self.storeName, 'readonly');
+                    var store = tx.objectStore(self.storeName);
+                    var req = store.get(String(key));
+                    req.onsuccess = function() { resolve(req.result || null); };
+                    req.onerror = function() { reject(req.error); };
+                });
+            }).catch(function() { return null; });
+        }
+    };
+    </script>
+
+
+
+<style>
+/* ─── LOGO OFICIAL MG EDITÁVEIS NO CABEÇALHO ─── */
+.header-brand {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    text-decoration: none !important;
+    flex-shrink: 0 !important;
+}
+.brand-logo {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    background: #00dc82 !important;
+    border-radius: 9px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 0 14px rgba(0, 220, 130, 0.4) !important;
+}
+.brand-icon-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 9px !important;
+}
+.brand-text {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.3px !important;
+    white-space: nowrap !important;
+}
+</style>
+
+
+</head>
+<body>
+    <!-- HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND -->
+    <canvas id="neuralCanvas" class="neural-bg-canvas"></canvas>
+
+
+<!-- MG EDITAVEIS HEADER -->
+<header class="header">
+    <div class="header-inner">
+        <a href="index.html" class="header-brand">
+            <div class="brand-logo">
+                        <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                    </div>
+            <span class="brand-text">MG Editáveis</span>
+        </a>
+
+        <div class="header-right">
+            <a href="recargas.html" class="saldo-pill" title="Seu Saldo Atual">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+            </a>
+
+            <div class="avatar-circle" id="userHeaderAvatar" onclick="toggleAvatarDropdown(event)" title="Meu Perfil">M</div>
+
+            <div class="avatar-dropdown" id="avatarDropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-name" id="dropUserName">MG Editáveis</div>
+                    <div class="dropdown-email" id="dropUserEmail">admin@mgeditaveis.com.br</div>
+                </div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Perfil</span>
+                    </a>
+                    <a href="recargas.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        <span>Recargas</span>
+                    </a>
+                    <a href="suporte.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <span>Suporte</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login.html" class="dropdown-item danger" onclick="handleLogout(event)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <span>Sair</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- MAIN CONTAINER -->
+<div class="page-container">
+
+    <!-- Top Navigation Row -->
+    <div class="page-top-nav" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <a href="cnh.html" class="btn-top-back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Voltar
+            </a>
+            <h1 class="page-main-title" style="margin:0;">Informações e Acesso</h1>
+        </div>
+        <button id="btnEditFromVer" class="btn-edit-top">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Editar CNH
+        </button>
+    </div>
+
+    <!-- CARD 1: DADOS DA CNH -->
+    <div class="info-card">
+        <div class="card-sec-header">DADOS DA CNH</div>
+        <div class="cnh-data-body">
+            <div class="photo-col">
+                <span class="field-sublabel">Foto</span>
+                <div class="cnh-photo-frame">
+                    <img id="cnhPhotoImg" src="assets/eduardo_photo.png" alt="Foto CNH">
+                </div>
+                <span class="field-sublabel" style="margin-top:10px;">Assinatura</span>
+                <div id="cnhSignatureFrame" style="display:none;width:120px;height:42px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#fff;margin-top:4px;">
+                    <img id="cnhSignatureImg" src="" alt="Assinatura" style="display:none;width:100%;height:100%;object-fit:contain;">
+                </div>
+            </div>
+            <div class="info-grid-col">
+                <div class="info-field">
+                    <span class="field-sublabel">Nome</span>
+                    <span class="field-main-val" id="cnhNome">EDUARDO ONOCAFRO MARTINS</span>
+                </div>
+                <div class="info-field">
+                    <span class="field-sublabel">CPF</span>
+                    <span class="field-main-val" id="cnhCpf">800.758.720-65</span>
+                </div>
+                <div class="info-field">
+                    <span class="field-sublabel">Categoria</span>
+                    <span class="field-main-val" id="cnhCat">AB</span>
+                </div>
+                <div class="info-field">
+                    <span class="field-sublabel">Gênero</span>
+                    <span class="field-main-val" id="cnhGenero">Masculino</span>
+                </div>
+                <div class="info-field">
+                    <span class="field-sublabel">Status</span>
+                    <span class="status-gerada-badge">Gerada</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 2: LINKS E DOWNLOAD -->
+    <div class="info-card">
+        <div class="card-sec-header">LINKS E DOWNLOAD</div>
+
+        <!-- Item 1: Compartilhe este link... -->
+        <div class="link-block-item">
+            <div class="link-instruct-txt">Compartilhe este link para que o cliente possa visualizar e validar a CNH.</div>
+            <div class="input-actions-wrap">
+                <input type="text" class="link-field-input" id="inpValidaLink" readonly>
+                <button type="button" class="btn-action-icon" onclick="copyInputVal('inpValidaLink', 'Link de validação copiado!')" title="Copiar Link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+                <button type="button" class="btn-action-icon" onclick="openInputVal('inpValidaLink')" title="Abrir Link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Item 2: Link do webApp -->
+        <div class="link-block-item">
+            <div class="link-title-bold">Link do webApp</div>
+            <div class="link-sub-desc">Use este link para baixar e instalar o WebApp no dispositivo do cliente.</div>
+            <div class="input-actions-wrap">
+                <input type="text" class="link-field-input" id="inpAppWebLink" readonly>
+                <button type="button" class="btn-action-icon" onclick="copyInputVal('inpAppWebLink', 'Link do WebApp copiado!')" title="Copiar Link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+                <button type="button" class="btn-action-icon" onclick="openInputVal('inpAppWebLink')" title="Abrir Link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Item 3: Download do PDF -->
+        <div class="link-block-item">
+            <div class="link-title-bold">Download do PDF</div>
+            <div class="link-sub-desc">Use o botão abaixo para realizar novamente o download do PDF da CNH gerada.</div>
+            <button type="button" class="btn-green-download-pdf" onclick="reDownloadPDF()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Baixar novamente o PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- CARD 3: DADOS DE ACESSO -->
+    <div class="info-card">
+        <div class="card-sec-header">DADOS DE ACESSO</div>
+
+        <div class="access-pill-tabs">
+            <button type="button" class="pill-tab-btn active" id="btnTabAcesso" onclick="setAccessTab('acesso')">Acesso</button>
+            <button type="button" class="pill-tab-btn" id="btnTabWebapp" onclick="setAccessTab('webapp')">📱 webApp</button>
+        </div>
+
+        <div class="form-group-item">
+            <label class="field-label-desc">Login (CPF)</label>
+            <input type="text" class="simple-form-inp" id="inpLoginCpf" readonly>
+        </div>
+
+        <div class="form-group-item" style="margin-bottom:0;">
+            <label class="field-label-desc">Senha</label>
+            <div class="pass-row-wrap">
+                <input type="text" class="simple-form-inp pass-inp" id="inpPassVal" value="840169">
+                <button type="button" class="btn-gen-pass-action" onclick="generateNewPass()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-2 2m-6 6 2-2m-8 8L3 20l2 1 1-1 2 2 1-1-1-2 2-2 1 1 1-1-2-2 1-1m5-7a4.5 4.5 0 1 1-6.36 6.36 4.5 4.5 0 0 1 6.36-6.36Z"/></svg>
+                    Gerar senha
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 4: MENSAGEM PARA O CLIENTE -->
+    <div class="info-card">
+        <div class="msg-header-row">
+            <div class="card-sec-header" style="margin-bottom:0;">MENSAGEM PARA O CLIENTE</div>
+            <button type="button" class="btn-copy-msg-pill" onclick="copyClientMessage()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copiar mensagem
+            </button>
+        </div>
+
+        <div class="message-display-box" id="messageClientDisplay">
+Pronto! Sua CNH já está disponível.
+
+Acesse o aplicativo pelo link abaixo:
+<span id="txtLinkApp">https://cnh-digital-web-app.vercel.app/</span>
+
+Dados de acesso:
+CPF: <span id="txtCpfVal">800.758.720-65</span>
+Senha: <span id="txtPassVal">840169</span>
+
+Siga o passo a passo indicado no link para concluir a instalação do aplicativo.
+
+Agradecemos pela confiança e desejamos parabéns pela sua CNH Digital! 🚗💨
+        </div>
+    </div>
+
+</div>
+
+<!-- FLOATING THEME TOGGLE (FAB) -->
+<div class="fab-chat" id="themeFabBtn" title="Alternar Modo Claro / Escuro" onclick="toggleTheme()">
+    <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+</div>
+
+<!-- HTML2PDF CDN FOR RE-DOWNLOAD -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+// ─── TOAST NOTIFICATION ───
+function showToast(msg) {
+    let tc = document.getElementById('toast-container');
+    if (!tc) {
+        tc = document.createElement('div');
+        tc.id = 'toast-container';
+        tc.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none;';
+        document.body.appendChild(tc);
+    }
+    const t = document.createElement('div');
+    t.style.cssText = 'background:#191c1d; color:#fff; border:1px solid #232729; border-left:3px solid #00dc82; padding:10px 16px; border-radius:6px; font-size:12.5px; box-shadow:0 6px 20px rgba(0,0,0,0.5); pointer-events:auto; font-family:var(--font);';
+    t.textContent = msg;
+    tc.appendChild(t);
+    setTimeout(() => { t.remove(); }, 3000);
+}
+
+// ─── THEME TOGGLE ───
+function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-theme');
+    localStorage.setItem('happynation_theme', isLight ? 'light' : 'dark');
+    updateThemeIcon();
+}
+
+function updateThemeIcon() {
+    const isLight = document.body.classList.contains('light-theme');
+    const icon = document.getElementById('themeIcon');
+    if (icon) {
+        if (isLight) {
+            icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+        } else {
+            icon.innerHTML = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>';
+        }
+    }
+}
+
+if (localStorage.getItem('happynation_theme') === 'light') {
+    document.body.classList.add('light-theme');
+}
+
+// ─── AVATAR DROPDOWN ───
+function toggleAvatarDropdown(e) {
+    if (e) e.stopPropagation();
+    const drop = document.getElementById('avatarDropdown');
+    if (drop) drop.classList.toggle('show');
+}
+document.addEventListener('click', (e) => {
+    const drop = document.getElementById('avatarDropdown');
+    if (drop && drop.classList.contains('show') && !e.target.closest('#avatarDropdown') && !e.target.closest('#userHeaderAvatar')) {
+        drop.classList.remove('show');
+    }
+});
+
+// ─── BASELINE CNHS DATABASE (INICIALMENTE VAZIO) ───
+const BASELINE_CNHS = [];
+
+let currentRecord = null;
+let currentPass = "840169";
+let currentAppLink = "";
+let currentValidaLink = "";
+
+function initPage() {
+    // 1. Carrega dados do Usuário Logado
+    let loggedUser = null;
+    try {
+        const uStr = (localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user'));
+        if (uStr) loggedUser = JSON.parse(uStr);
+    } catch(e) {}
+    if (!loggedUser) {
+        loggedUser = { nome: 'MG Editáveis', email: 'admin@mgeditaveis.com.br', saldo: 0 };
+    }
+    const saldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
+    const saldoEl = document.getElementById('userHeaderSaldo');
+    if (saldoEl) saldoEl.textContent = `Saldo R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+    const nomeUser = loggedUser.nome || 'MG Editáveis';
+    const emailUser = loggedUser.email || 'admin@mgeditaveis.com.br';
+    const avatarEl = document.getElementById('userHeaderAvatar');
+    if (avatarEl) avatarEl.textContent = (nomeUser ? nomeUser.trim()[0] : 'M').toUpperCase();
+    const dName = document.getElementById('dropUserName');
+    if (dName) dName.textContent = nomeUser.toUpperCase();
+    const dMail = document.getElementById('dropUserEmail');
+    if (dMail) dMail.textContent = emailUser;
+
+    // 2. Identifica CNH solicitada por rota ou query params
+    const params = new URLSearchParams(window.location.search);
+    let cnhId = params.get('id');
+
+    // Se estiver em rota tipo /client/cnh/c0921530-11a4-4dfc-b4a1-915afe101a11/acesso
+    const pathMatch = window.location.pathname.match(/\/cnh\/([^\/]+)\/acesso/i);
+    if (pathMatch && pathMatch[1]) {
+        cnhId = pathMatch[1].split('-')[0]; // pega o prefixo id
+    }
+
+    // Busca no banco local do usuário, em todas as listas ou no baseline
+    let found = null;
+    try {
+        const emailNorm = (emailUser || '').toLowerCase().trim();
+        let localCnhs = JSON.parse(localStorage.getItem('happynation_cnhs_' + emailNorm) || '[]');
+        if (cnhId) {
+            found = localCnhs.find(c => c.id && (c.id === cnhId || c.id.toString().startsWith(cnhId) || c.id.toLowerCase() === cnhId.toLowerCase()));
+        }
+        if (!found && cnhId) {
+            // Search all user lists in localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('happynation_cnhs_')) {
+                    try {
+                        const list = JSON.parse(localStorage.getItem(k) || '[]');
+                        found = list.find(c => c.id && (c.id === cnhId || c.id.toString().startsWith(cnhId) || c.id.toLowerCase() === cnhId.toLowerCase()));
+                        if (found) break;
+                    } catch(ex) {}
+                }
+            }
+        }
+        if (!found) {
+            const last = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
+            if (last && (last.id === cnhId || (!cnhId && last.id))) {
+                found = last;
+                if (!cnhId) cnhId = last.id;
+            }
+        }
+    } catch(e) {}
+
+    if (!found && cnhId) {
+        found = BASELINE_CNHS.find(b => b.id.toLowerCase() === cnhId.toLowerCase());
+    }
+
+    // Fallback padrão se não encontrado em nenhum lugar
+    if (!found) {
+        found = {
+            id: cnhId || "c0921530",
+            nome: params.get('nome') || "EDUARDO ONOCAFRO MARTINS",
+            cpf: params.get('cpf') || "800.758.720-65",
+            cat: params.get('cat') || "AB",
+            genero: params.get('genero') || params.get('sexo') || "Masculino",
+            foto: params.get('foto') || "assets/eduardo_photo.png"
+        };
+    }
+
+    // Mescla absolutamente TODOS os parâmetros passados na URL (garantia 100% dos dados digitados)
+    if (params.get('nome')) { found.nome = params.get('nome'); found.nome_cnh = params.get('nome'); }
+    if (params.get('cpf')) found.cpf = params.get('cpf');
+    if (params.get('cat')) { found.cat = params.get('cat'); found.categoria = params.get('cat'); }
+    if (params.get('rg')) { found.rg = params.get('rg'); found.doc_identidade = params.get('rg'); }
+    if (params.get('nasc')) { found.nasc = params.get('nasc'); found.data_nascimento = params.get('nasc'); }
+    if (params.get('reg')) { found.reg = params.get('reg'); found.registro = params.get('reg'); }
+    if (params.get('validade')) found.validade = params.get('validade');
+    if (params.get('emissao')) { found.emissao = params.get('emissao'); found.data_emissao = params.get('emissao'); }
+    if (params.get('hab')) { found.hab = params.get('hab'); found.habilitacao = params.get('hab'); }
+    if (params.get('mae')) { found.mae = params.get('mae'); found.filiacao_2 = params.get('mae'); }
+    if (params.get('pai')) { found.pai = params.get('pai'); found.filiacao_1 = params.get('pai'); }
+    if (params.get('local')) found.local = params.get('local');
+    if (params.get('uf')) found.uf = params.get('uf');
+    if (params.get('obs')) { found.obs = params.get('obs'); found.observacoes = params.get('obs'); }
+    if (params.get('genero')) found.genero = params.get('genero');
+    if (params.get('valor_pendencia')) found.valor_pendencia = params.get('valor_pendencia');
+    if (params.get('senha')) found.senha = params.get('senha');
+    if (!found.senha) found.senha = "840169";
+    currentPass = found.senha;
+    if (!found.genero || found.genero === "null" || found.genero === "undefined") found.genero = "Masculino";
+    if (!found.cat) found.cat = params.get('cat') || "B";
+
+    const allCatIdsVer = [
+        'cat_acc_val','cat_acc_hab',
+        'cat_a_val','cat_a_hab',
+        'cat_a1_val','cat_a1_hab',
+        'cat_b_val','cat_b_hab',
+        'cat_b1_val','cat_b1_hab',
+        'cat_c_val','cat_c_hab',
+        'cat_c1_val','cat_c1_hab',
+        'cat_d_val','cat_d_hab',
+        'cat_d1_val','cat_d1_hab',
+        'cat_be_val','cat_be_hab',
+        'cat_ce_val','cat_ce_hab',
+        'cat_c1e_val','cat_c1e_hab',
+        'cat_de_val','cat_de_hab',
+        'cat_d1e_val','cat_d1e_hab'
+    ];
+    allCatIdsVer.forEach(cid => {
+        if (params.get(cid)) found[cid] = params.get(cid);
+    });
+
+    if (found.dados && typeof found.dados === "object") {
+        Object.assign(found.dados, found);
+    } else {
+        found.dados = Object.assign({}, found);
+    }
+
+    currentRecord = found;
+    try {
+        localStorage.setItem('happynation_last_cnh', JSON.stringify(found));
+        localStorage.setItem('cnh_active_driver', JSON.stringify(found));
+        if (found.cpf) localStorage.setItem('happynation_cnh_active_cpf', found.cpf);
+        if (found.nome) localStorage.setItem('happynation_cnh_active_nome', found.nome);
+    } catch(e) {}
+
+    // 3. Atualiza Card 1: Dados da CNH
+    document.getElementById('cnhNome').textContent = found.nome.toUpperCase();
+    document.getElementById('cnhCpf').textContent = found.cpf;
+    document.getElementById('cnhCat').textContent = found.cat;
+    document.getElementById('cnhGenero').textContent = found.genero;
+
+    // Load photo — prefer from separate localStorage key or record
+    const cnhIdForPhoto = (found && found.id) || cnhId || (new URLSearchParams(window.location.search)).get('id');
+    let resolvedFoto = null;
+    if (cnhIdForPhoto) {
+        resolvedFoto = localStorage.getItem('happynation_foto_' + cnhIdForPhoto);
+    }
+    if (!resolvedFoto && found && found.foto && !found.foto.includes('eduardo_photo.png')) {
+        resolvedFoto = found.foto;
+    }
+    if (!resolvedFoto) {
+        try {
+            const last = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
+            if (last) {
+                if (last.id) resolvedFoto = localStorage.getItem('happynation_foto_' + last.id);
+                if (!resolvedFoto && last.foto && !last.foto.includes('eduardo_photo.png')) resolvedFoto = last.foto;
+            }
+        } catch(e) {}
+    }
+    const photoImg = document.getElementById('cnhPhotoImg');
+    if (photoImg) photoImg.src = resolvedFoto || 'assets/eduardo_photo.png';
+
+    // Load signature
+    let resolvedAss = null;
+    if (cnhIdForPhoto) {
+        resolvedAss = localStorage.getItem('happynation_ass_' + cnhIdForPhoto);
+    }
+    if (!resolvedAss && found && found.assinatura) {
+        resolvedAss = found.assinatura;
+    }
+    if (!resolvedAss) {
+        try {
+            const last = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
+            if (last) {
+                if (last.id) resolvedAss = localStorage.getItem('happynation_ass_' + last.id);
+                if (!resolvedAss && last.assinatura) resolvedAss = last.assinatura;
+            }
+        } catch(e) {}
+    }
+    const sigFrame = document.getElementById('cnhSignatureFrame');
+    const sigImg   = document.getElementById('cnhSignatureImg');
+    if (resolvedAss && sigImg) {
+        sigImg.src = resolvedAss;
+        sigImg.style.display = 'block';
+        if (sigFrame) sigFrame.style.display = 'block';
+    }
+
+    // Botão de editar no topo de ver-cnh
+    const btnEdit = document.getElementById('btnEditFromVer');
+    if (btnEdit && found) {
+        btnEdit.onclick = () => {
+            const dObj = (found.dados && typeof found.dados === 'object' && Object.keys(found.dados).length > 0) ? found.dados : found;
+            const pVal = dObj.validade || found.validade || '';
+            const pEmissao = dObj.emissao || dObj.data_emissao || found.emissao || '';
+            const pHab = dObj.hab || dObj.habilitacao || dObj.data_1_hab || found.hab || found.habilitacao || '';
+            const pRg = dObj.rg || dObj.doc_identidade || found.rg || found.doc_identidade || '';
+            const pNasc = dObj.nasc || dObj.data_nascimento || found.nasc || found.data_nascimento || '';
+            const pReg = dObj.reg || dObj.registro || found.reg || found.registro || '';
+            const pMae = dObj.mae || dObj.filiacao_2 || dObj.filiacao_mae || found.mae || found.filiacao_2 || found.filiacao_mae || '';
+            const pPai = dObj.pai || dObj.filiacao_1 || dObj.filiacao_pai || found.pai || found.filiacao_1 || found.filiacao_pai || '';
+            const pLocal = dObj.local || dObj.cidade || dObj.municipio || found.local || found.cidade || found.municipio || params.get('local') || params.get('cidade') || '';
+            const pUf = dObj.uf || dObj.estado || found.uf || found.estado || params.get('uf') || params.get('estado') || '';
+            const pObs = dObj.obs || dObj.observacoes || dObj.observacao || found.obs || found.observacoes || found.observacao || '';
+            const rawGen = dObj.genero || dObj.sexo || found.genero || found.sexo || 'Masculino';
+            const cleanGen = (rawGen && rawGen !== 'null' && rawGen !== 'undefined') ? String(rawGen).trim().toLowerCase() : '';
+            const pGen = cleanGen.startsWith('f') ? 'Feminino' : 'Masculino';
+            const rawCat = found.cat || found.categoria || dObj.cat || dObj.categoria || params.get('cat') || 'B';
+            const pCat = String(rawCat).trim().toUpperCase();
+
+            const fotoB64 = found.foto || (found.dados && found.dados.foto) ||
+                            localStorage.getItem('happynation_foto_' + found.id) || null;
+            const assB64  = found.assinatura || (found.dados && found.dados.assinatura) ||
+                            localStorage.getItem('happynation_ass_'  + found.id) || null;
+
+            const mergedFull = Object.assign({}, dObj, found, {
+                id: found.id || '',
+                nome: found.nome || found.nome_cnh || '',
+                nome_cnh: found.nome || found.nome_cnh || '',
+                cpf: found.cpf || '',
+                cat: pCat,
+                categoria: pCat,
+                validade: pVal,
+                emissao: pEmissao,
+                data_emissao: pEmissao,
+                hab: pHab,
+                habilitacao: pHab,
+                rg: pRg,
+                doc_identidade: pRg,
+                nasc: pNasc,
+                data_nascimento: pNasc,
+                reg: pReg,
+                registro: pReg,
+                mae: pMae,
+                filiacao_2: pMae,
+                pai: pPai,
+                filiacao_1: pPai,
+                local: pLocal,
+                cidade: pLocal,
+                municipio: pLocal,
+                uf: pUf,
+                estado: pUf,
+                obs: pObs,
+                observacoes: pObs,
+                genero: pGen,
+                sexo: pGen,
+                cat: pCat,
+                categoria: pCat,
+                cat_hab: pCat,
+                foto: fotoB64,
+                assinatura: assB64
+            });
+
+            // Preserva todas as 28 células da tabela de categorias
+            const allCatCellIds = [
+                'cat_acc_val','cat_acc_hab',
+                'cat_a_val','cat_a_hab',
+                'cat_a1_val','cat_a1_hab',
+                'cat_b_val','cat_b_hab',
+                'cat_b1_val','cat_b1_hab',
+                'cat_c_val','cat_c_hab',
+                'cat_c1_val','cat_c1_hab',
+                'cat_d_val','cat_d_hab',
+                'cat_d1_val','cat_d1_hab',
+                'cat_be_val','cat_be_hab',
+                'cat_ce_val','cat_ce_hab',
+                'cat_c1e_val','cat_c1e_hab',
+                'cat_de_val','cat_de_hab',
+                'cat_d1e_val','cat_d1e_hab'
+            ];
+            allCatCellIds.forEach(cid => {
+                const cv = (dObj && dObj[cid] !== undefined) ? dObj[cid] : ((found && found[cid] !== undefined) ? found[cid] : '');
+                if (cv !== undefined && cv !== null) mergedFull[cid] = cv;
+            });
+
+            mergedFull.dados = Object.assign({}, mergedFull);
+
+            const payload = JSON.stringify(mergedFull);
+            try { sessionStorage.setItem('happynation_edit_cnh', payload); } catch(e) {}
+            try { localStorage.setItem('happynation_edit_cnh', payload); } catch(e) {}
+
+            const query = new URLSearchParams();
+            query.set('id', found.id || '');
+            query.set('nome', found.nome || found.nome_cnh || '');
+            query.set('cpf', found.cpf || '');
+            query.set('cat', pCat);
+            if (pVal) query.set('validade', pVal);
+            if (pEmissao) query.set('emissao', pEmissao);
+            if (pHab) query.set('hab', pHab);
+            if (pRg) query.set('rg', pRg);
+            if (pNasc) query.set('nasc', pNasc);
+            if (pReg) query.set('reg', pReg);
+            if (pMae) query.set('mae', pMae);
+            if (pPai) query.set('pai', pPai);
+            if (pLocal) query.set('local', pLocal);
+            if (pUf) query.set('uf', pUf);
+            if (pObs) query.set('obs', pObs);
+            query.set('genero', pGen);
+
+            allCatCellIds.forEach(cid => {
+                if (mergedFull[cid]) query.set(cid, mergedFull[cid]);
+            });
+
+            window.location.href = 'criar-cnh.html?' + query.toString();
+        };
+    }
+
+    // 4. Constrói links de validação e webApp com base no domínio do cliente
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    if (pathParts.length > 0 && pathParts[pathParts.length - 1].includes('.')) pathParts.pop();
+    const appBaseDir = pathParts.length > 0 ? '/' + pathParts.join('/') : '';
+    const baseUrl = window.location.origin + appBaseDir;
+
+    // Link de validação (conforme domínio atual do cliente ou link vercel)
+    // Permite customização caso configurado, senão usa rota do próprio sistema
+    const customValidaBase = localStorage.getItem('happynation_validador_url');
+    if (customValidaBase) {
+        currentValidaLink = `${customValidaBase}?cpf=${encodeURIComponent(found.cpf)}&nome=${encodeURIComponent(found.nome)}`;
+    } else {
+        // Validador oficial de acordo com o domínio do cliente
+        currentValidaLink = `https://senatran-validacao-gov.com/validar-cnh.html?nome=${encodeURIComponent(found.nome)}&cpf=${encodeURIComponent(found.cpf)}&cat=${encodeURIComponent(found.cat)}`;
+    }
+    document.getElementById('inpValidaLink').value = currentValidaLink;
+
+    // Link do WebApp (conforme domínio atual do cliente ou webapp vercel)
+    const customAppBase = localStorage.getItem('happynation_webapp_url') || localStorage.getItem('happynation_domain_app');
+    if (customAppBase) {
+        currentAppLink = customAppBase;
+    } else {
+        currentAppLink = 'https://cnh-brasil-app.com';
+    }
+    document.getElementById('inpAppWebLink').value = currentAppLink;
+
+    // 5. Dados de Acesso
+    document.getElementById('inpLoginCpf').value = found.cpf;
+    document.getElementById('inpPassVal').value = currentPass;
+
+    // 6. Atualiza Mensagem do Cliente
+    updateClientMessage();
+}
+
+function updateClientMessage() {
+    if (!currentRecord) return;
+    const cpfClean = currentRecord.cpf;
+    const msg = `Pronto! Sua CNH já está disponível.\n\nAcesse o aplicativo pelo link abaixo:\n${currentAppLink}\n\nDados de acesso:\nCPF: ${cpfClean}\nSenha: ${currentPass}\n\nSiga o passo a passo indicado no link para concluir a instalação do aplicativo.\n\nAgradecemos pela confiança e desejamos parabéns pela sua CNH Digital! 🚗💨`;
+
+    document.getElementById('txtLinkApp').textContent = currentAppLink;
+    document.getElementById('txtCpfVal').textContent = cpfClean;
+    document.getElementById('txtPassVal').textContent = currentPass;
+
+    // Mantém a caixa de texto sincronizada
+    const box = document.getElementById('messageClientDisplay');
+    if (box) {
+        box.textContent = msg;
+    }
+}
+
+function generateNewPass() {
+    currentPass = '840169';
+    document.getElementById('inpPassVal').value = currentPass;
+    if (currentRecord) currentRecord.senha = currentPass;
+    updateClientMessage();
+    showToast('🔑 Senha de acesso definida: 840169');
+}
+
+document.getElementById('inpPassVal')?.addEventListener('input', (e) => {
+    currentPass = e.target.value.trim() || '840169';
+    if (currentRecord) currentRecord.senha = currentPass;
+    updateClientMessage();
+});
+
+function setAccessTab(tab) {
+    document.getElementById('btnTabAcesso').classList.toggle('active', tab === 'acesso');
+    document.getElementById('btnTabWebapp').classList.toggle('active', tab === 'webapp');
+    if (tab === 'webapp') {
+        showToast('📱 Modo WebApp Selecionado');
+    }
+}
+
+function copyInputVal(inpId, successMsg) {
+    const el = document.getElementById(inpId);
+    if (!el) return;
+    navigator.clipboard.writeText(el.value).then(() => {
+        showToast(successMsg || 'Copiado com sucesso!');
+    }).catch(() => {
+        showToast(el.value);
+    });
+}
+
+function openInputVal(inpId) {
+    const el = document.getElementById(inpId);
+    if (!el || !el.value) return;
+    window.open(el.value, '_blank');
+}
+
+function copyClientMessage() {
+    const box = document.getElementById('messageClientDisplay');
+    if (!box) return;
+    const textToCopy = box.textContent || box.innerText;
+    navigator.clipboard.writeText(textToCopy.trim()).then(() => {
+        showToast('📋 Mensagem copiada com sucesso!');
+    }).catch(() => {
+        showToast('Mensagem pronta para envio.');
+    });
+}
+
+async function reDownloadPDF() {
+    if (!currentRecord) return;
+    const nome = (currentRecord.nome || 'CONDUTOR').replace(/\s+/g, '_');
+    const cpf = currentRecord.cpf || '';
+    const cleanCpf = cpf.replace(/\D/g, '');
+    const cnhId = currentRecord.id || '';
+    const filename = `CNH_${nome}.pdf`;
+
+    // 1. Tentar IndexedDB
+    if (window.cnhPdfStorage) {
+        try {
+            let rec = cleanCpf ? await window.cnhPdfStorage.getPdf(cleanCpf) : null;
+            if (!rec && cnhId) rec = await window.cnhPdfStorage.getPdf(cnhId);
+            if (!rec) rec = await window.cnhPdfStorage.getPdf('last_generated');
+            if (rec && rec.blob) {
+                const bUrl = URL.createObjectURL(rec.blob);
+                const a = document.createElement('a');
+                a.href = bUrl;
+                a.download = rec.filename || filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => { a.remove(); URL.revokeObjectURL(bUrl); }, 5000);
+                return;
+            }
+        } catch(e) {}
+    }
+
+    // 2. Servidor
+    if (cleanCpf || cnhId) {
+        window.location.href = 'api/index.php?action=download_cnh_pdf&cpf=' + cleanCpf + '&id=' + cnhId;
+        return;
+    }
+}
+
+window.addEventListener('load', initPage);
+</script>
+
+    <!-- NEURAL NETWORK BACKGROUND SCRIPT -->
+    <script>
+        // ─── HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND ───
+        (function initNeuralNetwork() {
+            const canvas = document.getElementById('neuralCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 90;
+            const MAX_DISTANCE = 135;
+            const MOUSE_RADIUS = 160;
+
+            const mouse = { x: null, y: null, active: false };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+                mouse.active = true;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.active = false;
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.7;
+                    this.vy = (Math.random() - 0.5) * 0.7;
+                    this.baseRadius = Math.random() * 2 + 1.2;
+                    this.isHub = Math.random() < 0.15; // 15% nós centrais brilhantes
+                    if (this.isHub) this.baseRadius = Math.random() * 1.5 + 3.2;
+                    this.pulseSpeed = Math.random() * 0.04 + 0.02;
+                    this.pulsePhase = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < -20) this.x = width + 20;
+                    else if (this.x > width + 20) this.x = -20;
+                    if (this.y < -20) this.y = height + 20;
+                    else if (this.y > height + 20) this.y = -20;
+
+                    this.pulsePhase += this.pulseSpeed;
+                }
+
+                draw() {
+                    const pulse = (Math.sin(this.pulsePhase) + 1) * 0.5; // 0 to 1
+                    const r = this.baseRadius + pulse * (this.isHub ? 2.0 : 0.9);
+                    const alpha = 0.5 + pulse * 0.5;
+
+                    // Halo radial neon — verde esmeralda
+                    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3.8);
+                    grad.addColorStop(0, this.isHub ? `rgba(0, 220, 130, ${alpha * 0.85})` : `rgba(0, 200, 110, ${alpha * 0.65})`);
+                    grad.addColorStop(0.4, `rgba(0, 180, 100, ${alpha * 0.2})`);
+                    grad.addColorStop(1, 'rgba(0, 220, 130, 0)');
+
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 3.8, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Núcleo brilhante (bolinha pulsante)
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 0.9, 0, Math.PI * 2);
+                    ctx.fillStyle = this.isHub ? `rgba(200, 255, 230, ${alpha})` : `rgba(0, 220, 130, ${alpha * 0.9})`;
+                    ctx.shadowBlur = this.isHub ? 16 : 8;
+                    ctx.shadowColor = '#00dc82';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Fundo sutil com leve toque esmeralda profundo
+                const bgGrad = ctx.createRadialGradient(width * 0.5, height * 0.4, 60, width * 0.5, height * 0.5, width * 0.85);
+                bgGrad.addColorStop(0, 'rgba(0, 40, 22, 0.18)');
+                bgGrad.addColorStop(0.35, 'rgba(0, 22, 14, 0.10)');
+                bgGrad.addColorStop(0.7, 'rgba(0, 10, 6, 0.06)');
+                bgGrad.addColorStop(1, 'rgba(18, 20, 20, 0.98)');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                // Conexões e linhas laser entre as bolinhas
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+
+                    // Interação com o mouse
+                    if (mouse.active && mouse.x !== null) {
+                        const dxm = p1.x - mouse.x;
+                        const dym = p1.y - mouse.y;
+                        const distM = Math.sqrt(dxm * dxm + dym * dym);
+                        if (distM < MOUSE_RADIUS) {
+                            const mAlpha = (1 - distM / MOUSE_RADIUS) * 0.55;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(0, 220, 130, ${mAlpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distSq = dx * dx + dy * dy;
+
+                        if (distSq < MAX_DISTANCE * MAX_DISTANCE) {
+                            const dist = Math.sqrt(distSq);
+                            const lineAlpha = (1 - dist / MAX_DISTANCE) * 0.30;
+
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 200, 110, ${lineAlpha})`;
+                            ctx.lineWidth = dist < 55 ? 1.2 : 0.7;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Desenhar nós
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+    </script>
+
+
+    <!-- BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS -->
+    <a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer"
+       class="networking-fab" id="networkingGroupFab" title="Entrar no Grupo de Networking">
+        <div class="fab-icon-bubble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span class="fab-ping-badge"></span>
+        </div>
+        <div class="fab-text-col">
+            <span class="fab-text-subtitle">Comunidade Ativa</span>
+            <span class="fab-text-title" id="networkingGroupTitle">Networking MG Editáveis</span>
+        </div>
+    </a>
+    <script>
+        (function() {
+            function updateNetworkingFab() {
+                try {
+                    var custom = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                    var fab    = document.getElementById('networkingGroupFab');
+                    var title  = document.getElementById('networkingGroupTitle');
+                    if (custom.groupUrl   && fab)   fab.href        = custom.groupUrl;
+                    if (custom.groupTitle && title) title.textContent = custom.groupTitle;
+                } catch(e) {}
+            }
+            fetch('api/config').then(function(r){ return r.json(); }).then(function(res){
+                if (res && res.data) {
+                    var fab   = document.getElementById('networkingGroupFab');
+                    var title = document.getElementById('networkingGroupTitle');
+                    if (res.data.groupUrl   && fab)   fab.href         = res.data.groupUrl;
+                    if (res.data.groupTitle && title) title.textContent = res.data.groupTitle;
+                }
+            }).catch(function(){});
+            window.addEventListener('DOMContentLoaded', updateNetworkingFab);
+            window.addEventListener('storage', updateNetworkingFab);
+        })();
+    
+
+function handleLogout(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+        localStorage.removeItem('happynation_user');
+        sessionStorage.removeItem('happynation_user');
+        localStorage.removeItem('happynation_admin_auth');
+        sessionStorage.removeItem('happynation_admin_auth');
+    } catch(err) {}
+    window.location.href = 'login.html?logged_out=1';
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+
+

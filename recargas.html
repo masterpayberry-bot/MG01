@@ -1,0 +1,1713 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+        <!-- Open Graph / Compartilhamento de Links (WhatsApp, Telegram, Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MG Editáveis | Sistema">
+    <meta property="og:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta property="og:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:secure_url" content="https://painel-mg-editaveis.com/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MG Editáveis">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MG Editáveis | Sistema">
+    <meta name="twitter:description" content="Plataforma MG Editáveis - Sistema de Documentos.">
+    <meta name="twitter:image" content="http://painel-mg-editaveis.com/og-image.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Recargas</title>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #121414;
+            --bg-header: #151718;
+            --bg-card: #191c1d;
+            --bg-input: #121416;
+            --border-color: #232729;
+            --border-subtle: #282d31;
+            --primary: #00dc82;
+            --primary-dark: #00b368;
+            --text-primary: #ffffff;
+            --text-secondary: #9aa2a6;
+            --text-muted: #5f686c;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body.light-theme {
+            --bg-page: #f6f8f7;
+            --bg-header: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-subtle: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #121414; }
+        ::-webkit-scrollbar-thumb { background: #262a2c; border-radius: 3px; }
+
+        /* ─── HEADER (MG EDITAVEIS HEADER) ─── */
+        .header {
+            height: 60px;
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1260px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #00dc82;
+        }
+        .brand-logo {
+            width: 28px;
+            height: 28px;
+            background: #00dc82;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand-logo svg {
+            width: 17px;
+            height: 17px;
+            fill: #062517;
+        }
+        .brand-text {
+            font-size: 17px;
+            font-weight: 700;
+            color: #00dc82;
+            letter-spacing: -0.3px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+        }
+
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08);
+            color: #00dc82;
+            border: 1px solid rgba(0, 220, 130, 0.3);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.15);
+        }
+
+        .header-link {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color .2s;
+            cursor: pointer;
+        }
+        .header-link:hover { color: #fff; }
+        body.light-theme .header-link:hover { color: #0f172a; }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: color 0.15s;
+        }
+        .header-icon:hover { color: #fff; }
+        .header-icon svg { width: 18px; height: 18px; }
+
+        .btn-voltar {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        .btn-voltar:hover {
+            color: #ffffff;
+        }
+
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #00dc82;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #062517;
+            cursor: pointer;
+        }
+
+        /* ─── AVATAR DROPDOWN ─── */
+        .avatar-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            width: 220px;
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .avatar-dropdown.show { display: flex; }
+        .dropdown-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dropdown-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .dropdown-email {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            word-break: break-all;
+        }
+        .dropdown-menu {
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .dropdown-item svg { width: 15px; height: 15px; color: var(--text-secondary); }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+        .dropdown-item.danger { color: #ef4444; }
+        .dropdown-item.danger svg { color: #ef4444; }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 6px;
+        }
+
+        /* ─── MAIN CENTERED CONTAINER (EXACT TO SCREENSHOT) ─── */
+        .page-container {
+            max-width: 680px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 28px 20px 80px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Top Page Header */
+        .page-header-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+        .page-header-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .page-header-icon svg { width: 17px; height: 17px; }
+        .page-header-text h1 {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
+        .page-header-text p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Card Container Generic */
+        .app-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .card-header-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .btn-refresh-saldo {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .btn-refresh-saldo:hover {
+            color: #00dc82;
+            transform: rotate(180deg);
+        }
+        .btn-refresh-saldo svg { width: 15px; height: 15px; }
+
+        /* Green Saldo Banner (Solid Emerald) */
+        .saldo-green-banner {
+            background: #00dc82;
+            border-radius: 10px;
+            padding: 20px 22px;
+            color: #062517;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.28);
+        }
+        .banner-disponivel {
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0.85;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .banner-disponivel svg { width: 14px; height: 14px; }
+        .banner-valor {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+            color: #062517;
+        }
+        .banner-custo {
+            font-size: 11.5px;
+            font-weight: 600;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+
+        /* ─── TWO COLUMNS GRID (NOVA RECARGA + INFORMAÇÕES) ─── */
+        .recargas-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .recargas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Left: Nova Recarga */
+        .card-title-sub {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .valor-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.15s;
+        }
+        body.light-theme .valor-input {
+            color: #0f172a;
+        }
+        .valor-input:focus {
+            border-color: #00dc82;
+            box-shadow: 0 0 0 3px rgba(0, 220, 130, 0.15);
+        }
+
+        .min-info {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .quick-title {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 14px;
+            margin-bottom: 8px;
+        }
+
+        .quick-buttons-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .quick-buttons-single {
+            display: grid;
+            grid-template-columns: 1fr;
+            margin-bottom: 16px;
+        }
+
+        .quick-btn {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 7px 4px;
+            color: var(--text-secondary);
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .quick-btn:hover {
+            border-color: #00dc82;
+            color: #ffffff;
+        }
+        .quick-btn.active {
+            background: rgba(0, 220, 130, 0.08);
+            border-color: #00dc82;
+            color: #00dc82;
+        }
+
+        .btn-recarregar-action {
+            width: 100%;
+            background: rgba(0, 220, 130, 0.15);
+            color: rgba(0, 220, 130, 0.5);
+            border: none;
+            border-radius: 8px;
+            padding: 11px;
+            font-family: var(--font);
+            font-size: 13.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: not-allowed;
+            transition: all 0.2s ease;
+        }
+
+        .btn-recarregar-action.active {
+            background: #00dc82;
+            color: #062517;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.35);
+        }
+        .btn-recarregar-action.active:hover {
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.5);
+            transform: translateY(-1px);
+        }
+        .btn-recarregar-action.active:active {
+            transform: translateY(0);
+        }
+        .btn-recarregar-action svg { width: 16px; height: 16px; }
+
+        /* Card Right: Informações & Cupom */
+        .right-cards-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .info-item svg {
+            width: 14px;
+            height: 14px;
+            color: #00dc82;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .cupom-row {
+            display: flex;
+            gap: 8px;
+        }
+        .cupom-input {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-family: var(--font);
+            font-size: 12px;
+            color: #ffffff;
+            outline: none;
+            text-transform: uppercase;
+        }
+        body.light-theme .cupom-input { color: #0f172a; }
+        .cupom-input:focus { border-color: #00dc82; }
+        .btn-aplicar-cupom {
+            background: #232729;
+            color: var(--text-secondary);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-family: var(--font);
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-aplicar-cupom:hover {
+            background: #2f3438;
+            color: #ffffff;
+        }
+
+        .cupom-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            line-height: 1.35;
+        }
+
+        /* ─── MODAL RECARGA VIA PIX (EXACT TO SCREENSHOT) ─── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn .15s ease-out;
+        }
+        .modal-overlay.show { display: flex; }
+
+        .pix-modal-card {
+            background: #191c1d;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 440px;
+            padding: 22px 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        body.light-theme .pix-modal-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        .modal-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            transition: color 0.15s;
+        }
+        .modal-close-btn:hover { color: #ffffff; }
+
+        .modal-info-box {
+            background: #141719;
+            border: 1px solid #232729;
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            gap: 12px;
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+        body.light-theme .modal-info-box {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        .modal-info-box svg {
+            width: 18px;
+            height: 18px;
+            color: #00dc82;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .modal-selected-amount {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 18px 0 14px 0;
+        }
+
+        .btn-whatsapp-action {
+            width: 100%;
+            background: #00dc82;
+            color: #062517;
+            font-family: var(--font);
+            font-weight: 700;
+            font-size: 13.5px;
+            border-radius: 8px;
+            padding: 12px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.35);
+        }
+        .btn-whatsapp-action:hover {
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.5);
+            transform: translateY(-1px);
+        }
+        .btn-whatsapp-action svg {
+            width: 17px;
+            height: 17px;
+            fill: #062517;
+        }
+
+        /* Floating Theme Toggle */
+        .theme-float-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #00dc82;
+            border: none;
+            color: #062517;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.4);
+            z-index: 99;
+            transition: transform 0.2s;
+        }
+        .theme-float-btn:hover {
+            transform: scale(1.08);
+        }
+        .theme-float-btn svg { width: 18px; height: 18px; }
+
+        /* Toast Popup */
+        .toast-notify {
+            position: fixed;
+            bottom: 24px;
+            right: 80px;
+            background: #191c1d;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-size: 12.5px;
+            color: #ffffff;
+            display: none;
+            z-index: 1000;
+            animation: slideIn .2s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    
+        /* HIGH-TECH ANIMATED NEURAL/PLEXUS BACKGROUND */
+        .neural-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        
+    
+        /* Header and dropdown z-index fixes */
+        .header {
+            z-index: 1000 !important;
+        }
+        .avatar-dropdown {
+            z-index: 99999 !important;
+        }
+    
+
+        
+
+        /* ─── SOLID BACKGROUND SHIELD (Mantém o cinza elegante original #191c1d 100% opaco e isolado do canvas) ─── */
+        .page-container,
+        .app-container,
+        .main-wrapper,
+        .main-layout,
+        .container,
+        .workspace {
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        .card,
+        .card-action,
+        .table-wrap,
+        .editor-card,
+        .preview-canvas,
+        .auth-card,
+        .profile-card,
+        .recharge-card,
+        .support-card,
+        .chat-container,
+        .chat-sidebar,
+        .chat-main,
+        .sidebar,
+        .content,
+        .action-card,
+        .activities-card,
+        .rm-card,
+        .modal,
+        .modal-content,
+        .modal-card,
+        .dialog-card,
+        .dialog-box,
+        .custom-modal,
+        .swal2-popup {
+            background-color: #191c1d !important;
+            border-color: #232729 !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 5 !important;
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+        }
+
+        /* Linhas e cabeçalho da tabela */
+        table {
+            background-color: #191c1d !important;
+        }
+
+        thead th {
+            background-color: #161819 !important;
+            border-bottom: 1px solid #232729 !important;
+        }
+
+        tbody tr {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr td {
+            background-color: #191c1d !important;
+        }
+
+        tbody tr:hover td {
+            background-color: #202426 !important;
+        }
+
+        .table-footer {
+            background-color: #191c1d !important;
+            border-top: 1px solid #232729 !important;
+        }
+
+        /* ─── LIGHT THEME OVERRIDES (corrige o shield para tema claro) ─── */
+        body.light-theme .card,
+        body.light-theme .card-action,
+        body.light-theme .table-wrap,
+        body.light-theme .editor-card,
+        body.light-theme .auth-card,
+        body.light-theme .profile-card,
+        body.light-theme .recharge-card,
+        body.light-theme .support-card,
+        body.light-theme .chat-container,
+        body.light-theme .chat-sidebar,
+        body.light-theme .chat-main,
+        body.light-theme .sidebar,
+        body.light-theme .content,
+        body.light-theme .action-card,
+        body.light-theme .activities-card,
+        body.light-theme .rm-card,
+        body.light-theme .modal,
+        body.light-theme .modal-content,
+        body.light-theme .modal-card,
+        body.light-theme .dialog-card,
+        body.light-theme .dialog-box,
+        body.light-theme .custom-modal,
+        body.light-theme .swal2-popup {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05) !important;
+            color: #0f172a !important;
+        }
+        body.light-theme table {
+            background-color: #ffffff !important;
+        }
+        body.light-theme thead th {
+            background-color: #f8fafc !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+        body.light-theme tbody tr {
+            background-color: #ffffff !important;
+        }
+        body.light-theme tbody tr td {
+            background-color: #ffffff !important;
+            color: #334155 !important;
+        }
+        body.light-theme tbody tr:hover td {
+            background-color: #f8fafc !important;
+        }
+        body.light-theme .table-footer {
+            background-color: #f8fafc !important;
+            border-top: 1px solid #e2e8f0 !important;
+            color: #64748b !important;
+        }
+
+
+        .filters-bar,
+        .filter-group input,
+        .filter-group select {
+            position: relative !important;
+            z-index: 5 !important;
+        }
+
+    
+
+        /* ─── LOGO DO CABEÇALHO PADRÃO OFICIAL (Ícone Folha Verde Neon + MG Editáveis Branco) ─── */
+        .header-brand {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+        }
+
+        .brand-logo {
+            width: 32px !important;
+            height: 32px !important;
+            background: #00dc82 !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.45) !important;
+        }
+
+        .brand-logo svg {
+            width: 20px !important;
+            height: 20px !important;
+            fill: #062517 !important;
+        }
+
+        .brand-text {
+            font-size: 19px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            letter-spacing: -0.4px !important;
+            white-space: nowrap !important;
+            display: inline-block !important;
+        }
+
+        .brand-text span {
+            color: #ffffff !important;
+        }
+
+    
+
+        /* ─── PÍLULA DE SALDO OFICIAL PADRÃO RECARGAS (Borda verde neon fina, ícone de cartão e texto verde vibrante) ─── */
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08) !important;
+            color: #00dc82 !important;
+            border: 1px solid #00dc82 !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            padding: 6px 14px !important;
+            border-radius: 20px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+            text-decoration: none !important;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+            cursor: pointer !important;
+            box-shadow: 0 0 10px rgba(0, 220, 130, 0.15) !important;
+        }
+
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.16) !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.35) !important;
+            transform: translateY(-1px) !important;
+            color: #00dc82 !important;
+        }
+
+        .saldo-pill svg {
+            width: 15px !important;
+            height: 15px !important;
+            stroke: #00dc82 !important;
+            stroke-width: 2.2 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .saldo-pill span {
+            color: #00dc82 !important;
+            font-weight: 700 !important;
+        }
+
+    
+        /* ─── BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS ─── */
+        .networking-fab {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 99999;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px 10px 14px;
+            background: linear-gradient(135deg, #121915 0%, #17241e 100%);
+            border: 1.5px solid #00dc82;
+            border-radius: 50px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 20px rgba(0,220,130,0.35);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1);
+            animation: pulseNetworkingGlow 2.4s infinite ease-in-out;
+            user-select: none;
+        }
+        .networking-fab:hover {
+            transform: translateY(-3px) scale(1.03);
+            border-color: #34d399;
+            box-shadow: 0 12px 30px -4px rgba(0,0,0,0.8), 0 0 32px rgba(0,220,130,0.65);
+            color: #ffffff;
+        }
+        .fab-icon-bubble {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            background: #00dc82;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #062517;
+            flex-shrink: 0;
+            box-shadow: 0 0 14px rgba(0,220,130,0.6);
+        }
+        .fab-icon-bubble svg { width: 20px; height: 20px; }
+        .fab-ping-badge {
+            position: absolute;
+            top: -2px; right: -2px;
+            width: 11px; height: 11px;
+            background: #22c55e;
+            border: 2px solid #121915;
+            border-radius: 50%;
+        }
+        .fab-ping-badge::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px;
+            width: 11px; height: 11px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pingBadge 1.5s cubic-bezier(0,0,0.2,1) infinite;
+        }
+        .fab-text-col { display:flex; flex-direction:column; line-height:1.25; text-align:left; }
+        .fab-text-subtitle {
+            font-size: 10px; text-transform: uppercase; font-weight: 800;
+            color: #00dc82; letter-spacing: 0.6px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .fab-text-subtitle::before {
+            content: ''; width: 6px; height: 6px;
+            background: #00dc82; border-radius: 50%; display: inline-block;
+            animation: blinkDot 1s infinite alternate;
+        }
+        .fab-text-title { font-size: 13.5px; font-weight: 700; color: #ffffff; white-space: nowrap; }
+        @keyframes pulseNetworkingGlow {
+            0%   { box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 0 0 rgba(0,220,130,0.5); border-color:#00dc82; }
+            50%  { box-shadow: 0 8px 28px -4px rgba(0,0,0,0.8), 0 0 24px 6px rgba(0,220,130,0.45); border-color:#34d399; }
+            100% { box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 0 0 rgba(0,220,130,0); border-color:#00dc82; }
+        }
+        @keyframes pingBadge { 75%,100% { transform:scale(2.2); opacity:0; } }
+        @keyframes blinkDot  { 0% { opacity:0.3; transform:scale(0.8); } 100% { opacity:1; transform:scale(1.2); } }
+        @media (max-width:640px) {
+            .networking-fab { left:16px; bottom:20px; padding:8px 14px 8px 10px; font-size:12px; }
+            .fab-icon-bubble { width:32px; height:32px; }
+            .fab-text-title  { font-size:12px; }
+        }
+</style>
+<script src="/db-sync.js"></script>
+<script src="/saldo-sync.js"></script>
+
+
+<style>
+/* ─── LOGO OFICIAL MG EDITÁVEIS NO CABEÇALHO ─── */
+.header-brand {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    text-decoration: none !important;
+    flex-shrink: 0 !important;
+}
+.brand-logo {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    background: #00dc82 !important;
+    border-radius: 9px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 0 14px rgba(0, 220, 130, 0.4) !important;
+}
+.brand-icon-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 9px !important;
+}
+.brand-text {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.3px !important;
+    white-space: nowrap !important;
+}
+</style>
+
+
+</head>
+<body>
+    <!-- HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND -->
+    <canvas id="neuralCanvas" class="neural-bg-canvas"></canvas>
+
+
+    <!-- ─── HEADER ─── -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="header-brand" style="display:flex; align-items:center; gap:10px; text-decoration:none;">
+            <div class="brand-logo">
+                <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+            </div>
+            <span class="brand-text">MG Editáveis</span>
+        </a>
+
+        <div class="header-right" style="display:flex; align-items:center; gap:12px; position:relative;">
+            <a href="recargas.html" class="saldo-pill" title="Seu Saldo Atual">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <span id="headerSaldo">Saldo R$ 0,00</span>
+            </a>
+
+            <a href="index.html" class="btn-voltar" title="Voltar" style="display:inline-flex; align-items:center; gap:6px; color:#94a3b8; text-decoration:none; font-size:13px; font-weight:600; padding:6px 12px; border-radius:8px; border:1px solid #27272a; background:rgba(255,255,255,0.03);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px; height:14px;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Voltar
+            </a>
+
+            <div class="avatar-circle" id="userHeaderAvatar" onclick="toggleAvatarDropdown(event)" title="Meu Perfil" style="width:34px; height:34px; border-radius:50%; background:#27272a; border:1px solid #3f3f46; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#fff; cursor:pointer;">M</div>
+
+            <div class="avatar-dropdown" id="avatarDropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-name" id="dropUserName">MG Editáveis</div>
+                    <div class="dropdown-email" id="dropUserEmail">admin@mgeditaveis.com.br</div>
+                </div>
+                <div class="dropdown-menu">
+                    <a href="perfil.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Perfil
+                    </a>
+                    <a href="recargas.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        Recargas
+                    </a>
+                    <a href="suporte.html" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                        Suporte
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="login.html" class="dropdown-item danger" onclick="handleLogout(event)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── CENTERED CONTENT ─── -->
+    <main class="page-container">
+        <!-- Title Row -->
+        <div class="page-header-row">
+            <div class="page-header-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+            </div>
+            <div class="page-header-text">
+                <h1>Recargas</h1>
+                <p>Gerencie seu saldo e recarregue sua conta</p>
+            </div>
+        </div>
+
+        <!-- Card: Saldo Disponível -->
+        <div class="app-card">
+            <div class="card-header-bar">
+                <span class="card-header-title">Saldo Disponível</span>
+                <button class="btn-refresh-saldo" title="Atualizar saldo" onclick="refreshSaldoAnimation()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                </button>
+            </div>
+
+            <!-- Solid Emerald Green Banner -->
+            <div class="saldo-green-banner">
+                <div class="banner-disponivel">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span>Disponível para uso</span>
+                </div>
+                <div class="banner-valor" id="mainSaldoValor">R$ 0,00</div>
+                <div class="banner-custo">Custo por CNH gerada: R$ 20,00</div>
+            </div>
+        </div>
+
+        <!-- 2 Columns Grid: Nova Recarga & Informações/Cupom -->
+        <div class="recargas-grid">
+            <!-- Left Card: Nova Recarga -->
+            <div class="app-card">
+                <div class="card-title-sub">Nova Recarga</div>
+
+                <label class="form-label">Valor</label>
+                <input type="text" id="inputValor" class="valor-input" placeholder="R$ 0,00" value="R$ 0,00" oninput="handleValorInput(this)">
+                <div class="min-info" id="minRechargeText">Valor mínimo de R$ 50,00</div>
+
+                <div class="quick-title">Valores rápidos</div>
+                <div class="quick-buttons-row">
+                    <button type="button" class="quick-btn" id="btnQuickMin" onclick="setQuickValor(getMinRecharge(), this)">R$ 50,00</button>
+                    <button type="button" class="quick-btn" onclick="setQuickValor(100, this)">R$ 100,00</button>
+                    <button type="button" class="quick-btn" onclick="setQuickValor(200, this)">R$ 200,00</button>
+                    <button type="button" class="quick-btn" onclick="setQuickValor(500, this)">R$ 500,00</button>
+                </div>
+                <div class="quick-buttons-single">
+                    <button type="button" class="quick-btn" onclick="setQuickValor(999, this)">R$ 999,00</button>
+                </div>
+
+                <button type="button" id="btnRecarregar" class="btn-recarregar-action" onclick="openPixModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    <span>Recarregar</span>
+                </button>
+            </div>
+
+            <!-- Right Column: Informações & Cupom -->
+            <div class="right-cards-col">
+                <div class="app-card">
+                    <div class="card-title-sub">Informações</div>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span id="infoMinRechargeText">Valor mínimo de R$ 50,00</span>
+                        </div>
+                        <div class="info-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Recarga validada na hora após o pagamento</span>
+                        </div>
+                        <div class="info-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Pagamento exclusivamente via Pix</span>
+                        </div>
+                        <div class="info-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Sem validade: recargas não expiram</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-card">
+                    <div class="card-title-sub">Cupom de desconto</div>
+                    <div class="cupom-row">
+                        <input type="text" id="cupomInput" class="cupom-input" placeholder="EX: DESCONTO10">
+                        <button type="button" class="btn-aplicar-cupom" onclick="aplicarCupom()">Aplicar</button>
+                    </div>
+                    <div class="cupom-hint">Possui um cupom de desconto? Insira acima antes de recarregar.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ─── MODAL RECARGA VIA PIX (EXACT TO SCREENSHOT) ─── -->
+    <div class="modal-overlay" id="pixModal" onclick="handleOverlayClick(event)">
+        <div class="pix-modal-card">
+            <div class="modal-header-row">
+                <span class="modal-title">Recarga via Pix</span>
+                <button class="modal-close-btn" onclick="closePixModal()">&times;</button>
+            </div>
+
+            <div class="modal-info-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span>Em breve o sistema de recargas via Pix será ativado automaticamente. Por enquanto, entre em contato para realizar sua recarga.</span>
+            </div>
+
+            <div class="modal-selected-amount">
+                Valor selecionado: <span id="modalValorTxt">R$ 100,00</span>
+            </div>
+
+            <button type="button" class="btn-whatsapp-action" onclick="enviarRecargaWhatsApp()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.652c1.746.951 3.71 1.452 5.711 1.453h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.411z"/>
+                </svg>
+                <span>Entrar em contato via WhatsApp</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Theme Toggle -->
+    <button class="theme-float-btn" title="Alternar tema Claro/Escuro" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+
+    <!-- Toast Notification -->
+    <div class="toast-notify" id="toastNotify"></div>
+
+    <script>
+        let currentValorNumber = 0;
+
+        function initUserData() {
+            let user = {};
+            try {
+                user = JSON.parse((localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user')) || '{}');
+            } catch(e) {}
+
+            try {
+                const adminUsers = JSON.parse(localStorage.getItem('happynation_admin_users') || '[]');
+                if (Array.isArray(adminUsers) && adminUsers.length > 0) {
+                    let matching = null;
+                    if (user && user.email) matching = adminUsers.find(u => u.email && u.email.toLowerCase() === user.email.toLowerCase());
+                    // Usuário logado é mantido prioritariamente se não houver match por email
+                    if (matching) {
+                        user = {
+                            ...(user || {}),
+                            nome: matching.nome || (user.nome || 'MG Editáveis'),
+                            email: matching.email || (user.email || 'admin@mgeditaveis.com.br'),
+                            phone: matching.phone || (user.phone || '(21) 99882-1029'),
+                            saldo: parseFloat(matching.saldo) !== undefined ? parseFloat(matching.saldo) : (user.saldo !== undefined ? parseFloat(user.saldo) : 0)
+                        };
+                        localStorage.setItem('happynation_user', JSON.stringify(user));
+                    }
+                }
+            } catch(e) {}
+
+            const saldo = (window.MGSaldo ? window.MGSaldo.get() : ((user.saldo !== undefined && user.saldo !== null) ? Number(user.saldo) : 0));
+            const nome = (user.nome && user.nome.trim()) ? user.nome : 'MG Editáveis';
+            const email = (user.email && user.email.trim()) ? user.email : 'admin@mgeditaveis.com.br';
+
+            const formattedSaldo = 'R$ ' + saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('headerSaldo').textContent = formattedSaldo;
+            document.getElementById('mainSaldoValor').textContent = formattedSaldo;
+            document.getElementById('dropUserName').textContent = nome;
+            document.getElementById('dropUserEmail').textContent = email;
+
+            const initialLetter = nome.trim().charAt(0).toUpperCase() || 'M';
+            document.getElementById('avatarBtn').textContent = initialLetter;
+        }
+
+        function getMinRecharge() {
+            const saved = localStorage.getItem('happynation_min_recharge');
+            if (saved && !isNaN(parseFloat(saved))) {
+                return parseFloat(saved);
+            }
+            return 50.00;
+        }
+
+        function applyMinRechargeUI() {
+            const min = getMinRecharge();
+            const formatted = 'R$ ' + min.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            const text1 = document.getElementById('minRechargeText');
+            if (text1) text1.textContent = `Valor mínimo de ${formatted}`;
+
+            const text2 = document.getElementById('infoMinRechargeText');
+            if (text2) text2.textContent = `Valor mínimo de ${formatted}`;
+
+            const btnMin = document.getElementById('btnQuickMin');
+            if (btnMin) {
+                btnMin.textContent = formatted;
+                btnMin.onclick = function() { setQuickValor(min, this); };
+            }
+            updateRecarregarBtn();
+        }
+
+        function refreshSaldoAnimation() {
+            const btn = document.querySelector('.btn-refresh-saldo');
+            btn.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                initUserData();
+                showToastNotification('Saldo atualizado com sucesso!');
+                btn.style.transform = '';
+            }, 300);
+        }
+
+        function setQuickValor(val, btn) {
+            document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            currentValorNumber = val;
+            const input = document.getElementById('inputValor');
+            input.value = 'R$ ' + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            updateRecarregarBtn();
+        }
+
+        function handleValorInput(input) {
+            // Remove previous active state on buttons
+            document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+
+            let val = input.value.replace(/\D/g, '');
+            if (!val) {
+                currentValorNumber = 0;
+                input.value = 'R$ 0,00';
+            } else {
+                currentValorNumber = parseFloat(val) / 100;
+                input.value = 'R$ ' + currentValorNumber.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+            updateRecarregarBtn();
+        }
+
+        function updateRecarregarBtn() {
+            const btn = document.getElementById('btnRecarregar');
+            const min = getMinRecharge();
+            if (currentValorNumber >= min) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+
+        function openPixModal() {
+            const min = getMinRecharge();
+            if (currentValorNumber < min) {
+                showToastNotification(`O valor mínimo de recarga é de R$ ${min.toFixed(2).replace('.', ',')}.`);
+                return;
+            }
+            const formatted = 'R$ ' + currentValorNumber.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('modalValorTxt').textContent = formatted;
+            document.getElementById('pixModal').classList.add('show');
+        }
+
+        function closePixModal() {
+            document.getElementById('pixModal').classList.remove('show');
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target.id === 'pixModal') {
+                closePixModal();
+            }
+        }
+
+        function enviarRecargaWhatsApp() {
+            const valorFormatted = document.getElementById('modalValorTxt').textContent;
+            let user = {};
+            try { user = JSON.parse((localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user')) || '{}'); } catch(e){}
+            const email = user.email || '';
+            const nome = user.nome || '';
+
+            // Get WhatsApp number configured by admin, fallback to default
+            const wppNumber = localStorage.getItem('happynation_whatsapp') || '5511999999999';
+
+            const msg = encodeURIComponent(`Olá! Gostaria de realizar uma recarga de ${valorFormatted} na minha conta MG Editáveis.\nNome: ${nome}\nE-mail: ${email}`);
+            window.open(`https://wa.me/${wppNumber}?text=${msg}`, '_blank');
+        }
+
+        function aplicarCupom() {
+            const input = document.getElementById('cupomInput');
+            const cupom = input.value.trim().toUpperCase();
+            if (!cupom) {
+                showToastNotification('Digite um cupom antes de aplicar.');
+                return;
+            }
+            showToastNotification(`Cupom "${cupom}" não encontrado ou expirado.`);
+        }
+
+        function toggleAvatarDropdown() {
+            const drop = document.getElementById('avatarDropdown');
+            drop.classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(e) {
+            const drop = document.getElementById('avatarDropdown');
+            const btn = document.getElementById('avatarBtn');
+            if (drop && btn && !drop.contains(e.target) && !btn.contains(e.target)) {
+                drop.classList.remove('show');
+            }
+        });
+
+        function handleLogout(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+        localStorage.removeItem('happynation_user');
+        sessionStorage.removeItem('happynation_user');
+        localStorage.removeItem('happynation_admin_auth');
+        sessionStorage.removeItem('happynation_admin_auth');
+    } catch(err) {}
+    window.location.href = 'login.html?logged_out=1';
+}
+
+        function showToastNotification(msg) {
+            const toast = document.getElementById('toastNotify');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-theme');
+            localStorage.setItem('happynation_theme', isLight ? 'light' : 'dark');
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('happynation_theme');
+            if (saved === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initUserData();
+        });
+
+        window.addEventListener('storage', () => {
+            initUserData();
+        });
+    </script>
+
+    <!-- NEURAL NETWORK BACKGROUND SCRIPT -->
+    <script>
+        // ─── HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND ───
+        (function initNeuralNetwork() {
+            const canvas = document.getElementById('neuralCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 90;
+            const MAX_DISTANCE = 135;
+            const MOUSE_RADIUS = 160;
+
+            const mouse = { x: null, y: null, active: false };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+                mouse.active = true;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.active = false;
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.7;
+                    this.vy = (Math.random() - 0.5) * 0.7;
+                    this.baseRadius = Math.random() * 2 + 1.2;
+                    this.isHub = Math.random() < 0.15; // 15% nós centrais brilhantes
+                    if (this.isHub) this.baseRadius = Math.random() * 1.5 + 3.2;
+                    this.pulseSpeed = Math.random() * 0.04 + 0.02;
+                    this.pulsePhase = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < -20) this.x = width + 20;
+                    else if (this.x > width + 20) this.x = -20;
+                    if (this.y < -20) this.y = height + 20;
+                    else if (this.y > height + 20) this.y = -20;
+
+                    this.pulsePhase += this.pulseSpeed;
+                }
+
+                draw() {
+                    const pulse = (Math.sin(this.pulsePhase) + 1) * 0.5; // 0 to 1
+                    const r = this.baseRadius + pulse * (this.isHub ? 2.0 : 0.9);
+                    const alpha = 0.5 + pulse * 0.5;
+
+                    // Halo radial neon — verde esmeralda
+                    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3.8);
+                    grad.addColorStop(0, this.isHub ? `rgba(0, 220, 130, ${alpha * 0.85})` : `rgba(0, 200, 110, ${alpha * 0.65})`);
+                    grad.addColorStop(0.4, `rgba(0, 180, 100, ${alpha * 0.2})`);
+                    grad.addColorStop(1, 'rgba(0, 220, 130, 0)');
+
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 3.8, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Núcleo brilhante (bolinha pulsante)
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 0.9, 0, Math.PI * 2);
+                    ctx.fillStyle = this.isHub ? `rgba(200, 255, 230, ${alpha})` : `rgba(0, 220, 130, ${alpha * 0.9})`;
+                    ctx.shadowBlur = this.isHub ? 16 : 8;
+                    ctx.shadowColor = '#00dc82';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Fundo sutil com leve toque esmeralda profundo
+                const bgGrad = ctx.createRadialGradient(width * 0.5, height * 0.4, 60, width * 0.5, height * 0.5, width * 0.85);
+                bgGrad.addColorStop(0, 'rgba(0, 40, 22, 0.18)');
+                bgGrad.addColorStop(0.35, 'rgba(0, 22, 14, 0.10)');
+                bgGrad.addColorStop(0.7, 'rgba(0, 10, 6, 0.06)');
+                bgGrad.addColorStop(1, 'rgba(18, 20, 20, 0.98)');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                // Conexões e linhas laser entre as bolinhas
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+
+                    // Interação com o mouse
+                    if (mouse.active && mouse.x !== null) {
+                        const dxm = p1.x - mouse.x;
+                        const dym = p1.y - mouse.y;
+                        const distM = Math.sqrt(dxm * dxm + dym * dym);
+                        if (distM < MOUSE_RADIUS) {
+                            const mAlpha = (1 - distM / MOUSE_RADIUS) * 0.55;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(0, 220, 130, ${mAlpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distSq = dx * dx + dy * dy;
+
+                        if (distSq < MAX_DISTANCE * MAX_DISTANCE) {
+                            const dist = Math.sqrt(distSq);
+                            const lineAlpha = (1 - dist / MAX_DISTANCE) * 0.30;
+
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 200, 110, ${lineAlpha})`;
+                            ctx.lineWidth = dist < 55 ? 1.2 : 0.7;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Desenhar nós
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+    </script>
+
+
+    <!-- BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS -->
+    <a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer"
+       class="networking-fab" id="networkingGroupFab" title="Entrar no Grupo de Networking">
+        <div class="fab-icon-bubble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span class="fab-ping-badge"></span>
+        </div>
+        <div class="fab-text-col">
+            <span class="fab-text-subtitle">Comunidade Ativa</span>
+            <span class="fab-text-title" id="networkingGroupTitle">Networking MG Editáveis</span>
+        </div>
+    </a>
+    <script>
+        (function() {
+            function updateNetworkingFab() {
+                try {
+                    var custom = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                    var fab    = document.getElementById('networkingGroupFab');
+                    var title  = document.getElementById('networkingGroupTitle');
+                    if (custom.groupUrl   && fab)   fab.href        = custom.groupUrl;
+                    if (custom.groupTitle && title) title.textContent = custom.groupTitle;
+                } catch(e) {}
+            }
+            fetch('api/config').then(function(r){ return r.json(); }).then(function(res){
+                if (res && res.data) {
+                    var fab   = document.getElementById('networkingGroupFab');
+                    var title = document.getElementById('networkingGroupTitle');
+                    if (res.data.groupUrl   && fab)   fab.href         = res.data.groupUrl;
+                    if (res.data.groupTitle && title) title.textContent = res.data.groupTitle;
+                }
+            }).catch(function(){});
+            window.addEventListener('DOMContentLoaded', updateNetworkingFab);
+            window.addEventListener('storage', updateNetworkingFab);
+        })();
+    </script>
+
+</body>
+</html>
+
+
+
+
+
