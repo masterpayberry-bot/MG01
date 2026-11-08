@@ -684,7 +684,7 @@ Agradecemos pela preferência e estamos à disposição! 🚗💨
             editQuery.set('validade', currentExam.validade);
             editQuery.set('res_texto', currentExam.resultado_texto);
             editQuery.set('edit', 'true');
-            btnEdit.href = 'criar-rg.html?' + editQuery.toString();
+            btnEdit.href = 'criar-exame.html?' + editQuery.toString();
         }
     }
 
@@ -701,7 +701,7 @@ Agradecemos pela preferência e estamos à disposição! 🚗💨
         q.set('resultado', currentExam.resultado_data);
         q.set('validade', currentExam.validade);
         q.set('autoDownload', 'true');
-        window.location.href = 'criar-rg.html?' + q.toString();
+        window.location.href = 'criar-exame.html?' + q.toString();
     }
 
     function copyClientMessage() {
