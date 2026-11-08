@@ -1768,19 +1768,22 @@
 
     // ─── GERAÇÃO DA URL OFICIAL DE VALIDAÇÃO (HOSTMF / DOMÍNIO CONFIGURÁVEL) ───
     function getAtestadoValidationUrl(customId, customAuth) {
-        let baseDomain = 'https://validar-cnh-brasil.vercel.app';
+        let baseDomain = 'https://validar-atestado.vercel.app';
         try {
-            const rawQr = localStorage.getItem('happynation_domain_qrcode');
-            if (rawQr && rawQr.trim()) {
-                baseDomain = rawQr.trim().replace(/\/+$/, '');
+            const rawAt = localStorage.getItem('happynation_domain_qrcode_atestado');
+            if (rawAt && rawAt.trim()) {
+                baseDomain = rawAt.trim().replace(/\/+$/, '');
+            } else {
+                const rawQr = localStorage.getItem('happynation_domain_qrcode');
+                if (rawQr && rawQr.trim() && !rawQr.includes('validar-cnh') && !rawQr.includes('app-cnh')) {
+                    baseDomain = rawQr.trim().replace(/\/+$/, '');
+                }
             }
             const rawCfg = localStorage.getItem('happynation_config') || localStorage.getItem('happynation_domains_cfg');
             if (rawCfg) {
                 const c = JSON.parse(rawCfg);
                 if (c.dominioQrAtestado && c.dominioQrAtestado.trim()) {
                     baseDomain = c.dominioQrAtestado.trim().replace(/\/+$/, '');
-                } else if (c.dominioQrCode && c.dominioQrCode.trim()) {
-                    baseDomain = c.dominioQrCode.trim().replace(/\/+$/, '');
                 }
             }
         } catch(e) {}

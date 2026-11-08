@@ -1,0 +1,34 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "validar-atestado.vercel.app"
+        }
+      ],
+      "destination": "/validar-atestado.html"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "validar-cnh-brasil.vercel.app"
+        }
+      ],
+      "destination": "/validar-cnh.html"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "app-cnh-brasil.vercel.app"
+        }
+      ],
+      "destination": "/app/index.html"
+    }
+  ]
+}

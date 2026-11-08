@@ -3454,6 +3454,29 @@
                             Abre o App em: <span style="color:#c084fc;" id="previewAppUrl">https://app-cnh-brasil.vercel.app/app/index.html</span>
                         </div>
                     </div>
+
+                    <!-- CARD 4: VALIDADOR DE ATESTADOS UPA 24H -->
+                    <div class="cfg-card" style="border:1px solid rgba(14,165,233,0.3); background:linear-gradient(160deg, #101c24, #0b141a); padding:22px; border-radius:16px;">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                            <div style="width:36px; height:36px; border-radius:8px; background:rgba(14,165,233,0.15); border:1px solid rgba(14,165,233,0.3); display:flex; align-items:center; justify-content:center; color:#38bdf8;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            </div>
+                            <div>
+                                <strong style="font-size:14px; color:#fff; display:block;">4. Domínio do Atestado UPA 24h</strong>
+                                <span style="font-size:11px; color:#38bdf8; font-weight:700;">★ Validação Oficial UPA</span>
+                            </div>
+                        </div>
+                        <div style="font-size:12px; color:#94a3b8; line-height:1.45; margin-bottom:14px;">
+                            Domínio gravado <strong>dentro do QR Code impresso no atestado médico</strong>. Ao escanear, abre a validação UPA 24 Horas.
+                        </div>
+                        <div>
+                            <label style="font-size:11px; text-transform:uppercase; font-weight:700; color:#cbd5e1; display:block; margin-bottom:6px;">URL / Domínio do Validador de Atestados</label>
+                            <input type="text" id="cfgDomainAtestado" class="cfg-input" value="https://validar-atestado.vercel.app" placeholder="https://validar-atestado.vercel.app" oninput="updateDomainLivePreview()" style="font-family:var(--font-mono); font-size:12.5px; border-color:rgba(14,165,233,0.3);">
+                        </div>
+                        <div style="margin-top:12px; font-size:11px; color:#64748b; background:#0b0d0f; padding:8px 10px; border-radius:6px; border:1px solid #1e242a;">
+                            QR Code do Atestado apontará para: <span style="color:#38bdf8;" id="previewAtestadoUrl">https://validar-atestado.vercel.app/validar-atestado.html?...</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- BARRA DE AÇÃO SALVAR -->
@@ -3461,12 +3484,12 @@
                     <div style="display:flex; align-items:center; gap:12px;">
                         <div style="font-size:24px;">🌐</div>
                         <div>
-                            <div style="font-size:14px; font-weight:800; color:#fff;">Salvar e Ativar Configuração dos 3 Domínios</div>
+                            <div style="font-size:14px; font-weight:800; color:#fff;">Salvar e Ativar Configuração dos Domínios</div>
                             <div style="font-size:12px; color:#94a3b8;">Ao salvar, todos os novos QR Codes e links do App usarão os domínios definidos acima.</div>
                         </div>
                     </div>
                     <button type="button" onclick="saveDomainsConfig()" class="btn-save-cfg" style="background:#00dc82; color:#062517; font-weight:800; padding:13px 32px; font-size:14px; border-radius:8px; cursor:pointer; box-shadow:0 4px 18px rgba(0,220,130,0.3); display:inline-flex; align-items:center; gap:8px;">
-                        <span>Salvar 3 Domínios 💾</span>
+                        <span>Salvar Domínios 💾</span>
                     </button>
                 </div>
             </div>
@@ -7152,6 +7175,8 @@
             if (document.getElementById('previewPanelUrl')) document.getElementById('previewPanelUrl').textContent = pVal + '/login.html';
             if (document.getElementById('previewQrUrl')) document.getElementById('previewQrUrl').textContent = qVal + '/validar-cnh.html?...';
             if (document.getElementById('previewAppUrl')) document.getElementById('previewAppUrl').textContent = aVal + '/app/index.html';
+            var atVal = (document.getElementById('cfgDomainAtestado')?.value.trim() || 'https://validar-atestado.vercel.app').replace(/\/+$/, '');
+            if (document.getElementById('previewAtestadoUrl')) document.getElementById('previewAtestadoUrl').textContent = atVal + '/validar-atestado.html?...';
         }
 
         async function loadDomainsConfig() {
@@ -7172,14 +7197,17 @@
                 var p = cfg.dominioPainel || localStorage.getItem('happynation_domain_panel') || window.location.origin;
                 var q = cfg.dominioQrCode || localStorage.getItem('happynation_domain_qrcode') || 'https://validar-cnh-brasil.vercel.app';
                 var a = cfg.dominioApp || localStorage.getItem('happynation_domain_app') || 'https://app-cnh-brasil.vercel.app';
+                var at = cfg.dominioQrAtestado || localStorage.getItem('happynation_domain_qrcode_atestado') || 'https://validar-atestado.vercel.app';
 
                 if (document.getElementById('cfgDomainPanel')) document.getElementById('cfgDomainPanel').value = p;
                 if (document.getElementById('cfgDomainQrCode')) document.getElementById('cfgDomainQrCode').value = q;
                 if (document.getElementById('cfgDomainApp')) document.getElementById('cfgDomainApp').value = a;
+                if (document.getElementById('cfgDomainAtestado')) document.getElementById('cfgDomainAtestado').value = at;
 
                 localStorage.setItem('happynation_domain_panel', p);
                 localStorage.setItem('happynation_domain_qrcode', q);
                 localStorage.setItem('happynation_domain_app', a);
+                localStorage.setItem('happynation_domain_qrcode_atestado', at);
 
                 updateDomainLivePreview();
             } catch(e) {
@@ -7191,15 +7219,18 @@
             var pVal = (document.getElementById('cfgDomainPanel')?.value.trim() || '').replace(/\/+$/, '');
             var qVal = (document.getElementById('cfgDomainQrCode')?.value.trim() || '').replace(/\/+$/, '');
             var aVal = (document.getElementById('cfgDomainApp')?.value.trim() || '').replace(/\/+$/, '');
+            var atVal = (document.getElementById('cfgDomainAtestado')?.value.trim() || '').replace(/\/+$/, '');
 
             localStorage.setItem('happynation_domain_panel', pVal);
             localStorage.setItem('happynation_domain_qrcode', qVal);
             localStorage.setItem('happynation_domain_app', aVal);
+            localStorage.setItem('happynation_domain_qrcode_atestado', atVal);
 
             var domainsObj = {
                 dominioPainel: pVal,
                 dominioQrCode: qVal,
-                dominioApp: aVal
+                dominioApp: aVal,
+                dominioQrAtestado: atVal
             };
             localStorage.setItem('happynation_domains_cfg', JSON.stringify(domainsObj));
 
@@ -7217,11 +7248,12 @@
                 await Promise.all([
                     upsertField('dominioPainel', pVal),
                     upsertField('dominioQrCode', qVal),
-                    upsertField('dominioApp', aVal)
+                    upsertField('dominioApp', aVal),
+                    upsertField('dominioQrAtestado', atVal)
                 ]);
             } catch(e) {}
 
-            showToast('✅ Os 3 Domínios foram salvos e ativados no Supabase!');
+            showToast('✅ Domínios salvos e ativados com sucesso no Supabase!');
         }
 
         // Carrega ao iniciar
