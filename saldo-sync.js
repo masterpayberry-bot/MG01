@@ -5,7 +5,7 @@
  *  - happynation_user
  *  - happynation_admin_users
  *  - happynation_registered_users
- *  - Servidor /api/db/users
+ *  - Supabase Database (usuarios)
  */
 (function () {
   'use strict';
