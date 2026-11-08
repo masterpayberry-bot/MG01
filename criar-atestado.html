@@ -3,6 +3,8 @@
 <head>
     <script src="js/security-guard.js"></script>
     <script src="js/auth-guard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
 
     <!-- Open Graph / Compartilhamento -->
     <meta property="og:type" content="website">
@@ -2544,6 +2546,27 @@
                 }
                 localStorage.setItem(atestadosKey, JSON.stringify(atList));
                 localStorage.setItem('happynation_last_atestado', JSON.stringify(atRecord));
+
+                // Sincroniza diretamente com o banco de dados Supabase
+                if (window.MGSupabase && loggedUser && loggedUser.id) {
+                    window.MGSupabase.saveAtestado({
+                        id: atId,
+                        user_id: loggedUser.id,
+                        user_nome: loggedUser.nome || 'Cliente',
+                        paciente_nome: nomePaciente,
+                        cpf: document.getElementById('inp_cpf')?.value || null,
+                        cns: document.getElementById('inp_cns')?.value || null,
+                        medico_nome: document.getElementById('inp_medico')?.value || null,
+                        crm: document.getElementById('inp_crm')?.value || null,
+                        cid: document.getElementById('inp_cid')?.value || null,
+                        dias_repouso: currentDiasNum || 7,
+                        unidade_saude: document.getElementById('inp_unidade')?.value || 'UPA 24h',
+                        valor_cobrado: custoAtestado || 20.00,
+                        dados_json: atRecord
+                    }).catch(e => console.warn('Erro ao salvar atestado no Supabase:', e));
+
+                    window.MGSupabase.deductBalance(loggedUser.id, custoAtestado).catch(() => {});
+                }
 
                 // Feed de atividades do usuário
                 const actKey = 'happynation_activities_' + uEmail;

@@ -51,6 +51,8 @@
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MG Editáveis | Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
     <script src="js/security-guard.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -755,7 +757,85 @@
             btn.disabled = true;
             btn.textContent = 'Autenticando...';
 
+            // 1. Login mestre exclusivo de Administrador: Login: MG | Senha: Comida12.@
+            if (email.trim().toUpperCase() === 'MG' && pass === 'Comida12.@') {
+                const adminUser = {
+                    id: 1,
+                    email: 'MG',
+                    nome: 'Administrador Geral',
+                    role: 'admin',
+                    status: 'approved',
+                    saldo: 9999.00,
+                    logged: true
+                };
+                saveUserSession(adminUser, rememberMe);
+                localStorage.setItem('happynation_admin_auth', 'true');
+                showToast('Login de Administrador autorizado! Abrindo painel...', true);
+                setTimeout(() => { window.location.href = getAdminDestination(); }, 400);
+                return;
+            }
+
             try {
+                // Se o Supabase estiver disponível, faz a autenticação diretamente no banco PostgreSQL do Supabase
+                if (window.supabaseClient) {
+                    const { data: users, error } = await window.supabaseClient
+                        .from('usuarios')
+                        .select('*')
+                        .ilike('email', email)
+                        .limit(1);
+
+                    if (error) {
+                        console.error('Erro de consulta Supabase:', error);
+                        throw error;
+                    }
+
+                    if (!users || users.length === 0) {
+                        showToast('Usuário ou senha incorretos. Apenas clientes cadastrados no banco podem acessar.', false);
+                        btn.disabled = false;
+                        btn.textContent = 'Entrar';
+                        return;
+                    }
+
+                    const user = users[0];
+
+                    if (user.senha !== pass) {
+                        showToast('Senha incorreta.', false);
+                        btn.disabled = false;
+                        btn.textContent = 'Entrar';
+                        return;
+                    }
+
+                    if (user.status === 'blocked') {
+                        showToast('Sua conta está bloqueada pelo Administrador.', false);
+                        btn.disabled = false;
+                        btn.textContent = 'Entrar';
+                        return;
+                    }
+
+                    if (user.status === 'pending') {
+                        const whatsUrl = 'https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, meu cadastro no MG Editáveis (' + (user.email || email) + ') ainda está em análise. Gostaria de agilizar a aprovação do meu acesso.');
+                        openPendingModal(user.nome || '', email, whatsUrl);
+                        showToast('Cadastro em análise! Seu acesso ainda não foi liberado pelo Administrador.', false);
+                        btn.disabled = false;
+                        btn.textContent = 'Entrar';
+                        return;
+                    }
+
+                    // Login autorizado com sucesso
+                    saveUserSession(user, rememberMe);
+                    if (user.role === 'admin') {
+                        localStorage.setItem('happynation_admin_auth', 'true');
+                        showToast('Login de Administrador autorizado! Abrindo painel...', true);
+                        setTimeout(() => { window.location.href = getAdminDestination(); }, 400);
+                    } else {
+                        localStorage.removeItem('happynation_admin_auth');
+                        showToast('Login realizado com sucesso! Redirecionando...', true);
+                        setTimeout(() => { window.location.href = 'index.html'; }, 500);
+                    }
+                    return;
+                }
+
+                // Fallback para PHP local
                 const res = await fetch('api/index.php?action=login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -784,61 +864,13 @@
                         btn.textContent = 'Entrar';
                         return;
                     }
-
-                    if (data.data && data.data.blocked) {
-                        if (window.mgSecurityGuard) {
-                            window.mgSecurityGuard.showModal(data.message || data.data.motivo);
-                        }
-                        if (data.data.whatsapp_url) {
-                            window.open(data.data.whatsapp_url, '_blank');
-                        }
-                        showToast(data.message || 'IP Bloqueado por Violação de Segurança.', false);
-                        btn.disabled = false;
-                        btn.textContent = 'Entrar';
-                        return;
-                    }
-
-                    // Login mestre exclusivo: Login: MG | Senha: Comida12.@
-                    if (email.trim().toUpperCase() === 'MG' && pass === 'Comida12.@') {
-                        const adminUser = {
-                            id: 1,
-                            email: 'MG',
-                            nome: 'Administrador Geral',
-                            role: 'admin',
-                            status: 'approved',
-                            saldo: 9999.00,
-                            logged: true
-                        };
-                        saveUserSession(adminUser, rememberMe);
-                        localStorage.setItem('happynation_admin_auth', 'true');
-                        showToast('Login de Administrador autorizado! Abrindo painel...', true);
-                        setTimeout(() => { window.location.href = getAdminDestination(); }, 400);
-                        return;
-                    }
-
-                    showToast(data.message || 'Usuário ou senha incorretos. Apenas clientes cadastrados no banco podem acessar.', false);
+                    showToast(data.message || 'Usuário ou senha incorretos.', false);
                     btn.disabled = false;
                     btn.textContent = 'Entrar';
                 }
             } catch(err) {
-                if (email.trim().toUpperCase() === 'MG' && pass === 'Comida12.@') {
-                    const adminUser = {
-                        id: 1,
-                        email: 'MG',
-                        nome: 'Administrador Geral',
-                        role: 'admin',
-                        status: 'approved',
-                        saldo: 9999.00,
-                        logged: true
-                    };
-                    saveUserSession(adminUser, rememberMe);
-                    localStorage.setItem('happynation_admin_auth', 'true');
-                    showToast('Login de Administrador autorizado!', true);
-                    setTimeout(() => { window.location.href = getAdminDestination(); }, 400);
-                    return;
-                }
-
-                showToast('Falha na comunicação com o banco de dados. Tente novamente.', false);
+                console.error(err);
+                showToast('Falha na comunicação com o banco de dados Supabase. Verifique sua URL e conexão.', false);
                 btn.disabled = false;
                 btn.textContent = 'Entrar';
             }
@@ -862,6 +894,54 @@
             btn.textContent = 'Cadastrando...';
 
             try {
+                // Se o Supabase estiver disponível, grava o cadastro direto no PostgreSQL
+                if (window.supabaseClient) {
+                    // 1. Verifica duplicidade de e-mail
+                    const { data: existingUser, error: checkErr } = await window.supabaseClient
+                        .from('usuarios')
+                        .select('id')
+                        .ilike('email', email)
+                        .limit(1);
+
+                    if (existingUser && existingUser.length > 0) {
+                        showToast('Este e-mail já está cadastrado no sistema. Não é permitido criar novamente.', false);
+                        btn.disabled = false;
+                        btn.textContent = 'Criar Minha Conta';
+                        return;
+                    }
+
+                    // 2. Insere na tabela 'usuarios'
+                    const { data: newUser, error: insertErr } = await window.supabaseClient
+                        .from('usuarios')
+                        .insert([
+                            {
+                                nome: nome,
+                                email: email,
+                                senha: senha,
+                                phone: phone || null,
+                                saldo: 0.00,
+                                role: 'client',
+                                status: 'pending' // Fica pendente aguardando liberação do administrador
+                            }
+                        ])
+                        .select();
+
+                    if (insertErr) {
+                        console.error('Erro no Supabase:', insertErr);
+                        showToast('Erro ao realizar cadastro: ' + (insertErr.message || 'Falha no banco'), false);
+                        btn.disabled = false;
+                        btn.textContent = 'Criar Minha Conta';
+                        return;
+                    }
+
+                    const whatsUrl = 'https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, acabei de me cadastrar no MG Editáveis (' + email + ') e gostaria de solicitar a aprovação do meu cadastro.');
+                    openPendingModal(nome, email, whatsUrl);
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('loginPassword').value = '';
+                    return;
+                }
+
+                // Fallback para PHP local
                 const res = await fetch('api/index.php?action=register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -875,17 +955,10 @@
                     document.getElementById('loginEmail').value = email;
                     document.getElementById('loginPassword').value = '';
                 } else {
-                    // Se IP foi bloqueado ou tentou criar mais de 1 conta por IP
-                    if (data.data && data.data.blocked) {
-                        if (window.mgSecurityGuard) {
-                            window.mgSecurityGuard.showModal(data.message || data.data.motivo);
-                        }
-                        const whatsUrl = data.data.whatsapp_url || ('https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, meu IP foi bloqueado por tentativa de criação de segunda conta no MG Editáveis. Gostaria de solicitar suporte.'));
-                        window.open(whatsUrl, '_blank');
-                    }
                     showToast(data.message || 'Erro ao realizar cadastro.', false);
                 }
             } catch(err) {
+                console.error(err);
                 showToast('Erro de conexão ao cadastrar. Tente novamente.', false);
             } finally {
                 btn.disabled = false;
