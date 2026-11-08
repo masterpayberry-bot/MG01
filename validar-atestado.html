@@ -1721,7 +1721,8 @@
         const elTexto = document.getElementById('fld_texto_principal');
         if (elTexto) {
             const cpfFormatado = formatarCpf(cnsPaciente);
-            elTexto.innerHTML = `Atesto para os devidos fins, que o(a), <b>${nomePaciente}</b>, portador(a) do CPF sob nº <b>${cpfFormatado}</b>, foi atendido(a) no(a), <b>${unidade}</b> na data <b>${dataEmissao}</b><br>às <b>${horaEmissao}</b>, necessitando de <b>${diasExtenso}</b> dias de repouso por motivo de doença.`;
+            const palavraDia = (parseInt(diasNum, 10) === 1) ? 'dia' : 'dias';
+            elTexto.innerHTML = `Atesto para os devidos fins, que o(a), <b>${nomePaciente}</b>, portador(a) do CPF sob nº <b>${cpfFormatado}</b>, foi atendido(a) no(a), <b>${unidade}</b> na data <b>${dataEmissao}</b><br>às <b>${horaEmissao}</b>, necessitando de <b>${diasExtenso}</b> ${palavraDia} de repouso por motivo de doença.`;
         }
 
         // Data por extenso

@@ -2090,8 +2090,9 @@
 
         // Atualiza texto principal com negrito nos dados preenchidos
         const diasStr = `<b>${currentDiasNum} (${currentDiasExt})</b>`;
+        const palavraDia = (parseInt(currentDiasNum, 10) === 1) ? 'dia' : 'dias';
         const cpfFormatado = formatarCpf(cns);
-        const htmlTexto = `Atesto para os devidos fins, que o(a), <b>${nome}</b>, portador(a) do CPF sob nº <b>${cpfFormatado}</b>, foi atendido(a) no(a), <b>${unidade}</b> na data <b>${data}</b><br>às <b>${hora}</b>, necessitando de ${diasStr} dias de repouso por motivo de doença.`;
+        const htmlTexto = `Atesto para os devidos fins, que o(a), <b>${nome}</b>, portador(a) do CPF sob nº <b>${cpfFormatado}</b>, foi atendido(a) no(a), <b>${unidade}</b> na data <b>${data}</b><br>às <b>${hora}</b>, necessitando de ${diasStr} ${palavraDia} de repouso por motivo de doença.`;
         const elText = document.getElementById('fld_texto_principal');
         if (elText) elText.innerHTML = htmlTexto;
 

@@ -438,7 +438,8 @@ O documento digital em PDF com assinatura eletrônica e QR Code de autenticidade
         document.getElementById('viewNome').textContent = currentRecord.paciente.toUpperCase();
         document.getElementById('viewCns').textContent = formatarCpf(currentRecord.cns || currentRecord.cpf);
         document.getElementById('viewCid').textContent = currentRecord.cid;
-        document.getElementById('viewDias').textContent = `${currentRecord.dias} dias`;
+        const palavraDia = (parseInt(currentRecord.dias, 10) === 1) ? 'dia' : 'dias';
+        document.getElementById('viewDias').textContent = `${currentRecord.dias} ${palavraDia}`;
         document.getElementById('viewUnidade').textContent = currentRecord.unidade;
         document.getElementById('viewMedico').textContent = currentRecord.medico;
         document.getElementById('viewCrm').textContent = currentRecord.crm;
@@ -447,7 +448,8 @@ O documento digital em PDF com assinatura eletrônica e QR Code de autenticidade
         document.getElementById('msgNome2').textContent = currentRecord.paciente.toUpperCase();
         document.getElementById('msgCns').textContent = formatarCpf(currentRecord.cns || currentRecord.cpf);
         document.getElementById('msgCid').textContent = currentRecord.cid;
-        document.getElementById('msgDias').textContent = `${currentRecord.dias} dias`;
+        const palavraDiaMsg = (parseInt(currentRecord.dias, 10) === 1) ? 'dia' : 'dias';
+        document.getElementById('msgDias').textContent = `${currentRecord.dias} ${palavraDiaMsg}`;
         document.getElementById('msgUnidade').textContent = currentRecord.unidade.split('-')[0].trim();
         document.getElementById('msgMed').textContent = `${currentRecord.medico} (${currentRecord.crm})`;
 
