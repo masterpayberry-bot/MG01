@@ -303,8 +303,8 @@
                 </div>
 
                 <div class="info-group">
-                    <span class="info-label">Cartão SUS (CNS)</span>
-                    <span class="info-value" id="viewCns">801440458570767</span>
+                    <span class="info-label">CPF do Paciente</span>
+                    <span class="info-value" id="viewCns">458.912.873-44</span>
                 </div>
             </div>
 
@@ -375,7 +375,7 @@ Seu **Atestado Médico Oficial** foi emitido com sucesso na **<span id="msgUnida
 
 📋 **Dados do Atendimento:**
 • Paciente: <span id="msgNome2">TATIANI RODRIGUES MOR</span>
-• Cartão SUS: <span id="msgCns">801440458570767</span>
+• CPF: <span id="msgCns">458.912.873-44</span>
 • CID-10: <span id="msgCid">J02.</span>
 • Afastamento: <span id="msgDias">3 (três) dias</span>
 • Médico: <span id="msgMed">Dra. Flávia Nunes Maruyama (CRM 216997)</span>
@@ -436,7 +436,7 @@ O documento digital em PDF com assinatura eletrônica e QR Code de autenticidade
         };
 
         document.getElementById('viewNome').textContent = currentRecord.paciente.toUpperCase();
-        document.getElementById('viewCns').textContent = currentRecord.cns;
+        document.getElementById('viewCns').textContent = formatarCpf(currentRecord.cns || currentRecord.cpf);
         document.getElementById('viewCid').textContent = currentRecord.cid;
         document.getElementById('viewDias').textContent = `${currentRecord.dias} dias`;
         document.getElementById('viewUnidade').textContent = currentRecord.unidade;
@@ -445,7 +445,7 @@ O documento digital em PDF com assinatura eletrônica e QR Code de autenticidade
 
         document.getElementById('msgNome').textContent = currentRecord.paciente.toUpperCase();
         document.getElementById('msgNome2').textContent = currentRecord.paciente.toUpperCase();
-        document.getElementById('msgCns').textContent = currentRecord.cns;
+        document.getElementById('msgCns').textContent = formatarCpf(currentRecord.cns || currentRecord.cpf);
         document.getElementById('msgCid').textContent = currentRecord.cid;
         document.getElementById('msgDias').textContent = `${currentRecord.dias} dias`;
         document.getElementById('msgUnidade').textContent = currentRecord.unidade.split('-')[0].trim();

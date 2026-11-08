@@ -1331,8 +1331,8 @@
                 </div>
 
                 <div class="data-item">
-                    <span class="data-label">Cartão Nacional de Saúde (CNS)</span>
-                    <span class="data-value" id="valCns">801440458570767</span>
+                    <span class="data-label">CPF do Paciente</span>
+                    <span class="data-value" id="valCns">458.912.873-44</span>
                 </div>
 
                 <div class="data-item">
@@ -1383,7 +1383,7 @@
             </div>
 
             <div class="atestado-statement-box" id="valStatement">
-                Atesto para os devidos fins, que o(a) paciente <strong>TATIANI RODRIGUES MOR</strong>, portador(a) do CNS <strong>801440458570767</strong>, foi atendido(a) na presente unidade de saúde e necessita de <strong>3 (três) dias de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).
+                Atesto para os devidos fins, que o(a) paciente <strong>TATIANI RODRIGUES MOR</strong>, portador(a) do CPF sob nº <strong>458.912.873-44</strong>, foi atendido(a) na presente unidade de saúde e necessita de <strong>3 (três) dias de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).
             </div>
         </div>
 
@@ -1476,7 +1476,7 @@
 
             <!-- Texto principal do Atestado -->
             <div class="atestado-texto-box">
-                <div class="atestado-texto-content" id="fld_texto_principal">Atesto para os devidos fins, que o(a), <b>TATIANI RODRIGUES MOR</b>, CNS:<br><b>801440458570767</b> foi atendido(a) no(a), <b>UPA 24h Itaquera - Consultórios</b> na data <b>04/11/2023</b><br>às <b>08:12:23</b>, necessitando de <b>3 (três)</b> dias de repouso por motivo de doença.</div>
+                <div class="atestado-texto-content" id="fld_texto_principal">Atesto para os devidos fins, que o(a), <b>TATIANI RODRIGUES MOR</b>, portador(a) do CPF sob nº <b>458.912.873-44</b>, foi atendido(a) no(a), <b>UPA 24h Itaquera - Consultórios</b> na data <b>04/11/2023</b><br>às <b>08:12:23</b>, necessitando de <b>3 (três)</b> dias de repouso por motivo de doença.</div>
             </div>
 
             <!-- CID estático -->
@@ -1627,7 +1627,7 @@
 
         const msg = `*COMPROVANTE OFICIAL DE ATESTADO MÉDICO - UPA 24h*\n` +
             `👤 *Paciente:* ${nome}\n` +
-            `💳 *Cartão SUS:* ${cns}\n` +
+            `📄 *CPF do Paciente:* ${formatarCpf(cns)}\n` +
             `🩺 *CID-10:* ${cid}\n` +
             `⏱ *Afastamento:* ${dias} de repouso\n` +
             `🏥 *Unidade:* ${unidade}\n\n` +
@@ -1720,7 +1720,8 @@
         // Texto principal oficial idêntico ao preenchido no editor
         const elTexto = document.getElementById('fld_texto_principal');
         if (elTexto) {
-            elTexto.innerHTML = `Atesto para os devidos fins, que o(a), <b>${nomePaciente}</b>, CNS:<br><b>${cnsPaciente}</b> foi atendido(a) no(a), <b>${unidade}</b> na data <b>${dataEmissao}</b><br>às <b>${horaEmissao}</b>, necessitando de <b>${diasExtenso}</b> dias de repouso por motivo de doença.`;
+            const cpfFormatado = formatarCpf(cnsPaciente);
+            elTexto.innerHTML = `Atesto para os devidos fins, que o(a), <b>${nomePaciente}</b>, portador(a) do CPF sob nº <b>${cpfFormatado}</b>, foi atendido(a) no(a), <b>${unidade}</b> na data <b>${dataEmissao}</b><br>às <b>${horaEmissao}</b>, necessitando de <b>${diasExtenso}</b> dias de repouso por motivo de doença.`;
         }
 
         // Data por extenso
@@ -1918,7 +1919,7 @@
         document.getElementById('lblAuthCode').textContent = auth.toUpperCase();
         document.getElementById('valId').textContent = id;
         document.getElementById('valNome').textContent = nome;
-        document.getElementById('valCns').textContent = cns;
+        document.getElementById('valCns').textContent = formatarCpf(cns);
         document.getElementById('valCid').textContent = cidDesc;
         document.getElementById('valDias').textContent = diasStr;
         document.getElementById('valData').textContent = data;
@@ -1963,7 +1964,7 @@
                             }
                             if (d.cns) {
                                 dadosAtestado.cns = d.cns;
-                                const elVcns = document.getElementById('valCns'); if (elVcns) elVcns.textContent = d.cns;
+                                const elVcns = document.getElementById('valCns'); if (elVcns) elVcns.textContent = formatarCpf(d.cns || d.cpf);
                             }
                             if (d.cid) {
                                 dadosAtestado.cid = d.cid;

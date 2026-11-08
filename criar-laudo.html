@@ -793,7 +793,7 @@
                 <!-- Quick Focus Pills -->
                 <div class="quick-pills">
                     <button class="pill-btn" onclick="focusField('fld_nome_paciente')">+ Paciente</button>
-                    <button class="pill-btn" onclick="focusField('fld_cns')">+ CNS</button>
+                    <button class="pill-btn" onclick="focusField('fld_texto_principal')">+ CPF</button>
                     <button class="pill-btn" onclick="focusField('fld_dias')">+ Dias Repouso</button>
                     <button class="pill-btn" onclick="focusField('fld_cid')">+ CID</button>
                     <button class="pill-btn" onclick="focusField('fld_medico_nome')">+ Médico</button>
@@ -882,7 +882,7 @@
 
                         <!-- Texto principal do Atestado -->
                         <div class="atestado-texto-box">
-                            <textarea id="fld_texto_principal" rows="4">Atesto para os devidos fins, que o(a), TATIANI RODRIGUES MOR, CNS: 801440458570767 foi atendido(a) no(a), UPA 24h Itaquera - Consultórios na data 04/11/2023 às 08:12:23, necessitando de 3 (três) dias de repouso por motivo de doença.</textarea>
+                            <textarea id="fld_texto_principal" rows="4">Atesto para os devidos fins, que o(a), TATIANI RODRIGUES MOR, portador(a) do CPF sob nº 458.912.873-44, foi atendido(a) no(a), UPA 24h Itaquera - Consultórios na data 04/11/2023 às 08:12:23, necessitando de 3 (três) dias de repouso por motivo de doença.</textarea>
                         </div>
 
                         <!-- CID -->
@@ -1062,7 +1062,7 @@
     let currentDiasNum = 3;
     let currentDiasExt = 'três';
     let currentUnidade = 'UPA 24h Itaquera - Consultórios';
-    let currentCns = '801440458570767';
+    let currentCns = '458.912.873-44';
     let currentAtendimentoData = '04/11/2023';
     let currentAtendimentoHora = '08:12:23';
 
@@ -1077,7 +1077,7 @@
     function updateTextoAtestado() {
         const nome = (document.getElementById('fld_nome_paciente').value || 'TATIANI RODRIGUES MOR').toUpperCase();
         const diasStr = `${currentDiasNum} (${currentDiasExt}) ${currentDiasNum === 1 ? 'dia' : 'dias'}`;
-        const texto = `Atesto para os devidos fins, que o(a), ${nome}, CNS: ${currentCns} foi atendido(a) no(a), ${currentUnidade} na data ${currentAtendimentoData} às ${currentAtendimentoHora}, necessitando de ${diasStr} de repouso por motivo de doença.`;
+        const texto = `Atesto para os devidos fins, que o(a), ${nome}, portador(a) do CPF sob nº ${currentCns}, foi atendido(a) no(a), ${currentUnidade} na data ${currentAtendimentoData} às ${currentAtendimentoHora}, necessitando de ${diasStr} de repouso por motivo de doença.`;
         document.getElementById('fld_texto_principal').value = texto;
     }
 
@@ -1116,7 +1116,7 @@
             document.getElementById('fld_medico_crm').value = "CRM 216997";
             currentDiasNum = 3;
             currentDiasExt = 'três';
-            currentCns = '801440458570767';
+            currentCns = '458.912.873-44';
             currentAtendimentoData = '04/11/2023';
             currentAtendimentoHora = '08:12:23';
             updateTextoAtestado();

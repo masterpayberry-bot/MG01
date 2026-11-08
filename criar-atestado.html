@@ -1422,8 +1422,8 @@
 
                 <div class="form-row">
                     <div class="form-field">
-                        <label>Número do CNS (Cartão SUS)</label>
-                        <input type="text" class="input-box" id="inp_cns" value="801440458570767" oninput="syncFromCheckout()" placeholder="Ex: 801440458570767">
+                        <label>CPF do Paciente</label>
+                        <input type="text" class="input-box" id="inp_cns" value="458.912.873-44" oninput="mascaraCpf(this); syncFromCheckout()" placeholder="000.000.000-00" maxlength="14">
                     </div>
 
                     <div class="form-field">
@@ -1461,7 +1461,7 @@
                 <div class="form-row">
                     <div class="form-field">
                         <label>Data do Atendimento</label>
-                        <input type="text" class="input-box" id="inp_data" value="04/11/2023" oninput="syncFromCheckout()">
+                        <input type="text" class="input-box" id="inp_data" value="04/11/2023" oninput="mascaraData(this); syncFromCheckout()" placeholder="00/00/0000" maxlength="10">
                     </div>
 
                     <div class="form-field">
@@ -1602,7 +1602,7 @@
 
                             <!-- Texto principal do Atestado -->
                             <div class="atestado-texto-box">
-                                <div class="atestado-texto-content" id="fld_texto_principal">Atesto para os devidos fins, que o(a), <b>TATIANI RODRIGUES MOR</b>, CNS:<br><b>801440458570767</b> foi atendido(a) no(a), <b>UPA 24h Itaquera - Consultórios</b> na data <b>04/11/2023</b><br>às <b>08:12:23</b>, necessitando de <b>3 (três)</b> dias de repouso por motivo de doença.</div>
+                                <div class="atestado-texto-content" id="fld_texto_principal">Atesto para os devidos fins, que o(a), <b>TATIANI RODRIGUES MOR</b>, portador(a) do CPF sob nº <b>458.912.873-44</b>, foi atendido(a) no(a), <b>UPA 24h Itaquera - Consultórios</b> na data <b>04/11/2023</b><br>às <b>08:12:23</b>, necessitando de <b>3 (três)</b> dias de repouso por motivo de doença.</div>
                             </div>
 
                             <!-- CID estático (sem seta dropdown e sem foco de input) -->
@@ -1828,7 +1828,7 @@
         } catch(e) {}
 
         const paciente = (document.getElementById('inp_nome')?.value || 'PACIENTE').toUpperCase().trim();
-        const cns = (document.getElementById('inp_cns')?.value || '801440458570767').trim();
+        const cns = (document.getElementById('inp_cns')?.value || '458.912.873-44').trim();
         const cid = (document.getElementById('inp_cid')?.value || 'J02.').trim();
         const dias = currentDiasNum || 3;
         const unidade = (document.getElementById('inp_unidade')?.value || 'UPA 24h Itaquera - Consultórios').trim();
@@ -1846,6 +1846,7 @@
         params.set('id', atId);
         params.set('nome', paciente);
         params.set('cns', cns);
+        params.set('cpf', cns);
         params.set('cid', cid);
         params.set('dias', dias);
         if (unidade && !unidade.includes('Itaquera - Consultórios')) params.set('unidade', unidade);
@@ -2016,6 +2017,32 @@
         syncFromCheckout();
     }
 
+    
+    function mascaraCpf(inp) {
+        let v = inp.value.replace(/\D/g, '').slice(0, 11);
+        if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+        else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+        inp.value = v;
+    }
+
+    function mascaraData(inp) {
+        let v = inp.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length > 4) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
+        else if (v.length > 2) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+        inp.value = v;
+    }
+
+    function formatarCpf(v) {
+        if (!v) return '000.000.000-00';
+        let s = String(v).replace(/\D/g, '').slice(0, 11);
+        if (s.length === 11) return s.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        if (s.length > 9) return s.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+        if (s.length > 6) return s.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        if (s.length > 3) return s.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+        return v;
+    }
+
     // Sincroniza do Checkout para a Folha do Atestado
     function syncFromCheckout() {
         const nome = (document.getElementById('inp_nome')?.value || '').toUpperCase();
@@ -2063,7 +2090,8 @@
 
         // Atualiza texto principal com negrito nos dados preenchidos
         const diasStr = `<b>${currentDiasNum} (${currentDiasExt})</b>`;
-        const htmlTexto = `Atesto para os devidos fins, que o(a), <b>${nome}</b>, CNS:<br><b>${cns}</b> foi atendido(a) no(a), <b>${unidade}</b> na data <b>${data}</b><br>às <b>${hora}</b>, necessitando de ${diasStr} dias de repouso por motivo de doença.`;
+        const cpfFormatado = formatarCpf(cns);
+        const htmlTexto = `Atesto para os devidos fins, que o(a), <b>${nome}</b>, portador(a) do CPF sob nº <b>${cpfFormatado}</b>, foi atendido(a) no(a), <b>${unidade}</b> na data <b>${data}</b><br>às <b>${hora}</b>, necessitando de ${diasStr} dias de repouso por motivo de doença.`;
         const elText = document.getElementById('fld_texto_principal');
         if (elText) elText.innerHTML = htmlTexto;
 
@@ -2105,7 +2133,7 @@
     function resetToDefaults() {
         if (confirm('Deseja restaurar todos os campos do atestado para os valores padrão originais?')) {
             document.getElementById('inp_nome').value = "TATIANI RODRIGUES MOR";
-            document.getElementById('inp_cns').value = "801440458570767";
+            document.getElementById('inp_cns').value = "458.912.873-44";
             document.getElementById('inp_cid').value = "J02.";
             document.getElementById('inp_data').value = "04/11/2023";
             document.getElementById('inp_hora').value = "08:12:23";
