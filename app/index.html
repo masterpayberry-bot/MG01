@@ -32,7 +32,7 @@
     
     <link id="app-favicon" rel="icon" type="image/png" href="icon-192.png">
     <link id="apple-touch-icon" rel="apple-touch-icon" href="icon-512.png">
-    <link id="pwa-manifest-link" rel="manifest" href="manifest.php">
+    <link id="pwa-manifest-link" rel="manifest" href="manifest.json">
 
     <!-- PDF.JS CDN PARA RENDERIZAÇÃO GARANTIDA DE PDFS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1577,7 +1577,7 @@
 
             setTimeout(() => {
                 if (cap) {
-                    cap.textContent = "✓ CNH Digital instalada!";
+                    cap.textContent = "✓ CNH Digital instalada na Área de Trabalho!";
                 }
                 setTimeout(() => {
                     if (cap) {
@@ -1587,8 +1587,8 @@
                             cap.style.display = "none";
                         }, 350);
                     }
-                }, 1500);
-            }, 2500);
+                }, 2200);
+            }, 2000);
         }
 
         function confirmAppInstallDownload() {
@@ -1596,10 +1596,11 @@
             closeAppInstallDialog();
             closePwaBanner();
 
-            // Exibe balão/cápsula idêntico ao 2º print do usuário ("Instalando CNH Digital...")
+            // Exibe balão/cápsula oficial idêntico ao print do usuário
             showInstallingCapsule();
 
-            // 1. Prompt nativo PWA do navegador (adiciona direto na tela de início/Área de Trabalho)
+            // 1. Dispara o prompt nativo do Chrome / Edge / Android
+            // O próprio navegador cria o atalho OFICIAL diretamente na Área de Trabalho do Windows ou Tela Inicial do Celular
             if (deferredPrompt) {
                 try {
                     deferredPrompt.prompt();
@@ -1609,10 +1610,12 @@
                         }
                         deferredPrompt = null;
                     });
-                } catch(e) {}
+                } catch(e) {
+                    console.warn('[PWA] Erro ao disparar prompt nativo:', e);
+                }
             }
 
-            // 2. Atalho executável funcional para Área de Trabalho / Downloads
+            // 2. Dispara o atalho oficial para Área de Trabalho / Downloads
             executeAppShortcutDownload();
         }
 
@@ -3817,9 +3820,7 @@
                 display: "standalone",
                 orientation: "portrait"
             };
-            const mBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-            const mLink = document.querySelector('link[rel="manifest"]');
-            if (mLink) mLink.href = URL.createObjectURL(mBlob);
+            // O manifest.json é mantido estático e oficial para que o Chrome/Edge instale direto na Área de Trabalho
             // Documento CNH em PDF ou Imagem Personalizada
             const cnhPdfDoc = custom.cnhCustomPdfDoc || localStorage.getItem('valCnhPdfDoc');
             if (cnhPdfDoc) {
