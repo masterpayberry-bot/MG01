@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Editáveis • MG Editáveis</title>
+    
+    <!-- Meta tags & Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MG Editáveis">
+    <meta property="og:title" content="Catálogo de Documentos Editáveis • MG Editáveis">
+    <meta property="og:description" content="Central de emissão de CNH, Atestados, Exames e RGs com QR Code funcional e espelho oficial.">
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Supabase & Auth Guard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-page: #0c0f12;
+            --bg-card: #14181c;
+            --bg-card-hover: #1a2026;
+            --bg-input: #0f1317;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 220, 130, 0.35);
+            --primary: #00dc82;
+            --primary-glow: rgba(0, 220, 130, 0.22);
+            --primary-dark: #00b368;
+            --cyan: #38bdf8;
+            --purple: #a855f7;
+            --amber: #fbbf24;
+            --emerald: #10b981;
+            --gold: #f59e0b;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font);
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 220, 130, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.02) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* ─── TOPO / NAVBAR ─── */
+        .catalog-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12, 15, 18, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-logo-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(0, 220, 130, 0.2), rgba(16, 185, 129, 0.05));
+            border: 1px solid rgba(0, 220, 130, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            box-shadow: 0 4px 14px rgba(0, 220, 130, 0.15);
+        }
+
+        .brand-name {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-tag {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: rgba(0, 220, 130, 0.12);
+            color: var(--primary);
+            border: 1px solid rgba(0, 220, 130, 0.28);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav-back:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-2px);
+        }
+
+        .user-balance-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            background: rgba(0, 220, 130, 0.08);
+            border: 1px solid rgba(0, 220, 130, 0.25);
+            font-size: 13px;
+        }
+
+        .balance-label {
+            color: var(--text-secondary);
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .balance-val {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .btn-add-saldo {
+            background: var(--primary);
+            color: #062517;
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-left: 2px;
+        }
+
+        .btn-add-saldo:hover {
+            background: #05f08f;
+            transform: scale(1.05);
+        }
+
+        /* ─── CONTAINER PRINCIPAL TELA CHEIA ─── */
+        .catalog-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 36px 28px 70px 28px;
+        }
+
+        /* ─── HERO HEADER ─── */
+        .hero-section {
+            text-align: center;
+            max-width: 860px;
+            margin: 0 auto 38px auto;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            background: rgba(0, 220, 130, 0.1);
+            border: 1px solid rgba(0, 220, 130, 0.28);
+            color: var(--primary);
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .hero-pill-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            animation: pulseDot 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .hero-title {
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 14px;
+            background: linear-gradient(180deg, #ffffff 40%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* ─── BARRA DE PESQUISA & FILTROS ─── */
+        .catalog-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 260px;
+            max-width: 440px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 42px;
+            border-radius: 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            font-size: 13.5px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 220, 130, 0.15);
+        }
+
+        .filter-chips {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .filter-btn.active {
+            background: rgba(0, 220, 130, 0.14);
+            color: var(--primary);
+            border-color: rgba(0, 220, 130, 0.4);
+            font-weight: 700;
+        }
+
+        /* ─── GRID DE CARDS PREMIUM ─── */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 1180px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .catalog-container {
+                padding: 20px 16px 50px 16px;
+            }
+            .hero-title {
+                font-size: 28px;
+            }
+            .catalog-navbar {
+                padding: 12px 16px;
+            }
+        }
+
+        /* ─── CARD DESIGN LUXO ─── */
+        .doc-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--card-accent, var(--primary)), transparent);
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--card-border-hover, var(--border-hover));
+            box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 24px -6px var(--card-glow, var(--primary-glow));
+        }
+
+        .doc-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .card-icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--card-icon-bg, rgba(0, 220, 130, 0.1));
+            border: 1px solid var(--card-icon-border, rgba(0, 220, 130, 0.25));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--card-accent, var(--primary));
+            box-shadow: 0 4px 16px -2px var(--card-glow, var(--primary-glow));
+        }
+
+        .card-badge-pill {
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            background: var(--card-pill-bg, rgba(0, 220, 130, 0.12));
+            color: var(--card-accent, var(--primary));
+            border: 1px solid var(--card-pill-border, rgba(0, 220, 130, 0.3));
+        }
+
+        .card-title-group {
+            margin-bottom: 14px;
+        }
+
+        .card-category-lbl {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: #fff;
+            line-height: 1.25;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            margin-bottom: 18px;
+        }
+
+        /* ─── LISTA DE RECURSOS (O QUE FAZ) ─── */
+        .card-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 22px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .feature-icon-check {
+            width: 14px;
+            height: 14px;
+            color: var(--card-accent, var(--primary));
+            flex-shrink: 0;
+        }
+
+        /* ─── FOOTER DO CARD (PREÇO E BOTÃO) ─── */
+        .card-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .price-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-sub {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .price-main {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #fff;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .price-currency {
+            font-size: 13px;
+            color: var(--card-accent, var(--primary));
+            font-weight: 800;
+        }
+
+        .delivery-pill {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .card-actions-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-card-emitir {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--card-btn-bg, var(--primary));
+            color: #062517;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 11px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 14px -2px var(--card-btn-glow, rgba(0, 220, 130, 0.3));
+        }
+
+        .btn-card-emitir:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -2px var(--card-btn-glow, rgba(0, 220, 130, 0.45));
+        }
+
+        .btn-card-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 11px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-card-preview:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ─── MODAL DE DETALHES / AMOSTRA ─── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #15191d;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            max-width: 620px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+            animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR SUPERIOR -->
+    <header class="catalog-navbar">
+        <a href="index.html" class="nav-brand">
+            <div class="brand-logo-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div>
+                <div class="brand-name">
+                    <span>MG Editáveis</span>
+                    <span class="brand-tag">PRO</span>
+                </div>
+            </div>
+        </a>
+
+        <div class="nav-actions">
+            <div class="user-balance-pill">
+                <span class="balance-label">Seu Saldo:</span>
+                <span class="balance-val" id="userBalanceDisplay">R$ 0,00</span>
+                <a href="recargas.html" class="btn-add-saldo">+ Recarregar</a>
+            </div>
+
+            <a href="index.html" class="btn-nav-back" title="Voltar ao Painel">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                <span>Painel Principal</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="catalog-container">
+        
+        <!-- HERO / CABEÇALHO -->
+        <section class="hero-section">
+            <div class="hero-pill">
+                <span class="hero-pill-dot"></span>
+                <span>Catálogo Oficial de Editáveis • 2026</span>
+            </div>
+            <h1 class="hero-title">Central de Documentos Editáveis</h1>
+            <p class="hero-subtitle">
+                Modelos de alta precisão com QR Code funcional em tempo real, espelho oficial homologado e emissão automática descontada diretamente do seu saldo.
+            </p>
+        </section>
+
+        <!-- CONTROLES: PESQUISA E FILTROS -->
+        <section class="catalog-controls">
+            <div class="search-wrapper">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" class="search-input" id="searchInp" placeholder="Buscar editável (CNH, Atestado, Exame, RG...)" oninput="filterCards()">
+            </div>
+
+            <div class="filter-chips">
+                <button type="button" class="filter-btn active" onclick="setFilter('todos', this)">Todos (<span id="countTotal">6</span>)</button>
+                <button type="button" class="filter-btn" onclick="setFilter('transito', this)">Trânsito & CNH</button>
+                <button type="button" class="filter-btn" onclick="setFilter('saude', this)">Saúde & Médicos</button>
+                <button type="button" class="filter-btn" onclick="setFilter('identidade', this)">Identificação & RG</button>
+                <button type="button" class="filter-btn" onclick="setFilter('combos', this)">Combos</button>
+            </div>
+        </section>
+
+        <!-- GRID DOS CARDS DE EDITÁVEIS -->
+        <div class="cards-grid" id="cardsGrid">
+
+            <!-- 1. CNH DIGITAL -->
+            <article class="doc-card" data-category="transito" data-name="cnh digital carteira habilitacao senatran detran cdt" style="--card-accent:#00dc82; --card-glow:rgba(0,220,130,0.25); --card-icon-bg:rgba(0,220,130,0.1); --card-icon-border:rgba(0,220,130,0.3); --card-pill-bg:rgba(0,220,130,0.12); --card-pill-border:rgba(0,220,130,0.3); --card-btn-bg:#00dc82; --card-btn-glow:rgba(0,220,130,0.35); --card-border-hover:rgba(0,220,130,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
+                        </div>
+                        <span class="card-badge-pill">★ Mais Emitido</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">SENATRAN • CDT OFICIAL</div>
+                        <h2 class="card-title">CNH Digital (Habilitação)</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Espelho oficial frente e verso idêntico ao modelo nacional SENATRAN com QR Code VIO de validação em tempo real e sincronização no aplicativo CDT.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>QR Code Vio funcional escaneável</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Espelho frente e verso alta fidelidade</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Foto 3x4 e assinatura vetorizada inclusas</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Compatível com WebApp CDT Carteira Digital</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub">Valor Unitário</span>
+                            <div class="price-main"><span class="price-currency">R$</span><span id="priceCnh">25,00</span></div>
+                        </div>
+                        <div class="delivery-pill">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 30s</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-cnh.html" class="btn-card-emitir">
+                            <span>Emitir CNH Agora</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('cnh')" title="Ver detalhes e amostra">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 2. ATESTADO MÉDICO -->
+            <article class="doc-card" data-category="saude" data-name="atestado medico upa sus cid repouso afastamento saude" style="--card-accent:#a855f7; --card-glow:rgba(168,85,247,0.25); --card-icon-bg:rgba(168,85,247,0.1); --card-icon-border:rgba(168,85,247,0.3); --card-pill-bg:rgba(168,85,247,0.12); --card-pill-border:rgba(168,85,247,0.3); --card-btn-bg:#a855f7; --card-btn-glow:rgba(168,85,247,0.35); --card-border-hover:rgba(168,85,247,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#c084fc; border-color:rgba(192,132,252,0.35);">✓ QR Code SUS Ativo</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">UPA 24H • SISTEMA SUS</div>
+                        <h2 class="card-title">Atestado Médico Oficial</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Atestado médico de afastamento com cabeçalho oficial UPA 24h, CPF do paciente com máscara automática, CID-10 e validação QR Code em página pública.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>QR Code com página de validação pública oficial</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>CPF formatado e dias no singular/plural</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Carimbo com CRM ativo e médico responsável</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Download em PDF pronto para apresentação</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub">Valor Unitário</span>
+                            <div class="price-main"><span class="price-currency" style="color:#c084fc;">R$</span><span id="priceAtestado">20,00</span></div>
+                        </div>
+                        <div class="delivery-pill" style="color:#c084fc; background:rgba(168,85,247,0.08); border-color:rgba(168,85,247,0.2);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 20s</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-atestado.html" class="btn-card-emitir" style="background:#a855f7; color:#fff; box-shadow:0 4px 14px -2px rgba(168,85,247,0.35);">
+                            <span>Criar Atestado Agora</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('atestado')" title="Ver detalhes e amostra">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 3. EXAME TOXICOLÓGICO -->
+            <article class="doc-card" data-category="saude transito" data-name="exame toxicologico laudo laboratorio drogas cnh clt c d e" style="--card-accent:#38bdf8; --card-glow:rgba(56,189,248,0.25); --card-icon-bg:rgba(56,189,248,0.1); --card-icon-border:rgba(56,189,248,0.3); --card-pill-bg:rgba(56,189,248,0.12); --card-pill-border:rgba(56,189,248,0.3); --card-btn-bg:#38bdf8; --card-btn-glow:rgba(56,189,248,0.35); --card-border-hover:rgba(56,189,248,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#38bdf8; border-color:rgba(56,189,248,0.35);">⚡ Código de Barras Real</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">SENATRAN • LABORATÓRIO CREDENCIADO</div>
+                        <h2 class="card-title">Exame Toxicológico CNH</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Laudo de exame toxicológico de larga janela homologado para renovação de categorias C, D e E, concursos e admissão CLT com código CODE128.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Código de barras CODE128 funcional</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Resultado negativo com painel completo de substâncias</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Datas de coleta, recebimento e validade automática</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Assinatura técnica do biomédico responsável</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub">Valor Unitário</span>
+                            <div class="price-main"><span class="price-currency" style="color:#38bdf8;">R$</span><span id="priceExame">20,00</span></div>
+                        </div>
+                        <div class="delivery-pill">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 20s</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-exame.html" class="btn-card-emitir" style="background:#38bdf8; color:#082f49; box-shadow:0 4px 14px -2px rgba(56,189,248,0.35);">
+                            <span>Gerar Toxicológico Agora</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('exame')" title="Ver detalhes e amostra">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 4. PRONTUÁRIO SETRAN -->
+            <article class="doc-card" data-category="transito" data-name="prontuario setran detran pontos historico certidao condutor" style="--card-accent:#fbbf24; --card-glow:rgba(251,191,36,0.25); --card-icon-bg:rgba(251,191,36,0.1); --card-icon-border:rgba(251,191,36,0.3); --card-pill-bg:rgba(251,191,36,0.12); --card-pill-border:rgba(251,191,36,0.3); --card-btn-bg:#fbbf24; --card-btn-glow:rgba(251,191,36,0.35); --card-border-hover:rgba(251,191,36,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#fbbf24; border-color:rgba(251,191,36,0.35);">Histórico Completo</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">DETRAN • SETRAN ESTADUAL</div>
+                        <h2 class="card-title">Prontuário de Condutor</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Extrato completo de prontuário com histórico de pontos, situação cadastral da CNH, 1ª habilitação, dados do DETRAN e certidão de prontuário.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Extrato completo de pontuação e bloqueios</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Situação regularizada e dados de 1ª habilitação</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Layout espelho oficial de sistemas de trânsito</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Impressão e exportação rápida em PDF</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub">Valor Unitário</span>
+                            <div class="price-main"><span class="price-currency" style="color:#fbbf24;">R$</span><span id="priceProntuario">15,00</span></div>
+                        </div>
+                        <div class="delivery-pill" style="color:#fbbf24; background:rgba(251,191,36,0.08); border-color:rgba(251,191,36,0.2);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 20s</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-prontuario.html" class="btn-card-emitir" style="background:#fbbf24; color:#3b2300; box-shadow:0 4px 14px -2px rgba(251,191,36,0.35);">
+                            <span>Emitir Prontuário Agora</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('prontuario')" title="Ver detalhes e amostra">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 5. RG DIGITAL / CIN -->
+            <article class="doc-card" data-category="identidade" data-name="rg digital cin carteira identidade nacional mrz biometria" style="--card-accent:#10b981; --card-glow:rgba(16,185,129,0.25); --card-icon-bg:rgba(16,185,129,0.1); --card-icon-border:rgba(16,185,129,0.3); --card-pill-bg:rgba(16,185,129,0.12); --card-pill-border:rgba(16,185,129,0.3); --card-btn-bg:#10b981; --card-btn-glow:rgba(16,185,129,0.35); --card-border-hover:rgba(16,185,129,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="3"/><path d="M15 8h2"/><path d="M15 12h2"/><path d="M7 16h10"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#10b981; border-color:rgba(16,185,129,0.35);">Nova CIN 2026</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">MINISTÉRIO DA JUSTIÇA • GOV.BR</div>
+                        <h2 class="card-title">RG Digital / CIN (Identidade)</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Carteira de Identidade Nacional (CIN) com número unificado de CPF, código de segurança MRZ para leitura digital e QR Code Gov.br integrado.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Padrão nacional CIN unificado com CPF</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Zona óptica MRZ legível por scanners</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Frente e verso oficiais com digital biométrica</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Exportação vetorial de altíssima nitidez</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub">Valor Unitário</span>
+                            <div class="price-main"><span class="price-currency" style="color:#10b981;">R$</span><span id="priceRg">20,00</span></div>
+                        </div>
+                        <div class="delivery-pill" style="color:#10b981; background:rgba(16,185,129,0.08); border-color:rgba(16,185,129,0.2);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 30s</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-rg.html" class="btn-card-emitir" style="background:#10b981; color:#032818; box-shadow:0 4px 14px -2px rgba(16,185,129,0.35);">
+                            <span>Emitir RG Digital</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('rg')" title="Ver detalhes e amostra">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 6. COMBO COMPLETO CONDUTOR -->
+            <article class="doc-card" data-category="combos transito" data-name="combo condutor cnh exame toxicologico prontuario pacote desconto" style="--card-accent:#f59e0b; --card-glow:rgba(245,158,11,0.28); --card-icon-bg:rgba(245,158,11,0.12); --card-icon-border:rgba(245,158,11,0.35); --card-pill-bg:rgba(245,158,11,0.14); --card-pill-border:rgba(245,158,11,0.38); --card-btn-bg:linear-gradient(135deg, #f59e0b, #d97706); --card-btn-glow:rgba(245,158,11,0.4); --card-border-hover:rgba(245,158,11,0.45); border:1px solid rgba(245,158,11,0.3);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#fbbf24; border-color:rgba(251,191,36,0.4); background:rgba(251,191,36,0.15);">★ Super Pacote 3 em 1</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl" style="color:#fbbf24;">PACOTE ECONÔMICO COMPLETO</div>
+                        <h2 class="card-title">Combo Condutor Pro</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        CNH Digital + Exame Toxicológico + Prontuário SETRAN emitidos juntos. Preencha apenas uma vez e gere todos os 3 documentos com super desconto!
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>3 Documentos sincronizados de uma só vez</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>CNH + Toxicológico + Prontuário inclusos</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Economia de R$ 10,00 no saldo</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Download em lote ZIP ou PDFs individuais</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub" style="color:#fbbf24;">Preço do Combo (3x)</span>
+                            <div class="price-main"><span class="price-currency" style="color:#fbbf24;">R$</span><span>50,00</span></div>
+                        </div>
+                        <div class="delivery-pill" style="color:#fbbf24; background:rgba(245,158,11,0.12); border-color:rgba(245,158,11,0.3);">
+                            <span>Economize R$ 10</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-cnh.html?combo=true" class="btn-card-emitir" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#351a02; box-shadow:0 4px 16px -2px rgba(245,158,11,0.45);">
+                            <span>Acessar Combo Condutor</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('combo')" title="Ver detalhes do combo">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL DE DETALHES / AMOSTRA DE DOCUMENTO -->
+    <div class="modal-overlay" id="docModal" onclick="closeDocModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title" id="modalDocTitle">Detalhes do Documento</div>
+                <button type="button" class="modal-close-btn" onclick="closeDocModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modalDocBody">
+                <!-- Conteúdo injetado via JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-nav-back" onclick="closeDocModal()">Fechar</button>
+                <a href="#" class="btn-card-emitir" id="modalEmitirBtn" style="padding: 9px 20px;">
+                    <span>Ir para Emissão</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Carrega saldo do cliente em tempo real
+        function loadUserBalance() {
+            try {
+                let user = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+                let saldo = (user && user.saldo !== undefined) ? parseFloat(user.saldo) : 0;
+                const el = document.getElementById('userBalanceDisplay');
+                if (el) el.textContent = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+            } catch(e) {}
+        }
+
+        // Carrega tabela de preços configurada no sistema
+        function loadConfiguredPrices() {
+            try {
+                const cnhPrice = localStorage.getItem('happynation_cnh_price');
+                if (cnhPrice) {
+                    const el = document.getElementById('priceCnh');
+                    if (el) el.textContent = parseFloat(cnhPrice).toFixed(2).replace('.', ',');
+                }
+                const atPrice = localStorage.getItem('happynation_atestado_price');
+                if (atPrice) {
+                    const el = document.getElementById('priceAtestado');
+                    if (el) el.textContent = parseFloat(atPrice).toFixed(2).replace('.', ',');
+                }
+                const exPrice = localStorage.getItem('happynation_exame_price');
+                if (exPrice) {
+                    const el = document.getElementById('priceExame');
+                    if (el) el.textContent = parseFloat(exPrice).toFixed(2).replace('.', ',');
+                }
+                const rgPrice = localStorage.getItem('happynation_rg_price');
+                if (rgPrice) {
+                    const el = document.getElementById('priceRg');
+                    if (el) el.textContent = parseFloat(rgPrice).toFixed(2).replace('.', ',');
+                }
+            } catch(e) {}
+        }
+
+        // Filtro por categorias
+        function setFilter(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.doc-card');
+            cards.forEach(c => {
+                if (cat === 'todos') {
+                    c.style.display = 'flex';
+                } else {
+                    const cCats = c.getAttribute('data-category') || '';
+                    if (cCats.includes(cat)) {
+                        c.style.display = 'flex';
+                    } else {
+                        c.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Busca em tempo real por texto
+        function filterCards() {
+            const q = (document.getElementById('searchInp')?.value || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('.doc-card');
+            cards.forEach(c => {
+                const name = (c.getAttribute('data-name') || '').toLowerCase();
+                const title = (c.querySelector('.card-title')?.textContent || '').toLowerCase();
+                const desc = (c.querySelector('.card-desc')?.textContent || '').toLowerCase();
+                if (!q || name.includes(q) || title.includes(q) || desc.includes(q)) {
+                    c.style.display = 'flex';
+                } else {
+                    c.style.display = 'none';
+                }
+            });
+        }
+
+        // Modal de Informações Detalhadas
+        const docDetailsData = {
+            cnh: {
+                title: 'CNH Digital • Carteira de Habilitação',
+                link: 'criar-cnh.html',
+                btnText: 'Emitir CNH Agora',
+                html: `
+                    <div style="font-size:13.5px; line-height:1.6; color:#cbd5e1;">
+                        <p style="margin-bottom:12px;">A <strong>CNH Digital</strong> é desenvolvida rigorosamente de acordo com as especificações da Resolução do SENATRAN e DENATRAN. O documento conta com espelho oficial completo frente e verso, microimpressões, marcas de segurança e QR Code VIO funcional.</p>
+                        <div style="background:#0c0f12; border:1px solid rgba(255,255,255,0.08); padding:14px; border-radius:12px; margin-bottom:14px;">
+                            <div style="font-size:11px; font-weight:800; color:#00dc82; text-transform:uppercase; margin-bottom:6px;">Destaques Técnicos:</div>
+                            <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:12.5px;">
+                                <li>QR Code dinâmico real escaneável via câmera de qualquer celular</li>
+                                <li>Integração total com o aplicativo CDT (Carteira Digital de Trânsito)</li>
+                                <li>Suporte a todas as categorias (A, B, AB, C, D, E) e observações EAR</li>
+                                <li>Geração vetorial de alta definição para impressão gráfica ou envio em PDF</li>
+                            </ul>
+                        </div>
+                        <p style="font-size:12px; color:#94a3b8;">* O valor unitário é debitado instantaneamente do seu saldo em conta após a confirmação da emissão.</p>
+                    </div>
+                `
+            },
+            atestado: {
+                title: 'Atestado Médico Oficial • UPA 24h & SUS',
+                link: 'criar-atestado.html',
+                btnText: 'Criar Atestado Agora',
+                html: `
+                    <div style="font-size:13.5px; line-height:1.6; color:#cbd5e1;">
+                        <p style="margin-bottom:12px;">O <strong>Atestado Médico</strong> possui layout oficial de Unidade de Pronto Atendimento (UPA 24h) com integração ao padrão do Sistema Único de Saúde (SUS), contendo código de autenticidade rastreável e QR Code com página pública de verificação.</p>
+                        <div style="background:#0c0f12; border:1px solid rgba(255,255,255,0.08); padding:14px; border-radius:12px; margin-bottom:14px;">
+                            <div style="font-size:11px; font-weight:800; color:#a855f7; text-transform:uppercase; margin-bottom:6px;">Destaques Técnicos:</div>
+                            <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:12.5px;">
+                                <li>QR Code público de verificação que comprova atendimento e emissão oficial</li>
+                                <li>CPF do paciente com máscara inteligente e concordância gramatical exata de dias</li>
+                                <li>Busca e preenchimento de diagnósticos na tabela CID-10 completa</li>
+                                <li>Carimbo médico com CRM registrado e endereço completo da unidade de saúde</li>
+                            </ul>
+                        </div>
+                        <p style="font-size:12px; color:#94a3b8;">* A marca d'água de prévia é removida automaticamente após a emissão oficial.</p>
+                    </div>
+                `
+            },
+            exame: {
+                title: 'Exame Toxicológico de Larga Janela',
+                link: 'criar-exame.html',
+                btnText: 'Gerar Toxicológico Agora',
+                html: `
+                    <div style="font-size:13.5px; line-height:1.6; color:#cbd5e1;">
+                        <p style="margin-bottom:12px;">O <strong>Laudo de Exame Toxicológico</strong> é indispensável para condutores profissionais (Categorias C, D e E), admissão e demissão CLT e concursos. O documento conta com código de barras CODE128 e tabela minuciosa de substâncias com resultado negativo.</p>
+                        <div style="background:#0c0f12; border:1px solid rgba(255,255,255,0.08); padding:14px; border-radius:12px; margin-bottom:14px;">
+                            <div style="font-size:11px; font-weight:800; color:#38bdf8; text-transform:uppercase; margin-bottom:6px;">Destaques Técnicos:</div>
+                            <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:12.5px;">
+                                <li>Código de barras CODE128 real legível por leitor ótico ou câmera</li>
+                                <li>Painel completo com níveis de corte (Cut-off) de todas as drogas rastreadas</li>
+                                <li>Cálculo automático das datas de coleta, liberação e período de 2 anos e meio</li>
+                                <li>Assinatura e registro no conselho profissional do responsável técnico</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            prontuario: {
+                title: 'Prontuário de Condutor SETRAN / DETRAN',
+                link: 'criar-prontuario.html',
+                btnText: 'Emitir Prontuário Agora',
+                html: `
+                    <div style="font-size:13.5px; line-height:1.6; color:#cbd5e1;">
+                        <p style="margin-bottom:12px;">O <strong>Prontuário de Condutor</strong> é o histórico completo extraído dos sistemas de trânsito, comprovando a regularidade da habilitação, ausência de penalidades ativas e histórico limpo para frotistas e seguradoras.</p>
+                        <div style="background:#0c0f12; border:1px solid rgba(255,255,255,0.08); padding:14px; border-radius:12px; margin-bottom:14px;">
+                            <div style="font-size:11px; font-weight:800; color:#fbbf24; text-transform:uppercase; margin-bottom:6px;">Destaques Técnicos:</div>
+                            <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:12.5px;">
+                                <li>Histórico de pontuação com certidão negativa de suspensão ou cassação</li>
+                                <li>Dados de primeira habilitação, número de registro nacional e categoria</li>
+                                <li>Layout 100% fiel às certidões emitidas pelos portais estaduais do DETRAN</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            rg: {
+                title: 'RG Digital / CIN • Nova Carteira de Identidade',
+                link: 'criar-rg.html',
+                btnText: 'Emitir RG Digital',
+                html: `
+                    <div style="font-size:13.5px; line-height:1.6; color:#cbd5e1;">
+                        <p style="margin-bottom:12px;">A <strong>Nova Carteira de Identidade Nacional (CIN)</strong> segue o padrão unificado federal com o número de CPF como registro geral único em todo o território brasileiro, substituindo os antigos modelos estaduais.</p>
+                        <div style="background:#0c0f12; border:1px solid rgba(255,255,255,0.08); padding:14px; border-radius:12px; margin-bottom:14px;">
+                            <div style="font-size:11px; font-weight:800; color:#10b981; text-transform:uppercase; margin-bottom:6px;">Destaques Técnicos:</div>
+                            <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:12.5px;">
+                                <li>Zona de Leitura Mecânica MRZ no verso (padrão ICAO de passaportes)</li>
+                                <li>QR Code Gov.br funcional integrado no verso do documento</li>
+                                <li>Frente com foto 3x4 oficial, biometria digital e brasão da República em relevo</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            combo: {
+                title: 'Combo Condutor Pro • Pacote Econômico 3 em 1',
+                link: 'criar-cnh.html?combo=true',
+                btnText: 'Acessar Combo Condutor',
+                html: `
+                    <div style="font-size:13.5px; line-height:1.6; color:#cbd5e1;">
+                        <p style="margin-bottom:12px;">O <strong>Combo Condutor Pro</strong> é a solução ideal e mais econômica para quem precisa do kit completo de documentos de motorista: <strong>CNH Digital + Exame Toxicológico + Prontuário SETRAN</strong>.</p>
+                        <div style="background:#0c0f12; border:1px solid rgba(255,255,255,0.08); padding:14px; border-radius:12px; margin-bottom:14px;">
+                            <div style="font-size:11px; font-weight:800; color:#f59e0b; text-transform:uppercase; margin-bottom:6px;">Vantagens Exclusivas do Combo:</div>
+                            <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:12.5px;">
+                                <li>Preencha nome, CPF e dados uma só vez e o sistema gera os 3 automaticamente</li>
+                                <li>Economia imediata de R$ 10,00 no valor total dos documentos</li>
+                                <li>Download em lote com todos os arquivos prontos e organizados</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function openDocModal(docKey) {
+            const data = docDetailsData[docKey];
+            if (!data) return;
+            document.getElementById('modalDocTitle').textContent = data.title;
+            document.getElementById('modalDocBody').innerHTML = data.html;
+            const btn = document.getElementById('modalEmitirBtn');
+            btn.href = data.link;
+            btn.querySelector('span').textContent = data.btnText;
+            document.getElementById('docModal').classList.add('active');
+        }
+
+        function closeDocModal(e) {
+            if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close-btn') && !e.target.classList.contains('btn-nav-back')) return;
+            document.getElementById('docModal').classList.remove('active');
+        }
+
+        // Inicializa dados na abertura
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserBalance();
+            loadConfiguredPrices();
+        });
+    </script>
+</body>
+</html>

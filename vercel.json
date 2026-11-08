@@ -64,6 +64,30 @@
         }
       ],
       "destination": "/app/index.html"
+    },
+    {
+      "source": "/admin_:path*",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/editaveis",
+      "destination": "/editaveis.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/verificador",
+      "destination": "/validar-cnh.html"
     }
   ]
 }
