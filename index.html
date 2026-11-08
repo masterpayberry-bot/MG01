@@ -453,11 +453,102 @@
             color: #00dc82;
         }
 
-        /* ─── AÇÕES RÁPIDAS (4 CARDS) ─── */
-        .quick-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+        /* ─── AÇÕES RÁPIDAS (CARROSSEL ELEGANTE) ─── */
+        .quick-actions-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .carousel-nav-arrows {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .carousel-arrow-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+        .carousel-arrow-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            transition: transform 0.15s ease, stroke 0.15s ease;
+        }
+        .carousel-arrow-btn:hover {
+            background: rgba(0, 220, 130, 0.12);
+            border-color: #00dc82;
+            color: #00dc82;
+            box-shadow: 0 0 10px rgba(0, 220, 130, 0.25);
+        }
+        .carousel-arrow-btn:active {
+            transform: scale(0.92);
+        }
+        .carousel-arrow-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: var(--border-color);
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            box-shadow: none;
+            transform: none;
+        }
+        body.light-theme .carousel-arrow-btn {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+        body.light-theme .carousel-arrow-btn:hover {
+            background: rgba(0, 220, 130, 0.12);
+            border-color: #00dc82;
+            color: #00dc82;
+        }
+
+        .quick-actions-carousel-wrap {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+        .quick-actions-carousel {
+            display: flex;
             gap: 12px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 2px 2px 6px 2px;
+        }
+        .quick-actions-carousel::-webkit-scrollbar {
+            display: none;
+        }
+        .quick-actions-carousel .action-card {
+            flex: 0 0 calc(25% - 9px);
+            min-width: 175px;
+            scroll-snap-align: start;
+            box-sizing: border-box;
+        }
+        @media (max-width: 900px) {
+            .quick-actions-carousel .action-card {
+                flex: 0 0 calc(50% - 6px);
+                min-width: 140px;
+            }
+        }
+        @media (max-width: 500px) {
+            .quick-actions-carousel .action-card {
+                flex: 0 0 82%;
+                min-width: 130px;
+            }
         }
 
         .action-card {
@@ -1598,47 +1689,60 @@
             <main class="main-content">
 
 
-            <!-- 1. AÇÕES RÁPIDAS -->
+            <!-- 1. AÇÕES RÁPIDAS (CARROSSEL) -->
             <section>
-                <div class="section-header-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                    <span>Ações Rápidas</span>
+                <div class="quick-actions-header">
+                    <div class="section-header-title" style="margin-bottom: 0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        <span>Ações Rápidas</span>
+                    </div>
+                    <div class="carousel-nav-arrows">
+                        <button type="button" class="carousel-arrow-btn" id="qaPrevBtn" onclick="scrollQuickActions(-1)" title="Anterior" aria-label="Anterior">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <button type="button" class="carousel-arrow-btn" id="qaNextBtn" onclick="scrollQuickActions(1)" title="Próximo" aria-label="Próximo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="quick-actions-grid">
-                    <a href="criar-cnh.html" class="action-card">
-                        <div class="action-icon-box green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-                        </div>
-                        <span class="action-title">Gerar CNH</span>
-                    </a>
+                <div class="quick-actions-carousel-wrap">
+                    <div class="quick-actions-carousel" id="quickActionsCarousel">
+                        <a href="criar-cnh.html" class="action-card">
+                            <div class="action-icon-box green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                            </div>
+                            <span class="action-title">Gerar CNH</span>
+                        </a>
 
-                    <a href="criar-exame.html" class="action-card">
-                        <div class="action-icon-box green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/></svg>
-                        </div>
-                        <span class="action-title">Gerar Exame</span>
-                    </a>
+                        <a href="criar-exame.html" class="action-card">
+                            <div class="action-icon-box green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/></svg>
+                            </div>
+                            <span class="action-title">Gerar Exame</span>
+                        </a>
 
-                    <a href="criar-atestado.html" class="action-card">
-                        <div class="action-icon-box green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                        </div>
-                        <span class="action-title">Gerar Atestado</span>
-                    </a>
-                    <a href="criar-prontuario.html" class="action-card">
-                        <div class="action-icon-box green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        </div>
-                        <span class="action-title">Prontuario SETRAN</span>
-                    </a>
+                        <a href="criar-atestado.html" class="action-card">
+                            <div class="action-icon-box green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            </div>
+                            <span class="action-title">Gerar Atestado</span>
+                        </a>
 
-                    <a href="recargas.html" class="action-card">
-                        <div class="action-icon-box green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                        </div>
-                        <span class="action-title">Fazer Recarga</span>
-                    </a>
+                        <a href="criar-prontuario.html" class="action-card">
+                            <div class="action-icon-box green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            </div>
+                            <span class="action-title">Prontuario SETRAN</span>
+                        </a>
+
+                        <a href="recargas.html" class="action-card">
+                            <div class="action-icon-box green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            </div>
+                            <span class="action-title">Fazer Recarga</span>
+                        </a>
+                    </div>
                 </div>
             </section>
 
@@ -1789,6 +1893,38 @@
                 document.body.classList.add('light-theme');
             }
         }
+
+        
+        // ─── CARROSSEL DE AÇÕES RÁPIDAS ───
+        function scrollQuickActions(direction) {
+            const carousel = document.getElementById('quickActionsCarousel');
+            if (!carousel) return;
+            const card = carousel.querySelector('.action-card');
+            const cardWidth = card ? card.offsetWidth : 180;
+            const scrollAmount = (cardWidth + 12) * direction;
+            carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            setTimeout(updateCarouselArrows, 320);
+        }
+
+        function updateCarouselArrows() {
+            const carousel = document.getElementById('quickActionsCarousel');
+            const prevBtn = document.getElementById('qaPrevBtn');
+            const nextBtn = document.getElementById('qaNextBtn');
+            if (!carousel || !prevBtn || !nextBtn) return;
+            
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            prevBtn.disabled = carousel.scrollLeft <= 4;
+            nextBtn.disabled = carousel.scrollLeft >= maxScroll - 4;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const carousel = document.getElementById('quickActionsCarousel');
+            if (carousel) {
+                carousel.addEventListener('scroll', updateCarouselArrows, { passive: true });
+                window.addEventListener('resize', updateCarouselArrows);
+                setTimeout(updateCarouselArrows, 150);
+            }
+        });
 
         function initUserData() {
             let user = null;
