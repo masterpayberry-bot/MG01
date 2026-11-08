@@ -2001,7 +2001,12 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
             var loggedUser = {};
             try { loggedUser = JSON.parse(localStorage.getItem('happynation_user') || '{}'); } catch(e){}
             var userSaldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
-            var custo = parseFloat(localStorage.getItem('happynation_prontuario_price')) || 26.00;
+            var custo = parseFloat(localStorage.getItem('happynation_prontuario_price')) || 25.00;
+        window.addEventListener('mg_prices_synced', (ev) => {
+            var p = (ev && ev.detail && ev.detail.prontuario_price) ? parseFloat(ev.detail.prontuario_price) : (parseFloat(localStorage.getItem('happynation_prontuario_price')) || 25.00);
+            var el = document.getElementById('custoProntuarioDisplay');
+            if (el) el.textContent = 'R$ ' + p.toFixed(2).replace('.', ',');
+        });
 
             if (!isEditMode && !window._skipProntuarioDeduct && userSaldo < custo) {
                 alert('Saldo insuficiente! Voce possui R$ ' + userSaldo.toFixed(2).replace('.', ',') + ' e a emissao do prontuario custa R$ ' + custo.toFixed(2).replace('.', ',') + '.\n\nRedirecionando para recargas...');

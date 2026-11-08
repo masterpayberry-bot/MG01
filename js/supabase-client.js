@@ -326,12 +326,97 @@
 
         async getAllConfigs() {
             const client = getClient();
-            if (!client) return {};
-            const { data, error } = await client.from('configuracoes').select('*');
-            if (error || !data) return {};
-            const map = {};
-            data.forEach(item => { map[item.chave] = item.valor; });
-            return map;
+            if (!client) {
+                try {
+                    const r = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/configuracoes?select=*', {
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                        }
+                    });
+                    const d = await r.json();
+                    if (Array.isArray(d)) {
+                        const map = {};
+                        d.forEach(item => { if (item.chave) map[item.chave] = item.valor; });
+                        return map;
+                    }
+                } catch(e) {}
+                return {};
+            }
+            try {
+                const { data, error } = await client.from('configuracoes').select('*');
+                if (error || !data) return {};
+                const map = {};
+                data.forEach(item => { map[item.chave] = item.valor; });
+                return map;
+            } catch(e) {
+                return {};
+            }
+        },
+
+        async saveConfig(chave, valor) {
+            const client = getClient();
+            const valStr = String(valor);
+            let ok = false;
+
+            if (client) {
+                try {
+                    const { error } = await client
+                        .from('configuracoes')
+                        .upsert({ chave: chave, valor: valStr }, { onConflict: 'chave' });
+                    if (!error) ok = true;
+                } catch(e) {}
+            }
+
+            if (!ok) {
+                try {
+                    const res = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/configuracoes', {
+                        method: 'POST',
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Content-Type': 'application/json',
+                            'Prefer': 'resolution=merge-duplicates'
+                        },
+                        body: JSON.stringify({ chave: chave, valor: valStr })
+                    });
+                    if (res.ok) ok = true;
+                } catch(e) {}
+            }
+
+            return ok;
+        },
+
+        async syncPricesToLocal() {
+            try {
+                const configs = await this.getAllConfigs();
+                if (configs && Object.keys(configs).length > 0) {
+                    if (configs.cnh_price) localStorage.setItem('happynation_cnh_price', configs.cnh_price);
+                    if (configs.exame_price) localStorage.setItem('happynation_exame_price', configs.exame_price);
+                    if (configs.atestado_price) localStorage.setItem('happynation_atestado_price', configs.atestado_price);
+                    if (configs.prontuario_price) localStorage.setItem('happynation_prontuario_price', configs.prontuario_price);
+                    if (configs.min_recharge) localStorage.setItem('happynation_min_recharge', configs.min_recharge);
+                    if (configs.rg_price) localStorage.setItem('happynation_rg_price', configs.rg_price);
+                    if (configs.pix_key) localStorage.setItem('happynation_pix_key', configs.pix_key);
+                    if (configs.whatsapp) localStorage.setItem('happynation_whatsapp', configs.whatsapp);
+                    if (configs.webapp_customization) localStorage.setItem('happynation_webapp_customization', configs.webapp_customization);
+
+                    try { window.dispatchEvent(new CustomEvent('mg_prices_synced', { detail: configs })); } catch(e) {}
+                    return configs;
+                }
+            } catch(e) {}
+            return null;
         }
     };
+
+    // Sincroniza automaticamente configurações do Supabase na inicialização da página
+    try {
+        if (typeof window !== 'undefined') {
+            setTimeout(function() {
+                if (window.MGSupabase && typeof window.MGSupabase.syncPricesToLocal === 'function') {
+                    window.MGSupabase.syncPricesToLocal();
+                }
+            }, 60);
+        }
+    } catch(e) {}
 })();

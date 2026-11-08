@@ -1059,7 +1059,12 @@
 
                     <div class="form-field">
                         <label>Laudo Nº</label>
-                        <input type="text" class="input-box" id="inp_laudo" value="31528116" oninput="syncFromCheckout(); updateBarcode()" placeholder="Ex: 31528116">
+                        <input type="text" class="input-box" id="inp_laudo" value="31528116" oninput="syncFromCheckout();
+        window.addEventListener('mg_prices_synced', (ev) => {
+            const p = (ev && ev.detail && ev.detail.exame_price) ? parseFloat(ev.detail.exame_price) : (parseFloat(localStorage.getItem('happynation_exame_price')) || 20.00);
+            const cEl = document.getElementById('custoExameDisplay');
+            if (cEl) cEl.textContent = 'R$ ' + p.toFixed(2).replace('.', ',');
+        }); updateBarcode()" placeholder="Ex: 31528116">
                     </div>
                 </div>
 

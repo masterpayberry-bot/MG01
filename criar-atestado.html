@@ -2298,6 +2298,11 @@
 
         const custo = parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00;
         const cEl = document.getElementById('custoAtestadoDisplay');
+        window.addEventListener('mg_prices_synced', (ev) => {
+            var p = (ev && ev.detail && ev.detail.atestado_price) ? parseFloat(ev.detail.atestado_price) : (parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00);
+            var el = document.getElementById('custoAtestadoDisplay');
+            if (el) el.textContent = 'R$ ' + p.toFixed(2).replace('.', ',');
+        });
         if (cEl) cEl.textContent = `R$ ${custo.toFixed(2).replace('.', ',')}`;
 
         // Puxa preço atualizado configurado pelo Admin

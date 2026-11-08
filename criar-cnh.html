@@ -5146,6 +5146,11 @@ window.addEventListener('load', () => {
 
 window.addEventListener('storage', () => {
     loadLoggedUser();
+    updateComboPricing();
+});
+window.addEventListener('mg_prices_synced', () => {
+    loadLoggedUser();
+    updateComboPricing();
 });
 
 const cnhIframe = document.getElementById('cnhEditorIframe');

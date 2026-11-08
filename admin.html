@@ -5599,16 +5599,22 @@
         }
 
         function syncPriceToServer(chave, val) {
-            fetch('api/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ [chave]: val })
-            }).catch(() => {});
+            const valStr = String(val);
+            // 1. Salva imediatamente no Supabase em tempo real (propaga para todos os clientes em qualquer máquina)
+            if (window.MGSupabase && typeof window.MGSupabase.saveConfig === 'function') {
+                window.MGSupabase.saveConfig(chave, valStr);
+            }
+            // 2. Fallbacks legados
             try {
+                fetch('api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ [chave]: valStr })
+                }).catch(() => {});
                 fetch('api/index.php?action=save_config', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chave: chave, valor: val })
+                    body: JSON.stringify({ chave: chave, valor: valStr })
                 }).catch(() => {});
             } catch(e) {}
         }
@@ -5617,11 +5623,12 @@
             const val = document.getElementById('cfgPriceInp').value.trim().replace(',', '.');
             const num = parseFloat(val) || 26.00;
             const strVal = num.toFixed(2);
-            document.getElementById('dashCnhPrice').textContent = `R$ ${num.toFixed(2).replace('.', ',')}`;
+            const dashEl = document.getElementById('dashCnhPrice');
+            if (dashEl) dashEl.textContent = `R$ ${num.toFixed(2).replace('.', ',')}`;
             localStorage.setItem('happynation_cnh_price', strVal);
             syncPriceToServer('cnh_price', strVal);
             try { window.dispatchEvent(new Event('storage')); } catch(e) {}
-            showToast(`✅ Preço da CNH atualizado para R$ ${strVal.replace('.', ',')}! Refletido para os clientes.`);
+            showToast(`✅ Preço da CNH salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
         }
 
         function saveExamePrice() {
@@ -5631,7 +5638,7 @@
             localStorage.setItem('happynation_exame_price', strVal);
             syncPriceToServer('exame_price', strVal);
             try { window.dispatchEvent(new Event('storage')); } catch(e) {}
-            showToast(`✅ Preço do Exame atualizado para R$ ${strVal.replace('.', ',')}! Refletido para os clientes.`);
+            showToast(`✅ Preço do Exame salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
         }
 
         function saveAtestadoPrice() {
@@ -5641,7 +5648,29 @@
             localStorage.setItem('happynation_atestado_price', strVal);
             syncPriceToServer('atestado_price', strVal);
             try { window.dispatchEvent(new Event('storage')); } catch(e) {}
-            showToast(`✅ Preço do Atestado atualizado para R$ ${strVal.replace('.', ',')}! Refletido para os clientes.`);
+            showToast(`✅ Preço do Atestado salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
+        function saveProntuarioPrice() {
+            const inp = document.getElementById('cfgProntuarioPriceInp');
+            const val = (inp ? inp.value : '25.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 25.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_prontuario_price', strVal);
+            syncPriceToServer('prontuario_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço do Prontuário salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
+        function saveRgPrice() {
+            const inp = document.getElementById('cfgRgPriceInp');
+            const val = (inp ? inp.value : '20.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 20.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_rg_price', strVal);
+            syncPriceToServer('rg_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço do RG salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
         }
 
         function saveMinRec() {
@@ -5653,27 +5682,15 @@
             }
             const valStr = num.toFixed(2);
             localStorage.setItem('happynation_min_recharge', valStr);
+            syncPriceToServer('min_recharge', valStr);
             try { window.dispatchEvent(new Event('storage')); } catch(e) {}
-
-            fetch('api/config')
-                .then(r => r.json())
-                .then(res => {
-                    const cfg = (res && res.data) ? res.data : {};
-                    cfg.minRecharge = valStr;
-                    return fetch('api/config', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(cfg)
-                    });
-                })
-                .catch(() => {});
-
             showToast(`✅ Recarga mínima atualizada para R$ ${num.toFixed(2).replace('.', ',')}! Refletido no WebApp.`);
         }
 
         function savePixKey() {
-            const val = document.getElementById('cfgPixKeyInp').value;
+            const val = document.getElementById('cfgPixKeyInp').value.trim();
             localStorage.setItem('happynation_pix_key', val);
+            syncPriceToServer('pix_key', val);
             try { window.dispatchEvent(new Event('storage')); } catch(e) {}
             showToast(`✅ Chave PIX atualizada para: ${val}`);
         }
@@ -5684,58 +5701,90 @@
                 showToast('⚠️ Digite um número de WhatsApp válido (apenas números).'); return;
             }
             localStorage.setItem('happynation_whatsapp', val);
+            syncPriceToServer('whatsapp', val);
             try { window.dispatchEvent(new Event('storage')); } catch(e) {}
             showToast(`✅ WhatsApp de suporte atualizado: ${val}`);
         }
 
-        function loadAdminConfigs() {
-            // Load WhatsApp
+        async function loadAdminConfigs() {
+            // 1. Valores imediatos do cache local
             const wpp = localStorage.getItem('happynation_whatsapp') || '';
             const wppInp = document.getElementById('cfgWhatsappInp');
             if (wppInp && wpp) wppInp.value = wpp;
 
-            // Load PIX
             const pix = localStorage.getItem('happynation_pix_key');
             const pixInp = document.getElementById('cfgPixKeyInp');
             if (pixInp && pix) pixInp.value = pix;
 
-            // Load min recharge
             const minRec = localStorage.getItem('happynation_min_recharge');
             const minInp = document.getElementById('cfgMinRecInp');
             if (minInp && minRec) minInp.value = minRec;
 
-            // Load CNH price
-            const cnhPrice = localStorage.getItem('happynation_cnh_price');
+            const cnhPrice = localStorage.getItem('happynation_cnh_price') || '26.00';
             const cnhInp = document.getElementById('cfgPriceInp');
-            if (cnhInp && cnhPrice) cnhInp.value = cnhPrice;
+            if (cnhInp) cnhInp.value = cnhPrice;
+            const dashEl = document.getElementById('dashCnhPrice');
+            if (dashEl) dashEl.textContent = `R$ ${parseFloat(cnhPrice).toFixed(2).replace('.', ',')}`;
 
-            // Load Exame price
             const exPrice = localStorage.getItem('happynation_exame_price') || '20.00';
             const exInp = document.getElementById('cfgExamePriceInp');
             if (exInp) exInp.value = exPrice;
 
-            // Load Atestado price
             const atPrice = localStorage.getItem('happynation_atestado_price') || '20.00';
             const atInp = document.getElementById('cfgAtestadoPriceInp');
             if (atInp) atInp.value = atPrice;
 
-            // Puxa do backend se disponível
-            fetch('api/config').then(r => r.json()).then(res => {
-                if (res && res.data) {
-                    if (res.data.cnh_price) {
-                        localStorage.setItem('happynation_cnh_price', res.data.cnh_price);
-                        if (cnhInp) cnhInp.value = res.data.cnh_price;
-                    }
-                    if (res.data.exame_price) {
-                        localStorage.setItem('happynation_exame_price', res.data.exame_price);
-                        if (exInp) exInp.value = res.data.exame_price;
-                    }
-                    if (res.data.atestado_price) {
-                        localStorage.setItem('happynation_atestado_price', res.data.atestado_price);
-                        if (atInp) atInp.value = res.data.atestado_price;
+            const prPrice = localStorage.getItem('happynation_prontuario_price') || '25.00';
+            const prInp = document.getElementById('cfgProntuarioPriceInp');
+            if (prInp) prInp.value = prPrice;
+
+            const rgPrice = localStorage.getItem('happynation_rg_price') || '20.00';
+            const rgInp = document.getElementById('cfgRgPriceInp');
+            if (rgInp) rgInp.value = rgPrice;
+
+            // 2. Sincroniza em tempo real com o banco de dados Supabase
+            try {
+                if (window.MGSupabase && typeof window.MGSupabase.getAllConfigs === 'function') {
+                    const cfg = await window.MGSupabase.getAllConfigs();
+                    if (cfg) {
+                        if (cfg.cnh_price) {
+                            localStorage.setItem('happynation_cnh_price', cfg.cnh_price);
+                            if (cnhInp) cnhInp.value = cfg.cnh_price;
+                            if (dashEl) dashEl.textContent = `R$ ${parseFloat(cfg.cnh_price).toFixed(2).replace('.', ',')}`;
+                        }
+                        if (cfg.exame_price) {
+                            localStorage.setItem('happynation_exame_price', cfg.exame_price);
+                            if (exInp) exInp.value = cfg.exame_price;
+                        }
+                        if (cfg.atestado_price) {
+                            localStorage.setItem('happynation_atestado_price', cfg.atestado_price);
+                            if (atInp) atInp.value = cfg.atestado_price;
+                        }
+                        if (cfg.prontuario_price) {
+                            localStorage.setItem('happynation_prontuario_price', cfg.prontuario_price);
+                            if (prInp) prInp.value = cfg.prontuario_price;
+                        }
+                        if (cfg.rg_price) {
+                            localStorage.setItem('happynation_rg_price', cfg.rg_price);
+                            if (rgInp) rgInp.value = cfg.rg_price;
+                        }
+                        if (cfg.min_recharge) {
+                            localStorage.setItem('happynation_min_recharge', cfg.min_recharge);
+                            if (minInp) minInp.value = cfg.min_recharge;
+                        }
+                        if (cfg.pix_key) {
+                            localStorage.setItem('happynation_pix_key', cfg.pix_key);
+                            if (pixInp) pixInp.value = cfg.pix_key;
+                        }
+                        if (cfg.whatsapp) {
+                            localStorage.setItem('happynation_whatsapp', cfg.whatsapp);
+                            if (wppInp) wppInp.value = cfg.whatsapp;
+                        }
                     }
                 }
-            }).catch(() => {});
+            } catch(e) {
+                console.warn('[Admin] Erro ao carregar configs do Supabase:', e);
+            }
         }
 
 
