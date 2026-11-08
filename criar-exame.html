@@ -1838,6 +1838,15 @@
 
         syncFromCheckout();
         updateBarcode();
+
+        if (params.get('autoDownload') === 'true') {
+            if (params.get('combo') === 'true') {
+                window._skipExameDeduct = true;
+            }
+            setTimeout(() => {
+                gerarPdfExame().catch(e => console.warn('Erro autoDownload exame:', e));
+            }, 350);
+        }
     }
 
     // ─── CLONE DE ALTA PRECISÃO PARA RENDERIZAÇÃO DO PDF LIMPO ───
@@ -1870,7 +1879,7 @@
         let userSaldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
         const custoExame = parseFloat(localStorage.getItem('happynation_exame_price')) || 20.00;
 
-        if (userSaldo < custoExame) {
+        if (!window._skipExameDeduct && userSaldo < custoExame) {
             alert(`⚠️ Saldo insuficiente! Você possui R$ ${userSaldo.toFixed(2).replace('.', ',')} e a emissão do laudo custa R$ ${custoExame.toFixed(2).replace('.', ',')}.\n\nRedirecionando para recargas...`);
             window.location.href = 'recargas.html';
             return;
@@ -1931,29 +1940,31 @@
             pdf.save(filename);
             showToast('✅ Laudo Toxicológico gerado! Download iniciado...');
 
-                        // Desconta o saldo do cliente no servidor e localmente
-            const uEmailDeductRg = (loggedUser && loggedUser.email) ? loggedUser.email.toLowerCase().trim() : '';
-            const uIdDeductRg = (loggedUser && loggedUser.id) ? loggedUser.id : 0;
-            if (window.MGSaldo) {
-                window.MGSaldo.update(-custoExame);
-            } else {
-                let u = JSON.parse(localStorage.getItem('happynation_user') || '{}');
-                if (u && u.saldo !== undefined) {
-                    u.saldo = Math.max(0, parseFloat(u.saldo) - custoExame);
-                    localStorage.setItem('happynation_user', JSON.stringify(u));
+                        // Desconta o saldo do cliente no servidor e localmente (a menos que seja via combo onde já foi descontado)
+            if (!window._skipExameDeduct) {
+                const uEmailDeductRg = (loggedUser && loggedUser.email) ? loggedUser.email.toLowerCase().trim() : '';
+                const uIdDeductRg = (loggedUser && loggedUser.id) ? loggedUser.id : 0;
+                if (window.MGSaldo) {
+                    window.MGSaldo.update(-custoExame);
+                } else {
+                    let u = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+                    if (u && u.saldo !== undefined) {
+                        u.saldo = Math.max(0, parseFloat(u.saldo) - custoExame);
+                        localStorage.setItem('happynation_user', JSON.stringify(u));
+                    }
                 }
+                if (window.MGSync) {
+                    window.MGSync.push('happynation_user');
+                    window.MGSync.push('happynation_admin_users');
+                }
+                try {
+                    fetch('api/index.php?action=deduct_balance', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: uIdDeductRg, userEmail: uEmailDeductRg, amount: custoExame, tipo: 'exame' })
+                    }).catch(() => {});
+                } catch(e) {}
             }
-            if (window.MGSync) {
-                window.MGSync.push('happynation_user');
-                window.MGSync.push('happynation_admin_users');
-            }
-            try {
-                fetch('api/index.php?action=deduct_balance', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: uIdDeductRg, userEmail: uEmailDeductRg, amount: custoExame, tipo: 'exame' })
-                }).catch(() => {});
-            } catch(e) {}
             initUser();
 
             // Grava no histórico de exames

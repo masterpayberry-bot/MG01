@@ -1928,7 +1928,7 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
             var userSaldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
             var custo = parseFloat(localStorage.getItem('happynation_prontuario_price')) || 26.00;
 
-            if (!isEditMode && userSaldo < custo) {
+            if (!isEditMode && !window._skipProntuarioDeduct && userSaldo < custo) {
                 alert('Saldo insuficiente! Voce possui R$ ' + userSaldo.toFixed(2).replace('.', ',') + ' e a emissao do prontuario custa R$ ' + custo.toFixed(2).replace('.', ',') + '.\n\nRedirecionando para recargas...');
                 window.location.href = 'recargas.html';
                 return;
@@ -1944,7 +1944,7 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
                 await downloadPdfCore(nomeCondutor);
                 showToast('Prontuario gerado com sucesso! Download iniciado.');
 
-                if (!isEditMode) {
+                if (!isEditMode && !window._skipProntuarioDeduct) {
                     if (window.MGSaldo) {
                         window.MGSaldo.update(-custo);
                     } else if (loggedUser.saldo !== undefined) {
@@ -2085,6 +2085,22 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
                 }
             } catch(e) {}
 
+            // Carregar dados diretos vindos da URL (ex: Combo na CNH)
+            try {
+                var pUrl = new URLSearchParams(window.location.search);
+                if (pUrl.get('nome')) document.getElementById('inp_nome').value = pUrl.get('nome');
+                if (pUrl.get('cpf')) document.getElementById('inp_cpf').value = pUrl.get('cpf');
+                if (pUrl.get('registro')) document.getElementById('inp_registro').value = pUrl.get('registro');
+                if (pUrl.get('categoria')) document.getElementById('inp_categoria').value = pUrl.get('categoria');
+                if (pUrl.get('validade')) document.getElementById('inp_validade').value = pUrl.get('validade');
+                if (pUrl.get('primeira_hab')) document.getElementById('inp_primeira_hab').value = pUrl.get('primeira_hab');
+                if (pUrl.get('nascimento')) document.getElementById('inp_nascimento').value = pUrl.get('nascimento');
+                if (pUrl.get('mae')) document.getElementById('inp_mae').value = pUrl.get('mae');
+                if (pUrl.get('pai')) document.getElementById('inp_pai').value = pUrl.get('pai');
+                if (pUrl.get('doc_identidade')) document.getElementById('inp_doc_identidade').value = pUrl.get('doc_identidade');
+                if (pUrl.get('municipio_uf')) document.getElementById('inp_municipio_uf').value = pUrl.get('municipio_uf');
+            } catch(e) {}
+
             // Valor de pendencia via URL/localStorage
             try {
                 var params2 = new URLSearchParams(window.location.search);
@@ -2094,6 +2110,19 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
                 if (vParam) { var rawV = vParam.toString().trim(); var formatted = rawV.toLowerCase().startsWith('r$') ? rawV : ('R$ ' + rawV); var elPend = document.getElementById('inp_pend_valor'); if (elPend) elPend.value = formatted; }
             } catch(e) {}
             updateDoc();
+
+            // Auto-download quando emitido via Combo
+            try {
+                var pAuto = new URLSearchParams(window.location.search);
+                if (pAuto.get('autoDownload') === 'true') {
+                    if (pAuto.get('combo') === 'true') {
+                        window._skipProntuarioDeduct = true;
+                    }
+                    setTimeout(function() {
+                        gerarPdfProntuario().catch(function(e){ console.warn('Erro autoDownload prontuario:', e); });
+                    }, 400);
+                }
+            } catch(e) {}
         });
     </script>
 </body>
