@@ -684,7 +684,7 @@
             pointer-events: none; /* Bloqueia qualquer clique ou edição direta na folha */
         }
 
-        /* ─── MARCA D'ÁGUA DE PRÉVIA — ELEGANTE E PROFISSIONAL ─── */
+        /* ─── MARCA D'ÁGUA DE PRÉVIA — COBERTURA TOTAL SOBRE INFORMAÇÕES E FOLHA ─── */
         .watermark-grid-overlay {
             position: absolute;
             top: 0;
@@ -694,21 +694,92 @@
             pointer-events: none;
             z-index: 999;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        /* Logo UPA grande e elegante, centralizado */
-        .watermark-upa-center {
+        /* Faixa diagonal superior diretamente sobre o texto/informações */
+        .watermark-band-info-top {
             position: absolute;
-            top: 50%;
+            top: 24%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            white-space: nowrap;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 5px;
+            color: rgba(220, 38, 38, 0.20);
+            font-family: 'Arial Black', Arial, sans-serif;
+            text-transform: uppercase;
+            border-top: 1.5px dashed rgba(220, 38, 38, 0.28);
+            border-bottom: 1.5px dashed rgba(220, 38, 38, 0.28);
+            padding: 4px 45px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Logo UPA e aviso em cima da área das informações */
+        .watermark-upa-info {
+            position: absolute;
+            top: 31%;
             left: 50%;
             transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
+            pointer-events: none;
+        }
+
+        .watermark-upa-info-img {
+            width: 185px;
+            height: auto;
+            opacity: 0.17;
+            filter: grayscale(15%) contrast(110%);
+        }
+
+        .watermark-upa-info-txt {
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: rgba(185, 28, 28, 0.70);
+            text-transform: uppercase;
+            text-align: center;
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: rgba(254, 242, 242, 0.65);
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: 1px dashed rgba(185, 28, 28, 0.35);
+        }
+
+        /* Faixa diagonal cruzando o meio das informações */
+        .watermark-band-info-mid {
+            position: absolute;
+            top: 39%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            white-space: nowrap;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: rgba(220, 38, 38, 0.18);
+            font-family: 'Arial Black', Arial, sans-serif;
+            text-transform: uppercase;
+            border-top: 1.5px dashed rgba(220, 38, 38, 0.28);
+            border-bottom: 1.5px dashed rgba(220, 38, 38, 0.28);
+            padding: 4px 50px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Logo UPA grande centralizado */
+        .watermark-upa-center {
+            position: absolute;
+            top: 56%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
             pointer-events: none;
         }
 
@@ -716,20 +787,24 @@
             width: 220px;
             height: auto;
             opacity: 0.18;
-            filter: grayscale(30%) contrast(110%);
+            filter: grayscale(20%) contrast(110%);
         }
 
         .watermark-upa-label {
             font-size: 13px;
             font-weight: 800;
             letter-spacing: 3px;
-            color: rgba(185, 28, 28, 0.55);
+            color: rgba(185, 28, 28, 0.65);
             text-transform: uppercase;
             text-align: center;
             font-family: 'Arial Black', Arial, sans-serif;
+            background: rgba(254, 242, 242, 0.65);
+            padding: 3px 12px;
+            border-radius: 4px;
+            border: 1px dashed rgba(185, 28, 28, 0.35);
         }
 
-        /* Faixa diagonal sutil */
+        /* Faixa diagonal sutil de fundo */
         .watermark-diagonal-band {
             position: absolute;
             top: 50%;
@@ -1544,10 +1619,22 @@
                     <!-- FOLHA OFICIAL DO ATESTADO MÉDICO UPA 24H -->
                     <div class="sheet-a4" id="sheetDoc">
 
-                        <!-- MARCA D'ÁGUA DE PRÉVIA — ELEGANTE E PROFISSIONAL (SOMENTE NO PREVIEW) -->
+                        <!-- MARCA D'ÁGUA DE PRÉVIA — COBERTURA TOTAL SOBRE INFORMAÇÕES E FOLHA (SOMENTE NO PREVIEW) -->
                         <div class="watermark-grid-overlay" id="previewWatermarkOverlay">
 
-                            <!-- Faixa diagonal sutil -->
+                            <!-- Faixa diagonal superior sobre os dados do paciente -->
+                            <div class="watermark-band-info-top">DOCUMENTO PENDENTE DE EMISSÃO</div>
+
+                            <!-- Logo UPA e etiqueta sobre o bloco de informações -->
+                            <div class="watermark-upa-info">
+                                <img src="assets/logo_upa_oficial.png" class="watermark-upa-info-img" alt="UPA 24h">
+                                <div class="watermark-upa-info-txt">PRÉVIA • DOCUMENTO PENDENTE</div>
+                            </div>
+
+                            <!-- Faixa diagonal cruzando o corpo do atestado -->
+                            <div class="watermark-band-info-mid">PRÉVIA NÃO AUTORIZADA PARA USO</div>
+
+                            <!-- Faixa diagonal grande de fundo -->
                             <div class="watermark-diagonal-band">PRÉVIA</div>
 
                             <!-- Logo UPA centralizado e elegante -->
