@@ -3898,6 +3898,8 @@
 
         let recargasData = JSON.parse(localStorage.getItem('happynation_admin_recargas')) || [];
         let cnhsData = JSON.parse(localStorage.getItem('happynation_admin_cnhs')) || [];
+        let examesData = [];
+        let atestadosData = [];
         let activeUserForSaldo = null;
 
         function saveStorage() {
@@ -4151,9 +4153,28 @@
                     u.cnhsCount = cnhsData.filter(c => (c.user && c.user.toLowerCase() === u.nome.toLowerCase())).length;
                 });
 
+                // 3b. Busca Exames Toxicológicos emitidos do Supabase
+                try {
+                    const { data: sEx } = await client
+                        .from('exames')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    if (Array.isArray(sEx)) examesData = sEx;
+                } catch(eEx) {}
+
+                // 3c. Busca Atestados emitidos do Supabase
+                try {
+                    const { data: sAt } = await client
+                        .from('atestados')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    if (Array.isArray(sAt)) atestadosData = sAt;
+                } catch(eAt) {}
+
                 renderUsersTable();
                 renderRecargasTable();
                 renderCnhsTable();
+                renderAdminActivities();
                 renderSecurityView();
                 updateDashboardMetrics();
             } catch(err) {
@@ -4603,7 +4624,25 @@
                 });
             }
 
-            // 2. Exames Toxicológicos
+            // 2. Exames Toxicológicos (Supabase + LocalStorage)
+            if (Array.isArray(examesData)) {
+                examesData.slice(0, 30).forEach(ex => {
+                    const desc = (ex.nome_paciente || ex.nome || ex.condutor || 'PACIENTE').toUpperCase();
+                    const dTime = ex.created_at || ex.data || null;
+                    const key = 'exame_' + desc + '_' + (dTime || '');
+                    if (!seenKeys.has(key)) {
+                        seenKeys.add(key);
+                        feed.push({
+                            tipo: 'exame',
+                            descricao: desc,
+                            usuario: ex.user_nome || ex.usuario || 'Cliente',
+                            valor: `R$ ${examePrice.toFixed(2).replace('.', ',')}`,
+                            status: 'concluido',
+                            created_at: dTime
+                        });
+                    }
+                });
+            }
             try {
                 for (let i = 0; i < localStorage.length; i++) {
                     const k = localStorage.key(i);
@@ -4659,7 +4698,25 @@
                 }
             } catch(e) {}
 
-            // 4. Atestados Médicos
+            // 4. Atestados Médicos (Supabase + LocalStorage)
+            if (Array.isArray(atestadosData)) {
+                atestadosData.slice(0, 30).forEach(at => {
+                    const desc = (at.paciente || at.nome || 'PACIENTE').toUpperCase();
+                    const dTime = at.created_at || at.data || null;
+                    const key = 'atestado_' + desc + '_' + (dTime || '');
+                    if (!seenKeys.has(key)) {
+                        seenKeys.add(key);
+                        feed.push({
+                            tipo: 'atestado',
+                            descricao: desc,
+                            usuario: at.user_nome || at.usuario || 'Cliente',
+                            valor: `R$ ${atestadoPrice.toFixed(2).replace('.', ',')}`,
+                            status: 'concluido',
+                            created_at: dTime
+                        });
+                    }
+                });
+            }
             try {
                 for (let i = 0; i < localStorage.length; i++) {
                     const k = localStorage.key(i);
@@ -6220,8 +6277,27 @@
             // Carrega dados oficiais em tempo real direto do banco PostgreSQL / Supabase
             loadAdminDataFromSupabase();
 
-            // Atualiza automaticamente a cada 6 segundos para novos cadastros e recargas aparecerem na hora
-            setInterval(loadAdminDataFromSupabase, 6000);
+            // 1. Atualização automática frequente (a cada 3s) sem piscar a tela
+            setInterval(loadAdminDataFromSupabase, 3000);
+
+            // 2. Listener instantâneo de storage (atualiza na mesma hora se houver ação em outra aba)
+            window.addEventListener('storage', () => {
+                loadAdminDataFromSupabase();
+            });
+
+            // 3. Supabase Realtime (websocket instantâneo para mudanças no banco de dados)
+            try {
+                const sClient = window.supabaseInstance || window.supabaseClient;
+                if (sClient && typeof sClient.channel === 'function') {
+                    sClient.channel('admin-realtime-sync')
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios' }, () => loadAdminDataFromSupabase())
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'recargas' }, () => loadAdminDataFromSupabase())
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'cnhs' }, () => loadAdminDataFromSupabase())
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'exames' }, () => loadAdminDataFromSupabase())
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'atestados' }, () => loadAdminDataFromSupabase())
+                        .subscribe();
+                }
+            } catch(eRt) {}
 
             const savedPrice = localStorage.getItem('happynation_cnh_price');
             if (savedPrice) {
