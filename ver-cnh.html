@@ -1298,8 +1298,26 @@
             <div class="link-sub-desc">Use o botão abaixo para realizar novamente o download do PDF da CNH gerada.</div>
             <button type="button" class="btn-green-download-pdf" onclick="reDownloadPDF()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Baixar novamente o PDF
+                Baixar novamente o PDF da CNH
             </button>
+        </div>
+
+        <!-- Item 4: Documentos do Combo (se emitidos) -->
+        <div class="link-block-item" id="comboSectionDownloads" style="display:none; margin-top:16px; padding-top:14px; border-top:1px solid #232729;">
+            <div class="link-title-bold" style="color:#00dc82; display:flex; align-items:center; gap:6px;">
+                <span>📦</span> Documentos Inclusos no Combo
+            </div>
+            <div class="link-sub-desc">Documentos gerados em conjunto com esta habilitação:</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <button type="button" id="btnDlComboExame" class="btn-green-download-pdf" style="background:#191c1d; color:#fff; border:1.5px solid #00dc82; display:none;" onclick="downloadComboExameVer()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#00dc82" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Baixar Laudo Toxicológico (PDF)
+                </button>
+                <button type="button" id="btnDlComboProntuario" class="btn-green-download-pdf" style="background:#191c1d; color:#fff; border:1.5px solid #00dc82; display:none;" onclick="downloadComboProntuarioVer()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#00dc82" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Baixar Prontuário SETRAN (PDF)
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1833,6 +1851,31 @@ function copyClientMessage() {
     });
 }
 
+
+function downloadComboExameVer() {
+    if (!currentRecord) return;
+    const ep = new URLSearchParams();
+    ep.set('nome', currentRecord.nome || '');
+    ep.set('cpf', currentRecord.cpf || '');
+    ep.set('validade', currentRecord.validade || '');
+    ep.set('autoDownload', 'true');
+    ep.set('combo', 'true');
+    window.open('criar-exame.html?' + ep.toString(), '_blank');
+}
+
+function downloadComboProntuarioVer() {
+    if (!currentRecord) return;
+    const pp = new URLSearchParams();
+    pp.set('nome', currentRecord.nome || '');
+    pp.set('cpf', currentRecord.cpf || '');
+    pp.set('registro', currentRecord.reg || currentRecord.registro || '');
+    pp.set('categoria', currentRecord.cat || currentRecord.categoria || '');
+    pp.set('validade', currentRecord.validade || '');
+    pp.set('autoDownload', 'true');
+    pp.set('combo', 'true');
+    window.open('criar-prontuario.html?' + pp.toString(), '_blank');
+}
+
 async function reDownloadPDF() {
     if (!currentRecord) return;
     const nome = (currentRecord.nome || 'CONDUTOR').replace(/\s+/g, '_');
@@ -1867,7 +1910,9 @@ async function reDownloadPDF() {
     }
 }
 
-window.addEventListener('load', initPage);
+
+    // Exibe botões de download dos documentos adicionais do combo se emitidos
+    window.addEventListener('load', initPage);
 </script>
 
     <!-- NEURAL NETWORK BACKGROUND SCRIPT -->

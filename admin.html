@@ -4027,6 +4027,7 @@
             }
             if (panelId === 'seguranca-ips') {
                 renderSecurityView();
+                renderAdminActivities();
             }
             if (panelId === 'cloaker') {
                 loadCloakerConfigs();
@@ -4564,131 +4565,196 @@
             const tbody = document.getElementById('adminActivitiesTbody');
             if (!tbody) return;
 
-            // Se o admin limpou manualmente, respeitar isso
-            const wasManuallyCleaned = sessionStorage.getItem('mg_acts_cleared') === '1';
-
             let acts = [];
             try { acts = JSON.parse(localStorage.getItem(ADMIN_ACTS_KEY) || '[]'); } catch(e) {}
+            if (!Array.isArray(acts)) acts = [];
 
-            // Carregar CNHs, Exames e Atestados gerados
-            if (acts.length === 0 && !wasManuallyCleaned) {
-                const feed = [];
-                const cnhPrice = parseFloat(localStorage.getItem('happynation_cnh_price')) || 26.00;
-                const examePrice = parseFloat(localStorage.getItem('happynation_exame_price')) || 20.00;
-                const atestadoPrice = parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00;
-                const rgPrice = parseFloat(localStorage.getItem('happynation_rg_price')) || 20.00;
+            const feed = [...acts];
+            const seenKeys = new Set();
+            feed.forEach(a => {
+                const k = (a.tipo || '') + '_' + (a.descricao || '') + '_' + (a.created_at || a.data || '');
+                seenKeys.add(k);
+            });
 
+            const cnhPrice = parseFloat(localStorage.getItem('happynation_cnh_price')) || 26.00;
+            const examePrice = parseFloat(localStorage.getItem('happynation_exame_price')) || 20.00;
+            const prontuarioPrice = parseFloat(localStorage.getItem('happynation_prontuario_price')) || 25.00;
+            const atestadoPrice = parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00;
+            const rgPrice = parseFloat(localStorage.getItem('happynation_rg_price')) || 20.00;
+
+            // 1. CNHs emitidas
+            if (Array.isArray(cnhsData)) {
                 cnhsData.slice(0, 30).forEach(c => {
-                    feed.push({
-                        tipo: 'cnh',
-                        descricao: (c.nomeCnh || c.nome_cnh || c.nome || 'CONDUTOR').toUpperCase(),
-                        usuario: c.user_nome || c.user || 'Cliente',
-                        valor: `R$ ${cnhPrice.toFixed(2).replace('.', ',')}`,
-                        status: 'concluido',
-                        created_at: c.created_at || c.data || null
-                    });
-                });
-
-                // Carrega exames de todas as fontes
-                try {
-                    for (let i = 0; i < localStorage.length; i++) {
-                        const k = localStorage.key(i);
-                        if (k && k.startsWith('happynation_exames_')) {
-                            const exList = JSON.parse(localStorage.getItem(k) || '[]');
-                            if (Array.isArray(exList)) {
-                                exList.forEach(ex => {
-                                    feed.push({
-                                        tipo: 'exame',
-                                        descricao: (ex.nome || ex.condutor || 'PACIENTE').toUpperCase(),
-                                        usuario: ex.usuario || 'Cliente',
-                                        valor: `R$ ${examePrice.toFixed(2).replace('.', ',')}`,
-                                        status: 'concluido',
-                                        created_at: ex.created_at || ex.data || null
-                                    });
-                                });
-                            }
-                        }
-                    }
-                } catch(e) {}
-
-                
-                // Carrega RGs gerados para o feed
-                try {
-                    const rgsData = JSON.parse(localStorage.getItem('happynation_rgs') || '[]');
-                    rgsData.slice(0, 30).forEach(r => {
+                    const desc = (c.nomeCnh || c.nome_cnh || c.nome || 'CONDUTOR').toUpperCase();
+                    const dTime = c.created_at || c.data || null;
+                    const k = 'cnh_' + desc + '_' + (dTime || '');
+                    if (!seenKeys.has(k)) {
+                        seenKeys.add(k);
                         feed.push({
-                            tipo: 'rg',
-                            descricao: (r.nome || 'TITULAR').toUpperCase(),
-                            usuario: r.user_nome || r.user || 'Cliente',
-                            valor: 'R$ ' + rgPrice.toFixed(2).replace('.', ','),
+                            tipo: 'cnh',
+                            descricao: desc,
+                            usuario: c.user_nome || c.user || 'Cliente',
+                            valor: `R$ ${cnhPrice.toFixed(2).replace('.', ',')}`,
                             status: 'concluido',
-                            created_at: r.created_at || r.dataCriacao || null
+                            created_at: dTime
                         });
-                    });
-                } catch(e) {}
-
-                // Carrega atestados de todas as fontes
-                try {
-                    for (let i = 0; i < localStorage.length; i++) {
-                        const k = localStorage.key(i);
-                        if (k && k.startsWith('happynation_atestados_')) {
-                            const atList = JSON.parse(localStorage.getItem(k) || '[]');
-                            if (Array.isArray(atList)) {
-                                atList.forEach(at => {
-                                    feed.push({
-                                        tipo: 'atestado',
-                                        descricao: (at.paciente || at.nome || 'PACIENTE').toUpperCase(),
-                                        usuario: at.usuario || 'Cliente',
-                                        valor: `R$ ${atestadoPrice.toFixed(2).replace('.', ',')}`,
-                                        status: 'concluido',
-                                        created_at: at.created_at || at.data || null
-                                    });
-                                });
-                            }
-                        }
                     }
-                } catch(e) {}
-                recargasData.slice(0, 20).forEach(r => {
-                    feed.push({
-                        tipo: 'saldo',
-                        descricao: 'Recarga via PIX',
-                        usuario: r.user || 'Cliente',
-                        valor: `+ R$ ${parseFloat(r.valor || 0).toFixed(2).replace('.', ',')}`,
-                        status: r.status === 'approved' ? 'concluido' : 'pendente',
-                        created_at: r.data || null
-                    });
                 });
-                feed.sort((a, b) => {
-                    const da = a.created_at ? new Date(a.created_at).getTime() : 0;
-                    const db = b.created_at ? new Date(b.created_at).getTime() : 0;
-                    return db - da;
-                });
-                acts = feed.slice(0, MAX_ACTS);
             }
 
+            // 2. Exames Toxicológicos
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_exames_')) {
+                        const exList = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(exList)) {
+                            exList.forEach(ex => {
+                                const desc = (ex.nome || ex.condutor || 'PACIENTE').toUpperCase();
+                                const dTime = ex.created_at || ex.data || null;
+                                const key = 'exame_' + desc + '_' + (dTime || '');
+                                if (!seenKeys.has(key)) {
+                                    seenKeys.add(key);
+                                    feed.push({
+                                        tipo: 'exame',
+                                        descricao: desc,
+                                        usuario: ex.usuario || ex.user_nome || 'Cliente',
+                                        valor: `R$ ${examePrice.toFixed(2).replace('.', ',')}`,
+                                        status: 'concluido',
+                                        created_at: dTime
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            // 3. Prontuários SETRAN
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_prontuarios_')) {
+                        const prList = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(prList)) {
+                            prList.forEach(pr => {
+                                const desc = (pr.nome || 'CONDUTOR').toUpperCase();
+                                const dTime = pr.created_at || pr.data || null;
+                                const key = 'prontuario_' + desc + '_' + (dTime || '');
+                                if (!seenKeys.has(key)) {
+                                    seenKeys.add(key);
+                                    feed.push({
+                                        tipo: 'prontuario',
+                                        descricao: desc,
+                                        usuario: pr.usuario || pr.user_nome || 'Cliente',
+                                        valor: `R$ ${prontuarioPrice.toFixed(2).replace('.', ',')}`,
+                                        status: 'concluido',
+                                        created_at: dTime
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            // 4. Atestados Médicos
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_atestados_')) {
+                        const atList = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(atList)) {
+                            atList.forEach(at => {
+                                const desc = (at.paciente || at.nome || 'PACIENTE').toUpperCase();
+                                const dTime = at.created_at || at.data || null;
+                                const key = 'atestado_' + desc + '_' + (dTime || '');
+                                if (!seenKeys.has(key)) {
+                                    seenKeys.add(key);
+                                    feed.push({
+                                        tipo: 'atestado',
+                                        descricao: desc,
+                                        usuario: at.usuario || at.user_nome || 'Cliente',
+                                        valor: `R$ ${atestadoPrice.toFixed(2).replace('.', ',')}`,
+                                        status: 'concluido',
+                                        created_at: dTime
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            // 5. Recargas PIX
+            if (Array.isArray(recargasData)) {
+                recargasData.slice(0, 20).forEach(r => {
+                    const desc = 'Recarga via PIX';
+                    const dTime = r.data || null;
+                    const key = 'saldo_' + (r.id || '') + '_' + (dTime || '');
+                    if (!seenKeys.has(key)) {
+                        seenKeys.add(key);
+                        feed.push({
+                            tipo: 'saldo',
+                            descricao: desc,
+                            usuario: r.user || 'Cliente',
+                            valor: `+ R$ ${parseFloat(r.valor || 0).toFixed(2).replace('.', ',')}`,
+                            status: r.status === 'approved' ? 'concluido' : 'pendente',
+                            created_at: dTime
+                        });
+                    }
+                });
+            }
+
+            // Ordena tudo cronologicamente (mais recente primeiro)
+            feed.sort((a, b) => {
+                const da = a.created_at ? new Date(a.created_at).getTime() : 0;
+                const db = b.created_at ? new Date(b.created_at).getTime() : 0;
+                return db - da;
+            });
+
+            acts = feed.slice(0, MAX_ACTS);
+            try { localStorage.setItem(ADMIN_ACTS_KEY, JSON.stringify(acts)); } catch(e) {}
+
             if (acts.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#475569; padding:24px;">Nenhuma atividade registrada ainda.</td></tr>`;
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#475569; padding:24px;">Nenhuma atividade registrada ainda.</td></tr>';
                 return;
             }
 
             tbody.innerHTML = acts.map(a => {
                 let acaoHtml, valorHtml, badgeHtml;
+                const vRaw = a.valor ? a.valor.toString().replace(/^[-+]\s*/, '') : '26,00';
+                const vFormat = vRaw.startsWith('R$') ? vRaw : ('R$ ' + vRaw);
+
                 if (a.tipo === 'cnh') {
                     acaoHtml = `<strong style="color:var(--primary);">Geração de CNH</strong> — ${a.descricao || ''}`;
-                    const vNum = a.valor ? a.valor.toString() : 'R$ 26,00';
-                    valorHtml = `<span style="color:var(--primary); font-weight:800;">- ${vNum.replace(/^[-+]\s*/,'')}</span>`;
+                    valorHtml = `<span style="color:var(--primary); font-weight:800;">- ${vFormat}</span>`;
+                } else if (a.tipo === 'exame') {
+                    acaoHtml = `<strong style="color:#00dc82;">Exame Toxicológico</strong> — ${a.descricao || ''}`;
+                    valorHtml = `<span style="color:#00dc82; font-weight:800;">- ${vFormat}</span>`;
+                } else if (a.tipo === 'prontuario') {
+                    acaoHtml = `<strong style="color:#00dc82;">Prontuário SETRAN</strong> — ${a.descricao || ''}`;
+                    valorHtml = `<span style="color:#00dc82; font-weight:800;">- ${vFormat}</span>`;
+                } else if (a.tipo === 'atestado') {
+                    acaoHtml = `<strong style="color:#38bdf8;">Atestado Médico</strong> — ${a.descricao || ''}`;
+                    valorHtml = `<span style="color:#38bdf8; font-weight:800;">- ${vFormat}</span>`;
+                } else if (a.tipo === 'rg') {
+                    acaoHtml = `<strong style="color:#10b981;">RG Digital</strong> — ${a.descricao || ''}`;
+                    valorHtml = `<span style="color:#10b981; font-weight:800;">- ${vFormat}</span>`;
                 } else if (a.tipo === 'saldo') {
                     acaoHtml = `<strong style="color:#38bdf8;">Crédito de Saldo</strong> — ${a.descricao || 'Admin'}`;
-                    valorHtml = `<span style="color:#38bdf8; font-weight:800;">${a.valor || ''}</span>`;
+                    valorHtml = `<span style="color:#38bdf8; font-weight:800;">+ ${vFormat}</span>`;
                 } else {
                     acaoHtml = `<strong style="color:#a78bfa;">Recarga PIX</strong> — ${a.descricao || ''}`;
-                    valorHtml = `<span style="color:#a78bfa; font-weight:800;">${a.valor || ''}</span>`;
+                    valorHtml = `<span style="color:#a78bfa; font-weight:800;">+ ${vFormat}</span>`;
                 }
-                if (a.status === 'concluido') {
-                    badgeHtml = `<span class="badge approved">✓ Concluído</span>`;
+
+                if (a.status === 'concluido' || a.status === 'approved') {
+                    badgeHtml = '<span class="badge approved">✓ Concluído</span>';
                 } else {
-                    badgeHtml = `<span class="badge pending">⏳ Pendente</span>`;
+                    badgeHtml = '<span class="badge pending">⏳ Pendente</span>';
                 }
+
                 return `<tr>
                     <td>${acaoHtml}</td>
                     <td style="font-size:12px;">${a.usuario || '—'}</td>
@@ -4701,12 +4767,10 @@
 
         function clearAdminActivities() {
             if (!confirm('Limpar todo o histórico de atividades?')) return;
-            localStorage.removeItem(ADMIN_ACTS_KEY);
-            localStorage.setItem(ADMIN_ACTS_KEY, '[]');      // salva array vazio explicitamente
-            sessionStorage.setItem('mg_acts_cleared', '1');  // marca que foi limpo manualmente
-            // Limpa também no servidor
+            localStorage.setItem(ADMIN_ACTS_KEY, '[]');
+            const tbody = document.getElementById('adminActivitiesTbody');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#475569; padding:24px;">Nenhuma atividade registrada ainda.</td></tr>';
             if (window.MGSync) window.MGSync.api.clear('activities');
-            renderAdminActivities();
         }
 
         function updateDashboardMetrics() {

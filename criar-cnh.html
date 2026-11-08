@@ -4070,6 +4070,243 @@ function updateComboPricing() {
     return total;
 }
 
+
+// ─── HELPER DISPARO DE DOWNLOAD DIRETO (TOP-LEVEL) ───
+function downloadBlob(blob, filename) {
+    if (!blob) return;
+    try {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            try { a.remove(); URL.revokeObjectURL(url); } catch(e) {}
+        }, 6000);
+    } catch(err) {
+        console.warn('Erro ao disparar downloadBlob:', err);
+    }
+}
+
+// ─── GERAÇÃO ASSÍNCRONA DO LAUDO TOXICOLÓGICO COMBO ───
+function generateComboExameBlob(data) {
+    return new Promise((resolve, reject) => {
+        try {
+            const ep = new URLSearchParams();
+            ep.set('nome', data.nome || '');
+            ep.set('cpf', data.cpf || '');
+            ep.set('validade', data.validade || '');
+            ep.set('combo', 'true');
+
+            const ifr = document.createElement('iframe');
+            ifr.style.cssText = 'position:fixed; left:0; top:0; width:1000px; height:1300px; opacity:0; pointer-events:none; z-index:-9999;';
+            ifr.src = 'criar-exame.html?' + ep.toString();
+            document.body.appendChild(ifr);
+
+            const timer = setTimeout(() => {
+                try { ifr.remove(); } catch(e){}
+                reject(new Error('Tempo esgotado ao renderizar Laudo Toxicológico'));
+            }, 18000);
+
+            ifr.onload = async () => {
+                try {
+                    await new Promise(r => setTimeout(r, 800));
+                    const iWin = ifr.contentWindow;
+                    if (!iWin) throw new Error('Iframe de Exame inacessível');
+
+                    const sheet = iWin.document.getElementById('sheetDoc');
+                    if (!sheet) throw new Error('Documento de Exame não encontrado');
+
+                    const cleanClone = (typeof iWin.buildCleanPrintClone === 'function') 
+                        ? iWin.buildCleanPrintClone(sheet) 
+                        : sheet.cloneNode(true);
+                    
+                    const hiddenCont = iWin.document.createElement('div');
+                    hiddenCont.style.cssText = 'position:fixed; left:-99999px; top:0; width:794px; height:1123px; background:#ffffff; z-index:-9999;';
+                    hiddenCont.appendChild(cleanClone);
+                    iWin.document.body.appendChild(hiddenCont);
+
+                    await new Promise(r => setTimeout(r, 200));
+
+                    const h2c = iWin.html2canvas || window.html2canvas;
+                    const canvas = await h2c(cleanClone, {
+                        scale: 3,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#ffffff',
+                        logging: false,
+                        width: 794,
+                        height: 1123,
+                        windowWidth: 794,
+                        windowHeight: 1123
+                    });
+
+                    try { hiddenCont.remove(); } catch(e){}
+
+                    const JsPDFFn = (iWin.jspdf && iWin.jspdf.jsPDF) || (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+                    const pdf = new JsPDFFn({
+                        orientation: 'portrait',
+                        unit: 'px',
+                        format: [794, 1123],
+                        hotfixes: ['px_scaling']
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+
+                    const blob = pdf.output('blob');
+                    const filename = 'Exame_Toxicologico_' + (data.nome || 'CONDUTOR').trim().replace(/\s+/g, '_') + '.pdf';
+
+                    // Salva o registro nos exames do usuário
+                    try {
+                        const uEmail = (data.userEmail || '').toLowerCase().trim();
+                        if (uEmail) {
+                            const key = 'happynation_exames_' + uEmail;
+                            let list = JSON.parse(localStorage.getItem(key) || '[]');
+                            list.unshift({
+                                id: 'TOX-' + Math.floor(10000 + Math.random() * 90000),
+                                nome: data.nome,
+                                cpf: data.cpf,
+                                laudo: 'MG-' + Math.floor(100000 + Math.random() * 900000),
+                                validade: data.validade,
+                                created_at: new Date().toISOString()
+                            });
+                            localStorage.setItem(key, JSON.stringify(list));
+                        }
+                    } catch(eSt) {}
+
+                    clearTimeout(timer);
+                    try { ifr.remove(); } catch(e){}
+                    resolve({ blob, filename });
+                } catch(err) {
+                    clearTimeout(timer);
+                    try { ifr.remove(); } catch(e){}
+                    reject(err);
+                }
+            };
+        } catch(eInit) {
+            reject(eInit);
+        }
+    });
+}
+
+// ─── GERAÇÃO ASSÍNCRONA DO PRONTUÁRIO SETRAN COMBO ───
+function generateComboProntuarioBlob(data) {
+    return new Promise((resolve, reject) => {
+        try {
+            const pp = new URLSearchParams();
+            pp.set('nome', data.nome || '');
+            pp.set('cpf', data.cpf || '');
+            pp.set('registro', data.registro || '');
+            pp.set('categoria', data.categoria || '');
+            pp.set('validade', data.validade || '');
+            pp.set('combo', 'true');
+
+            const ifr = document.createElement('iframe');
+            ifr.style.cssText = 'position:fixed; left:0; top:0; width:1000px; height:1500px; opacity:0; pointer-events:none; z-index:-9999;';
+            ifr.src = 'criar-prontuario.html?' + pp.toString();
+            document.body.appendChild(ifr);
+
+            const timer = setTimeout(() => {
+                try { ifr.remove(); } catch(e){}
+                reject(new Error('Tempo esgotado ao renderizar Prontuário SETRAN'));
+            }, 20000);
+
+            ifr.onload = async () => {
+                try {
+                    await new Promise(r => setTimeout(r, 800));
+                    const iWin = ifr.contentWindow;
+                    if (!iWin) throw new Error('Iframe de Prontuário inacessível');
+
+                    const page1 = iWin.document.getElementById('sheetDocPage1');
+                    const page2 = iWin.document.getElementById('sheetDocPage2');
+                    if (!page1 || !page2) throw new Error('Páginas do Prontuário não encontradas');
+
+                    const watermarks = iWin.document.querySelectorAll('.p2-watermark-bg');
+                    watermarks.forEach(w => w.classList.add('watermark-faint'));
+
+                    const wrapper = iWin.document.getElementById('zoomWrapper');
+                    if (wrapper) {
+                        wrapper.style.transform = 'none';
+                        wrapper.style.marginBottom = '0px';
+                    }
+
+                    const h2c = iWin.html2canvas || window.html2canvas;
+                    const canvas1 = await h2c(page1, {
+                        scale: 3,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#ffffff',
+                        width: 794,
+                        height: 1123,
+                        windowWidth: 794,
+                        windowHeight: 1123
+                    });
+
+                    const canvas2 = await h2c(page2, {
+                        scale: 3,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#ffffff',
+                        width: 794,
+                        height: 1123,
+                        windowWidth: 794,
+                        windowHeight: 1123
+                    });
+
+                    const JsPDFFn = (iWin.jspdf && iWin.jspdf.jsPDF) || (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+                    const pdf = new JsPDFFn({
+                        orientation: 'portrait',
+                        unit: 'px',
+                        format: [794, 1123],
+                        hotfixes: ['px_scaling']
+                    });
+
+                    const imgData1 = canvas1.toDataURL('image/jpeg', 0.98);
+                    pdf.addImage(imgData1, 'JPEG', 0, 0, 794, 1123);
+                    pdf.addPage([794, 1123], 'portrait');
+                    const imgData2 = canvas2.toDataURL('image/jpeg', 0.98);
+                    pdf.addImage(imgData2, 'JPEG', 0, 0, 794, 1123);
+
+                    const blob = pdf.output('blob');
+                    const filename = 'Prontuario_DETRAN_' + (data.nome || 'CONDUTOR').trim().replace(/\s+/g, '_') + '.pdf';
+
+                    // Salva o registro nos prontuários do usuário
+                    try {
+                        const uEmail = (data.userEmail || '').toLowerCase().trim();
+                        if (uEmail) {
+                            const key = 'happynation_prontuarios_' + uEmail;
+                            let list = JSON.parse(localStorage.getItem(key) || '[]');
+                            list.unshift({
+                                id: 'PRON-' + Math.floor(10000 + Math.random() * 90000),
+                                nome: data.nome,
+                                cpf: data.cpf,
+                                registro: data.registro,
+                                categoria: data.categoria,
+                                validade: data.validade,
+                                created_at: new Date().toISOString()
+                            });
+                            localStorage.setItem(key, JSON.stringify(list));
+                        }
+                    } catch(eSt) {}
+
+                    clearTimeout(timer);
+                    try { ifr.remove(); } catch(e){}
+                    resolve({ blob, filename });
+                } catch(err) {
+                    clearTimeout(timer);
+                    try { ifr.remove(); } catch(e){}
+                    reject(err);
+                }
+            };
+        } catch(eInit) {
+            reject(eInit);
+        }
+    });
+}
+
 async function generateNow() {
     // 0) Verificação de saldo do cliente
     // Em modo edição (id na URL), não descontar saldo novamente
@@ -4346,93 +4583,63 @@ async function generateNow() {
         const pdf = new JsPDF({ orientation: 'portrait', unit: 'px', format: [W, H], hotfixes: ['px_scaling'] });
         pdf.addImage(imgData, 'JPEG', 0, 0, W, H);
 
-        // Disparo de download garantido: Blob URL direto + fallback para pdf.save
+        // 1. DISPARAR DOWNLOAD DA CNH OFICIAL
         let pdfBlob = null;
         try {
             pdfBlob = pdf.output('blob');
-            const blobUrl = URL.createObjectURL(pdfBlob);
-            const aDl = document.createElement('a');
-            aDl.href = blobUrl;
-            aDl.download = filename;
-            aDl.style.display = 'none';
-            document.body.appendChild(aDl);
-            aDl.click();
-            setTimeout(() => {
-                try { aDl.remove(); URL.revokeObjectURL(blobUrl); } catch(exDl) {}
-            }, 6000);
+            downloadBlob(pdfBlob, filename);
         } catch(eDl) {
-            pdf.save(filename);
-            try { pdfBlob = pdf.output('blob'); } catch(eB) {}
+            try { pdf.save(filename); pdfBlob = pdf.output('blob'); } catch(eB) {}
         }
         
-        if (hasComboExame && hasComboProntuario) {
-            showToast('✅ Combo Completo! Baixando CNH, Exame e Prontuário...');
-        } else if (hasComboExame) {
-            showToast('✅ CNH e Laudo Toxicológico gerados! Baixando PDFs...');
-        } else if (hasComboProntuario) {
-            showToast('✅ CNH e Prontuário SETRAN gerados! Baixando PDFs...');
-        } else {
-            showToast('✅ PDF gerado! Download iniciado...');
-        }
+        showToast('✅ CNH baixada com sucesso!');
 
-        // ── DISPARO AUTOMÁTICO DO EXAME TOXICOLÓGICO SELECIONADO NO COMBO ──
+        // 2. DISPARAR LAUDO TOXICOLÓGICO SELECIONADO NO COMBO (SEQUENCIAL GARANTIDO)
         if (hasComboExame) {
             try {
-                const ep = new URLSearchParams();
-                ep.set('nome', safeNome);
-                ep.set('cpf', safeCpf);
-                ep.set('validade', validadeVal || emissaoVal);
-                ep.set('autoDownload', 'true');
-                ep.set('combo', 'true');
-
-                const ifrEx = document.createElement('iframe');
-                ifrEx.style.position = 'fixed';
-                ifrEx.style.left = '-99999px';
-                ifrEx.style.top = '0';
-                ifrEx.style.width = '10px';
-                ifrEx.style.height = '10px';
-                ifrEx.src = 'criar-exame.html?' + ep.toString();
-                document.body.appendChild(ifrEx);
-                setTimeout(() => { try { ifrEx.remove(); } catch(e){} }, 14000);
+                if (btnGen) btnGen.textContent = 'Gerando Laudo Toxicológico (Combo)...';
+                showToast('⏳ Gerando Laudo Toxicológico do combo...');
+                const resEx = await generateComboExameBlob({
+                    nome: safeNome,
+                    cpf: safeCpf,
+                    validade: validadeVal || emissaoVal,
+                    userEmail: userEmail
+                });
+                await new Promise(r => setTimeout(r, 700));
+                downloadBlob(resEx.blob, resEx.filename);
+                showToast('✅ Laudo Toxicológico baixado!');
             } catch(eEx) {
-                console.warn('Erro combo exame:', eEx);
+                console.warn('Erro ao gerar combo exame:', eEx);
+                showToast('⚠️ Laudo Toxicológico não pôde ser gerado automaticamente.');
             }
         }
 
-        // ── DISPARO AUTOMÁTICO DO PRONTUÁRIO SETRAN SELECIONADO NO COMBO ──
+        // 3. DISPARAR PRONTUÁRIO SETRAN SELECIONADO NO COMBO (SEQUENCIAL GARANTIDO)
         if (hasComboProntuario) {
             try {
-                const pp = new URLSearchParams();
-                pp.set('nome', safeNome);
-                pp.set('cpf', safeCpf);
-                pp.set('registro', regVal);
-                pp.set('categoria', catVal);
-                pp.set('validade', validadeVal);
-                pp.set('primeira_hab', habVal);
-                pp.set('emissao', emissaoVal);
-                pp.set('nascimento', nascVal);
-                pp.set('mae', maeVal);
-                pp.set('pai', paiVal);
-                pp.set('doc_identidade', rgVal);
-                pp.set('municipio_uf', localVal);
-                pp.set('valor_pendencia', valorPendenciaVal);
-                pp.set('autoDownload', 'true');
-                pp.set('combo', 'true');
-
-                const ifrPr = document.createElement('iframe');
-                ifrPr.style.position = 'fixed';
-                ifrPr.style.left = '-99999px';
-                ifrPr.style.top = '0';
-                ifrPr.style.width = '10px';
-                ifrPr.style.height = '10px';
-                ifrPr.src = 'criar-prontuario.html?' + pp.toString();
-                document.body.appendChild(ifrPr);
-                setTimeout(() => { try { ifrPr.remove(); } catch(e){} }, 14000);
+                if (btnGen) btnGen.textContent = 'Gerando Prontuário SETRAN (Combo)...';
+                showToast('⏳ Gerando Prontuário SETRAN do combo...');
+                const resPr = await generateComboProntuarioBlob({
+                    nome: safeNome,
+                    cpf: safeCpf,
+                    registro: regVal,
+                    categoria: catVal,
+                    validade: validadeVal,
+                    userEmail: userEmail
+                });
+                await new Promise(r => setTimeout(r, 700));
+                downloadBlob(resPr.blob, resPr.filename);
+                showToast('✅ Prontuário SETRAN baixado!');
             } catch(ePr) {
-                console.warn('Erro combo prontuario:', ePr);
+                console.warn('Erro ao gerar combo prontuario:', ePr);
+                showToast('⚠️ Prontuário SETRAN não pôde ser gerado automaticamente.');
             }
         }
 
+        if (hasComboExame || hasComboProntuario) {
+            if (btnGen) btnGen.textContent = 'Todos os PDFs baixados com sucesso!';
+            showToast('🎉 Todos os documentos selecionados foram baixados!');
+        }
 
         // ── IDENTIFICAÇÃO E PERSISTÊNCIA OFICIAL DO PDF PARA O WEBAPP (SEM MARCA D'ÁGUA) ──
         const urlParams = new URLSearchParams(window.location.search);
@@ -4777,16 +4984,44 @@ async function generateNow() {
                 localStorage.setItem('happynation_cnh_price', res.data.cnh_price);
             }
         }).catch(() => {});
+                const comboPrices = (typeof getComboPrices === 'function') ? getComboPrices() : { exame: 20.0, prontuario: 25.0 };
+                const actTimeIso = new Date().toISOString();
+                const userNameAct = (loggedUser && loggedUser.nome) ? loggedUser.nome : 'Cliente';
+
                 adminActs.unshift({
                     tipo: 'cnh',
                     descricao: (nomeVal || 'CONDUTOR').toUpperCase(),
-                    usuario: (loggedUser && loggedUser.nome) ? loggedUser.nome : 'Cliente',
+                    usuario: userNameAct,
                     valor: `R$ ${cnhPrice.toFixed(2).replace('.', ',')}`,
                     status: 'concluido',
-                    created_at: new Date().toISOString()
+                    created_at: actTimeIso
                 });
+
+                if (hasComboExame) {
+                    adminActs.unshift({
+                        tipo: 'exame',
+                        descricao: (nomeVal || 'CONDUTOR').toUpperCase(),
+                        usuario: userNameAct,
+                        valor: `R$ ${comboPrices.exame.toFixed(2).replace('.', ',')}`,
+                        status: 'concluido',
+                        created_at: actTimeIso
+                    });
+                }
+
+                if (hasComboProntuario) {
+                    adminActs.unshift({
+                        tipo: 'prontuario',
+                        descricao: (nomeVal || 'CONDUTOR').toUpperCase(),
+                        usuario: userNameAct,
+                        valor: `R$ ${comboPrices.prontuario.toFixed(2).replace('.', ',')}`,
+                        status: 'concluido',
+                        created_at: actTimeIso
+                    });
+                }
+
                 if (adminActs.length > 50) adminActs = adminActs.slice(0, 50);
                 localStorage.setItem(ADMIN_ACTS_KEY, JSON.stringify(adminActs));
+                if (window.MGSync) window.MGSync.push(ADMIN_ACTS_KEY);
             } catch(ex) {}
 
         } catch(e) {
@@ -4901,8 +5136,11 @@ async function generateNow() {
             if (cVal) redirectParams.set(cid, cVal);
         });
 
-        // Delay de 3 segundos para garantir que o download inicie e salve antes do redirect
-        const waitTime = (hasComboExame || hasComboProntuario) ? 5500 : 3000;
+        if (hasComboExame) redirectParams.set('combo_exame', '1');
+        if (hasComboProntuario) redirectParams.set('combo_prontuario', '1');
+
+        // Delay para garantir que todos os downloads foram entregues ao navegador antes do redirect
+        const waitTime = (hasComboExame || hasComboProntuario) ? 3500 : 2000;
         setTimeout(() => {
             window.location.href = `ver-cnh.html?${redirectParams.toString()}`;
         }, waitTime);
