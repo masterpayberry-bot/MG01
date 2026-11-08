@@ -308,6 +308,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADMIN MG Editáveis — Painel Corporativo Enterprise</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
     <script src="js/security-guard.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4018,24 +4020,125 @@
         }
 
         
+        // ─── GESTÃO DE DADOS VIA SUPABASE (SEM PHP/XAMPP) ───
+        async function loadAdminDataFromSupabase() {
+            const client = window.supabaseInstance || window.supabaseClient;
+            if (!client) {
+                console.warn('[Admin] Cliente Supabase ainda não inicializado.');
+                return;
+            }
+
+            try {
+                // 1. Busca todos os usuários cadastrados na tabela 'usuarios'
+                const { data: sUsers, error: errUsers } = await client
+                    .from('usuarios')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (!errUsers && Array.isArray(sUsers)) {
+                    let deletedUsers = [];
+                    try { deletedUsers = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]'); } catch(e){}
+
+                    usersData = sUsers
+                        .filter(u => {
+                            const uIdStr = String(u.id);
+                            const uEmail = (u.email || '').toLowerCase().trim();
+                            return !deletedUsers.includes(uIdStr) && !deletedUsers.includes(uEmail);
+                        })
+                        .map(u => ({
+                            id: u.id,
+                            nome: u.nome || 'Sem Nome',
+                            email: u.email || '',
+                            phone: u.phone || '--',
+                            saldo: parseFloat(u.saldo || 0),
+                            cnhsCount: 0,
+                            role: u.role || 'client',
+                            status: (u.status === 'pendente' ? 'pending' : (u.status === 'aprovado' ? 'approved' : (u.status || 'pending'))),
+                            created_at: u.created_at
+                        }));
+
+                    localStorage.setItem('happynation_admin_users', JSON.stringify(usersData));
+                }
+
+                // 2. Busca recargas PIX
+                const { data: sRecargas, error: errRec } = await client
+                    .from('recargas')
+                    .select('*')
+                    .order('data', { ascending: false });
+
+                if (!errRec && Array.isArray(sRecargas)) {
+                    let deletedRecargas = [];
+                    try { deletedRecargas = JSON.parse(localStorage.getItem('happynation_deleted_recargas') || '[]'); } catch(e){}
+
+                    recargasData = sRecargas
+                        .filter(r => !deletedRecargas.includes(String(r.id)))
+                        .map(r => ({
+                            id: r.id,
+                            user: r.user_nome || 'Cliente',
+                            valor: parseFloat(r.valor || 0),
+                            metodo: r.metodo || 'PIX QrCode',
+                            data: r.data,
+                            status: r.status || 'pending',
+                            comprovante: r.comprovante
+                        }));
+
+                    localStorage.setItem('happynation_admin_recargas', JSON.stringify(recargasData));
+                }
+
+                // 3. Busca CNHs emitidas
+                const { data: sCnhs, error: errCnhs } = await client
+                    .from('cnhs')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (!errCnhs && Array.isArray(sCnhs)) {
+                    let deletedCnhs = [];
+                    try { deletedCnhs = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]'); } catch(e){}
+
+                    cnhsData = sCnhs
+                        .filter(c => !deletedCnhs.includes(String(c.id)))
+                        .map(c => ({
+                            id: c.id,
+                            user: c.user_nome || 'Cliente',
+                            nomeCnh: c.nome_cnh || '',
+                            cpf: c.cpf || '',
+                            data: c.created_at,
+                            valor: `R$ ${(parseFloat(c.valor_cobrado) || 26).toFixed(2).replace('.', ',')}`
+                        }));
+
+                    localStorage.setItem('happynation_admin_cnhs', JSON.stringify(cnhsData));
+                }
+
+                // 4. Busca IPs bloqueados
+                const { data: sIps } = await client
+                    .from('ips_bloqueados')
+                    .select('*')
+                    .order('data', { ascending: false });
+
+                if (Array.isArray(sIps)) {
+                    blockedIpsData = sIps;
+                }
+
+                // Vincula quantidade de CNHs a cada usuário
+                usersData.forEach(u => {
+                    u.cnhsCount = cnhsData.filter(c => (c.user && c.user.toLowerCase() === u.nome.toLowerCase())).length;
+                });
+
+                renderUsersTable();
+                renderRecargasTable();
+                renderCnhsTable();
+                renderSecurityView();
+                updateDashboardMetrics();
+            } catch(err) {
+                console.error('[Admin] Erro ao carregar dados do Supabase:', err);
+            }
+        }
+
         // ─── GESTÃO DE SEGURANÇA & IPS BLOQUEADOS ───
         let blockedIpsData = [];
 
         function refreshSecurityData() {
-            fetch('api/index.php?action=get_admin_data')
-                .then(r => r.json())
-                .then(res => {
-                    if (res && res.status === 'success' && res.data) {
-                        if (res.data.blocked_ips) {
-                            blockedIpsData = res.data.blocked_ips;
-                        }
-                        if (res.data.users) {
-                            usersData = res.data.users;
-                        }
-                        renderSecurityView();
-                    }
-                })
-                .catch(() => {});
+            loadAdminDataFromSupabase();
         }
 
         function renderSecurityView() {
@@ -4920,23 +5023,36 @@
             showToast('CNH excluída com sucesso! Prontuário cancelado.');
         }
 
-        function changeUserStatus(id, newStatus) {
+        async function changeUserStatus(id, newStatus) {
             const u = usersData.find(user => user.id === id);
             if (u) {
-                u.status = newStatus;
+                const normStatus = (newStatus === 'aprovado' || newStatus === 'approved') ? 'approved' :
+                                   (newStatus === 'pendente' || newStatus === 'pending') ? 'pending' : 'blocked';
+                u.status = normStatus;
                 saveStorage();
                 renderUsersTable();
-                showToast(`Status de ${u.nome} alterado para ${newStatus.toUpperCase()}!`);
+                updateDashboardMetrics();
+                showToast(`Status de ${u.nome} alterado para ${normStatus === 'approved' ? 'APROVADO' : normStatus.toUpperCase()}!`);
 
-                fetch('api/index.php?action=update_user_status', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: id, status: newStatus })
-                }).catch(() => {});
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client) {
+                    try {
+                        const { error } = await client
+                            .from('usuarios')
+                            .update({ status: normStatus })
+                            .eq('id', id);
+                        if (error) {
+                            console.error('[Admin] Erro ao atualizar status no Supabase:', error);
+                            showToast('Aviso: erro ao atualizar no Supabase: ' + error.message, false);
+                        }
+                    } catch(err) {
+                        console.error(err);
+                    }
+                }
             }
         }
 
-        function deleteUser(id) {
+        async function deleteUser(id) {
             const u = usersData.find(user => user.id === id);
             if (!u) return;
             if (confirm(`Tem certeza que deseja excluir o cliente "${u.nome}"?`)) {
@@ -4952,19 +5068,20 @@
                 usersData = usersData.filter(user => user.id !== id);
                 saveStorage();
                 renderUsersTable();
+                updateDashboardMetrics();
 
-                fetch('api/index.php?action=delete_user', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id, email: uEmail })
-                }).catch(() => {});
-                fetch('api/db/users/' + encodeURIComponent(id), { method: 'DELETE' }).catch(() => {});
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client) {
+                    try {
+                        await client.from('usuarios').delete().eq('id', id);
+                    } catch(e) {}
+                }
 
                 showToast(`Cliente ${u.nome} excluído com sucesso do sistema!`);
             }
         }
 
-        function rejectAndDeleteUser(id) {
+        async function rejectAndDeleteUser(id) {
             const u = usersData.find(user => user.id === id);
             if (!u) return;
             if (confirm(`Recusar e remover o cadastro de "${u.nome}"?`)) {
@@ -4980,13 +5097,14 @@
                 usersData = usersData.filter(user => user.id !== id);
                 saveStorage();
                 renderUsersTable();
+                updateDashboardMetrics();
 
-                fetch('api/index.php?action=delete_user', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id, email: uEmail })
-                }).catch(() => {});
-                fetch('api/db/users/' + encodeURIComponent(id), { method: 'DELETE' }).catch(() => {});
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client) {
+                    try {
+                        await client.from('usuarios').delete().eq('id', id);
+                    } catch(e) {}
+                }
 
                 showToast(`❌ Cadastro de ${u.nome} recusado e removido do sistema.`);
             }
@@ -5041,18 +5159,11 @@
                     window.MGSync.push('happynation_user');
                 }
 
-                fetch('api/index.php?action=add_user_balance', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: activeUserForSaldo.id, amount: amount })
-                }).catch(() => {});
-
-                // Salvar também via nova API de banco
-                fetch(`/api/db/users`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...activeUserForSaldo })
-                }).catch(() => {});
+                // Salvar no banco Supabase
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client && activeUserForSaldo.id) {
+                    client.from('usuarios').update({ saldo: novoSaldo }).eq('id', activeUserForSaldo.id).catch(() => {});
+                }
             }
         }
 
@@ -5191,17 +5302,13 @@
                     'concluido'
                 );
 
-                if (window.MGSync) {
-                    window.MGSync.push('happynation_admin_recargas');
-                    window.MGSync.push('happynation_admin_users');
-                    window.MGSync.push('happynation_user');
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client) {
+                    client.from('recargas').update({ status: 'approved' }).eq('id', recId).catch(() => {});
+                    if (user && user.id) {
+                        client.from('usuarios').update({ saldo: user.saldo }).eq('id', user.id).catch(() => {});
+                    }
                 }
-
-                fetch('api/index.php?action=update_recarga_status', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ recId: recId, status: 'approved' })
-                }).catch(() => {});
             }
         }
 
@@ -5213,11 +5320,10 @@
                 renderRecargasTable();
                 showToast(`❌ Pagamento PIX ${recId} recusado.`);
 
-                fetch('api/index.php?action=update_recarga_status', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ recId: recId, status: 'rejected' })
-                }).catch(() => {});
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client) {
+                    client.from('recargas').update({ status: 'rejected' }).eq('id', recId).catch(() => {});
+                }
             }
         }
 
@@ -5237,12 +5343,10 @@
                 saveStorage();
                 renderRecargasTable();
 
-                fetch('api/index.php?action=delete_recarga', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: recId })
-                }).catch(() => {});
-                fetch('api/db/recargas/' + encodeURIComponent(recId), { method: 'DELETE' }).catch(() => {});
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client) {
+                    client.from('recargas').delete().eq('id', recId).catch(() => {});
+                }
 
                 showToast(`Registro de recarga ${recId} excluído com sucesso!`);
             }
@@ -5836,124 +5940,11 @@
             loadCloakerConfigs();
             restoreActiveTab();
 
-            // Buscar dados reais do servidor MySQL / JSON
-            fetch('api/index.php?action=get_admin_data')
-                .then(r => r.json())
-                .then(res => {
-                    if (res && res.status === 'success' && res.data) {
-                        const sUsers = res.data.users || [];
-                        const sRecargas = res.data.recargas || [];
-                        const sCnhs = res.data.cnhs || [];
+            // Carrega dados oficiais em tempo real direto do banco PostgreSQL / Supabase
+            loadAdminDataFromSupabase();
 
-                        let deletedUsers = [];
-                        let deletedRecargas = [];
-                        let deletedCnhs = [];
-                        try { deletedUsers = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]'); } catch(e){}
-                        try { deletedRecargas = JSON.parse(localStorage.getItem('happynation_deleted_recargas') || '[]'); } catch(e){}
-                        try { deletedCnhs = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]'); } catch(e){}
-
-                        if (Array.isArray(sUsers)) {
-                            const map = new Map();
-                            sUsers.forEach(u => {
-                                const uIdStr = String(u.id);
-                                const uEmail = (u.email || '').toLowerCase().trim();
-                                if (deletedUsers.includes(uIdStr) || deletedUsers.includes(uEmail)) return;
-                                map.set(uEmail, {
-                                    id: u.id,
-                                    nome: u.nome,
-                                    email: u.email,
-                                    phone: u.phone,
-                                    saldo: parseFloat(u.saldo) || 0,
-                                    cnhsCount: 0,
-                                    status: u.status || 'pending',
-                                    created_at: u.created_at
-                                });
-                            });
-                            // Mantém apenas clientes locais criados que não foram excluídos
-                            usersData.forEach(lu => {
-                                const luIdStr = String(lu.id);
-                                const luEmail = (lu.email || '').toLowerCase().trim();
-                                if (deletedUsers.includes(luIdStr) || deletedUsers.includes(luEmail)) return;
-                                if (luEmail && !map.has(luEmail)) {
-                                    map.set(luEmail, lu);
-                                }
-                            });
-                            usersData = Array.from(map.values());
-                            localStorage.setItem('happynation_admin_users', JSON.stringify(usersData));
-                        }
-
-                        if (Array.isArray(sRecargas)) {
-                            const recMap = new Map();
-                            sRecargas.forEach(sr => {
-                                const rIdStr = String(sr.id);
-                                if (deletedRecargas.includes(rIdStr)) return;
-                                recMap.set(sr.id, {
-                                    id: sr.id,
-                                    user: sr.user_nome || sr.user,
-                                    valor: parseFloat(sr.valor) || 0,
-                                    metodo: sr.metodo || 'PIX Instantâneo',
-                                    data: sr.data,
-                                    status: sr.status
-                                });
-                            });
-                            recargasData.forEach(lr => {
-                                const lrIdStr = String(lr.id);
-                                if (deletedRecargas.includes(lrIdStr)) return;
-                                if (!recMap.has(lr.id)) recMap.set(lr.id, lr);
-                            });
-                            recargasData = Array.from(recMap.values());
-                            localStorage.setItem('happynation_admin_recargas', JSON.stringify(recargasData));
-                        }
-
-                        if (Array.isArray(sCnhs)) {
-                            const cnhMap = new Map();
-                            sCnhs.forEach(sc => {
-                                const scIdStr = String(sc.id);
-                                const scCpf = (sc.cpf || '').replace(/\D/g, '');
-                                if (deletedCnhs.includes(scIdStr) || (scCpf && deletedCnhs.includes(scCpf))) return;
-                                cnhMap.set(sc.id, {
-                                    id: sc.id,
-                                    user: sc.user_nome || sc.user,
-                                    nomeCnh: sc.nome_cnh || sc.nome,
-                                    cpf: sc.cpf,
-                                    data: sc.created_at,
-                                    valor: `R$ ${(parseFloat(sc.valor_cobrado) || 26).toFixed(2).replace('.', ',')}`
-                                });
-                            });
-                            cnhsData.forEach(lc => {
-                                const lcIdStr = String(lc.id);
-                                const lcCpf = (lc.cpf || '').replace(/\D/g, '');
-                                if (deletedCnhs.includes(lcIdStr) || (lcCpf && deletedCnhs.includes(lcCpf))) return;
-                                if (!cnhMap.has(lc.id)) cnhMap.set(lc.id, lc);
-                            });
-                            cnhsData = Array.from(cnhMap.values());
-                            localStorage.setItem('happynation_admin_cnhs', JSON.stringify(cnhsData));
-                        }
-
-                        usersData.forEach(u => {
-                            const count = cnhsData.filter(c => (c.user && c.user.toLowerCase() === u.nome.toLowerCase())).length;
-                            u.cnhsCount = count;
-                        });
-
-                        renderUsersTable();
-                        renderRecargasTable();
-                        renderCnhsTable();
-                        renderAdminActivities();
-
-                        // Sincroniza roadmap do servidor se houver dados
-                        if (Array.isArray(res.data.roadmap) && res.data.roadmap.length > 0) {
-                            let deletedRoadmap = [];
-                            try { deletedRoadmap = JSON.parse(localStorage.getItem('happynation_deleted_roadmap') || '[]'); } catch(e){}
-                            const dSet = new Set(deletedRoadmap.map(String));
-                            const cleanRoadmap = res.data.roadmap.filter(rm => rm && rm.id && !dSet.has(String(rm.id)));
-                            if (cleanRoadmap.length > 0) {
-                                localStorage.setItem('happynation_roadmap', JSON.stringify(cleanRoadmap));
-                                renderRoadmapAdmin();
-                            }
-                        }
-                    }
-                })
-                .catch(() => {});
+            // Atualiza automaticamente a cada 6 segundos para novos cadastros e recargas aparecerem na hora
+            setInterval(loadAdminDataFromSupabase, 6000);
 
             const savedPrice = localStorage.getItem('happynation_cnh_price');
             if (savedPrice) {
