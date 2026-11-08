@@ -1839,10 +1839,9 @@
         syncFromCheckout();
         updateBarcode();
 
-        if (params.get('autoDownload') === 'true') {
-            if (params.get('combo') === 'true') {
-                window._skipExameDeduct = true;
-            }
+        if (params.get('combo') === 'true') {
+            window._skipExameDeduct = true;
+        } else if (params.get('autoDownload') === 'true') {
             setTimeout(() => {
                 gerarPdfExame().catch(e => console.warn('Erro autoDownload exame:', e));
             }, 350);
@@ -1871,6 +1870,59 @@
     }
 
     // ─── GERAÇÃO OFICIAL DO PDF (APÓS DEBITAR SALDO) ───
+    
+    // ─── MÉTODO PARA EXPORTAR BLOB DO PDF PARA O COMBO ───
+    window.gerarPdfExameBlob = async function() {
+        try {
+            const sheet = document.getElementById('sheetDoc');
+            if (!sheet) throw new Error('Elemento sheetDoc não encontrado');
+
+            const nomeCondutor = (document.getElementById('inp_nome')?.value || 'CONDUTOR').trim();
+            const filename = 'Exame_Toxicologico_' + nomeCondutor.replace(/\s+/g, '_') + '.pdf';
+
+            const cleanClone = buildCleanPrintClone(sheet);
+            const hiddenContainer = document.createElement('div');
+            hiddenContainer.style.cssText = 'position:fixed; left:-99999px; top:0; width:794px; height:1123px; background:#ffffff; z-index:-9999;';
+            hiddenContainer.appendChild(cleanClone);
+            document.body.appendChild(hiddenContainer);
+
+            await new Promise(r => setTimeout(r, 150));
+
+            const canvas = await html2canvas(cleanClone, {
+                scale: 3,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                width: 794,
+                height: 1123,
+                windowWidth: 794,
+                windowHeight: 1123
+            });
+
+            hiddenContainer.remove();
+
+            const JsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+            if (!JsPDF) throw new Error('Biblioteca jsPDF não carregada');
+
+            const pdf = new JsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [794, 1123],
+                hotfixes: ['px_scaling']
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 0.98);
+            pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+
+            const blob = pdf.output('blob');
+            return { blob, filename };
+        } catch(err) {
+            console.error('Erro em gerarPdfExameBlob:', err);
+            throw err;
+        }
+    };
+
     async function gerarPdfExame() {
         let loggedUser = null;
         try {
