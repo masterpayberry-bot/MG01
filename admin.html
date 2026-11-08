@@ -2875,55 +2875,128 @@
                     </div>
                 </div>
 
-                <!-- Resumo Geral de Indicações -->
-                <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); margin-bottom:20px;">
-                    <div class="stat-card">
-                        <div class="stat-title">Total de Indicados</div>
-                        <div class="stat-value" id="statTotalIndicados">0</div>
-                        <div class="stat-desc">Cadastros via link de indicação</div>
+                <!-- 4 KPI METRIC CARDS PADRÃO DO ADMIN -->
+                <div class="grid-4" style="margin-bottom:24px;">
+                    <div class="card stat-card users">
+                        <div class="stat-card-top">
+                            <div class="stat-icon-wrap green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </div>
+                            <span class="stat-trend-chip green">
+                                <span class="stat-chip-dot pulse"></span>
+                                <span>Cadastros</span>
+                            </span>
+                        </div>
+                        <div class="stat-val" id="statTotalIndicados">0</div>
+                        <div class="stat-lbl">Total de Indicados</div>
+                        <div class="stat-sub">
+                            <span class="stat-sub-dot green"></span>
+                            <span>Cadastros via link de indicação</span>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Bônus Pagos aos Indicadores</div>
-                        <div class="stat-value green" id="statBonusIndicador">R$ 0,00</div>
-                        <div class="stat-desc">R$ 40,00 por indicação qualificada</div>
+
+                    <div class="card stat-card revenue">
+                        <div class="stat-card-top">
+                            <div class="stat-icon-wrap green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
+                            <span class="stat-trend-chip green">
+                                <span class="stat-chip-dot"></span>
+                                <span>R$ 40 / ind.</span>
+                            </span>
+                        </div>
+                        <div class="stat-val" id="statBonusIndicador">R$ 0,00</div>
+                        <div class="stat-lbl">Bônus aos Indicadores</div>
+                        <div class="stat-sub">
+                            <span class="stat-sub-dot green"></span>
+                            <span>R$ 40,00 por indicação qualificada</span>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Bônus Concedidos aos Indicados</div>
-                        <div class="stat-value blue" id="statBonusIndicado">R$ 0,00</div>
-                        <div class="stat-desc">R$ 20,00 no 1º depósito do amigo</div>
+
+                    <div class="card stat-card cnhs">
+                        <div class="stat-card-top">
+                            <div class="stat-icon-wrap blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/></svg>
+                            </div>
+                            <span class="stat-trend-chip blue">
+                                <span class="stat-chip-dot"></span>
+                                <span>R$ 20 / amigo</span>
+                            </span>
+                        </div>
+                        <div class="stat-val" id="statBonusIndicado">R$ 0,00</div>
+                        <div class="stat-lbl">Bônus aos Indicados</div>
+                        <div class="stat-sub">
+                            <span class="stat-sub-dot blue"></span>
+                            <span>R$ 20,00 no 1º depósito do amigo</span>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-title">Aguardando 1º Depósito</div>
-                        <div class="stat-value orange" id="statPendentesIndicados">0</div>
-                        <div class="stat-desc">Aguardando depósito mínimo</div>
+
+                    <div class="card stat-card price">
+                        <div class="stat-card-top">
+                            <div class="stat-icon-wrap orange">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                            </div>
+                            <span class="stat-trend-chip orange">
+                                <span class="stat-chip-dot"></span>
+                                <span>Pendentes</span>
+                            </span>
+                        </div>
+                        <div class="stat-val" id="statPendentesIndicados">0</div>
+                        <div class="stat-lbl">Aguardando 1º Depósito</div>
+                        <div class="stat-sub">
+                            <span class="stat-sub-dot yellow"></span>
+                            <span>Aguardando depósito mín. (R$ 20)</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Configuração de Regras de Depósito Mínimo e Bônus -->
-                <div class="card" style="margin-bottom:20px;">
-                    <div class="card-header-bar">
+                <div class="card" style="margin-bottom:24px;">
+                    <div class="card-header-bar" style="margin-bottom:18px;">
                         <div class="table-title">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                             <span>Regras do Sistema de Indicação</span>
                         </div>
+                        <button type="button" class="btn-save-cfg" onclick="saveIndicacaoConfig()" style="display:inline-flex; align-items:center; gap:6px;">
+                            Salvar Regras 💾
+                        </button>
                     </div>
-                    <div style="padding:16px 20px; display:flex; flex-wrap:wrap; gap:18px; align-items:flex-end;">
-                        <div style="flex:1; min-width:200px;">
-                            <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Depósito Mínimo do Indicado (R$)</label>
-                            <input type="number" step="0.50" id="cfgRefMinDeposit" class="custom-input" value="20.00" style="width:100%; height:40px; background:#121414; border:1px solid #232729; border-radius:8px; padding:0 12px; color:#fff; font-size:14px; font-weight:700;">
+
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
+                        <div class="cfg-card" style="margin:0; background:#121516; border:1px solid #232729; border-radius:12px; padding:18px;">
+                            <div class="cfg-label" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <span style="font-weight:700; color:#fff; font-size:13.5px;">Depósito Mínimo do Amigo</span>
+                                <span style="font-size:11px; color:#fbbf24; font-weight:700; background:rgba(251,191,36,0.12); padding:3px 8px; border-radius:10px;">Gatilho</span>
+                            </div>
+                            <div class="cfg-subtext" style="font-size:12px; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">Valor mínimo do primeiro depósito para aprovar e liberar o bônus.</div>
+                            <div class="cfg-input-row">
+                                <span style="color:#94a3b8; font-weight:700; font-size:14px; margin-right:4px;">R$</span>
+                                <input type="number" step="0.50" class="cfg-input" id="cfgRefMinDeposit" value="20.00" style="font-weight:700; font-size:15px; color:#00dc82;">
+                            </div>
                         </div>
-                        <div style="flex:1; min-width:200px;">
-                            <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Bônus do Indicador (R$)</label>
-                            <input type="number" step="0.50" id="cfgRefBonusIndicador" class="custom-input" value="40.00" style="width:100%; height:40px; background:#121414; border:1px solid #232729; border-radius:8px; padding:0 12px; color:#fff; font-size:14px; font-weight:700;">
+
+                        <div class="cfg-card" style="margin:0; background:#121516; border:1px solid #232729; border-radius:12px; padding:18px;">
+                            <div class="cfg-label" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <span style="font-weight:700; color:#fff; font-size:13.5px;">Bônus do Indicador</span>
+                                <span style="font-size:11px; color:#00dc82; font-weight:700; background:rgba(0,220,130,0.12); padding:3px 8px; border-radius:10px;">Você Ganha</span>
+                            </div>
+                            <div class="cfg-subtext" style="font-size:12px; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">Saldo concedido automaticamente a quem realizou a indicação.</div>
+                            <div class="cfg-input-row">
+                                <span style="color:#94a3b8; font-weight:700; font-size:14px; margin-right:4px;">R$</span>
+                                <input type="number" step="0.50" class="cfg-input" id="cfgRefBonusIndicador" value="40.00" style="font-weight:700; font-size:15px; color:#00dc82;">
+                            </div>
                         </div>
-                        <div style="flex:1; min-width:200px;">
-                            <label style="display:block; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Bônus do Indicado (R$)</label>
-                            <input type="number" step="0.50" id="cfgRefBonusIndicado" class="custom-input" value="20.00" style="width:100%; height:40px; background:#121414; border:1px solid #232729; border-radius:8px; padding:0 12px; color:#fff; font-size:14px; font-weight:700;">
-                        </div>
-                        <div>
-                            <button type="button" class="btn-act approve" onclick="saveIndicacaoConfig()" style="height:40px; padding:0 22px; font-weight:700; font-size:13.5px; border-radius:8px; cursor:pointer;">
-                                Salvar Regras de Bônus 💾
-                            </button>
+
+                        <div class="cfg-card" style="margin:0; background:#121516; border:1px solid #232729; border-radius:12px; padding:18px;">
+                            <div class="cfg-label" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <span style="font-weight:700; color:#fff; font-size:13.5px;">Bônus do Indicado</span>
+                                <span style="font-size:11px; color:#38bdf8; font-weight:700; background:rgba(56,189,248,0.12); padding:3px 8px; border-radius:10px;">Amigo Ganha</span>
+                            </div>
+                            <div class="cfg-subtext" style="font-size:12px; color:var(--text-muted); margin-bottom:14px; line-height:1.4;">Saldo extra de boas-vindas adicionado no 1º depósito do amigo.</div>
+                            <div class="cfg-input-row">
+                                <span style="color:#94a3b8; font-weight:700; font-size:14px; margin-right:4px;">R$</span>
+                                <input type="number" step="0.50" class="cfg-input" id="cfgRefBonusIndicado" value="20.00" style="font-weight:700; font-size:15px; color:#38bdf8;">
+                            </div>
                         </div>
                     </div>
                 </div>
