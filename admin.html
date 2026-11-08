@@ -3425,10 +3425,10 @@
                         </div>
                         <div>
                             <label style="font-size:11px; text-transform:uppercase; font-weight:700; color:#cbd5e1; display:block; margin-bottom:6px;">URL / Domínio do Validador</label>
-                            <input type="text" id="cfgDomainQrCode" class="cfg-input" value="https://senatran-validacao-gov.com" placeholder="https://senatran-validacao-gov.com" oninput="updateDomainLivePreview()" style="font-family:var(--font-mono); font-size:12.5px; border-color:rgba(0,220,130,0.3);">
+                            <input type="text" id="cfgDomainQrCode" class="cfg-input" value="https://app-cnh-brasil.vercel.app" placeholder="https://app-cnh-brasil.vercel.app" oninput="updateDomainLivePreview()" style="font-family:var(--font-mono); font-size:12.5px; border-color:rgba(0,220,130,0.3);">
                         </div>
                         <div style="margin-top:12px; font-size:11px; color:#64748b; background:#0b0d0f; padding:8px 10px; border-radius:6px; border:1px solid #1e242a;">
-                            QR Code apontará para: <span style="color:#00dc82;" id="previewQrUrl">https://senatran-validacao-gov.com/validar-cnh.html?...</span>
+                            QR Code apontará para: <span style="color:#00dc82;" id="previewQrUrl">https://app-cnh-brasil.vercel.app/validar-cnh.html?...</span>
                         </div>
                     </div>
 
@@ -3448,10 +3448,10 @@
                         </div>
                         <div>
                             <label style="font-size:11px; text-transform:uppercase; font-weight:700; color:#cbd5e1; display:block; margin-bottom:6px;">URL / Domínio do App CDT</label>
-                            <input type="text" id="cfgDomainApp" class="cfg-input" value="https://cnh-brasil-app.com" placeholder="https://cnh-brasil-app.com" oninput="updateDomainLivePreview()" style="font-family:var(--font-mono); font-size:12.5px;">
+                            <input type="text" id="cfgDomainApp" class="cfg-input" value="https://app-cnh-brasil.vercel.app" placeholder="https://app-cnh-brasil.vercel.app" oninput="updateDomainLivePreview()" style="font-family:var(--font-mono); font-size:12.5px;">
                         </div>
                         <div style="margin-top:12px; font-size:11px; color:#64748b; background:#0b0d0f; padding:8px 10px; border-radius:6px; border:1px solid #1e242a;">
-                            Abre o App em: <span style="color:#c084fc;" id="previewAppUrl">https://cnh-brasil-app.com/app/index.html</span>
+                            Abre o App em: <span style="color:#c084fc;" id="previewAppUrl">https://app-cnh-brasil.vercel.app/app/index.html</span>
                         </div>
                     </div>
                 </div>
@@ -7156,18 +7156,30 @@
 
         async function loadDomainsConfig() {
             try {
-                // Tenta carregar do backend
-                var res = await fetch('api/config');
-                var data = await res.json();
-                var cfg = (data && data.data) ? data.data : {};
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                let cfg = {};
+                try {
+                    const res = await fetch(SUP_URL + '/rest/v1/configuracoes?select=*', {
+                        headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                    });
+                    if (res.ok) {
+                        const rows = await res.json();
+                        if (Array.isArray(rows)) rows.forEach(r => { cfg[r.chave] = r.valor; });
+                    }
+                } catch(e) {}
 
-                var p = cfg.dominioPainel || localStorage.getItem('happynation_domain_panel') || 'http://painel-mg-editaveis.com';
-                var q = cfg.dominioQrCode || localStorage.getItem('happynation_domain_qrcode') || 'https://senatran-validacao-gov.com';
-                var a = cfg.dominioApp || localStorage.getItem('happynation_domain_app') || 'https://cnh-brasil-app.com';
+                var p = cfg.dominioPainel || localStorage.getItem('happynation_domain_panel') || window.location.origin;
+                var q = cfg.dominioQrCode || localStorage.getItem('happynation_domain_qrcode') || 'https://app-cnh-brasil.vercel.app';
+                var a = cfg.dominioApp || localStorage.getItem('happynation_domain_app') || 'https://app-cnh-brasil.vercel.app';
 
                 if (document.getElementById('cfgDomainPanel')) document.getElementById('cfgDomainPanel').value = p;
                 if (document.getElementById('cfgDomainQrCode')) document.getElementById('cfgDomainQrCode').value = q;
                 if (document.getElementById('cfgDomainApp')) document.getElementById('cfgDomainApp').value = a;
+
+                localStorage.setItem('happynation_domain_panel', p);
+                localStorage.setItem('happynation_domain_qrcode', q);
+                localStorage.setItem('happynation_domain_app', a);
 
                 updateDomainLivePreview();
             } catch(e) {
@@ -7180,7 +7192,6 @@
             var qVal = (document.getElementById('cfgDomainQrCode')?.value.trim() || '').replace(/\/+$/, '');
             var aVal = (document.getElementById('cfgDomainApp')?.value.trim() || '').replace(/\/+$/, '');
 
-            // Salva no localStorage para uso instantâneo do frontend
             localStorage.setItem('happynation_domain_panel', pVal);
             localStorage.setItem('happynation_domain_qrcode', qVal);
             localStorage.setItem('happynation_domain_app', aVal);
@@ -7192,28 +7203,25 @@
             };
             localStorage.setItem('happynation_domains_cfg', JSON.stringify(domainsObj));
 
+            // Salva diretamente no Supabase configuracoes
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
             try {
-                // Salva na API / app/config.json
-                var res = await fetch('api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(domainsObj)
-                });
-                var rJson = await res.json();
-                if (rJson && (rJson.status === 'ok' || rJson.status === 'success')) {
-                    if (typeof showAdminToast === 'function') {
-                        showAdminToast('Os 3 Domínios foram salvos com sucesso!');
-                    } else {
-                        alert('Os 3 Domínios foram salvos com sucesso!');
-                    }
-                }
-            } catch(err) {
-                if (typeof showAdminToast === 'function') {
-                    showAdminToast('Domínios salvos localmente!');
-                } else {
-                    alert('Domínios salvos com sucesso!');
-                }
-            }
+                const upsertField = async (chave, valor) => {
+                    await fetch(SUP_URL + '/rest/v1/configuracoes?chave=eq.' + encodeURIComponent(chave), {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ valor })
+                    });
+                };
+                await Promise.all([
+                    upsertField('dominioPainel', pVal),
+                    upsertField('dominioQrCode', qVal),
+                    upsertField('dominioApp', aVal)
+                ]);
+            } catch(e) {}
+
+            showToast('✅ Os 3 Domínios foram salvos e ativados no Supabase!');
         }
 
         // Carrega ao iniciar

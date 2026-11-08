@@ -340,6 +340,20 @@
         </div>
     </div>
 
+    <!-- Card / Botão de Acesso Direto à Carteira Digital CDT -->
+    <div style="margin: 18px 16px 12px 16px; padding: 16px; background: linear-gradient(135deg, rgba(37,90,184,0.08), rgba(37,90,184,0.02)); border: 1.5px solid rgba(37,90,184,0.3); border-radius: 12px; text-align: center;">
+        <div style="font-size: 13.5px; font-weight: 800; color: #1e3a8a; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#255ab8" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Carteira Digital de Trânsito (CDT)
+        </div>
+        <div style="font-size: 11.5px; color: #64748b; margin-bottom: 12px; line-height: 1.4;">
+            Abra a versão digital interativa desta CNH diretamente no aplicativo CDT no seu celular.
+        </div>
+        <a id="btnAbrirAppCdt" href="app/index.html" style="display: block; background: #255ab8; color: #ffffff; text-decoration: none; font-weight: 800; font-size: 13px; padding: 12px 18px; border-radius: 8px; box-shadow: 0 4px 14px rgba(37,90,184,0.25); text-transform: uppercase; letter-spacing: 0.3px;">
+            📲 Abrir no Aplicativo Carteira Digital (CDT)
+        </a>
+    </div>
+
     <!-- Badge de Validação Oficial -->
     <div class="gov-footer-badge">
         <svg viewBox="0 0 20 20" fill="currentColor">
@@ -352,6 +366,17 @@
 <script>
 window.addEventListener('load', () => {
     const params = new URLSearchParams(window.location.search);
+
+    // Redirecionamento automático caso solicitado na URL
+    if (params.get('auto_app') === '1' || params.get('redirect_app') === '1' || params.get('app') === '1') {
+        window.location.replace('app/index.html?view=cnh&' + params.toString());
+        return;
+    }
+
+    const btnApp = document.getElementById('btnAbrirAppCdt');
+    if (btnApp) {
+        btnApp.href = 'app/index.html?view=cnh&' + params.toString();
+    }
 
     const nome = params.get('nome');
     const cpf = params.get('cpf');

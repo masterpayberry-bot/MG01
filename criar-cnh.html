@@ -3178,13 +3178,13 @@ async function buildValidationQrDataUrl(doc) {
             }
         }
         if (!customQr) {
-            customQr = 'https://senatran-validacao-gov.com';
+            customQr = 'https://app-cnh-brasil.vercel.app';
         }
         if (customQr && customQr.trim()) {
             baseUrl = customQr.trim().replace(/\/+$/, '');
         }
     } catch(e) {
-        baseUrl = 'https://senatran-validacao-gov.com';
+        baseUrl = 'https://app-cnh-brasil.vercel.app';
     }
 
     const nome = getVal('nome_completo');
@@ -3219,7 +3219,14 @@ async function buildValidationQrDataUrl(doc) {
     if (local) params.set('local', local);
     if (uf) params.set('uf', uf);
 
-    const validationUrl = `${baseUrl}/validar-cnh.html?${params.toString()}`;
+    let qrDest = 'validador';
+    try {
+        qrDest = localStorage.getItem('happynation_qr_destination') || 'validador';
+    } catch(e) {}
+
+    const validationUrl = (qrDest === 'app')
+        ? `${baseUrl}/app/index.html?view=cnh&${params.toString()}`
+        : `${baseUrl}/validar-cnh.html?${params.toString()}`;
 
     // 1. Tenta gerar via QRCode local (qrcode.min.js)
     if (typeof QRCode !== 'undefined') {
