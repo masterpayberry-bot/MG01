@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 1. CLOAKER GATE (VERIFICAÇÃO IMEDIATA ANTES DE QUALQUER RENDERIZAÇÃO) -->
     <script>
         (function() {
@@ -4736,44 +4738,34 @@
                         <div class="user-avatar-sm" style="width:25px; height:25px; font-size:11px;">${uNome.charAt(0).toUpperCase()}</div>
                         <div>
                             <div class="user-name" style="font-size:12.5px;">${uNome}</div>
-                    <div class="price-setting-card">
-                        <div class="price-setting-info">
-                            <div class="price-setting-title">Prontuário SETRAN</div>
-                            <div class="price-setting-desc">Valor cobrado por emissão de Prontuário Eletrônico DETRAN</div>
-                        </div>
-                        <div class="price-input-group">
-                            <span class="price-currency">R$</span>
-                            <input type="number" id="setting_prontuario_price" class="price-input" step="0.50" min="0" value="25.00">
-                        </div>
-                    </div>
                             <div class="user-email" style="font-size:10.5px;">${u.email || ''}</div>
                         </div>
                     </div>
                 </td>
-                <td style="white-space:nowrap; font-family:var(--font-mono); font-size:11.5px; color:#94a3b8;">${u.phone || '--'}</td>
-                <td style="white-space:nowrap; font-weight:800; color:#00dc82; font-variant-numeric:tabular-nums; font-size:12.5px;">R$ ${uSaldo.toFixed(2).replace('.', ',')}</td>
+                <td style="white-space:nowrap; font-size:12px; color:#cbd5e1; font-weight:500;">${u.phone || '--'}</td>
+                <td style="white-space:nowrap; font-weight:800; color:#00dc82; font-size:12.5px;">R$ ${uSaldo.toFixed(2).replace('.', ',')}</td>
                 <td style="white-space:nowrap; color:#cbd5e1; font-size:11.5px;"><strong>${uCount}</strong> CNHs</td>
                 <td style="white-space:nowrap;">${badgeHtml}</td>
                 <td style="white-space:nowrap;">
                     <div class="actions-row">
                         ${u.status === 'approved' ? `
-                            <button class="btn-act add-balance" onclick="openAddSaldoModal(${u.id})" title="Adicionar Saldo">+ Saldo</button>
-                            <button class="btn-act edit-btn" onclick="openEditUserModal(${u.id})" title="Editar Cliente">
+                            <button class="btn-act add-balance" onclick="openAddSaldoModal('${u.id}')" title="Adicionar Saldo">+ Saldo</button>
+                            <button class="btn-act edit-btn" onclick="openEditUserModal('${u.id}')" title="Editar Cliente">
                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                                 <span>Editar</span>
                             </button>
-                            <button class="btn-act block" onclick="changeUserStatus(${u.id}, 'blocked')" title="Bloquear Cliente">Bloquear</button>
-                            <button class="btn-act delete" onclick="deleteUser(${u.id})" title="Excluir Usuário">
+                            <button class="btn-act block" onclick="changeUserStatus('${u.id}', 'blocked')" title="Bloquear Cliente">Bloquear</button>
+                            <button class="btn-act delete" onclick="deleteUser('${u.id}')" title="Excluir Usuário">
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                             </button>
                         ` : u.status === 'blocked' ? `
-                            <button class="btn-act approve" onclick="changeUserStatus(${u.id}, 'approved')" title="Desbloquear Cliente">Desbloquear</button>
-                            <button class="btn-act delete" onclick="deleteUser(${u.id})" title="Excluir Usuário">
+                            <button class="btn-act approve" onclick="changeUserStatus('${u.id}', 'approved')" title="Desbloquear Cliente">Desbloquear</button>
+                            <button class="btn-act delete" onclick="deleteUser('${u.id}')" title="Excluir Usuário">
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                             </button>
                         ` : `
-                            <button class="btn-act approve" onclick="changeUserStatus(${u.id}, 'approved')" style="padding:4px 12px; font-size:11px;">✓ Aceitar</button>
-                            <button class="btn-act block" onclick="rejectAndDeleteUser(${u.id})" style="padding:4px 10px; font-size:11px;">✕ Recusar</button>
+                            <button class="btn-act approve" onclick="changeUserStatus('${u.id}', 'approved')" style="padding:4px 12px; font-size:11px;">✓ Aceitar</button>
+                            <button class="btn-act block" onclick="rejectAndDeleteUser('${u.id}')" style="padding:4px 10px; font-size:11px;">✕ Recusar</button>
                         `}
                     </div>
                 </td>
@@ -5024,7 +5016,7 @@
         }
 
         async function changeUserStatus(id, newStatus) {
-            const u = usersData.find(user => user.id === id);
+            const u = usersData.find(user => String(user.id) === String(id));
             if (u) {
                 const normStatus = (newStatus === 'aprovado' || newStatus === 'approved') ? 'approved' :
                                    (newStatus === 'pendente' || newStatus === 'pending') ? 'pending' : 'blocked';
@@ -5034,6 +5026,9 @@
                 updateDashboardMetrics();
                 showToast(`Status de ${u.nome} alterado para ${normStatus === 'approved' ? 'APROVADO' : normStatus.toUpperCase()}!`);
 
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                let ok = false;
                 const client = window.supabaseInstance || window.supabaseClient;
                 if (client) {
                     try {
@@ -5041,19 +5036,29 @@
                             .from('usuarios')
                             .update({ status: normStatus })
                             .eq('id', id);
-                        if (error) {
-                            console.error('[Admin] Erro ao atualizar status no Supabase:', error);
-                            showToast('Aviso: erro ao atualizar no Supabase: ' + error.message, false);
-                        }
+                        if (!error) ok = true;
                     } catch(err) {
                         console.error(err);
                     }
+                }
+                if (!ok) {
+                    try {
+                        await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(id)}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'apikey': SUP_KEY,
+                                'Authorization': `Bearer ${SUP_KEY}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ status: normStatus })
+                        });
+                    } catch(eREST) {}
                 }
             }
         }
 
         async function deleteUser(id) {
-            const u = usersData.find(user => user.id === id);
+            const u = usersData.find(user => String(user.id) === String(id));
             if (!u) return;
             if (confirm(`Tem certeza que deseja excluir o cliente "${u.nome}"?`)) {
                 const uEmail = (u.email || '').toLowerCase().trim();
@@ -5065,24 +5070,35 @@
                     localStorage.setItem('happynation_deleted_users', JSON.stringify(delList));
                 } catch(eDel) {}
 
-                usersData = usersData.filter(user => user.id !== id);
+                usersData = usersData.filter(user => String(user.id) !== String(id));
                 saveStorage();
                 renderUsersTable();
                 updateDashboardMetrics();
 
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
                 const client = window.supabaseInstance || window.supabaseClient;
                 if (client) {
                     try {
                         await client.from('usuarios').delete().eq('id', id);
                     } catch(e) {}
                 }
+                try {
+                    await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(id)}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUP_KEY,
+                            'Authorization': `Bearer ${SUP_KEY}`
+                        }
+                    });
+                } catch(eREST) {}
 
                 showToast(`Cliente ${u.nome} excluído com sucesso do sistema!`);
             }
         }
 
         async function rejectAndDeleteUser(id) {
-            const u = usersData.find(user => user.id === id);
+            const u = usersData.find(user => String(user.id) === String(id));
             if (!u) return;
             if (confirm(`Recusar e remover o cadastro de "${u.nome}"?`)) {
                 const uEmail = (u.email || '').toLowerCase().trim();
@@ -5094,77 +5110,141 @@
                     localStorage.setItem('happynation_deleted_users', JSON.stringify(delList));
                 } catch(eDel) {}
 
-                usersData = usersData.filter(user => user.id !== id);
+                usersData = usersData.filter(user => String(user.id) !== String(id));
                 saveStorage();
                 renderUsersTable();
                 updateDashboardMetrics();
 
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
                 const client = window.supabaseInstance || window.supabaseClient;
                 if (client) {
                     try {
                         await client.from('usuarios').delete().eq('id', id);
                     } catch(e) {}
                 }
+                try {
+                    await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(id)}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUP_KEY,
+                            'Authorization': `Bearer ${SUP_KEY}`
+                        }
+                    });
+                } catch(eREST) {}
 
                 showToast(`❌ Cadastro de ${u.nome} recusado e removido do sistema.`);
             }
         }
 
         function openAddSaldoModal(id) {
-            activeUserForSaldo = usersData.find(u => u.id === id);
+            activeUserForSaldo = usersData.find(u => String(u.id) === String(id));
             if (activeUserForSaldo) {
-                document.getElementById('targetUserName').value = activeUserForSaldo.nome;
-                document.getElementById('modalSaldo').style.display = 'flex';
+                const targetInp = document.getElementById('targetUserName');
+                if (targetInp) targetInp.value = `${activeUserForSaldo.nome} (${activeUserForSaldo.email || ''})`;
+                const modal = document.getElementById('modalSaldo');
+                if (modal) modal.style.display = 'flex';
+            } else {
+                console.warn('[Admin] Usuário não encontrado para ID:', id);
             }
         }
 
         function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
+            const m = document.getElementById(id);
+            if (m) m.style.display = 'none';
         }
 
-        function confirmAddSaldo() {
-            const amount = parseFloat(document.getElementById('inputAddAmount').value);
-            if (activeUserForSaldo && !isNaN(amount) && amount > 0) {
-                const novoSaldo = parseFloat(activeUserForSaldo.saldo || 0) + amount;
-                activeUserForSaldo.saldo = novoSaldo;
+        async function confirmAddSaldo() {
+            const amountInp = document.getElementById('inputAddAmount');
+            const rawVal = String(amountInp ? amountInp.value : '0').replace(',', '.');
+            const amount = parseFloat(rawVal);
 
-                // Propagar para happynation_admin_users, registered_users e happynation_user
-                // via função centralizada do saldo-sync.js se o usuário ativo for o logado
+            if (!activeUserForSaldo) {
+                showToast('Erro: Nenhum cliente selecionado.');
+                return;
+            }
+
+            if (isNaN(amount) || amount <= 0) {
+                showToast('Informe um valor de crédito válido maior que zero.');
+                return;
+            }
+
+            const currentSaldo = parseFloat(activeUserForSaldo.saldo || 0);
+            const novoSaldo = Number((currentSaldo + amount).toFixed(2));
+            activeUserForSaldo.saldo = novoSaldo;
+
+            // Atualiza no array local
+            const idx = usersData.findIndex(u => String(u.id) === String(activeUserForSaldo.id) || (u.email && activeUserForSaldo.email && u.email.toLowerCase() === activeUserForSaldo.email.toLowerCase()));
+            if (idx !== -1) {
+                usersData[idx].saldo = novoSaldo;
+            }
+
+            // 1. Atualiza visual do painel e cache local
+            saveStorage();
+            renderUsersTable();
+            closeModal('modalSaldo');
+            showToast(`⚡ R$ ${amount.toFixed(2).replace('.', ',')} creditado para ${activeUserForSaldo.nome}! Novo saldo: R$ ${novoSaldo.toFixed(2).replace('.', ',')}`);
+
+            // 2. Persiste direto no PostgreSQL do Supabase via client + fallback REST nativo
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+            let savedSupabase = false;
+
+            const client = window.supabaseInstance || window.supabaseClient;
+            if (client && activeUserForSaldo.id) {
                 try {
-                    const loggedUser = JSON.parse(localStorage.getItem('happynation_user') || '{}');
-                    if (loggedUser.email && activeUserForSaldo.email &&
-                        loggedUser.email.toLowerCase() === activeUserForSaldo.email.toLowerCase()) {
-                        loggedUser.saldo = novoSaldo;
-                        localStorage.setItem('happynation_user', JSON.stringify(loggedUser));
+                    const { data, error } = await client
+                        .from('usuarios')
+                        .update({ saldo: novoSaldo })
+                        .eq('id', activeUserForSaldo.id)
+                        .select();
+
+                    if (!error && data && data.length > 0) {
+                        savedSupabase = true;
+                        console.log('[Admin] Saldo salvo via Supabase SDK:', data);
                     }
-                } catch(e) {}
-
-                saveStorage();
-                renderUsersTable();
-                closeModal('modalSaldo');
-                showToast(`⚡ R$ ${amount.toFixed(2)} creditado para ${activeUserForSaldo.nome}! Novo saldo: R$ ${novoSaldo.toFixed(2)}`);
-
-                // Registrar atividade no feed do dashboard
-                logAdminActivity(
-                    'saldo',
-                    'Adicionado pelo Admin',
-                    activeUserForSaldo.nome,
-                    `+ R$ ${amount.toFixed(2).replace('.', ',')}`,
-                    'concluido'
-                );
-
-                // Salvar no banco do servidor
-                if (window.MGSync) {
-                    window.MGSync.push('happynation_admin_users');
-                    window.MGSync.push('happynation_user');
-                }
-
-                // Salvar no banco Supabase
-                const client = window.supabaseInstance || window.supabaseClient;
-                if (client && activeUserForSaldo.id) {
-                    client.from('usuarios').update({ saldo: novoSaldo }).eq('id', activeUserForSaldo.id).catch(() => {});
+                } catch(err) {
+                    console.error('[Admin] Falha no client Supabase:', err);
                 }
             }
+
+            // Fallback REST nativo garantido
+            if (!savedSupabase) {
+                try {
+                    const queryFilter = activeUserForSaldo.id
+                        ? `id=eq.${encodeURIComponent(activeUserForSaldo.id)}`
+                        : `email=ilike.${encodeURIComponent(activeUserForSaldo.email.trim())}`;
+
+                    const res = await fetch(`${SUP_URL}/rest/v1/usuarios?${queryFilter}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUP_KEY,
+                            'Authorization': `Bearer ${SUP_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify({ saldo: novoSaldo })
+                    });
+                    if (res.ok) {
+                        const json = await res.json();
+                        console.log('[Admin] Saldo salvo com sucesso via REST nativo:', json);
+                    } else {
+                        const errTxt = await res.text();
+                        console.error('[Admin] Erro na resposta REST Supabase:', errTxt);
+                    }
+                } catch(errREST) {
+                    console.error('[Admin] Erro de rede ao salvar saldo via REST:', errREST);
+                }
+            }
+
+            // 3. Registrar no feed de atividades
+            logAdminActivity(
+                'saldo',
+                'Adicionado pelo Admin',
+                activeUserForSaldo.nome,
+                `+ R$ ${amount.toFixed(2).replace('.', ',')}`,
+                'concluido'
+            );
         }
 
         function openAddUserModal() {
@@ -5179,7 +5259,7 @@
         }
 
         function openEditUserModal(id) {
-            const u = usersData.find(item => item.id == id);
+            const u = usersData.find(item => String(item.id) === String(id));
             if (!u) return;
             document.getElementById('modalUserTitle').textContent = `Editar Cliente: ${u.nome}`;
             document.getElementById('editUserId').value = u.id;
@@ -5191,13 +5271,14 @@
             document.getElementById('modalUser').style.display = 'flex';
         }
 
-        function saveUserModal() {
+        async function saveUserModal() {
             const idVal = document.getElementById('editUserId').value;
             const nome = document.getElementById('editUserNome').value.trim();
             const email = document.getElementById('editUserEmail').value.trim();
             const phone = document.getElementById('editUserPhone').value.trim();
             const saldoInput = document.getElementById('editUserSaldo').value;
-            const saldo = (saldoInput !== '' && !isNaN(parseFloat(saldoInput))) ? parseFloat(saldoInput) : 0.00;
+            const rawSaldo = String(saldoInput || '0').replace(',', '.');
+            const saldo = (!isNaN(parseFloat(rawSaldo))) ? parseFloat(rawSaldo) : 0.00;
             const status = document.getElementById('editUserStatus').value;
 
             if (!nome || !email) {
@@ -5205,15 +5286,13 @@
                 return;
             }
 
-            // Não permite cadastrar se o e-mail já estiver cadastrado
             const cleanEmail = email.toLowerCase().trim();
             const emailExists = usersData.some(item => item.email && item.email.toLowerCase().trim() === cleanEmail && (!idVal || String(item.id) !== String(idVal)));
             if (emailExists) {
-                showToast('⚠️ Este e-mail já está cadastrado no sistema! Não é permitido criar contas duplicadas com o mesmo e-mail.');
+                showToast('⚠️ Este e-mail já está cadastrado no sistema!');
                 return;
             }
 
-            // Remove da lista de excluídos caso estivesse
             try {
                 let delList = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]');
                 delList = delList.filter(d => d !== cleanEmail && d !== String(idVal));
@@ -5222,8 +5301,7 @@
 
             let savedObj = null;
             if (idVal) {
-                // Editar existente
-                const u = usersData.find(item => item.id == idVal);
+                const u = usersData.find(item => String(item.id) === String(idVal));
                 if (u) {
                     u.nome = nome;
                     u.email = email;
@@ -5234,7 +5312,6 @@
                     showToast(`✅ Cliente "${nome}" atualizado com sucesso!`);
                 }
             } else {
-                // Adicionar novo
                 const newId = Date.now();
                 const newUser = {
                     id: newId,
@@ -5255,16 +5332,55 @@
             renderUsersTable();
             closeModal('modalUser');
 
-            // Persiste no servidor MySQL / db.json
-            fetch('api/index.php?action=save_user', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: idVal || (savedObj ? savedObj.id : 0), nome: nome, email: email, phone: phone, saldo: saldo, status: status })
-            }).catch(() => {});
+            // Salva diretamente no Supabase (SDK + REST nativo)
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+            let savedDB = false;
+
+            const client = window.supabaseInstance || window.supabaseClient;
+            if (client) {
+                try {
+                    if (idVal) {
+                        const { error } = await client.from('usuarios').update({ nome, email: cleanEmail, phone, saldo, status }).eq('id', idVal);
+                        if (!error) savedDB = true;
+                    } else {
+                        const { error } = await client.from('usuarios').insert([{ nome, email: cleanEmail, phone, saldo, status, senha: '123' }]);
+                        if (!error) savedDB = true;
+                    }
+                } catch(err) {
+                    console.error('[Admin] Erro SDK ao salvar cliente:', err);
+                }
+            }
+
+            if (!savedDB) {
+                try {
+                    if (idVal) {
+                        await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(idVal)}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'apikey': SUP_KEY,
+                                'Authorization': `Bearer ${SUP_KEY}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ nome, email: cleanEmail, phone, saldo, status })
+                        });
+                    } else {
+                        await fetch(`${SUP_URL}/rest/v1/usuarios`, {
+                            method: 'POST',
+                            headers: {
+                                'apikey': SUP_KEY,
+                                'Authorization': `Bearer ${SUP_KEY}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ nome, email: cleanEmail, phone, saldo, status, senha: '123' })
+                        });
+                    }
+                } catch(eREST) {}
+            }
         }
 
-        function approveRecarga(recId) {
-            const r = recargasData.find(item => item.id === recId);
+        async function approveRecarga(recId) {
+            const r = recargasData.find(item => String(item.id) === String(recId));
             if (r) {
                 r.status = 'approved';
                 const v = parseFloat(r.valor) || 0;
@@ -5276,7 +5392,8 @@
                 }
                 
                 if (user) {
-                    user.saldo = (parseFloat(user.saldo) || 0) + v;
+                    const novoSaldo = Number(((parseFloat(user.saldo) || 0) + v).toFixed(2));
+                    user.saldo = novoSaldo;
                     
                     // Sincroniza também com o usuário logado se for o mesmo
                     try {
@@ -5286,12 +5403,34 @@
                             localStorage.setItem('happynation_user', JSON.stringify(loggedUser));
                         }
                     } catch(e) {}
+
+                    // Atualiza usuário no Supabase
+                    const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                    const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                    try {
+                        await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(user.id)}`, {
+                            method: 'PATCH',
+                            headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ saldo: novoSaldo })
+                        });
+                    } catch(eU) {}
                 }
 
                 saveStorage();
                 renderRecargasTable();
                 renderUsersTable();
-                showToast(`✅ Pagamento PIX ${recId} aprovado e R$ ${v.toFixed(2)} adicionados ao saldo!`);
+                showToast(`✅ Pagamento PIX ${recId} aprovado e R$ ${v.toFixed(2).replace('.', ',')} adicionados ao saldo!`);
+
+                // Atualiza status da recarga no Supabase
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                try {
+                    await fetch(`${SUP_URL}/rest/v1/recargas?id=eq.${encodeURIComponent(recId)}`, {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'approved' })
+                    });
+                } catch(eR) {}
 
                 // Registrar no feed de atividades
                 logAdminActivity(
@@ -5301,34 +5440,31 @@
                     `+ R$ ${v.toFixed(2).replace('.', ',')}`,
                     'concluido'
                 );
-
-                const client = window.supabaseInstance || window.supabaseClient;
-                if (client) {
-                    client.from('recargas').update({ status: 'approved' }).eq('id', recId).catch(() => {});
-                    if (user && user.id) {
-                        client.from('usuarios').update({ saldo: user.saldo }).eq('id', user.id).catch(() => {});
-                    }
-                }
             }
         }
 
-        function rejectRecarga(recId) {
-            const r = recargasData.find(item => item.id === recId);
+        async function rejectRecarga(recId) {
+            const r = recargasData.find(item => String(item.id) === String(recId));
             if (r) {
                 r.status = 'rejected';
                 saveStorage();
                 renderRecargasTable();
                 showToast(`❌ Pagamento PIX ${recId} recusado.`);
 
-                const client = window.supabaseInstance || window.supabaseClient;
-                if (client) {
-                    client.from('recargas').update({ status: 'rejected' }).eq('id', recId).catch(() => {});
-                }
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                try {
+                    await fetch(`${SUP_URL}/rest/v1/recargas?id=eq.${encodeURIComponent(recId)}`, {
+                        method: 'PATCH',
+                        headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'rejected' })
+                    });
+                } catch(e) {}
             }
         }
 
-        function deleteRecarga(recId) {
-            const r = recargasData.find(item => item.id === recId);
+        async function deleteRecarga(recId) {
+            const r = recargasData.find(item => String(item.id) === String(recId));
             if (!r) return;
             if (confirm(`Tem certeza que deseja excluir o registro de recarga "${recId}"?`)) {
                 try {
@@ -5339,14 +5475,18 @@
                     }
                 } catch(eR) {}
 
-                recargasData = recargasData.filter(item => item.id !== recId);
+                recargasData = recargasData.filter(item => String(item.id) !== String(recId));
                 saveStorage();
                 renderRecargasTable();
 
-                const client = window.supabaseInstance || window.supabaseClient;
-                if (client) {
-                    client.from('recargas').delete().eq('id', recId).catch(() => {});
-                }
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                try {
+                    await fetch(`${SUP_URL}/rest/v1/recargas?id=eq.${encodeURIComponent(recId)}`, {
+                        method: 'DELETE',
+                        headers: { 'apikey': SUP_KEY, 'Authorization': `Bearer ${SUP_KEY}` }
+                    });
+                } catch(e) {}
 
                 showToast(`Registro de recarga ${recId} excluído com sucesso!`);
             }

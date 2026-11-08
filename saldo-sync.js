@@ -1,19 +1,18 @@
 /**
  * saldo-sync.js — MG Editáveis
  * Fonte ÚNICA e CENTRAL de verdade para o saldo em todo o sistema.
- * Garante sincronia 100% perfeita entre todas as páginas e abas:
- *  - happynation_user
- *  - happynation_admin_users
- *  - happynation_registered_users
- *  - Supabase Database (usuarios)
+ * Sincroniza em tempo real com o banco de dados PostgreSQL do Supabase via REST nativo e SDK.
+ * Compatível 100% com Vercel (Front-end estático em abas e dispositivos diferentes).
  */
 (function () {
   'use strict';
 
-  const USER_KEY    = 'happynation_user';
-  const ADMIN_KEY   = 'happynation_admin_users';
-  const REG_KEY     = 'happynation_registered_users';
-  const CACHE_KEY   = 'happynation_saldo_cache';
+  const SUPABASE_URL      = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+  const SUPABASE_KEY      = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+  const USER_KEY          = 'happynation_user';
+  const ADMIN_KEY         = 'happynation_admin_users';
+  const REG_KEY           = 'happynation_registered_users';
+  const CACHE_KEY         = 'happynation_saldo_cache';
 
   function safeJSON(key, def) {
     try {
@@ -30,7 +29,7 @@
     const email = (user.email || '').toLowerCase().trim();
     const adminUsers = safeJSON(ADMIN_KEY, []);
 
-    // 1. Prioridade: se existe no adminUsers, o saldo gerenciado pelo Admin é a autoridade máxima
+    // 1. Se existe no adminUsers gerenciado nesta máquina
     if (email && Array.isArray(adminUsers)) {
       const match = adminUsers.find(u => u.email && u.email.toLowerCase().trim() === email);
       if (match && match.saldo !== undefined && match.saldo !== null && !isNaN(parseFloat(match.saldo))) {
@@ -38,12 +37,12 @@
       }
     }
 
-    // 2. Se não tem no adminUsers mas o user tem saldo
+    // 2. Se o usuário tem saldo no objeto de sessão
     if (user && user.saldo !== undefined && user.saldo !== null && !isNaN(parseFloat(user.saldo))) {
       return Math.max(0, parseFloat(user.saldo));
     }
 
-    // 3. Fallback no cache
+    // 3. Fallback no cache local
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached !== null && !isNaN(parseFloat(cached))) {
       return Math.max(0, parseFloat(cached));
@@ -52,7 +51,7 @@
     return 0;
   }
 
-  // ─── Formatação ─────────────────────────────────────────────────────────────
+  // ─── Formatação em Moeda Brasileira ─────────────────────────────────────────
   function formatMoney(num) {
     return 'R$ ' + (num || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
@@ -61,20 +60,20 @@
     return 'Saldo R$ ' + (num || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  // ─── Atualiza TODOS os elementos na tela ───────────────────────────────────
+  // ─── Atualiza TODOS os elementos de saldo na tela ────────────────────────────
   function updateDOM(val) {
     const moneyStr = formatMoney(val);
     const headerStr = formatSaldoHeader(val);
 
-    // 1. Elementos de Header (com prefixo "Saldo ")
+    // 1. Elementos de Header (com prefixo "Saldo R$ ...")
     const headerIds = ['userHeaderSaldo', 'headerSaldo'];
     headerIds.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.textContent = headerStr;
     });
 
-    // 2. Elementos de valor puro (apenas "R$ 0,00")
-    const valueIds = ['mainSaldoValor', 'metricSaldo', 'bottomBarSaldo', 'userSaldo', 'saldoDisplay', 'saldo-display', 'dashSaldo', 'saldoValue'];
+    // 2. Elementos de valor puro ("R$ ...")
+    const valueIds = ['mainSaldoValor', 'metricSaldo', 'bottomBarSaldo', 'userSaldo', 'saldoDisplay', 'saldo-display', 'dashSaldo', 'saldoValue', 'costUserSaldo'];
     valueIds.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.textContent = moneyStr;
@@ -82,13 +81,12 @@
 
     // 3. Spans dentro de .saldo-pill que não têm ID próprio
     document.querySelectorAll('.saldo-pill span').forEach(el => {
-      // Se não tem id específico já tratado
       if (!headerIds.includes(el.id) && !valueIds.includes(el.id)) {
         el.textContent = headerStr;
       }
     });
 
-    // 4. Elementos genéricos marcados com atributo
+    // 4. Elementos genéricos com atributo data-mg-saldo
     document.querySelectorAll('[data-mg-saldo]').forEach(el => {
       el.textContent = moneyStr;
     });
@@ -103,7 +101,7 @@
 
     // 2. happynation_user
     const user = safeJSON(USER_KEY, {});
-    if (user) {
+    if (user && typeof user === 'object' && Object.keys(user).length > 0) {
       user.saldo = val;
       try {
         if (sessionStorage.getItem(USER_KEY)) {
@@ -136,11 +134,72 @@
 
     updateDOM(val);
 
-    // Notifica outras abas/scripts
+    // Notifica outras abas e scripts
     try { window.dispatchEvent(new CustomEvent('mg_saldo_updated', { detail: { saldo: val } })); } catch(e) {}
   }
 
-  // ─── API Global ────────────────────────────────────────────────────────────
+  // ─── Sincronização em Tempo Real com o Banco Supabase (REST Nativo + SDK) ───
+  let isFetching = false;
+  async function fetchSaldoFromSupabase() {
+    if (isFetching) return;
+    try {
+      const user = safeJSON(USER_KEY, {});
+      if (!user || (!user.id && !user.email)) return;
+
+      // Não busca saldo para admin master padrão sem vínculo específico
+      if (user.role === 'admin' && String(user.email).toUpperCase() === 'MG' && !user.id) return;
+
+      isFetching = true;
+
+      const cleanEmail = (user.email || '').toLowerCase().trim();
+      let queryUrl = '';
+
+      if (user.id) {
+        queryUrl = `${SUPABASE_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(user.id)}&select=id,saldo,status`;
+      } else if (cleanEmail) {
+        queryUrl = `${SUPABASE_URL}/rest/v1/usuarios?email=ilike.${encodeURIComponent(cleanEmail)}&select=id,saldo,status`;
+      } else {
+        isFetching = false;
+        return;
+      }
+
+      // 1. Requisição REST Direta (Independente de CDN ou SDK)
+      const res = await fetch(queryUrl, {
+        method: 'GET',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (res.ok) {
+        const rows = await res.json();
+        if (Array.isArray(rows) && rows.length > 0) {
+          const row = rows[0];
+          if (row.saldo !== undefined && row.saldo !== null) {
+            const remoteSaldo = parseFloat(row.saldo);
+            if (!isNaN(remoteSaldo)) {
+              persistAll(remoteSaldo);
+            }
+          }
+          // Atualiza status se bloqueado
+          if (row.status === 'blocked' && user.status !== 'blocked') {
+            user.status = 'blocked';
+            localStorage.setItem(USER_KEY, JSON.stringify(user));
+            alert('Sua conta foi bloqueada pelo administrador.');
+            window.location.href = 'login.html';
+          }
+        }
+      }
+    } catch(err) {
+      console.warn('[SaldoSync] Erro na requisição ao Supabase:', err);
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  // ─── API Global window.MGSaldo ─────────────────────────────────────────────
   window.MGSaldo = {
     get: function () {
       return getSaldoNumber();
@@ -162,27 +221,46 @@
     sync: function () {
       const s = getSaldoNumber();
       persistAll(s);
+      fetchSaldoFromSupabase();
       return s;
-    }
+    },
+    syncRemote: fetchSaldoFromSupabase
   };
 
-  // ─── Inicialização e Ouvintes ──────────────────────────────────────────────
+  // ─── Inicialização e Ciclo de Vida ─────────────────────────────────────────
   function runSync() {
     const s = getSaldoNumber();
     persistAll(s);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runSync);
+    document.addEventListener('DOMContentLoaded', () => {
+      runSync();
+      fetchSaldoFromSupabase();
+    });
   } else {
     runSync();
+    fetchSaldoFromSupabase();
   }
 
-  // Reforço ao terminar todo o carregamento e scripts da página
   window.addEventListener('load', () => {
-    setTimeout(runSync, 50);
-    setTimeout(runSync, 300);
-    setTimeout(runSync, 800);
+    runSync();
+    setTimeout(fetchSaldoFromSupabase, 300);
+    setTimeout(fetchSaldoFromSupabase, 1200);
+    // Sincroniza periodicamente a cada 5 segundos com o Supabase
+    setInterval(fetchSaldoFromSupabase, 5000);
+  });
+
+  // Atualiza imediatamente quando a aba volta ao foco
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      runSync();
+      fetchSaldoFromSupabase();
+    }
+  });
+  window.addEventListener('focus', () => {
+    runSync();
+    fetchSaldoFromSupabase();
   });
 
   // Sincroniza em tempo real se outra aba mudar localStorage
@@ -192,5 +270,5 @@
     }
   });
 
-  console.log('[MG Editáveis] saldo-sync.js ativo e operacional.');
+  console.log('[MG Editáveis] saldo-sync.js ativo (Sincronização bidirecional Supabase ativada).');
 })();

@@ -1,6 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
             <!-- Open Graph / Compartilhamento de Links (WhatsApp Banner Grande em Cima) -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="MG Editáveis">
@@ -66,8 +70,6 @@
         })();
     </script>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MG Editáveis | APP</title>
     <script src="js/security-guard.js"></script>
     <script src="js/auth-guard.js"></script>
@@ -1439,8 +1441,8 @@
         }
 
     </style>
-<script src="/db-sync.js"></script>
-<script src="/saldo-sync.js"></script>
+<script src="db-sync.js"></script>
+<script src="saldo-sync.js"></script>
 
 
 <style>
@@ -2033,6 +2035,9 @@
 
         // Atualização em tempo real caso valores, telefone ou dados sejam alterados no Admin
         window.addEventListener('storage', () => {
+            initUserData();
+        });
+        window.addEventListener('mg_saldo_updated', () => {
             initUserData();
         });
     

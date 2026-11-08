@@ -9,23 +9,34 @@
     const SUPABASE_PROJECT_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
 
-    // Evita duplicidade de declaração e conflito de variáveis globais
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
-        if (!window.supabaseInstance) {
-            window.supabaseInstance = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_PUBLISHABLE_KEY);
-        }
-        window.supabaseClient = window.supabaseInstance;
-    } else {
-        console.warn('[Supabase] SDK do Supabase ainda não carregado. Verifique a tag CDN.');
-    }
+    let _instance = null;
 
     // Helper interno para obter a instância ativa com segurança
     function getClient() {
-        if (!window.supabaseInstance && window.supabase && typeof window.supabase.createClient === 'function') {
-            window.supabaseInstance = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_PUBLISHABLE_KEY);
-            window.supabaseClient = window.supabaseInstance;
+        if (!_instance && window.supabase && typeof window.supabase.createClient === 'function') {
+            _instance = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_PUBLISHABLE_KEY);
         }
-        return window.supabaseInstance;
+        return _instance;
+    }
+
+    // Inicializa imediatamente se o SDK já estiver disponível
+    getClient();
+
+    // Getters dinâmicos para window.supabaseInstance e window.supabaseClient
+    try {
+        Object.defineProperty(window, 'supabaseInstance', {
+            get() { return getClient(); },
+            set(val) { _instance = val; },
+            configurable: true
+        });
+        Object.defineProperty(window, 'supabaseClient', {
+            get() { return getClient(); },
+            set(val) { _instance = val; },
+            configurable: true
+        });
+    } catch(e) {
+        window.supabaseInstance = getClient();
+        window.supabaseClient = window.supabaseInstance;
     }
 
     // ============================================================
