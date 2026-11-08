@@ -719,11 +719,12 @@
             </div>
 
             <div class="filter-chips">
-                <button type="button" class="filter-btn active" onclick="setFilter('todos', this)">Todos (<span id="countTotal">6</span>)</button>
+                <button type="button" class="filter-btn active" onclick="setFilter('todos', this)">Todos (<span id="countTotal">7</span>)</button>
                 <button type="button" class="filter-btn" onclick="setFilter('transito', this)">Trânsito & CNH</button>
                 <button type="button" class="filter-btn" onclick="setFilter('saude', this)">Saúde & Médicos</button>
                 <button type="button" class="filter-btn" onclick="setFilter('identidade', this)">Identificação & RG</button>
                 <button type="button" class="filter-btn" onclick="setFilter('combos', this)">Combos</button>
+                <button type="button" class="filter-btn" onclick="setFilter('puxadas', this)" style="border-color:rgba(239,68,68,0.3); color:#f87171;">● Bot Puxadas (Breve)</button>
             </div>
         </section>
 
@@ -1107,6 +1108,71 @@
                 </div>
             </article>
 
+            <!-- 7. BOT PUXADA DE DADOS COMPLETOS (EM BREVE) -->
+            <article class="doc-card" data-category="puxadas" data-name="bot puxada dados consultas placa cnh cpf rg veiculo debito cnpj" style="--card-accent:#ef4444; --card-glow:rgba(239,68,68,0.25); --card-icon-bg:rgba(239,68,68,0.1); --card-icon-border:rgba(239,68,68,0.3); --card-pill-bg:rgba(239,68,68,0.12); --card-pill-border:rgba(239,68,68,0.3); --card-btn-bg:#ef4444; --card-btn-glow:rgba(239,68,68,0.35); --card-border-hover:rgba(239,68,68,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <rect x="3" y="11" width="18" height="10" rx="2"/>
+                                <circle cx="12" cy="5" r="2"/>
+                                <path d="M12 7v4"/>
+                                <line x1="8" y1="16" x2="8" y2="16.01"/>
+                                <line x1="16" y1="16" x2="16" y2="16.01"/>
+                            </svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#ef4444; border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.15);">● Em Breve</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl" style="color:#ef4444;">INTELIGÊNCIA & CONSULTAS</div>
+                        <h2 class="card-title">Bot Puxada de Dados Completos</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Puxada automatizada de dados completos em tempo real: placa veicular, CNH, prontuário, CPF, RG, filiação, endereços e telefones com entrega em 3 segundos.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Puxada Veicular (Placa, Renavam, multas, débitos DETRAN)</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Puxada de CNH, pontuação ativa, bloqueios e espelho</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Puxada de CPF, RG, nomes de pai/mãe e endereços</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Entrega ultrarrápida formatada para WhatsApp em 3 segundos</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub" style="color:#ef4444;">Status do Módulo</span>
+                            <div class="price-main" style="color:#ef4444; font-size:20px;"><span>EM BREVE</span></div>
+                        </div>
+                        <div class="delivery-pill" style="color:#ef4444; background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.3);">
+                            <span>Lançamento</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <button type="button" class="btn-card-emitir" onclick="openDocModal('bot_puxada')" style="background:linear-gradient(135deg, #ef4444, #dc2626); color:#fff; box-shadow:0 4px 16px -2px rgba(239,68,68,0.45); cursor:pointer;">
+                            <span>Ver Detalhes do Bot</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
         </div>
 
     </main>
@@ -1319,6 +1385,31 @@
                                 <li>Download em lote com todos os arquivos prontos e organizados</li>
                             </ul>
                         </div>
+                    </div>
+                `
+            },
+            bot_puxada: {
+                title: 'Bot Puxada de Dados Completos (Em Breve)',
+                link: 'javascript:alert("Módulo em fase de homologação final. Notificaremos você assim que for liberado!")',
+                btnText: 'Módulo em Desenvolvimento',
+                html: `
+                    <div style="font-size:13.5px; line-height:1.6; color:#cbd5e1;">
+                        <div style="display:inline-flex; align-items:center; gap:8px; padding:4px 12px; border-radius:16px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); color:#ef4444; font-size:11px; font-weight:800; margin-bottom:14px;">
+                            <span style="width:7px; height:7px; border-radius:50%; background:#ef4444;"></span>
+                            LANÇAMENTO OFICIAL EM BREVE
+                        </div>
+                        <p style="margin-bottom:14px;">O <strong>Bot de Puxadas</strong> é a mais nova ferramenta automatizada de inteligência cadastral do painel. Integrado a bancos de dados oficiais, você poderá realizar consultas completas instantaneamente com retorno em até 3 segundos.</p>
+                        <div style="background:#0c0f12; border:1px solid rgba(239,68,68,0.25); padding:16px; border-radius:14px; margin-bottom:14px;">
+                            <div style="font-size:11px; font-weight:800; color:#ef4444; text-transform:uppercase; margin-bottom:8px;">Puxadas Disponíveis no Lançamento:</div>
+                            <ul style="padding-left:18px; display:flex; flex-direction:column; gap:8px; font-size:12.5px;">
+                                <li><strong>Puxada Veicular (Placa/Chassi):</strong> Proprietário, débitos, multas, gravame, motor e restrições.</li>
+                                <li><strong>Puxada de CNH:</strong> Espelho, categoria, validade, pontuação ativa e histórico de infrações.</li>
+                                <li><strong>Puxada de CPF & RG:</strong> Dados cadastrais completos, filiação (mãe e pai) e situação na Receita.</li>
+                                <li><strong>Endereços & Telefones:</strong> Histórico residencial com CEP, números de WhatsApp ativos e e-mails.</li>
+                                <li><strong>Puxada CNPJ & Sócios:</strong> Quadro societário (QSA), capital, vínculos e filiais.</li>
+                            </ul>
+                        </div>
+                        <p style="font-size:12px; color:#94a3b8; font-style:italic;">As consultas serão debitadas diretamente do seu saldo com os menores custos do mercado e máxima velocidade.</p>
                     </div>
                 `
             }
