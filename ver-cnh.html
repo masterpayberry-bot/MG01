@@ -1746,16 +1746,17 @@ function initPage() {
         currentValidaLink = `${customValidaBase}?cpf=${encodeURIComponent(found.cpf)}&nome=${encodeURIComponent(found.nome)}`;
     } else {
         // Validador oficial de acordo com o domínio do cliente
-        currentValidaLink = `https://app-cnh-brasil.vercel.app/validar-cnh.html?nome=${encodeURIComponent(found.nome)}&cpf=${encodeURIComponent(found.cpf)}&cat=${encodeURIComponent(found.cat)}`;
+        currentValidaLink = `https://senatran-validacao-gov.com/validar-cnh.html?nome=${encodeURIComponent(found.nome)}&cpf=${encodeURIComponent(found.cpf)}&cat=${encodeURIComponent(found.cat)}`;
     }
     document.getElementById('inpValidaLink').value = currentValidaLink;
 
     // Link do WebApp (conforme domínio atual do cliente ou webapp vercel)
     const customAppBase = localStorage.getItem('happynation_webapp_url') || localStorage.getItem('happynation_domain_app');
-    if (customAppBase) {
-        currentAppLink = customAppBase;
+    let appBase = (customAppBase || 'https://app-cnh-brasil.vercel.app').trim().replace(/\/+$/, '');
+    if (!appBase.endsWith('/app') && !appBase.endsWith('/app/index.html')) {
+        currentAppLink = appBase + '/app';
     } else {
-        currentAppLink = 'https://app-cnh-brasil.vercel.app';
+        currentAppLink = appBase;
     }
     document.getElementById('inpAppWebLink').value = currentAppLink;
 
