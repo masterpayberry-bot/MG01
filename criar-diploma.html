@@ -527,21 +527,13 @@
                         </div>
                     </div>
 
-                    <!-- LADO DIREITO DO VERSO: QR CODE + LOGO UNINTER VETORIAL -->
+                    <!-- LADO DIREITO DO VERSO: QR CODE + LOGO UNINTER ORIGINAL -->
                     <div class="verso-qr-zone">
                         <div class="verso-qr-holder">
                             <div id="uninterQrCode"></div>
                         </div>
                         <div class="verso-uninter-brand">
-                            <span>UNINTER</span>
-                            <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-                                <circle cx="20" cy="20" r="12" stroke="#0f356d" stroke-width="2.2" fill="none"/>
-                                <ellipse cx="20" cy="20" rx="6" ry="12" stroke="#0f356d" stroke-width="1.5" fill="none"/>
-                                <ellipse cx="20" cy="20" rx="12" ry="6" stroke="#0f356d" stroke-width="1.5" fill="none"/>
-                                <line x1="8" y1="20" x2="32" y2="20" stroke="#0f356d" stroke-width="1.5"/>
-                                <line x1="20" y1="8" x2="20" y2="32" stroke="#0f356d" stroke-width="1.5"/>
-                                <ellipse cx="20" cy="20" rx="18" ry="7" transform="rotate(-30 20 20)" stroke="#0f356d" stroke-width="2" fill="none"/>
-                            </svg>
+                            <canvas id="canvasUninterLogo" width="180" height="50" style="width: 135px; height: auto; display: block;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -641,6 +633,21 @@
             sigImg.src = 'assets/uninter_verso_template.png';
         }
 
+        // Carrega o logo oficial autêntico da UNINTER sob o QR Code (idêntico ao modelo original)
+        function loadUninterLogo() {
+            const cv = document.getElementById('canvasUninterLogo');
+            if (!cv) return;
+            const ctx = cv.getContext('2d');
+            const logoImg = new Image();
+            logoImg.crossOrigin = 'anonymous';
+            logoImg.onload = () => {
+                ctx.clearRect(0, 0, cv.width, cv.height);
+                // Extrai o logo original de assets/uninter_verso_template.png (x: 775, y: 615, w: 180, h: 50)
+                ctx.drawImage(logoImg, 775, 615, 180, 50, 0, 0, cv.width, cv.height);
+            };
+            logoImg.src = 'assets/uninter_verso_template.png';
+        }
+
         // Exportação Completa da Folha A4 em PDF (Frente + Verso juntos como na Foto 3)
         async function exportA4SheetPdf() {
             const btn = document.querySelector('.btn-export');
@@ -683,6 +690,7 @@
             updateDiploma();
             updateQr();
             loadEdilaineSignature();
+            loadUninterLogo();
 
             // Carrega saldo do usuário se logado
             try {
