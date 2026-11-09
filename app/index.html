@@ -4000,6 +4000,32 @@
         });
 
         function reloadCustomizationFromServer() {
+            // 1. Busca imediatamente no Supabase Cloud (garantido em qualquer domínio/Vercel/PWA)
+            fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/configuracoes?chave=eq.webapp_customization&select=valor', {
+                headers: {
+                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (Array.isArray(data) && data[0] && data[0].valor) {
+                    try {
+                        const parsed = typeof data[0].valor === 'string' ? JSON.parse(data[0].valor) : data[0].valor;
+                        if (parsed && typeof parsed === 'object') {
+                            localStorage.setItem('happynation_webapp_customization', JSON.stringify(parsed));
+                            if (parsed.logoImage) {
+                                localStorage.setItem('happynation_admin_logo', parsed.logoImage);
+                                localStorage.setItem('valLogoImage', parsed.logoImage);
+                            }
+                            applyCustomization(parsed);
+                        }
+                    } catch(eJson) {}
+                }
+            })
+            .catch(() => {});
+
+            // 2. Fallbacks para rotas locais PHP
             fetchConfig('../api/index.php?action=get_webapp_customization')
                 .catch(() => fetchConfig('api/index.php?action=get_webapp_customization'))
                 .catch(() => fetchConfig('../api/config'))
@@ -4095,6 +4121,17 @@
 
 
         // ─── LIVE SYNC: quando o Admin salva, o app atualiza em tempo real ───
+        if (typeof BroadcastChannel !== 'undefined') {
+            try {
+                const liveBc = new BroadcastChannel('happynation_live_sync');
+                liveBc.onmessage = (ev) => {
+                    if (ev && ev.data && ev.data.type === 'webapp_customization_updated' && ev.data.data) {
+                        applyCustomization(ev.data.data);
+                    }
+                };
+            } catch(eBc) {}
+        }
+
         window.addEventListener('storage', (e) => {
             if (e.key && e.key !== 'happynation_webapp_customization' &&
                 e.key !== 'happynation_admin_logo' &&

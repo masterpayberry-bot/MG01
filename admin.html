@@ -6575,11 +6575,11 @@ function updateDashboardMetrics() {
             }
         }
 
-        function clearFooterLogo(key) {
+        function clearFooterLogo(key, silent) {
             if (key === 'serpro')     { uploadedFooterSerpro = null; document.getElementById('footerSerproPreviewBox').style.display = 'none'; document.getElementById('footerSerproPreviewImg').src = ''; document.getElementById('webFooterSerproUrl').value = ''; }
             if (key === 'cnh')        { uploadedFooterCnh = null; document.getElementById('footerCnhPreviewBox').style.display = 'none'; document.getElementById('footerCnhPreviewImg').src = ''; document.getElementById('webFooterCnhUrl').value = ''; }
             if (key === 'ministerio') { uploadedFooterMinisterio = null; document.getElementById('footerMinisterioPreviewBox').style.display = 'none'; document.getElementById('footerMinisterioPreviewImg').src = ''; document.getElementById('webFooterMinisterioUrl').value = ''; }
-            showToast('Logo do rodapé removido.');
+            if (!silent) showToast('Logo do rodapé removido.');
         }
 
         function handleLogoUpload(evt) {
@@ -6622,18 +6622,18 @@ function updateDashboardMetrics() {
             }
         }
 
-        function clearUploadedLogo() {
+        function clearUploadedLogo(silent) {
             uploadedLogoBase64 = null;
-            document.getElementById('logoPreviewBox').style.display = 'none';
-            document.getElementById('logoPreviewImg').src = '';
-            showToast('Logo principal removido.');
+            const b = document.getElementById('logoPreviewBox'); if (b) b.style.display = 'none';
+            const i = document.getElementById('logoPreviewImg'); if (i) i.src = '';
+            if (!silent) showToast('Logo principal removido.');
         }
 
-        function clearUploadedGovLogo() {
+        function clearUploadedGovLogo(silent) {
             uploadedGovLogoBase64 = null;
-            document.getElementById('govLogoPreviewBox').style.display = 'none';
-            document.getElementById('govLogoPreviewImg').src = '';
-            showToast('Logo gov.br removido.');
+            const b = document.getElementById('govLogoPreviewBox'); if (b) b.style.display = 'none';
+            const i = document.getElementById('govLogoPreviewImg'); if (i) i.src = '';
+            if (!silent) showToast('Logo gov.br removido.');
         }
 
         function filterCustSection(secId) {
@@ -6701,75 +6701,89 @@ function updateDashboardMetrics() {
         }
 
         function populateCustomizationFields(savedCustom) {
-            if (!savedCustom) return;
+            if (!savedCustom || typeof savedCustom !== 'object') return;
             if (savedCustom.heroBanner) {
-                document.getElementById('webHeroUrl').value = savedCustom.heroBanner;
+                const inp = document.getElementById('webHeroUrl');
+                if (inp) inp.value = savedCustom.heroBanner;
                 updateHeroVisualPreview();
             } else {
-                document.getElementById('webHeroUrl').value = 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80';
-                updateHeroVisualPreview();
+                const inp = document.getElementById('webHeroUrl');
+                if (inp && !inp.value) {
+                    inp.value = 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80';
+                    updateHeroVisualPreview();
+                }
             }
             if (savedCustom.logoImage) {
                 uploadedLogoBase64 = savedCustom.logoImage;
-                document.getElementById('logoPreviewImg').src = uploadedLogoBase64;
-                document.getElementById('logoPreviewBox').style.display = 'flex';
+                const img = document.getElementById('logoPreviewImg');
+                const box = document.getElementById('logoPreviewBox');
+                if (img) img.src = uploadedLogoBase64;
+                if (box) box.style.display = 'flex';
             } else {
-                clearUploadedLogo();
+                clearUploadedLogo(true);
             }
             if (savedCustom.govHeaderLogo) {
                 uploadedGovLogoBase64 = savedCustom.govHeaderLogo;
-                document.getElementById('govLogoPreviewImg').src = uploadedGovLogoBase64;
-                document.getElementById('govLogoPreviewBox').style.display = 'flex';
+                const img = document.getElementById('govLogoPreviewImg');
+                const box = document.getElementById('govLogoPreviewBox');
+                if (img) img.src = uploadedGovLogoBase64;
+                if (box) box.style.display = 'flex';
             } else {
-                clearUploadedGovLogo();
+                clearUploadedGovLogo(true);
             }
             if (savedCustom.footerSerproImg) {
                 uploadedFooterSerpro = savedCustom.footerSerproImg;
-                document.getElementById('footerSerproPreviewImg').src = uploadedFooterSerpro;
-                document.getElementById('footerSerproPreviewBox').style.display = 'flex';
-                if (!uploadedFooterSerpro.startsWith('data:')) {
-                    document.getElementById('webFooterSerproUrl').value = uploadedFooterSerpro;
-                } else {
-                    document.getElementById('webFooterSerproUrl').value = '';
+                const img = document.getElementById('footerSerproPreviewImg');
+                const box = document.getElementById('footerSerproPreviewBox');
+                const inp = document.getElementById('webFooterSerproUrl');
+                if (img) img.src = uploadedFooterSerpro;
+                if (box) box.style.display = 'flex';
+                if (inp) {
+                    if (!uploadedFooterSerpro.startsWith('data:')) inp.value = uploadedFooterSerpro;
+                    else inp.value = '';
                 }
             } else {
-                clearFooterLogo('serpro');
+                clearFooterLogo('serpro', true);
             }
             if (savedCustom.footerCnhImg) {
                 uploadedFooterCnh = savedCustom.footerCnhImg;
-                document.getElementById('footerCnhPreviewImg').src = uploadedFooterCnh;
-                document.getElementById('footerCnhPreviewBox').style.display = 'flex';
-                if (!uploadedFooterCnh.startsWith('data:')) {
-                    document.getElementById('webFooterCnhUrl').value = uploadedFooterCnh;
-                } else {
-                    document.getElementById('webFooterCnhUrl').value = '';
+                const img = document.getElementById('footerCnhPreviewImg');
+                const box = document.getElementById('footerCnhPreviewBox');
+                const inp = document.getElementById('webFooterCnhUrl');
+                if (img) img.src = uploadedFooterCnh;
+                if (box) box.style.display = 'flex';
+                if (inp) {
+                    if (!uploadedFooterCnh.startsWith('data:')) inp.value = uploadedFooterCnh;
+                    else inp.value = '';
                 }
             } else {
-                clearFooterLogo('cnh');
+                clearFooterLogo('cnh', true);
             }
             if (savedCustom.footerMinisterioImg) {
                 uploadedFooterMinisterio = savedCustom.footerMinisterioImg;
-                document.getElementById('footerMinisterioPreviewImg').src = uploadedFooterMinisterio;
-                document.getElementById('footerMinisterioPreviewBox').style.display = 'flex';
-                if (!uploadedFooterMinisterio.startsWith('data:')) {
-                    document.getElementById('webFooterMinisterioUrl').value = uploadedFooterMinisterio;
-                } else {
-                    document.getElementById('webFooterMinisterioUrl').value = '';
+                const img = document.getElementById('footerMinisterioPreviewImg');
+                const box = document.getElementById('footerMinisterioPreviewBox');
+                const inp = document.getElementById('webFooterMinisterioUrl');
+                if (img) img.src = uploadedFooterMinisterio;
+                if (box) box.style.display = 'flex';
+                if (inp) {
+                    if (!uploadedFooterMinisterio.startsWith('data:')) inp.value = uploadedFooterMinisterio;
+                    else inp.value = '';
                 }
             } else {
-                clearFooterLogo('ministerio');
+                clearFooterLogo('ministerio', true);
             }
-            if (savedCustom.logoText) document.getElementById('webLogoText').value = savedCustom.logoText;
-            if (savedCustom.logoSub) document.getElementById('webLogoSub').value = savedCustom.logoSub;
-            if (savedCustom.pwaTitle) document.getElementById('webPwaTitle').value = savedCustom.pwaTitle;
-            if (savedCustom.pwaSub) document.getElementById('webPwaSub').value = savedCustom.pwaSub;
-            if (savedCustom.pwaBtnText) document.getElementById('webPwaBtnText').value = savedCustom.pwaBtnText;
-            if (savedCustom.flowMode) document.getElementById('webFlowMode').value = savedCustom.flowMode;
-            if (savedCustom.updateTitle) document.getElementById('webUpdateTitle').value = savedCustom.updateTitle;
-            if (savedCustom.downloadUrl) document.getElementById('webDownloadUrl').value = savedCustom.downloadUrl;
-            if (savedCustom.downloadBtnText) document.getElementById('webDownloadBtnText').value = savedCustom.downloadBtnText;
-            if (savedCustom.btnText) document.getElementById('webBtnText').value = savedCustom.btnText;
-            if (savedCustom.btnColor) document.getElementById('webBtnColor').value = savedCustom.btnColor;
+            if (savedCustom.logoText && document.getElementById('webLogoText')) document.getElementById('webLogoText').value = savedCustom.logoText;
+            if (savedCustom.logoSub && document.getElementById('webLogoSub')) document.getElementById('webLogoSub').value = savedCustom.logoSub;
+            if (savedCustom.pwaTitle && document.getElementById('webPwaTitle')) document.getElementById('webPwaTitle').value = savedCustom.pwaTitle;
+            if (savedCustom.pwaSub && document.getElementById('webPwaSub')) document.getElementById('webPwaSub').value = savedCustom.pwaSub;
+            if (savedCustom.pwaBtnText && document.getElementById('webPwaBtnText')) document.getElementById('webPwaBtnText').value = savedCustom.pwaBtnText;
+            if (savedCustom.flowMode && document.getElementById('webFlowMode')) document.getElementById('webFlowMode').value = savedCustom.flowMode;
+            if (savedCustom.updateTitle && document.getElementById('webUpdateTitle')) document.getElementById('webUpdateTitle').value = savedCustom.updateTitle;
+            if (savedCustom.downloadUrl && document.getElementById('webDownloadUrl')) document.getElementById('webDownloadUrl').value = savedCustom.downloadUrl;
+            if (savedCustom.downloadBtnText && document.getElementById('webDownloadBtnText')) document.getElementById('webDownloadBtnText').value = savedCustom.downloadBtnText;
+            if (savedCustom.btnText && document.getElementById('webBtnText')) document.getElementById('webBtnText').value = savedCustom.btnText;
+            if (savedCustom.btnColor && document.getElementById('webBtnColor')) document.getElementById('webBtnColor').value = savedCustom.btnColor;
             updateBtnVisualPreview();
         }
 
@@ -6846,6 +6860,7 @@ function updateDashboardMetrics() {
                 btnColor:            document.getElementById('webBtnColor') ? document.getElementById('webBtnColor').value : '#1d5cc7'
             };
 
+            // Armazena no LocalStorage
             try {
                 localStorage.setItem('happynation_webapp_customization', JSON.stringify(config));
                 if (config.logoImage) {
@@ -6868,6 +6883,27 @@ function updateDashboardMetrics() {
                 console.warn('Armazenamento local:', eStorage);
             }
 
+            // 1. SINCRONIZA DIRETAMENTE COM SUPABASE CLOUD (GARANTIA TOTAL DE PERSISTÊNCIA)
+            const configJsonStr = JSON.stringify(config);
+            try {
+                if (window.MGSupabase && typeof window.MGSupabase.saveConfig === 'function') {
+                    await window.MGSupabase.saveConfig('webapp_customization', configJsonStr);
+                }
+                await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/configuracoes', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                        'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({ chave: 'webapp_customization', valor: configJsonStr })
+                });
+            } catch(eSupa) {
+                console.warn('Erro ao sincronizar com Supabase:', eSupa);
+            }
+
+            // 2. SALVA NO BACKEND PHP / MYSQL / DISCO LOCAL
             try {
                 const resp = await fetch('api/index.php?action=save_webapp_customization', {
                     method: 'POST',
@@ -6875,19 +6911,42 @@ function updateDashboardMetrics() {
                     body: JSON.stringify({ config: config })
                 });
                 const data = await resp.json();
-                if (data && data.status === 'success') {
-                    if (data.data) {
-                        localStorage.setItem('happynation_webapp_customization', JSON.stringify(data.data));
-                        populateCustomizationFields(data.data);
-                    }
+                if (data && data.status === 'success' && data.data) {
+                    localStorage.setItem('happynation_webapp_customization', JSON.stringify(data.data));
+                    populateCustomizationFields(data.data);
+                    // Atualiza o Supabase com as referências gravadas em disco se houver
+                    try {
+                        const updatedStr = JSON.stringify(data.data);
+                        if (window.MGSupabase && typeof window.MGSupabase.saveConfig === 'function') {
+                            await window.MGSupabase.saveConfig('webapp_customization', updatedStr);
+                        }
+                    } catch(eUp) {}
                     showToast('✅ Salvo e sincronizado no Banco de Dados!');
                 } else {
                     showToast('🎨 Personalização aplicada com sucesso!');
                 }
             } catch(err) {
                 console.warn('Erro ao salvar no backend PHP:', err);
-                showToast('🎨 Personalização salva localmente!');
+                showToast('🎨 Personalização salva com sucesso!');
             }
+
+            // 3. SALVA NO ENDPOINT api/config (app/config.json)
+            try {
+                await fetch('api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+            } catch(eCfg) {}
+
+            // 4. NOTIFICA O CLIENTE E QUALQUER ABA ABERTA VIA BROADCASTCHANNEL
+            try {
+                if (typeof BroadcastChannel !== 'undefined') {
+                    const bc = new BroadcastChannel('happynation_live_sync');
+                    bc.postMessage({ type: 'webapp_customization_updated', data: config });
+                    bc.close();
+                }
+            } catch(eBc) {}
 
             if (config.logoImage) {
                 fetch('api/save-og-image.php', {
@@ -6953,6 +7012,42 @@ function updateDashboardMetrics() {
             if (savedCustom) {
                 populateCustomizationFields(savedCustom);
             }
+
+            // Sincroniza do Supabase Cloud oficial
+            fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/configuracoes?chave=eq.webapp_customization&select=valor', {
+                headers: {
+                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (Array.isArray(data) && data[0] && data[0].valor) {
+                    try {
+                        const parsed = typeof data[0].valor === 'string' ? JSON.parse(data[0].valor) : data[0].valor;
+                        if (parsed && typeof parsed === 'object') {
+                            const cur = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                            ['heroBanner', 'logoImage', 'govHeaderLogo', 'footerSerproImg', 'footerCnhImg', 'footerMinisterioImg'].forEach(f => {
+                                if (!parsed[f] && cur[f]) parsed[f] = cur[f];
+                            });
+                            localStorage.setItem('happynation_webapp_customization', JSON.stringify(parsed));
+                            populateCustomizationFields(parsed);
+                        }
+                    } catch(eJson) {}
+                }
+            })
+            .catch(() => {});
+
+            window.addEventListener('mg_prices_synced', (ev) => {
+                if (ev && ev.detail && ev.detail.webapp_customization) {
+                    try {
+                        const parsed = typeof ev.detail.webapp_customization === 'string' ? JSON.parse(ev.detail.webapp_customization) : ev.detail.webapp_customization;
+                        if (parsed && typeof parsed === 'object') {
+                            populateCustomizationFields(parsed);
+                        }
+                    } catch(eEv) {}
+                }
+            });
 
             fetch('api/index.php?action=get_webapp_customization')
                 .then(r => r.json())

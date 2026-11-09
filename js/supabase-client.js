@@ -514,7 +514,20 @@
                     if (configs.rg_price) localStorage.setItem('happynation_rg_price', configs.rg_price);
                     if (configs.pix_key) localStorage.setItem('happynation_pix_key', configs.pix_key);
                     if (configs.whatsapp) localStorage.setItem('happynation_whatsapp', configs.whatsapp);
-                    if (configs.webapp_customization) localStorage.setItem('happynation_webapp_customization', configs.webapp_customization);
+                    if (configs.webapp_customization) {
+                        try {
+                            const curLocal = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                            const incoming = typeof configs.webapp_customization === 'string' ? JSON.parse(configs.webapp_customization) : configs.webapp_customization;
+                            if (incoming && typeof incoming === 'object') {
+                                ['heroBanner', 'logoImage', 'govHeaderLogo', 'footerSerproImg', 'footerCnhImg', 'footerMinisterioImg'].forEach(f => {
+                                    if (!incoming[f] && curLocal[f]) incoming[f] = curLocal[f];
+                                });
+                                localStorage.setItem('happynation_webapp_customization', JSON.stringify(incoming));
+                            }
+                        } catch(eCustom) {
+                            localStorage.setItem('happynation_webapp_customization', configs.webapp_customization);
+                        }
+                    }
 
                     try { window.dispatchEvent(new CustomEvent('mg_prices_synced', { detail: configs })); } catch(e) {}
                     return configs;
