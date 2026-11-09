@@ -606,11 +606,6 @@
                 <input type="text" class="form-input" id="inpHash" value="4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17" oninput="updateDiploma()">
             </div>
 
-            <div class="form-group">
-                <label class="form-label">URL de Validação</label>
-                <input type="text" class="form-input" id="inpUrl" value="https://diploma-uninter.vercel.app" oninput="updateDiploma(); updateQr();">
-            </div>
-
             <!-- BOTÕES DE AÇÃO: "BAIXAR PDF" -->
             <div class="btn-export-group">
                 <button type="button" class="btn-export" onclick="exportA4SheetPdf()">
@@ -799,7 +794,7 @@
             const dataCol = document.getElementById('inpDataCol').value || '11 DE JANEIRO DE 2027';
             const dataExp = document.getElementById('inpDataExp').value || 'SÃO PAULO, 18 DE MARÇO DE 2027';
             const hash = document.getElementById('inpHash').value || '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17';
-            const url = document.getElementById('inpUrl').value || 'https://diploma-uninter.vercel.app';
+            const url = 'https://diploma-uninter.vercel.app';
 
             // Frente
             document.getElementById('outNome').textContent = nome;
@@ -833,7 +828,7 @@
         }
 
         function getQrTargetUrl() {
-            let baseUrl = (document.getElementById('inpUrl').value || 'https://diploma-uninter.vercel.app').trim();
+            let baseUrl = 'https://diploma-uninter.vercel.app';
             if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
                 baseUrl = 'https://' + baseUrl;
             }
