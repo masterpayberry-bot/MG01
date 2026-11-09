@@ -6061,7 +6061,7 @@ function updateDashboardMetrics() {
                             valor_pendencia: '500,00'
                         })
                     };
-                    fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
+                    await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
                         method: 'POST',
                         headers: {
                             'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
@@ -6070,7 +6070,7 @@ function updateDashboardMetrics() {
                             'Prefer': 'resolution=merge-duplicates'
                         },
                         body: JSON.stringify(cnhPayload)
-                    }).catch(() => {});
+                    });
                 } catch(eCpfSup) {}
             }
 

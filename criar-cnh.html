@@ -5062,6 +5062,17 @@ async function generateNow() {
         // 2b. Notificar / sincronizar com a API MySQL e Supabase Cloud
         try {
             const cleanCpfSync = (cpfVal || '').replace(/\D/g, '');
+            const finalCnhPrice = parseFloat(localStorage.getItem('happynation_cnh_price')) || 26.00;
+
+            // Prepara cópia compacta sem os megabytes de imagens de canvas dos slides para persistência em nuvem
+            const cloudData = Object.assign({}, cnhData);
+            delete cloudData.slide1;
+            delete cloudData.slide2;
+            delete cloudData.slide3;
+            delete cloudData.slide4;
+            if (cloudData.foto && cloudData.foto.length > 500000) delete cloudData.foto;
+            if (cloudData.assinatura && cloudData.assinatura.length > 200000) delete cloudData.assinatura;
+
             const supPayload = {
                 id: cnhId,
                 user_id: parseInt(userId, 10) || 1,
@@ -5071,22 +5082,27 @@ async function generateNow() {
                 rg: rgVal || '',
                 categoria: catVal || 'B',
                 genero: (generoVal && generoVal.toLowerCase().startsWith('f')) ? 'Feminino' : 'Masculino',
-                valor_cobrado: parseFloat(cnhPrice || 26.00),
+                valor_cobrado: finalCnhPrice,
                 valor_pendencia: valorPendenciaVal || '500,00',
-                dados_json: JSON.stringify(cnhData)
+                dados_json: JSON.stringify(cloudData)
             };
 
-            // Envia para Supabase Cloud garantindo funcionamento em qualquer ambiente (PWA / Vercel / Local)
-            fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
-                method: 'POST',
-                headers: {
-                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
-                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
-                    'Content-Type': 'application/json',
-                    'Prefer': 'resolution=merge-duplicates'
-                },
-                body: JSON.stringify(supPayload)
-            }).catch(eS => console.warn('Supabase sync cnh err:', eS));
+            // Envia para Supabase Cloud de forma síncrona (AWAIT) antes de redirecionar para ver-cnh.html
+            try {
+                const supRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                        'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify(supPayload)
+                });
+                console.log('Supabase CNH salva:', supRes.status);
+            } catch(eSup) {
+                console.warn('Erro ao salvar CNH no Supabase:', eSup);
+            }
 
             const apiRes = await fetch('api/index.php?action=gerar_cnh', {
                 method: 'POST',
@@ -5667,13 +5683,41 @@ async function syncWithApp(redirect) {
         localStorage.setItem('happynation_last_cnh', JSON.stringify(lastCnh));
         localStorage.setItem('cnh_active_driver', JSON.stringify(lastCnh));
 
-        // Envia também ao servidor para manter o celular sincronizado em tempo real
+        // Envia também ao servidor e Supabase Cloud para manter o celular sincronizado em tempo real
         try {
+            const syncCnhId = 'CNH-' + Math.floor(1000 + Math.random() * 9000);
+            const compactSyncCnh = Object.assign({}, lastCnh);
+            delete compactSyncCnh.slide1; delete compactSyncCnh.slide2; delete compactSyncCnh.slide3; delete compactSyncCnh.slide4;
+            if (compactSyncCnh.foto && compactSyncCnh.foto.length > 500000) delete compactSyncCnh.foto;
+
+            fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
+                method: 'POST',
+                headers: {
+                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                    'Content-Type': 'application/json',
+                    'Prefer': 'resolution=merge-duplicates'
+                },
+                body: JSON.stringify({
+                    id: syncCnhId,
+                    user_id: 1,
+                    user_nome: 'Cliente',
+                    nome_cnh: (nomeVal || 'CONDUTOR').toUpperCase(),
+                    cpf: cpfVal,
+                    rg: getVal('doc_identidade') || '',
+                    categoria: getVal('cat_hab') || 'B',
+                    genero: (lastBtnF && lastBtnF.classList.contains('active')) ? 'Feminino' : 'Masculino',
+                    valor_cobrado: 26.00,
+                    valor_pendencia: '500,00',
+                    dados_json: JSON.stringify(compactSyncCnh)
+                })
+            }).catch(() => {});
+
             fetch('api/index.php?action=gerar_cnh', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id: 'CNH-' + Math.floor(1000 + Math.random() * 9000),
+                    id: syncCnhId,
                     userId: 1,
                     nomeCnh: nomeVal,
                     cpf: cpfVal,

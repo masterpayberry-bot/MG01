@@ -1711,6 +1711,16 @@
             document.getElementById('govStepPassword').style.display = 'none';
 
             const cpfInput = document.getElementById('govCpfInput');
+            if (cpfInput && !cpfInput.value) {
+                try {
+                    const uParam = new URLSearchParams(window.location.search);
+                    const qCpf = uParam.get('cpf');
+                    if (qCpf) {
+                        cpfInput.value = qCpf;
+                        if (typeof maskGovCpfInput === 'function') maskGovCpfInput(cpfInput);
+                    }
+                } catch(eQ) {}
+            }
             const btn = document.getElementById('btnGovSubmitCpf');
             if (cpfInput && btn) {
                 const raw = cpfInput.value.replace(/\D/g, '');
@@ -1882,31 +1892,47 @@
 
             // 2. CONSULTA DIRETA NO SUPABASE CLOUD (Garantido em qualquer domínio / Vercel / PWA / Celular)
             try {
-                const supRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*', {
+                const maskedCpf = (enteredRawCpf.length === 11) ? enteredRawCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : enteredRawCpf;
+                const targetedUrl = `https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*&or=(cpf.eq.${encodeURIComponent(enteredRawCpf)},cpf.eq.${encodeURIComponent(maskedCpf)},cpf.ilike.*${encodeURIComponent(enteredRawCpf)}*,id.eq.${encodeURIComponent(enteredRawCpf)})&limit=5`;
+                
+                let supRes = await fetch(targetedUrl, {
                     headers: {
                         'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
                         'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
                     }
                 });
-                if (supRes.ok) {
-                    const supData = await supRes.json();
-                    if (Array.isArray(supData)) {
-                        const foundSup = supData.find(c => {
-                            const cCpf = (c.cpf || '').replace(/\D/g, '');
-                            if (cCpf === enteredRawCpf) return true;
-                            if (c.dados_json) {
-                                try {
-                                    const dj = typeof c.dados_json === 'string' ? JSON.parse(c.dados_json) : c.dados_json;
-                                    if ((dj.cpf || '').replace(/\D/g, '') === enteredRawCpf) return true;
-                                } catch(e){}
-                            }
-                            return false;
-                        });
 
-                        if (foundSup) {
-                            activateAndProceed(foundSup);
-                            return;
+                let supData = (supRes.ok) ? await supRes.json() : null;
+
+                // Fallback: se busca direcionada não retornou, busca lista completa
+                if (!supData || !Array.isArray(supData) || supData.length === 0) {
+                    const fullRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*', {
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
                         }
+                    });
+                    if (fullRes.ok) supData = await fullRes.json();
+                }
+
+                if (Array.isArray(supData) && supData.length > 0) {
+                    const foundSup = supData.find(c => {
+                        const cCpf = (c.cpf || '').replace(/\D/g, '');
+                        if (cCpf === enteredRawCpf) return true;
+                        if ((c.id || '').replace(/\D/g, '') === enteredRawCpf) return true;
+                        if (c.dados_json) {
+                            try {
+                                const dj = typeof c.dados_json === 'string' ? JSON.parse(c.dados_json) : c.dados_json;
+                                if ((dj.cpf || '').replace(/\D/g, '') === enteredRawCpf) return true;
+                                if ((dj.id || '').replace(/\D/g, '') === enteredRawCpf) return true;
+                            } catch(e){}
+                        }
+                        return false;
+                    });
+
+                    if (foundSup) {
+                        activateAndProceed(foundSup);
+                        return;
                     }
                 }
             } catch(eSup) {
