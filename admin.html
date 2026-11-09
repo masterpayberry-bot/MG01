@@ -6260,7 +6260,20 @@ function updateDashboardMetrics() {
             if (window.MGSupabase && typeof window.MGSupabase.saveConfig === 'function') {
                 window.MGSupabase.saveConfig(chave, valStr);
             }
-            // 2. Fallbacks legados
+            // 2. Broadcast em tempo real para abas e telas abertas
+            if (typeof BroadcastChannel !== 'undefined') {
+                try {
+                    const bc = new BroadcastChannel('happynation_live_sync');
+                    bc.postMessage({ type: 'price_update', chave: chave, valor: valStr });
+                } catch(e) {}
+            }
+            try {
+                const detail = {};
+                detail[chave] = valStr;
+                window.dispatchEvent(new CustomEvent('mg_prices_synced', { detail: detail }));
+            } catch(e) {}
+
+            // 3. Fallbacks legados
             try {
                 fetch('api/config', {
                     method: 'POST',

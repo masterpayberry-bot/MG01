@@ -771,7 +771,7 @@
                     <div class="price-row">
                         <div class="price-info">
                             <span class="price-sub">Valor Unitário</span>
-                            <div class="price-main"><span class="price-currency">R$</span><span id="priceCnh">25,00</span></div>
+                            <div class="price-main"><span class="price-currency">R$</span><span id="priceCnh">26,00</span></div>
                         </div>
                         <div class="delivery-pill">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -960,7 +960,7 @@
                     <div class="price-row">
                         <div class="price-info">
                             <span class="price-sub">Valor Unitário</span>
-                            <div class="price-main"><span class="price-currency" style="color:#fbbf24;">R$</span><span id="priceProntuario">15,00</span></div>
+                            <div class="price-main"><span class="price-currency" style="color:#fbbf24;">R$</span><span id="priceProntuario">25,00</span></div>
                         </div>
                         <div class="delivery-pill" style="color:#fbbf24; background:rgba(251,191,36,0.08); border-color:rgba(251,191,36,0.2);">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -1020,31 +1020,108 @@
             } catch(e) {}
         }
 
-        // Carrega tabela de preços configurada no sistema
-        function loadConfiguredPrices() {
+        // Carrega tabela de preços configurada no sistema (localStorage + Supabase em tempo real)
+        function loadConfiguredPrices(sourceConfigs) {
             try {
-                const cnhPrice = localStorage.getItem('happynation_cnh_price');
+                // 1. CNH Digital
+                const cnhPrice = (sourceConfigs && (sourceConfigs.cnh_price || sourceConfigs.cnh)) || localStorage.getItem('happynation_cnh_price');
                 if (cnhPrice) {
                     const el = document.getElementById('priceCnh');
                     if (el) el.textContent = parseFloat(cnhPrice).toFixed(2).replace('.', ',');
                 }
-                const atPrice = localStorage.getItem('happynation_atestado_price');
+
+                // 2. Atestado Médico
+                const atPrice = (sourceConfigs && (sourceConfigs.atestado_price || sourceConfigs.atestado)) || localStorage.getItem('happynation_atestado_price');
                 if (atPrice) {
                     const el = document.getElementById('priceAtestado');
                     if (el) el.textContent = parseFloat(atPrice).toFixed(2).replace('.', ',');
                 }
-                const exPrice = localStorage.getItem('happynation_exame_price');
+
+                // 3. Exame Toxicológico
+                const exPrice = (sourceConfigs && (sourceConfigs.exame_price || sourceConfigs.exame)) || localStorage.getItem('happynation_exame_price');
                 if (exPrice) {
                     const el = document.getElementById('priceExame');
                     if (el) el.textContent = parseFloat(exPrice).toFixed(2).replace('.', ',');
                 }
-                const rgPrice = localStorage.getItem('happynation_rg_price');
+
+                // 4. Prontuário de Condutor
+                const prPrice = (sourceConfigs && (sourceConfigs.prontuario_price || sourceConfigs.prontuario)) || localStorage.getItem('happynation_prontuario_price');
+                if (prPrice) {
+                    const el = document.getElementById('priceProntuario');
+                    if (el) el.textContent = parseFloat(prPrice).toFixed(2).replace('.', ',');
+                }
+
+                // 5. RG Digital (se houver)
+                const rgPrice = (sourceConfigs && (sourceConfigs.rg_price || sourceConfigs.rg)) || localStorage.getItem('happynation_rg_price');
                 if (rgPrice) {
                     const el = document.getElementById('priceRg');
                     if (el) el.textContent = parseFloat(rgPrice).toFixed(2).replace('.', ',');
                 }
+            } catch(e) {
+                console.warn('[Editaveis] Erro ao carregar preços:', e);
+            }
+        }
+
+        // Sincronização remota via Supabase e fallback REST
+        async function syncAndLoadPrices() {
+            // Renderiza imediatamente com cache local
+            loadConfiguredPrices();
+
+            // Sincroniza via Supabase em tempo real
+            if (window.MGSupabase && typeof window.MGSupabase.syncPricesToLocal === 'function') {
+                try {
+                    const remoteConfigs = await window.MGSupabase.syncPricesToLocal();
+                    if (remoteConfigs && Object.keys(remoteConfigs).length > 0) {
+                        loadConfiguredPrices(remoteConfigs);
+                        return;
+                    }
+                } catch(e) {}
+            }
+
+            // Fallback REST /api/config
+            try {
+                const resp = await fetch('api/config', { cache: 'no-store' });
+                if (resp.ok) {
+                    const json = await resp.json();
+                    const data = (json && json.data) ? json.data : json;
+                    if (data && typeof data === 'object') {
+                        if (data.cnh_price) localStorage.setItem('happynation_cnh_price', data.cnh_price);
+                        if (data.atestado_price) localStorage.setItem('happynation_atestado_price', data.atestado_price);
+                        if (data.exame_price) localStorage.setItem('happynation_exame_price', data.exame_price);
+                        if (data.prontuario_price) localStorage.setItem('happynation_prontuario_price', data.prontuario_price);
+                        if (data.rg_price) localStorage.setItem('happynation_rg_price', data.rg_price);
+                        loadConfiguredPrices(data);
+                    }
+                }
             } catch(e) {}
         }
+
+        // Listeners para sincronismo instantâneo de preços
+        window.addEventListener('mg_prices_synced', (ev) => {
+            loadConfiguredPrices(ev && ev.detail);
+        });
+
+        window.addEventListener('storage', (ev) => {
+            if (!ev || !ev.key || ev.key.includes('price')) {
+                loadConfiguredPrices();
+            }
+        });
+
+        if (typeof BroadcastChannel !== 'undefined') {
+            try {
+                const bc = new BroadcastChannel('happynation_live_sync');
+                bc.onmessage = function(ev) {
+                    if (ev.data && (ev.data.type === 'price_update' || ev.data.type === 'config_update')) {
+                        syncAndLoadPrices();
+                    }
+                };
+            } catch(e) {}
+        }
+
+        window.addEventListener('focus', () => {
+            loadUserBalance();
+            syncAndLoadPrices();
+        });
 
         // Filtro por categorias
         function setFilter(cat, btn) {
@@ -1243,7 +1320,7 @@
         // Inicializa dados na abertura
         document.addEventListener('DOMContentLoaded', () => {
             loadUserBalance();
-            loadConfiguredPrices();
+            syncAndLoadPrices();
         });
     </script>
 </body>
