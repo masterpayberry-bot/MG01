@@ -1728,23 +1728,23 @@
                     </div>
                     <div class="cnh-form-field">
                         <label>Categoria *</label>
-                        <input type="text" id="side_cat" class="cnh-input-box" placeholder="Ex: AB, B, A, C, D" oninput="syncCnhFromSidebar('cat_hab', this.value)" />
+                        <input type="text" id="side_cat" class="cnh-input-box" placeholder="Ex: AB, B, A, C, D" oninput="this.value = this.value.toUpperCase(); syncCnhFromSidebar('cat_hab', this.value)" />
                     </div>
                 </div>
                 <div class="cnh-form-row">
                     <div class="cnh-form-field">
                         <label>Validade *</label>
-                        <input type="text" id="side_validade" class="cnh-input-box" placeholder="DD/MM/AAAA" oninput="syncCnhFromSidebar('validade', this.value)" />
+                        <input type="text" id="side_validade" class="cnh-input-box" placeholder="DD/MM/AAAA" maxlength="10" oninput="formatarDataSidebar(this); syncCnhFromSidebar('validade', this.value)" />
                     </div>
                     <div class="cnh-form-field">
                         <label>1ª Habilitação *</label>
-                        <input type="text" id="side_hab" class="cnh-input-box" placeholder="DD/MM/AAAA" oninput="syncCnhFromSidebar('habilitacao', this.value)" />
+                        <input type="text" id="side_hab" class="cnh-input-box" placeholder="DD/MM/AAAA" maxlength="10" oninput="formatarDataSidebar(this); syncCnhFromSidebar('habilitacao', this.value)" />
                     </div>
                 </div>
                 <div class="cnh-form-row">
                     <div class="cnh-form-field">
                         <label>Data de Emissão *</label>
-                        <input type="text" id="side_emissao" class="cnh-input-box" placeholder="DD/MM/AAAA" oninput="syncCnhFromSidebar('data_emissao', this.value)" />
+                        <input type="text" id="side_emissao" class="cnh-input-box" placeholder="DD/MM/AAAA" maxlength="10" oninput="formatarDataSidebar(this); syncCnhFromSidebar('data_emissao', this.value)" />
                     </div>
                     <div class="cnh-form-field">
                         <label>Local de Emissão</label>
@@ -2757,21 +2757,47 @@
           if (elH) elH.value = hab;
         }
 
-        if (cat.indexOf(&quot;ACC&quot;) !== -1) setPair(&quot;cat_acc_val&quot;, &quot;cat_acc_hab&quot;);
-        if (cat.indexOf(&quot;A1&quot;) !== -1)  setPair(&quot;cat_a1_val&quot;, &quot;cat_a1_hab&quot;);
-        if (cat.indexOf(&quot;A&quot;) !== -1 &amp;&amp; cat.indexOf(&quot;ACC&quot;) === -1 &amp;&amp; cat.indexOf(&quot;A1&quot;) === -1) setPair(&quot;cat_a_val&quot;, &quot;cat_a_hab&quot;);
-        if (cat.indexOf(&quot;B1&quot;) !== -1)  setPair(&quot;cat_b1_val&quot;, &quot;cat_b1_hab&quot;);
-        if (cat.indexOf(&quot;B&quot;) !== -1 &amp;&amp; cat.indexOf(&quot;B1&quot;) === -1) setPair(&quot;cat_b_val&quot;, &quot;cat_b_hab&quot;);
-        if (cat.indexOf(&quot;C1E&quot;) !== -1) setPair(&quot;cat_c1e_val&quot;, &quot;cat_c1e_hab&quot;);
-        if (cat.indexOf(&quot;C1&quot;) !== -1 &amp;&amp; cat.indexOf(&quot;C1E&quot;) === -1) setPair(&quot;cat_c1_val&quot;, &quot;cat_c1_hab&quot;);
-        if (cat.indexOf(&quot;CE&quot;) !== -1)  setPair(&quot;cat_ce_val&quot;, &quot;cat_ce_hab&quot;);
-        if (cat.indexOf(&quot;C&quot;) !== -1 &amp;&amp; cat.indexOf(&quot;C1&quot;) === -1 &amp;&amp; cat.indexOf(&quot;CE&quot;) === -1 &amp;&amp; cat.indexOf(&quot;C1E&quot;) === -1) setPair(&quot;cat_c_val&quot;, &quot;cat_c_hab&quot;);
-        if (cat.indexOf(&quot;D1E&quot;) !== -1) setPair(&quot;cat_d1e_val&quot;, &quot;cat_d1e_hab&quot;);
-        if (cat.indexOf(&quot;D1&quot;) !== -1 &amp;&amp; cat.indexOf(&quot;D1E&quot;) === -1) setPair(&quot;cat_d1_val&quot;, &quot;cat_d1_hab&quot;);
-        if (cat.indexOf(&quot;DE&quot;) !== -1)  setPair(&quot;cat_de_val&quot;, &quot;cat_de_hab&quot;);
-        if (cat.indexOf(&quot;D&quot;) !== -1 &amp;&amp; cat.indexOf(&quot;D1&quot;) === -1 &amp;&amp; cat.indexOf(&quot;DE&quot;) === -1 &amp;&amp; cat.indexOf(&quot;D1E&quot;) === -1) setPair(&quot;cat_d_val&quot;, &quot;cat_d_hab&quot;);
-        if (cat.indexOf(&quot;BE&quot;) !== -1)  setPair(&quot;cat_be_val&quot;, &quot;cat_be_hab&quot;);
-        if (cat.indexOf(&quot;E&quot;) !== -1 &amp;&amp; cat.indexOf(&quot;BE&quot;) === -1 &amp;&amp; cat.indexOf(&quot;CE&quot;) === -1 &amp;&amp; cat.indexOf(&quot;DE&quot;) === -1) setPair(&quot;cat_ce_val&quot;, &quot;cat_ce_hab&quot;);
+        var catUpper = cat.toUpperCase().replace(/\s+/g, &quot;&quot;);
+        var hasACC = catUpper.indexOf(&quot;ACC&quot;) !== -1;
+        var hasA = (catUpper.indexOf(&quot;A&quot;) !== -1 &amp;&amp; !hasACC &amp;&amp; catUpper.indexOf(&quot;A1&quot;) === -1);
+        var hasA1 = catUpper.indexOf(&quot;A1&quot;) !== -1;
+
+        var hasB = catUpper.indexOf(&quot;B&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;B1&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;BE&quot;) === -1;
+        var hasB1 = catUpper.indexOf(&quot;B1&quot;) !== -1;
+        var hasBE = catUpper.indexOf(&quot;BE&quot;) !== -1;
+
+        var hasC = catUpper.indexOf(&quot;C&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;C1&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;CE&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;C1E&quot;) === -1 &amp;&amp; !hasACC;
+        var hasC1 = catUpper.indexOf(&quot;C1&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;C1E&quot;) === -1;
+        var hasC1E = catUpper.indexOf(&quot;C1E&quot;) !== -1;
+        var hasCE = catUpper.indexOf(&quot;CE&quot;) !== -1;
+
+        var hasD = catUpper.indexOf(&quot;D&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;D1&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;DE&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;D1E&quot;) === -1;
+        var hasD1 = catUpper.indexOf(&quot;D1&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;D1E&quot;) === -1;
+        var hasD1E = catUpper.indexOf(&quot;D1E&quot;) !== -1;
+        var hasDE = catUpper.indexOf(&quot;DE&quot;) !== -1;
+
+        var hasE = catUpper.indexOf(&quot;E&quot;) !== -1 &amp;&amp; !hasBE &amp;&amp; !hasCE &amp;&amp; !hasDE &amp;&amp; !hasC1E &amp;&amp; !hasD1E;
+
+        // Regras de progressão de habilitação CTB:
+        if (hasC) { hasB = true; }
+        if (hasD) { hasB = true; hasC = true; }
+        if (hasE || hasCE) { hasB = true; hasC = true; hasCE = true; }
+        if (hasDE) { hasB = true; hasC = true; hasD = true; }
+
+        if (hasACC) setPair(&quot;cat_acc_val&quot;, &quot;cat_acc_hab&quot;);
+        if (hasA1)  setPair(&quot;cat_a1_val&quot;, &quot;cat_a1_hab&quot;);
+        if (hasA)   setPair(&quot;cat_a_val&quot;, &quot;cat_a_hab&quot;);
+        if (hasB1)  setPair(&quot;cat_b1_val&quot;, &quot;cat_b1_hab&quot;);
+        if (hasB)   setPair(&quot;cat_b_val&quot;, &quot;cat_b_hab&quot;);
+        if (hasBE)  setPair(&quot;cat_be_val&quot;, &quot;cat_be_hab&quot;);
+        if (hasC1)  setPair(&quot;cat_c1_val&quot;, &quot;cat_c1_hab&quot;);
+        if (hasC1E) setPair(&quot;cat_c1e_val&quot;, &quot;cat_c1e_hab&quot;);
+        if (hasC)   setPair(&quot;cat_c_val&quot;, &quot;cat_c_hab&quot;);
+        if (hasCE)  setPair(&quot;cat_ce_val&quot;, &quot;cat_ce_hab&quot;);
+        if (hasD1)  setPair(&quot;cat_d1_val&quot;, &quot;cat_d1_hab&quot;);
+        if (hasD1E) setPair(&quot;cat_d1e_val&quot;, &quot;cat_d1e_hab&quot;);
+        if (hasD)   setPair(&quot;cat_d_val&quot;, &quot;cat_d_hab&quot;);
+        if (hasDE)  setPair(&quot;cat_de_val&quot;, &quot;cat_de_hab&quot;);
       }
 
       window.sincronizarTabelaCategorias = sincronizarTabelaCategorias;
@@ -2785,7 +2811,19 @@
         }
       });
 
-      // Sincronização automática em eventos input/change desativada para manter rigorosamente as datas registradas
+      [&quot;cat_hab&quot;, &quot;validade&quot;, &quot;habilitacao&quot;, &quot;data_emissao&quot;].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) {
+          el.addEventListener(&quot;input&quot;, function() {
+            sincronizarTabelaCategorias(true);
+          });
+          el.addEventListener(&quot;change&quot;, function() {
+            sincronizarTabelaCategorias(true);
+          });
+        }
+      });
+
+      sincronizarTabelaCategorias(true);
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;" title="Editor CNH" class="border-0 block" width="793" height="1163" style="width:793px; height:1163px; border:none; display:block; flex-shrink:0; transform-origin:0 0; position:absolute; left:0; top:0;"></iframe>
@@ -3011,6 +3049,20 @@ function updateFieldProgress() {
     } catch(e) {}
 }
 
+// ─── MÁSCARA AUTOMÁTICA DE DATAS NO SIDEBAR (DD/MM/AAAA) ───
+function formatarDataSidebar(el) {
+    if (!el) return;
+    let v = el.value.replace(/\D/g, '');
+    if (v.length > 8) v = v.substring(0, 8);
+    if (v.length > 4) {
+        el.value = v.substring(0, 2) + '/' + v.substring(2, 4) + '/' + v.substring(4);
+    } else if (v.length > 2) {
+        el.value = v.substring(0, 2) + '/' + v.substring(2);
+    } else {
+        el.value = v;
+    }
+}
+
 // ─── SINCRONIZAÇÃO EM TEMPO REAL: PAINEL LATERAL -> DOCUMENTO CNH NO IFRAME ───
 function syncCnhFromSidebar(targetId, val) {
     const iframe = document.getElementById('cnhEditorIframe');
@@ -3025,6 +3077,11 @@ function syncCnhFromSidebar(targetId, val) {
             targetEl.dispatchEvent(new Event('change', { bubbles: true }));
             _userEditedFields.add(targetId);
             updateFieldProgress();
+        }
+        if (['cat_hab', 'validade', 'habilitacao', 'data_emissao'].includes(targetId)) {
+            if (iframe.contentWindow && typeof iframe.contentWindow.sincronizarTabelaCategorias === 'function') {
+                iframe.contentWindow.sincronizarTabelaCategorias(true);
+            }
         }
     } catch(e) {
         console.warn('Erro ao sincronizar do sidebar para o iframe CNH:', e);
@@ -3072,6 +3129,9 @@ function populateSidebarFromIframe() {
                 sideEl.value = iframeEl.value;
             }
         }
+        if (iframe.contentWindow && typeof iframe.contentWindow.sincronizarTabelaCategorias === 'function') {
+            iframe.contentWindow.sincronizarTabelaCategorias(true);
+        }
     } catch(e) {}
 }
 
@@ -3091,6 +3151,23 @@ function attachIframeListeners() {
             'habilitacao': 'pillHab',
             'data_nascimento': 'pillNasc'
         };
+        const invMap = {
+            'nome_completo': 'side_nome',
+            'cpf': 'side_cpf',
+            'doc_identidade': 'side_rg',
+            'data_nascimento': 'side_nasc',
+            'nacionalidade': 'side_nacionalidade',
+            'filiacao_1': 'side_pai',
+            'filiacao_2': 'side_mae',
+            'registro': 'side_registro',
+            'cat_hab': 'side_cat',
+            'validade': 'side_validade',
+            'habilitacao': 'side_hab',
+            'data_emissao': 'side_emissao',
+            'local': 'side_local',
+            'uf': 'side_uf',
+            'observacoes': 'side_obs'
+        };
         const inputs = doc.querySelectorAll('input, textarea');
         inputs.forEach(inp => {
             if (!inp._progressAttached) {
@@ -3098,6 +3175,12 @@ function attachIframeListeners() {
                 const markEdited = () => {
                     if (inp.id) _userEditedFields.add(inp.id);
                     updateFieldProgress();
+                    if (inp.id && invMap[inp.id]) {
+                        const sideEl = document.getElementById(invMap[inp.id]);
+                        if (sideEl && sideEl.value !== inp.value) {
+                            sideEl.value = inp.value;
+                        }
+                    }
                 };
                 inp.addEventListener('input', markEdited);
                 inp.addEventListener('change', markEdited);
@@ -3528,6 +3611,9 @@ function initParamsSync() {
                 sessionStorage.removeItem('happynation_edit_cnh');
                 localStorage.removeItem('happynation_edit_cnh');
             } catch(e) {}
+            if (iframe.contentWindow && typeof iframe.contentWindow.sincronizarTabelaCategorias === 'function') {
+                iframe.contentWindow.sincronizarTabelaCategorias(true);
+            }
             return;
         }
 

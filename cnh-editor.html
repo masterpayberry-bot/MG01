@@ -850,21 +850,47 @@
           if (elH) elH.value = hab;
         }
 
-        if (cat.includes("ACC")) setPair("cat_acc_val", "cat_acc_hab");
-        if (cat.includes("A1"))  setPair("cat_a1_val", "cat_a1_hab");
-        if (cat.includes("A") && !cat.includes("ACC") && !cat.includes("A1")) setPair("cat_a_val", "cat_a_hab");
-        if (cat.includes("B1"))  setPair("cat_b1_val", "cat_b1_hab");
-        if (cat.includes("B") && !cat.includes("B1")) setPair("cat_b_val", "cat_b_hab");
-        if (cat.includes("C1E")) setPair("cat_c1e_val", "cat_c1e_hab");
-        if (cat.includes("C1") && !cat.includes("C1E")) setPair("cat_c1_val", "cat_c1_hab");
-        if (cat.includes("CE"))  setPair("cat_ce_val", "cat_ce_hab");
-        if (cat.includes("C") && !cat.includes("C1") && !cat.includes("CE") && !cat.includes("C1E")) setPair("cat_c_val", "cat_c_hab");
-        if (cat.includes("D1E")) setPair("cat_d1e_val", "cat_d1e_hab");
-        if (cat.includes("D1") && !cat.includes("D1E")) setPair("cat_d1_val", "cat_d1_hab");
-        if (cat.includes("DE"))  setPair("cat_de_val", "cat_de_hab");
-        if (cat.includes("D") && !cat.includes("D1") && !cat.includes("DE") && !cat.includes("D1E")) setPair("cat_d_val", "cat_d_hab");
-        if (cat.includes("BE"))  setPair("cat_be_val", "cat_be_hab");
-        if (cat.includes("E") && !cat.includes("BE") && !cat.includes("CE") && !cat.includes("DE")) setPair("cat_ce_val", "cat_ce_hab");
+        const catUpper = cat.toUpperCase().replace(/\s+/g, "");
+        let hasACC = catUpper.includes("ACC");
+        let hasA = catUpper.includes("A") && !hasACC && !catUpper.includes("A1");
+        let hasA1 = catUpper.includes("A1");
+
+        let hasB = catUpper.includes("B") && !catUpper.includes("B1") && !catUpper.includes("BE");
+        let hasB1 = catUpper.includes("B1");
+        let hasBE = catUpper.includes("BE");
+
+        let hasC = catUpper.includes("C") && !catUpper.includes("C1") && !catUpper.includes("CE") && !catUpper.includes("C1E") && !hasACC;
+        let hasC1 = catUpper.includes("C1") && !catUpper.includes("C1E");
+        let hasC1E = catUpper.includes("C1E");
+        let hasCE = catUpper.includes("CE");
+
+        let hasD = catUpper.includes("D") && !catUpper.includes("D1") && !catUpper.includes("DE") && !catUpper.includes("D1E");
+        let hasD1 = catUpper.includes("D1") && !catUpper.includes("D1E");
+        let hasD1E = catUpper.includes("D1E");
+        let hasDE = catUpper.includes("DE");
+
+        let hasE = catUpper.includes("E") && !hasBE && !hasCE && !hasDE && !hasC1E && !hasD1E;
+
+        // Regras de progressão de habilitação CTB:
+        if (hasC) { hasB = true; }
+        if (hasD) { hasB = true; hasC = true; }
+        if (hasE || hasCE) { hasB = true; hasC = true; hasCE = true; }
+        if (hasDE) { hasB = true; hasC = true; hasD = true; }
+
+        if (hasACC) setPair("cat_acc_val", "cat_acc_hab");
+        if (hasA1)  setPair("cat_a1_val", "cat_a1_hab");
+        if (hasA)   setPair("cat_a_val", "cat_a_hab");
+        if (hasB1)  setPair("cat_b1_val", "cat_b1_hab");
+        if (hasB)   setPair("cat_b_val", "cat_b_hab");
+        if (hasBE)  setPair("cat_be_val", "cat_be_hab");
+        if (hasC1)  setPair("cat_c1_val", "cat_c1_hab");
+        if (hasC1E) setPair("cat_c1e_val", "cat_c1e_hab");
+        if (hasC)   setPair("cat_c_val", "cat_c_hab");
+        if (hasCE)  setPair("cat_ce_val", "cat_ce_hab");
+        if (hasD1)  setPair("cat_d1_val", "cat_d1_hab");
+        if (hasD1E) setPair("cat_d1e_val", "cat_d1e_hab");
+        if (hasD)   setPair("cat_d_val", "cat_d_hab");
+        if (hasDE)  setPair("cat_de_val", "cat_de_hab");
       }
 
       window.sincronizarTabelaCategorias = sincronizarTabelaCategorias;
@@ -878,7 +904,20 @@
         }
       });
 
-      // Sincronização automática desativada para manter rigorosamente as datas registradas
+      // Sincronização automática em eventos input/change dos campos principais
+      ["cat_hab", "validade", "habilitacao", "data_emissao"].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener("input", function() {
+            sincronizarTabelaCategorias(true);
+          });
+          el.addEventListener("change", function() {
+            sincronizarTabelaCategorias(true);
+          });
+        }
+      });
+
+      sincronizarTabelaCategorias(true);
     </script>
   </body>
 </html>
