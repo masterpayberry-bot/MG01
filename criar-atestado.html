@@ -1811,18 +1811,26 @@
 
                                 <!-- Coluna Direita: Carimbo e Assinatura -->
                                 <div class="footer-right-col">
-                                    <div class="carimbo-container">
-                                        <div class="carimbo-text-box">
-                                            <div class="carimbo-dr-nome" id="fld_medico_nome">Dr. Jair Dacas</div>
-                                            <div class="carimbo-dr-esp" id="fld_medico_esp">Médica Clínica</div>
-                                            <div class="carimbo-dr-crm" id="fld_medico_crm">CRM 29022 RS</div>
-                                        </div>
-                                        <div class="carimbo-sig-svg-wrap" id="carimboSigWrap">
-                                            <img id="sigImgElement" src="" style="width:245px; height:auto; max-height:85px; object-fit:contain; pointer-events:none;" alt="Assinatura Médica">
-                                            <input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">
-                                        </div>
-                                        <div class="carimbo-divider"></div>
-                                        <div class="carimbo-caption">ASSINATURA/CARIMBO</div>
+                                    <div class="carimbo-wrapper" style="width:235px; height:120px; position:relative;">
+                                        <svg id="carimboSvg" viewBox="0 0 235 120" width="235" height="120" style="overflow:visible; display:block;">
+                                            <!-- 1. Textos Oficiais do Carimbo (Serif, 100% idêntico à imagem) -->
+                                            <text id="fld_medico_nome" x="95" y="38" text-anchor="middle" font-family="'Times New Roman', Georgia, serif" font-size="14.5" fill="#2d3339" font-weight="500">Dr. Jair Dacas</text>
+                                            <text id="fld_medico_esp" x="95" y="55" text-anchor="middle" font-family="'Times New Roman', Georgia, serif" font-size="13" fill="#3f454d">Médica Clínica</text>
+                                            <text id="fld_medico_crm" x="95" y="72" text-anchor="middle" font-family="'Times New Roman', Georgia, serif" font-size="13" fill="#2d3339">CRM 29022 RS</text>
+
+                                            <!-- 2. Linha Divisória Oficial -->
+                                            <line x1="0" y1="84" x2="190" y2="84" stroke="#1f2429" stroke-width="1.2" />
+
+                                            <!-- 3. Legenda Inferior -->
+                                            <text x="60" y="98" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="700" fill="#1f2429" letter-spacing="0.4">ASSINATURA/CARIMBO</text>
+
+                                            <!-- 4. Assinatura Realista em Caneta Azul Sobreposta -->
+                                            <g id="carimboSigLayer">
+                                                <path d="M 64 58 C 66 46, 81 35, 99 34 C 112 34, 122 43, 117 57 C 111 71, 100 81, 93 84 C 84 89, 71 99, 66 104 C 66 104, 80 92, 91 84 C 104 74, 119 65, 137 62 C 154 58, 163 58, 170 64 C 177 69, 191 68, 207 64" fill="none" stroke="#1040cf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+                                                <circle cx="162" cy="42" r="1.6" fill="#1040cf" />
+                                            </g>
+                                        </svg>
+                                        <input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">
                                     </div>
                                 </div>
 
@@ -2396,52 +2404,30 @@
     }
 
     function renderAssinatura() {
-        const wrap = document.getElementById('carimboSigWrap');
-        if (!wrap) return;
+        const layer = document.getElementById('carimboSigLayer');
+        if (!layer) return;
 
         if (currentSigMode === 'custom' && customSigDataUrl) {
-            wrap.innerHTML = `<img src="${customSigDataUrl}" style="max-height:80px; max-width:240px; object-fit:contain; pointer-events:none;" alt="Assinatura Personalizada"><input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">`;
+            layer.innerHTML = `<image href="${customSigDataUrl}" x="20" y="20" width="190" height="90" preserveAspectRatio="xMidYMid meet" />`;
             return;
         }
 
         if (currentSigMode === 'cursiva') {
             const medico = (document.getElementById('inp_medico')?.value || 'Dr. Jair Dacas').trim();
             const nomeSemDr = medico.replace(/^(dr\.|dra\.|dr|dra)\s*/i, '');
-            wrap.innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; pointer-events:none; padding-bottom:4px;">
-                    <div style="font-family:'Cedarville Cursive', 'Caveat', 'Dancing Script', cursive; font-size:32px; font-weight:700; color:${currentSigColor}; transform:rotate(-4deg) translateY(6px); line-height:1; white-space:nowrap; letter-spacing:0.5px;">
-                        ${nomeSemDr || 'Jair Dacas'}
-                    </div>
-                    <svg viewBox="0 0 210 24" style="width:210px; height:24px; overflow:visible; margin-top:-6px;" fill="none" stroke="${currentSigColor}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M 12 12 Q 60 22 110 8 T 198 6" />
-                        <circle cx="186" cy="4" r="1.6" fill="${currentSigColor}" />
-                    </svg>
-                </div>
-                <input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">
+            layer.innerHTML = `
+                <text x="105" y="62" text-anchor="middle" font-family="'Cedarville Cursive', 'Caveat', 'Dancing Script', cursive" font-size="29" font-weight="700" fill="${currentSigColor}" transform="rotate(-5 105 62)">${nomeSemDr || 'Jair Dacas'}</text>
+                <path d="M 25 78 Q 75 90 135 74 T 215 72" fill="none" stroke="${currentSigColor}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="205" cy="70" r="1.6" fill="${currentSigColor}" />
             `;
             return;
         }
 
-        if (currentSigMode === 'rubrica_svg') {
-            wrap.innerHTML = `
-                <svg viewBox="0 0 240 85" width="240" height="85" style="pointer-events:none; overflow:visible;">
-                    <path d="M 98 46 C 110 34, 120 13, 132 11 C 141 9, 145 20, 134 42 C 125 60, 106 70, 112 76 C 118 80, 128 68, 140 58 C 153 48, 168 44, 180 48 C 190 51, 202 48, 214 46" fill="none" stroke="${currentSigColor}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="170" cy="31" r="1.6" fill="${currentSigColor}"/>
-                </svg>
-                <input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">
-            `;
-            return;
-        }
-
-        // Default 'original': 100% IDEM da imagem anexada
-        const b64 = window.SIG_ORIGINAL_B64 || "";
-        let filterStyle = "";
-        if (currentSigColor === '#18181b') {
-            filterStyle = "filter: grayscale(1) brightness(0.2);";
-        } else if (currentSigColor === '#002e99') {
-            filterStyle = "filter: hue-rotate(20deg) brightness(0.85);";
-        }
-        wrap.innerHTML = `<img src="${b64}" style="width:245px; height:auto; max-height:85px; object-fit:contain; pointer-events:none; ${filterStyle}" alt="Assinatura Médica Oficial"><input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">`;
+        // Padrão 100% IDEM: Rubrica original da foto exatamente alinhada sobre o carimbo
+        layer.innerHTML = `
+            <path d="M 64 58 C 66 46, 81 35, 99 34 C 112 34, 122 43, 117 57 C 111 71, 100 81, 93 84 C 84 89, 71 99, 66 104 C 66 104, 80 92, 91 84 C 104 74, 119 65, 137 62 C 154 58, 163 58, 170 64 C 177 69, 191 68, 207 64" fill="none" stroke="${currentSigColor}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="162" cy="42" r="1.6" fill="${currentSigColor}" />
+        `;
     }
 
     function handleSigUpload(input) {
