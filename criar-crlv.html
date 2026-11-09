@@ -450,14 +450,14 @@
 
         /* ═════════════════════════════════════════════════════════════════════
            ESTILOS OFICIAIS 100% IDÊNTICOS AO MODELO SENATRAN / DETRAN
-           Folha A4 HD: 1024px largura x 1342px altura
+           Folha A4 HD Oficial: 1024px largura x 1431px altura (Proporção Exata A4)
            ═════════════════════════════════════════════════════════════════════ */
         .sheet-crlv-a4 {
             width: 1024px;
-            height: 1342px;
+            height: 1431px;
             background-color: #ffffff;
             background-image: url('assets/crlv_template_hd_clean.png');
-            background-size: 1024px 1342px;
+            background-size: 1024px 1431px;
             background-repeat: no-repeat;
             background-position: top left;
             position: relative;
@@ -1052,7 +1052,7 @@
 
     <!-- SCRIPTS DE CONTROLE E FUNCIONALIDADES -->
     <script>
-        let currentZoom = 0.78;
+        let currentZoom = 0.72;
         let isCrlvEmitido = false;
 
         function showToast(msg) {
@@ -1072,7 +1072,7 @@
         }
 
         function resetZoom() {
-            currentZoom = 0.78;
+            currentZoom = 0.72;
             applyZoom();
         }
 
@@ -1081,8 +1081,8 @@
             const disp = document.getElementById('zoomLevelDisplay');
             if (el) {
                 el.style.transform = `scale(${currentZoom})`;
-                const scaledH = Math.round(1342 * currentZoom);
-                el.style.marginBottom = `${scaledH - 1342 + 40}px`;
+                const scaledH = Math.round(1431 * currentZoom);
+                el.style.marginBottom = `${scaledH - 1431 + 40}px`;
             }
             if (disp) disp.textContent = `${Math.round(currentZoom * 100)}%`;
         }
@@ -1299,7 +1299,7 @@
                 hiddenDiv.style.position = 'fixed';
                 hiddenDiv.style.left = '-99999px';
                 hiddenDiv.style.top = '0';
-                hiddenDiv.style.width = '1024px'; hiddenDiv.style.height = '1342px';
+                hiddenDiv.style.width = '1024px'; hiddenDiv.style.height = '1431px';
                 hiddenDiv.style.background = '#ffffff';
                 hiddenDiv.style.zIndex = '-99999';
                 hiddenDiv.appendChild(clone);
@@ -1313,8 +1313,8 @@
                     allowTaint: true,
                     backgroundColor: '#ffffff',
                     logging: false,
-                    width: 1024, height: 1342,
-                    windowWidth: 1024, windowHeight: 1342
+                    width: 1024, height: 1431,
+                    windowWidth: 1024, windowHeight: 1431
                 });
 
                 hiddenDiv.remove();
@@ -1325,17 +1325,17 @@
                 const pdf = new JsPDF({
                     orientation: 'portrait',
                     unit: 'px',
-                    format: [1024, 1342],
+                    format: [1024, 1431],
                     hotfixes: ['px_scaling']
                 });
 
                 let imgData;
                 try {
                     imgData = canvas.toDataURL('image/png');
-                    pdf.addImage(imgData, 'PNG', 0, 0, 1024, 1342, undefined, 'FAST');
+                    pdf.addImage(imgData, 'PNG', 0, 0, 1024, 1431, undefined, 'FAST');
                 } catch(ePng) {
                     imgData = canvas.toDataURL('image/jpeg', 1.0);
-                    pdf.addImage(imgData, 'JPEG', 0, 0, 1024, 1342);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 1024, 1431);
                 }
 
                 try {
