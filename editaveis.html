@@ -2252,11 +2252,13 @@
                 { match: 'cin', link: 'criar-rg.html', name: 'RG Digital', accent: '#3b82f6' },
                 { match: 'diploma', link: 'criar-diploma.html', name: 'Diploma Uninter', accent: '#2563eb' },
                 { match: 'unimed', link: 'criar-unimed.html', name: 'Atestado Unimed', accent: '#00995D' },
-                { match: 'dut', link: 'criar-dut.html', name: 'DUT ATPV-e', accent: '#f97316' }
+                { match: 'atpv', link: 'criar-dut.html', name: 'DUT ATPV-e', accent: '#f97316' }
             ];
 
             devCards.forEach(item => {
-                const card = document.querySelector(`article[data-name*="${item.match}"]`);
+                // Seleciona APENAS cards que são marcados como desenvolvimento (.card-crlv-em-desenvolvimento)
+                // Nunca altera cards ativos de produção como Prontuário de Condutor
+                const card = document.querySelector(`article.card-crlv-em-desenvolvimento[data-name*="${item.match}"]`);
                 if (!card) return;
 
                 // Desativa opacidade fosca para o Admin visualizar claramente
