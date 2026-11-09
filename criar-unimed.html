@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/dev-guard.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Atestado Médico (Unimed)</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="saldo-sync.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;900&family=Great+Vibes&display=swap');
+
+        :root {
+            --bg-color: #0b0d0e;
+            --surface: #141718;
+            --border: #232729;
+            --text-main: #f3f4f6;
+            --primary: #00995D;
+            --font-ui: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); }
+        body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+        .header { height: 64px; background: rgba(20,23,24,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+        .header-inner { max-width: 1480px; height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .brand-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-weight: 800; font-size: 17px; }
+        .brand-icon { width: 34px; height: 34px; border-radius: 9px; background: rgba(0,153,93,0.15); border: 1px solid rgba(0,153,93,0.35); display: flex; align-items: center; justify-content: center; color: #00995D; }
+        .badge-dev-admin { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.35); color: #10b981; font-size: 11.5px; font-weight: 800; }
+        .btn-back-cat { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 9px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #94a3b8; font-size: 12.5px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .btn-back-cat:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+        .workspace { flex: 1; max-width: 1480px; width: 100%; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 460px 1fr; gap: 24px; }
+        @media(max-width: 1024px) { .workspace { grid-template-columns: 1fr; } }
+
+        .form-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; height: calc(100vh - 112px); overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+        .form-section-title { font-size: 13px; font-weight: 800; color: #00995D; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 8px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-label { font-size: 11.5px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-input { background: #0c0e10; border: 1px solid #23282b; border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; }
+        .form-input:focus { border-color: #00995D; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .btn-export { background: #00995D; color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(0,153,93,0.35); margin-top: auto; }
+
+        .preview-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-x: auto; }
+        .preview-header { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+
+        /* ATESTADO UNIMED A4 CANVAS */
+        .unimed-page {
+            width: 680px;
+            min-height: 850px;
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 40px 48px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .unimed-header-box { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #00995D; padding-bottom: 18px; margin-bottom: 30px; }
+        .unimed-logo-text { font-size: 32px; font-weight: 900; color: #00995D; letter-spacing: -0.5px; }
+        .unimed-sub-brand { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+        .unimed-unit-info { text-align: right; font-size: 11px; color: #666; line-height: 1.4; }
+
+        .unimed-doc-title { text-align: center; font-size: 22px; font-weight: 900; color: #00995D; text-transform: uppercase; letter-spacing: 1.5px; margin: 24px 0 36px 0; }
+        .unimed-body-text { font-size: 15px; line-height: 2; color: #222; text-align: justify; margin-bottom: 36px; }
+
+        .unimed-cid-box { background: #f0fdf4; border-left: 4px solid #00995D; padding: 12px 16px; font-size: 13px; font-weight: 600; color: #166534; margin-bottom: 36px; border-radius: 0 6px 6px 0; }
+        .unimed-footer-info { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 30px; border-top: 1px solid #e5e5e5; }
+        .unimed-stamp-box { border: 1.5px dashed #00995D; border-radius: 8px; padding: 14px 20px; text-align: center; width: 250px; background: rgba(0,153,93,0.02); }
+        .stamp-sig { font-family: 'Great Vibes', cursive; font-size: 28px; color: #004d2c; margin-bottom: 4px; }
+        .stamp-name { font-size: 12px; font-weight: 800; color: #111; text-transform: uppercase; }
+        .stamp-crm { font-size: 11px; font-weight: 700; color: #00995D; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="editaveis.html" class="brand-link">
+                <div class="brand-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 9v4"/><path d="M10 11h4"/></svg>
+                </div>
+                <span>Atestado Médico (Unimed)</span>
+            </a>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span class="badge-dev-admin">👑 MODO DESENVOLVIMENTO (ADMIN)</span>
+                <span id="userHeaderSaldo" style="font-size:12.5px; font-weight:700; color:#10b981;">Saldo R$ 0,00</span>
+                <a href="editaveis.html" class="btn-back-cat">← Voltar ao Catálogo</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="workspace">
+        <div class="form-panel">
+            <div class="form-section-title">👤 Paciente &amp; Consulta</div>
+            <div class="form-group">
+                <label class="form-label">Nome Completo do Paciente</label>
+                <input type="text" class="form-input" id="inpPaciente" value="RAFAEL MENEZES DOS SANTOS" oninput="updateUnimed()">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">CPF do Paciente</label>
+                    <input type="text" class="form-input" id="inpCpf" value="389.412.875-10" oninput="updateUnimed()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Dias de Repouso</label>
+                    <input type="number" class="form-input" id="inpDias" value="3" oninput="updateUnimed()">
+                </div>
+            </div>
+
+            <div class="form-section-title">🩺 Diagnóstico &amp; CID-10</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Código CID-10</label>
+                    <input type="text" class="form-input" id="inpCid" value="J06.9" oninput="updateUnimed()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição do Diagnóstico</label>
+                    <input type="text" class="form-input" id="inpDescCid" value="Infecção aguda das vias aéreas superiores" oninput="updateUnimed()">
+                </div>
+            </div>
+
+            <div class="form-section-title">🏥 Médico &amp; Unidade Unimed</div>
+            <div class="form-group">
+                <label class="form-label">Nome do Médico Cooperado</label>
+                <input type="text" class="form-input" id="inpMedico" value="Dr. Fernando Silveira Castro" oninput="updateUnimed()">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">CRM / UF</label>
+                    <input type="text" class="form-input" id="inpCrm" value="CRM/SP 148.920" oninput="updateUnimed()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Especialidade</label>
+                    <input type="text" class="form-input" id="inpEsp" value="Clínica Médica • RQE 4812" oninput="updateUnimed()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Unidade / Hospital Unimed</label>
+                <input type="text" class="form-input" id="inpUnidade" value="Hospital Geral Unimed Central • Pronto Atendimento 24h" oninput="updateUnimed()">
+            </div>
+
+            <button type="button" class="btn-export" onclick="window.print()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Baixar Atestado Unimed em PDF</span>
+            </button>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview-header">
+                <div style="font-size:14px; font-weight:800; color:#fff;">Espelho Oficial • Atestado Unimed Nacional</div>
+                <span style="font-size:12px; color:#9ca3af;">Formato A4 Padrão Hospitalar</span>
+            </div>
+
+            <div class="unimed-page" id="unimedCanvas">
+                <div class="unimed-header-box">
+                    <div>
+                        <div class="unimed-logo-text">Unimed</div>
+                        <div class="unimed-sub-brand">Cooperativa de Trabalho Médico</div>
+                    </div>
+                    <div class="unimed-unit-info" id="outUnidade">
+                        Hospital Geral Unimed Central<br>
+                        Pronto Atendimento 24 Horas<br>
+                        São Paulo - SP
+                    </div>
+                </div>
+
+                <div class="unimed-doc-title">ATESTADO MÉDICO</div>
+
+                <p class="unimed-body-text">
+                    Atesto para os devidos fins de comprovação que o(a) Sr.(a) <strong id="outPaciente">RAFAEL MENEZES DOS SANTOS</strong>, portador(a) do documento CPF nº <strong id="outCpf">389.412.875-10</strong>, foi atendido(a) nesta unidade hospitalar nesta data, necessitando de <strong id="outDias">3 (três) dias</strong> de repouso e afastamento de suas atividades profissionais e acadêmicas para tratamento e recuperação de sua saúde.
+                </p>
+
+                <div class="unimed-cid-box">
+                    Classificação Internacional de Doenças (CID-10): <span id="outCid">J06.9</span> - <span id="outDescCid">Infecção aguda das vias aéreas superiores</span>
+                </div>
+
+                <div class="unimed-footer-info">
+                    <div>
+                        <div id="unimedQrCode" style="width:72px; height:72px; margin-bottom:6px;"></div>
+                        <div style="font-size:9.5px; color:#555; font-weight:700;">VALIDAÇÃO HOSPITALAR UNIMED</div>
+                    </div>
+
+                    <div class="unimed-stamp-box">
+                        <div class="stamp-sig" id="outSigMed">F. S. Castro</div>
+                        <div class="stamp-name" id="outMed">Dr. Fernando Silveira Castro</div>
+                        <div class="stamp-crm" id="outCrm">CRM/SP 148.920</div>
+                        <div style="font-size:9.5px; color:#666;" id="outEsp">Clínica Médica • RQE 4812</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function updateUnimed() {
+            document.getElementById('outPaciente').textContent = document.getElementById('inpPaciente').value || '';
+            document.getElementById('outCpf').textContent = document.getElementById('inpCpf').value || '';
+            const d = document.getElementById('inpDias').value || '1';
+            document.getElementById('outDias').textContent = `${d} (${d == 1 ? 'um' : d == 2 ? 'dois' : d == 3 ? 'três' : d} ${d == 1 ? 'dia' : 'dias'})`;
+            document.getElementById('outCid').textContent = document.getElementById('inpCid').value || '';
+            document.getElementById('outDescCid').textContent = document.getElementById('inpDescCid').value || '';
+            document.getElementById('outMed').textContent = document.getElementById('inpMedico').value || '';
+            document.getElementById('outCrm').textContent = document.getElementById('inpCrm').value || '';
+            document.getElementById('outEsp').textContent = document.getElementById('inpEsp').value || '';
+            document.getElementById('outUnidade').textContent = document.getElementById('inpUnidade').value || '';
+
+            const mName = document.getElementById('inpMedico').value.split(' ');
+            document.getElementById('outSigMed').textContent = (mName[0] ? mName[0][0] + '. ' : '') + (mName[mName.length - 1] || '');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const qrEl = document.getElementById('unimedQrCode');
+            if (qrEl && typeof QRCode !== 'undefined') {
+                qrEl.innerHTML = '';
+                new QRCode(qrEl, {
+                    text: 'https://validador.unimed.coop.br/atestado/autenticidade?key=' + Math.random().toString(36).substring(2, 10).toUpperCase(),
+                    width: 70,
+                    height: 70,
+                    colorDark: '#00995D',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+
+            try {
+                let user = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+                let saldo = (user && user.saldo !== undefined) ? parseFloat(user.saldo) : 0;
+                const el = document.getElementById('userHeaderSaldo');
+                if (el) el.textContent = `Saldo R$ ${saldo.toFixed(2).replace('.', ',')}`;
+            } catch(e) {}
+        });
+    </script>
+</body>
+</html>

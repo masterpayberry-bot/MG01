@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/dev-guard.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Diploma Universitário Digital (MEC)</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="saldo-sync.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,700&display=swap');
+
+        :root {
+            --bg-color: #0b0d0e;
+            --surface: #141718;
+            --surface-card: #191c1d;
+            --border: #232729;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #f43f5e;
+            --font-ui: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); }
+        body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* HEADER */
+        .header { height: 64px; background: rgba(20,23,24,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+        .header-inner { max-width: 1480px; height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .brand-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-weight: 800; font-size: 17px; }
+        .brand-icon { width: 34px; height: 34px; border-radius: 9px; background: rgba(244,63,94,0.15); border: 1px solid rgba(244,63,94,0.35); display: flex; align-items: center; justify-content: center; color: #f43f5e; }
+        .badge-dev-admin { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.35); color: #10b981; font-size: 11.5px; font-weight: 800; }
+        .btn-back-cat { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 9px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #94a3b8; font-size: 12.5px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .btn-back-cat:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+        /* WORKSPACE */
+        .workspace { flex: 1; max-width: 1480px; width: 100%; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 460px 1fr; gap: 24px; }
+        @media(max-width: 1024px) { .workspace { grid-template-columns: 1fr; } }
+
+        /* FORM PANEL */
+        .form-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; height: calc(100vh - 112px); overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+        .form-section-title { font-size: 13px; font-weight: 800; color: #f43f5e; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-label { font-size: 11.5px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-input { background: #0c0e10; border: 1px solid #23282b; border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; transition: border-color 0.2s; }
+        .form-input:focus { border-color: #f43f5e; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .btn-export { background: #f43f5e; color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(244,63,94,0.35); margin-top: auto; transition: transform 0.15s; }
+        .btn-export:hover { transform: translateY(-1px); }
+
+        /* PREVIEW PANEL */
+        .preview-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-x: auto; }
+        .preview-header { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .preview-title { font-size: 14px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+
+        /* DIPLOMA A4 CANVAS */
+        .diploma-page {
+            width: 794px;
+            min-height: 560px;
+            background: #fdfbf7;
+            color: #1e1e1e;
+            border: 12px double #8b6b23;
+            padding: 36px 44px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background-image: radial-gradient(circle at center, rgba(212,175,55,0.04) 0%, transparent 70%);
+        }
+
+        .diploma-crest { width: 62px; height: 62px; margin-bottom: 8px; }
+        .diploma-rep { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #5c4b18; }
+        .diploma-mec { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1.5px; color: #7a6832; margin-bottom: 12px; }
+        .diploma-ies { font-family: 'Cinzel', serif; font-size: 21px; font-weight: 900; letter-spacing: 1.8px; color: #1c2430; text-transform: uppercase; margin-bottom: 10px; }
+        .diploma-main-title { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 900; letter-spacing: 5px; color: #8b6b23; text-transform: uppercase; margin: 10px 0; border-top: 1px solid #d4af37; border-bottom: 1px solid #d4af37; padding: 4px 30px; }
+        .diploma-text { font-family: 'Playfair Display', serif; font-size: 14px; line-height: 1.8; color: #333; max-width: 680px; margin: 12px 0; }
+        .diploma-student { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 800; color: #0c1a2e; letter-spacing: 1.2px; text-transform: uppercase; margin: 6px 0; }
+        .diploma-course { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 800; color: #8b6b23; letter-spacing: 1px; text-transform: uppercase; margin: 4px 0; }
+        .diploma-sigs { display: flex; justify-content: space-around; width: 100%; margin-top: 28px; }
+        .sig-box { display: flex; flex-direction: column; align-items: center; width: 220px; }
+        .sig-font { font-family: 'Great Vibes', cursive; font-size: 26px; color: #0c1a2e; transform: rotate(-3deg); margin-bottom: 2px; }
+        .sig-line { width: 100%; border-top: 1px solid #444; margin-bottom: 4px; }
+        .sig-role { font-size: 10px; font-weight: 700; color: #555; text-transform: uppercase; }
+
+        .diploma-qr-box { position: absolute; bottom: 20px; right: 28px; display: flex; flex-direction: column; align-items: center; }
+        .diploma-qr { width: 62px; height: 62px; background: #fff; padding: 2px; border: 1px solid #ccc; }
+        .diploma-qr-lbl { font-size: 8px; font-weight: 700; color: #555; margin-top: 3px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="editaveis.html" class="brand-link">
+                <div class="brand-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                </div>
+                <span>Diploma Universitário (MEC)</span>
+            </a>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span class="badge-dev-admin">👑 MODO DESENVOLVIMENTO (ADMIN)</span>
+                <span id="userHeaderSaldo" style="font-size:12.5px; font-weight:700; color:#10b981;">Saldo R$ 0,00</span>
+                <a href="editaveis.html" class="btn-back-cat">← Voltar ao Catálogo</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="workspace">
+        <div class="form-panel">
+            <div class="form-section-title">🎓 Dados do Aluno &amp; Curso</div>
+            <div class="form-group">
+                <label class="form-label">Nome Completo do Diplomado</label>
+                <input type="text" class="form-input" id="inpNome" value="LEONARDO HENRIQUE DE ALMEIDA" oninput="updateDiploma()">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">CPF do Diplomado</label>
+                    <input type="text" class="form-input" id="inpCpf" value="042.819.340-92" oninput="updateDiploma()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nacionalidade / UF</label>
+                    <input type="text" class="form-input" id="inpNac" value="Brasileiro(a), Natural de SP" oninput="updateDiploma()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Curso de Graduação</label>
+                <input type="text" class="form-input" id="inpCurso" value="BACHARELADO EM DIREITO" oninput="updateDiploma()">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Instituição de Ensino Superior (IES)</label>
+                <input type="text" class="form-input" id="inpIes" value="UNIVERSIDADE FEDERAL PAULISTA - UNIFEP" oninput="updateDiploma()">
+            </div>
+
+            <div class="form-section-title">🏛️ Dados de Registro &amp; Colação</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Data de Colação de Grau</label>
+                    <input type="text" class="form-input" id="inpDataColacao" value="18 de Dezembro de 2024" oninput="updateDiploma()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Data de Expedição</label>
+                    <input type="text" class="form-input" id="inpDataExp" value="15 de Janeiro de 2025" oninput="updateDiploma()">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Livro / Folha / Registro</label>
+                    <input type="text" class="form-input" id="inpRegistro" value="Livro 42 • Fls. 18 • Reg. 84920" oninput="updateDiploma()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Processo MEC Digital</label>
+                    <input type="text" class="form-input" id="inpProcesso" value="MEC-23000.084129/2024" oninput="updateDiploma()">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Nome do Reitor(a)</label>
+                    <input type="text" class="form-input" id="inpReitor" value="Prof. Dr. Marcos Vasconcelos" oninput="updateDiploma()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Secretário(a) Geral</label>
+                    <input type="text" class="form-input" id="inpSec" value="Dra. Helena Ribeiro Pinto" oninput="updateDiploma()">
+                </div>
+            </div>
+
+            <button type="button" class="btn-export" onclick="window.print()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Baixar Diploma em PDF (Alta Resolução)</span>
+            </button>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview-header">
+                <div class="preview-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.3"><path d="M2 12h20M12 2v20"/></svg>
+                    <span>Espelho Oficial do Diploma (Padrão MEC Digital)</span>
+                </div>
+                <span style="font-size:12px; color:#9ca3af;">Visualização em tempo real (Formato A4 Paisagem)</span>
+            </div>
+
+            <div class="diploma-page" id="diplomaCanvas">
+                <div class="diploma-rep">República Federativa do Brasil</div>
+                <div class="diploma-mec">Ministério da Educação • Secretaria de Regulação e Supervisão da Educação Superior</div>
+                <div class="diploma-ies" id="outIes">UNIVERSIDADE FEDERAL PAULISTA - UNIFEP</div>
+                <div class="diploma-main-title">DIPLOMA</div>
+                <p class="diploma-text">
+                    A Reitoria da Universidade, no uso de suas atribuições legais e tendo em vista a conclusão do curso regular e a colação de grau realizada em <span id="outDataColacao" style="font-weight:700;">18 de Dezembro de 2024</span>, confere o presente Diploma a:
+                </p>
+                <div class="diploma-student" id="outNome">LEONARDO HENRIQUE DE ALMEIDA</div>
+                <div style="font-size:12px; color:#555; margin-bottom:8px;">portador(a) do CPF nº <span id="outCpf" style="font-weight:700;">042.819.340-92</span>, <span id="outNac">Brasileiro(a), Natural de SP</span>, outorgando-lhe o respectivo grau de:</div>
+                <div class="diploma-course" id="outCurso">BACHAREL EM DIREITO</div>
+                <p class="diploma-text" style="font-size:12px; margin-top:8px;">
+                    com todas as prerrogativas, direitos e deveres assegurados pelas leis do país. Expedido em <span id="outDataExp" style="font-weight:700;">15 de Janeiro de 2025</span> sob o <span id="outReg">Livro 42 • Fls. 18 • Reg. 84920</span>. Processo: <span id="outProc">MEC-23000.084129/2024</span>.
+                </p>
+
+                <div class="diploma-sigs">
+                    <div class="sig-box">
+                        <div class="sig-font" id="outSigReitor">M. Vasconcelos</div>
+                        <div class="sig-line"></div>
+                        <div class="sig-role" id="outReitor">Prof. Dr. Marcos Vasconcelos</div>
+                        <div style="font-size:8.5px; color:#777;">Reitor da Instituição</div>
+                    </div>
+                    <div class="sig-box">
+                        <div class="sig-font" id="outSigSec">H. Ribeiro Pinto</div>
+                        <div class="sig-line"></div>
+                        <div class="sig-role" id="outSec">Dra. Helena Ribeiro Pinto</div>
+                        <div style="font-size:8.5px; color:#777;">Secretária Geral de Registros</div>
+                    </div>
+                </div>
+
+                <div class="diploma-qr-box">
+                    <div class="diploma-qr" id="diplomaQrCode"></div>
+                    <div class="diploma-qr-lbl">MEC • ICP-BRASIL</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function updateDiploma() {
+            document.getElementById('outNome').textContent = document.getElementById('inpNome').value || 'NOME DO DIPLOMADO';
+            document.getElementById('outCpf').textContent = document.getElementById('inpCpf').value || '000.000.000-00';
+            document.getElementById('outNac').textContent = document.getElementById('inpNac').value || '';
+            document.getElementById('outCurso').textContent = document.getElementById('inpCurso').value || '';
+            document.getElementById('outIes').textContent = document.getElementById('inpIes').value || '';
+            document.getElementById('outDataColacao').textContent = document.getElementById('inpDataColacao').value || '';
+            document.getElementById('outDataExp').textContent = document.getElementById('inpDataExp').value || '';
+            document.getElementById('outReg').textContent = document.getElementById('inpRegistro').value || '';
+            document.getElementById('outProc').textContent = document.getElementById('inpProcesso').value || '';
+            document.getElementById('outReitor').textContent = document.getElementById('inpReitor').value || '';
+            document.getElementById('outSec').textContent = document.getElementById('inpSec').value || '';
+
+            const rName = document.getElementById('inpReitor').value.split(' ');
+            document.getElementById('outSigReitor').textContent = (rName[0] ? rName[0][0] + '. ' : '') + (rName[rName.length - 1] || '');
+            const sName = document.getElementById('inpSec').value.split(' ');
+            document.getElementById('outSigSec').textContent = (sName[0] ? sName[0][0] + '. ' : '') + (sName[sName.length - 1] || '');
+        }
+
+        // Gera QR Code de autenticidade
+        document.addEventListener('DOMContentLoaded', () => {
+            const qrEl = document.getElementById('diplomaQrCode');
+            if (qrEl && typeof QRCode !== 'undefined') {
+                qrEl.innerHTML = '';
+                new QRCode(qrEl, {
+                    text: 'https://validador.educacaosuperior.mec.gov.br/diploma-digital/valida?id=' + Math.random().toString(36).substring(2, 12).toUpperCase(),
+                    width: 58,
+                    height: 58,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+
+            // Carrega saldo do usuário
+            try {
+                let user = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+                let saldo = (user && user.saldo !== undefined) ? parseFloat(user.saldo) : 0;
+                const el = document.getElementById('userHeaderSaldo');
+                if (el) el.textContent = `Saldo R$ ${saldo.toFixed(2).replace('.', ',')}`;
+            } catch(e) {}
+        });
+    </script>
+</body>
+</html>

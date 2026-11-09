@@ -1778,7 +1778,8 @@
                 category: 'SENATRAN • VEÍCULOS & DETRAN',
                 title: 'CRLV Digital (Licenciamento)',
                 accent: '#10b981',
-                link: 'javascript:handleCrlvEmBreve()',
+                link: 'criar-crlv.html',
+                devLink: 'criar-crlv.html',
                 btnText: '🔧 Em Desenvolvimento',
                 isDev: true,
                 html: `
@@ -1807,7 +1808,8 @@
                 category: 'GOV.BR • IDENTIDADE NACIONAL',
                 title: 'RG Digital App Gov.br / CIN',
                 accent: '#3b82f6',
-                link: 'javascript:handleRgEmBreve()',
+                link: 'criar-rg.html',
+                devLink: 'criar-rg.html',
                 btnText: '🔧 Em Desenvolvimento',
                 isDev: true,
                 html: `
@@ -1836,7 +1838,8 @@
                 category: 'MEC • ENSINO SUPERIOR & EDUCAÇÃO',
                 title: 'Diploma Universitário (MEC / Digital)',
                 accent: '#f43f5e',
-                link: 'javascript:handleDiplomaEmBreve()',
+                link: 'criar-diploma.html',
+                devLink: 'criar-diploma.html',
                 btnText: '🔧 Em Desenvolvimento',
                 isDev: true,
                 html: `
@@ -1865,7 +1868,8 @@
                 category: 'SAÚDE PRIVADA • UNIMED NACIONAL',
                 title: 'Atestado Médico (Unimed)',
                 accent: '#00995D',
-                link: 'javascript:handleUnimedEmBreve()',
+                link: 'criar-unimed.html',
+                devLink: 'criar-unimed.html',
                 btnText: '🔧 Em Desenvolvimento',
                 isDev: true,
                 html: `
@@ -1894,7 +1898,8 @@
                 category: 'SENATRAN • TRANSFERÊNCIA & DETRAN',
                 title: 'DUT / ATPV-e (Transferência de Veículo)',
                 accent: '#f97316',
-                link: 'javascript:handleDutEmBreve()',
+                link: 'criar-dut.html',
+                devLink: 'criar-dut.html',
                 btnText: '🔧 Em Desenvolvimento',
                 isDev: true,
                 html: `
@@ -1978,9 +1983,32 @@
             }
         };
 
+        // Identifica se o usuário atual é Administrador / Dono do sistema
+        function isUserAdmin() {
+            try {
+                if (localStorage.getItem('happynation_admin_auth') === 'true' || sessionStorage.getItem('happynation_admin_auth') === 'true') {
+                    return true;
+                }
+                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                if (uStr) {
+                    const u = JSON.parse(uStr);
+                    if (u && (u.role === 'admin' || u.isAdmin === true || (u.email && u.email.toLowerCase().includes('admin')))) {
+                        return true;
+                    }
+                }
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('admin') === '1' || params.get('adm') === '1' || params.get('dev') === '1') {
+                    return true;
+                }
+            } catch(e) {}
+            return false;
+        }
+
         function openDocModal(docKey) {
             const data = docDetailsData[docKey];
             if (!data) return;
+
+            const admin = isUserAdmin();
 
             const categoryEl = document.getElementById('modalDocCategory');
             if (categoryEl) {
@@ -1992,31 +2020,96 @@
             document.getElementById('modalDocBody').innerHTML = data.html;
 
             const btn = document.getElementById('modalEmitirBtn');
-            btn.href = data.link;
-            btn.querySelector('span').textContent = data.btnText;
+            const accent = data.accent || '#00dc82';
+            const isLight = (accent === '#00dc82' || accent === '#fbbf24');
 
-            // Adaptação visual profissional do botão do modal
             if (data.isDev) {
-                btn.style.cssText = 'padding:10px 22px; background:#22262a; color:#94a3b8; border:1px solid #333a40; box-shadow:none; cursor:pointer; font-weight:700; border-radius:10px; display:inline-flex; align-items:center; gap:8px; text-decoration:none;';
-                btn.onclick = function(e) {
-                    if (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
+                if (admin) {
+                    // Administrador/Dono: acesso liberado para edição e homologação
+                    btn.href = data.devLink || data.link;
+                    btn.querySelector('span').textContent = 'Acessar Emissão (Admin)';
+                    btn.style.cssText = `padding:10px 22px; background:${accent}; color:${isLight ? '#000' : '#fff'}; border:none; box-shadow:0 4px 18px -2px ${accent}77; cursor:pointer; font-weight:700; border-radius:10px; display:inline-flex; align-items:center; gap:8px; text-decoration:none;`;
+                    btn.onclick = null;
+
+                    const noteEl = document.querySelector('#modalDocBody .doc-modal-note');
+                    if (noteEl) {
+                        noteEl.style.color = '#10b981';
+                        noteEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span>Acesso de Administrador ativo: permissão liberada para teste e homologação do documento.</span>`;
                     }
-                    closeDocModal();
-                    if (data.link && data.link.includes('handle')) {
-                        eval(data.link.replace('javascript:', ''));
-                    }
-                    return false;
-                };
+                } else {
+                    // Cliente regular: bloqueio seguro com notificação
+                    btn.href = 'javascript:void(0)';
+                    btn.querySelector('span').textContent = '🔧 Em Desenvolvimento';
+                    btn.style.cssText = 'padding:10px 22px; background:#22262a; color:#94a3b8; border:1px solid #333a40; box-shadow:none; cursor:pointer; font-weight:700; border-radius:10px; display:inline-flex; align-items:center; gap:8px; text-decoration:none;';
+                    btn.onclick = function(e) {
+                        if (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                        closeDocModal();
+                        if (data.link && data.link.includes('handle')) {
+                            eval(data.link.replace('javascript:', ''));
+                        } else {
+                            showToastDev(data.title, 'Este documento está em desenvolvimento e estará disponível em breve.');
+                        }
+                        return false;
+                    };
+                }
             } else {
                 btn.onclick = null;
-                const accent = data.accent || '#00dc82';
-                const isLight = (accent === '#00dc82' || accent === '#fbbf24');
+                btn.href = data.link;
+                btn.querySelector('span').textContent = data.btnText;
                 btn.style.cssText = `padding:10px 22px; background:${accent}; color:${isLight ? '#000' : '#fff'}; border:none; box-shadow:0 4px 18px -2px ${accent}66; cursor:pointer; font-weight:700; border-radius:10px; display:inline-flex; align-items:center; gap:8px; text-decoration:none;`;
             }
 
             document.getElementById('docModal').classList.add('active');
+        }
+
+        // Aplica privilégios de Administrador nos cards do catálogo
+        function applyAdminCatalogAccess() {
+            if (!isUserAdmin()) return;
+
+            const devCards = [
+                { match: 'crlv', link: 'criar-crlv.html', name: 'CRLV Digital', accent: '#10b981' },
+                { match: 'cin', link: 'criar-rg.html', name: 'RG Digital', accent: '#3b82f6' },
+                { match: 'diploma', link: 'criar-diploma.html', name: 'Diploma MEC', accent: '#f43f5e' },
+                { match: 'unimed', link: 'criar-unimed.html', name: 'Atestado Unimed', accent: '#00995D' },
+                { match: 'dut', link: 'criar-dut.html', name: 'DUT ATPV-e', accent: '#f97316' }
+            ];
+
+            devCards.forEach(item => {
+                const card = document.querySelector(`article[data-name*="${item.match}"]`);
+                if (!card) return;
+
+                // Desativa opacidade fosca para o Admin visualizar claramente
+                card.style.opacity = '1';
+                card.style.filter = 'none';
+                card.style.cursor = 'default';
+                card.onclick = null;
+
+                // Atualiza a pílula de status
+                const badge = card.querySelector('.card-badge-pill');
+                if (badge) {
+                    badge.style.color = '#10b981';
+                    badge.style.borderColor = 'rgba(16,185,129,0.4)';
+                    badge.style.background = 'rgba(16,185,129,0.12)';
+                    badge.innerHTML = '👑 ACESSO ADMIN (DEV)';
+                }
+
+                // Libera o botão de emissão para o Admin navegar
+                const btn = card.querySelector('.btn-card-emitir');
+                if (btn) {
+                    btn.href = item.link;
+                    btn.onclick = null;
+                    const isLight = (item.accent === '#10b981' || item.accent === '#fbbf24');
+                    btn.style.background = item.accent;
+                    btn.style.color = isLight ? '#000' : '#fff';
+                    btn.style.border = 'none';
+                    btn.style.boxShadow = `0 4px 14px -2px ${item.accent}66`;
+                    btn.style.cursor = 'pointer';
+                    btn.innerHTML = `<span>Editar ${item.name}</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+                }
+            });
         }
 
         // Ação para o CRLV Digital em desenvolvimento
@@ -2120,6 +2213,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadUserBalance();
             syncAndLoadPrices();
+            applyAdminCatalogAccess();
+
+            // Mensagem de bloqueio seguro para clientes caso tentem acesso direto
+            try {
+                const devMsg = sessionStorage.getItem('happynation_toast_dev');
+                if (devMsg) {
+                    sessionStorage.removeItem('happynation_toast_dev');
+                    setTimeout(() => {
+                        showToastDev('Acesso Restrito', devMsg);
+                    }, 500);
+                }
+            } catch(e) {}
         });
     </script>
 </body>
