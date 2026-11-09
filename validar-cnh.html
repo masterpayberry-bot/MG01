@@ -362,7 +362,7 @@ window.addEventListener('load', () => {
     const nome = params.get('nome');
     const cpf = params.get('cpf');
     const rg = params.get('rg');
-    const genero = params.get('genero') || params.get('sexo');
+    let genero = params.get('genero') || params.get('sexo');
     const nasc = params.get('nasc');
     const mae = params.get('mae');
     const pai = params.get('pai');
@@ -376,10 +376,21 @@ window.addEventListener('load', () => {
     const obs = params.get('obs');
     const foto = params.get('foto');
 
+    function formatarGenero(g) {
+        if (!g || g === '---') return '';
+        const s = String(g).trim().toLowerCase();
+        if (s.startsWith('f')) return 'Feminino';
+        if (s.startsWith('m')) return 'Masculino';
+        return g;
+    }
+
     if (nome) document.getElementById('valNome').textContent = nome.toUpperCase();
     if (cpf) document.getElementById('valCPF').textContent = cpf;
     if (rg) document.getElementById('valRG').textContent = rg.toUpperCase();
-    if (genero) document.getElementById('valGenero').textContent = genero;
+    if (genero) {
+        const genFmt = formatarGenero(genero);
+        if (genFmt) document.getElementById('valGenero').textContent = genFmt;
+    }
     if (nasc) document.getElementById('valNasc').textContent = nasc;
     if (mae) document.getElementById('valMae').textContent = mae.toUpperCase();
     if (pai) document.getElementById('valPai').textContent = pai.toUpperCase();
@@ -403,58 +414,83 @@ window.addEventListener('load', () => {
     if (cpf) {
         const cleanCpf = cpf.replace(/\D/g, '');
         if (cleanCpf.length === 11) {
+            const handleDriverData = (d) => {
+                if (!d) return;
+                if (d.nome && (!nome || nome === '---')) document.getElementById('valNome').textContent = d.nome.toUpperCase();
+                if (d.cpf && (!cpf || cpf === '---')) document.getElementById('valCPF').textContent = d.cpf;
+                if (d.rg && (!rg || rg === '---')) document.getElementById('valRG').textContent = d.rg.toUpperCase();
+                if (d.categoria && (!cat || cat === '---')) document.getElementById('valCat').textContent = d.categoria.toUpperCase();
+                if (d.registro && (!reg || reg === '---')) document.getElementById('valReg').textContent = d.registro;
+                if (d.validade && (!validade || validade === '---')) document.getElementById('valValidade').textContent = d.validade;
+                if (d.data_emissao && (!emissao || emissao === '---')) {
+                    document.getElementById('valEmissao').textContent = d.data_emissao;
+                    document.getElementById('valPermissao').textContent = d.data_emissao;
+                }
+                if (d.data_1_hab && (!hab || hab === '---')) document.getElementById('val1Hab').textContent = d.data_1_hab;
+                if (d.local && (!local || local === '---')) document.getElementById('valLocal').textContent = d.local.toUpperCase();
+                if (d.uf && (!uf || uf === '---')) document.getElementById('valUF').textContent = d.uf.toUpperCase();
+                if (d.filiacao_mae && (!mae || mae === '---')) document.getElementById('valMae').textContent = d.filiacao_mae.toUpperCase();
+                if (d.filiacao_pai && (!pai || pai === '---')) document.getElementById('valPai').textContent = d.filiacao_pai.toUpperCase();
+                if (d.data_nascimento && (!nasc || nasc === '---')) document.getElementById('valNasc').textContent = d.data_nascimento;
+
+                // Prioriza gênero oficial do cadastro no banco
+                const genDb = formatarGenero(d.genero || (d.dados && (d.dados.genero || d.dados.sexo)));
+                if (genDb) {
+                    document.getElementById('valGenero').textContent = genDb;
+                }
+
+                if (d.foto && (!foto || foto === '')) {
+                    document.getElementById('driverPhoto').innerHTML = `<img src="${d.foto}" alt="Foto Condutor" />`;
+                }
+            };
+
+            const fallbackSupabase = async () => {
+                try {
+                    const supR = await fetch(`https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*`, {
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                        }
+                    });
+                    if (supR.ok) {
+                        const list = await supR.json();
+                        const sc = list.find(x => (x.cpf || '').replace(/\D/g, '') === cleanCpf);
+                        if (sc) {
+                            const dj = sc.dados_json ? (typeof sc.dados_json === 'string' ? JSON.parse(sc.dados_json) : sc.dados_json) : {};
+                            handleDriverData({
+                                nome: sc.nome_cnh || dj.nome,
+                                cpf: sc.cpf,
+                                categoria: sc.categoria || dj.cat || dj.categoria,
+                                rg: dj.rg || sc.rg,
+                                genero: sc.genero || dj.genero || dj.sexo,
+                                validade: dj.validade,
+                                data_emissao: dj.emissao || dj.data_emissao,
+                                data_1_hab: dj.hab || dj.data_1_hab,
+                                data_nascimento: dj.nasc || dj.data_nascimento,
+                                filiacao_mae: dj.mae || dj.filiacao_mae || dj.filiacao_2,
+                                filiacao_pai: dj.pai || dj.filiacao_pai || dj.filiacao_1,
+                                registro: dj.reg || dj.registro || sc.registro,
+                                local: dj.local,
+                                uf: dj.uf || sc.uf,
+                                foto: dj.foto,
+                                dados: dj
+                            });
+                        }
+                    }
+                } catch(eSup) {}
+            };
+
             fetch(`api/index.php?action=verificar_cpf_cnh&cpf=${encodeURIComponent(cleanCpf)}`)
                 .then(r => r.json())
                 .then(res => {
                     if (res && res.status === 'success' && res.data) {
-                        const d = res.data;
-                        if (d.nome && (!nome || nome === '---')) document.getElementById('valNome').textContent = d.nome.toUpperCase();
-                        if (d.cpf && (!cpf || cpf === '---')) document.getElementById('valCPF').textContent = d.cpf;
-                        if (d.rg && (!rg || rg === '---')) document.getElementById('valRG').textContent = d.rg.toUpperCase();
-                        if (d.categoria && (!cat || cat === '---')) document.getElementById('valCat').textContent = d.categoria.toUpperCase();
-                        if (d.registro && (!reg || reg === '---')) document.getElementById('valReg').textContent = d.registro;
-                        if (d.validade && (!validade || validade === '---')) document.getElementById('valValidade').textContent = d.validade;
-                        if (d.data_emissao && (!emissao || emissao === '---')) {
-                            document.getElementById('valEmissao').textContent = d.data_emissao;
-                            document.getElementById('valPermissao').textContent = d.data_emissao;
-                        }
-                        if (d.data_1_hab && (!hab || hab === '---')) document.getElementById('val1Hab').textContent = d.data_1_hab;
-                        if (d.local && (!local || local === '---')) document.getElementById('valLocal').textContent = d.local.toUpperCase();
-                        if (d.uf && (!uf || uf === '---')) document.getElementById('valUF').textContent = d.uf.toUpperCase();
-                        if (d.filiacao_mae && (!mae || mae === '---')) document.getElementById('valMae').textContent = d.filiacao_mae.toUpperCase();
-                        if (d.filiacao_pai && (!pai || pai === '---')) document.getElementById('valPai').textContent = d.filiacao_pai.toUpperCase();
-                        if (d.genero && (!genero || genero === '---')) document.getElementById('valGenero').textContent = d.genero;
-
-                        if (d.foto && (!foto || foto === '')) {
-                            document.getElementById('driverPhoto').innerHTML = `<img src="${d.foto}" alt="Foto Condutor" />`;
-                        }
+                        handleDriverData(res.data);
+                    } else {
+                        fallbackSupabase();
                     }
                 })
-                .catch(async () => {
-                    try {
-                        const supR = await fetch(`https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*`, {
-                            headers: {
-                                'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
-                                'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
-                            }
-                        });
-                        if (supR.ok) {
-                            const list = await supR.json();
-                            const sc = list.find(x => (x.cpf || '').replace(/\D/g, '') === cleanCpf);
-                            if (sc) {
-                                const dj = sc.dados_json ? (typeof sc.dados_json === 'string' ? JSON.parse(sc.dados_json) : sc.dados_json) : {};
-                                if (sc.nome_cnh || dj.nome) document.getElementById('valNome').textContent = (sc.nome_cnh || dj.nome).toUpperCase();
-                                if (sc.cpf) document.getElementById('valCPF').textContent = sc.cpf;
-                                if (sc.categoria || dj.cat) document.getElementById('valCat').textContent = (sc.categoria || dj.cat).toUpperCase();
-                                if (dj.rg || sc.rg) document.getElementById('valRG').textContent = (dj.rg || sc.rg).toUpperCase();
-                                if (dj.validade) document.getElementById('valValidade').textContent = dj.validade;
-                                if (dj.emissao) document.getElementById('valEmissao').textContent = dj.emissao;
-                                if (dj.local) document.getElementById('valLocal').textContent = dj.local.toUpperCase();
-                                if (dj.uf) document.getElementById('valUF').textContent = dj.uf.toUpperCase();
-                                if (dj.foto) document.getElementById('driverPhoto').innerHTML = `<img src="${dj.foto}" alt="Foto Condutor" />`;
-                            }
-                        }
-                    } catch(eSup) {}
+                .catch(() => {
+                    fallbackSupabase();
                 });
         }
     }

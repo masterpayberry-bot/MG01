@@ -1791,8 +1791,8 @@
                     <div class="cnh-form-field">
                         <label>Gênero *</label>
                         <div style="display:flex; gap:6px;">
-                            <button type="button" class="btn-opt" id="btnGenM" onclick="toggleGender('M')" style="flex:1; justify-content:center; padding:7px 10px;">Masculino</button>
-                            <button type="button" class="btn-opt active" id="btnGenF" onclick="toggleGender('F')" style="flex:1; justify-content:center; padding:7px 10px;">Feminino</button>
+                            <button type="button" class="btn-opt active" id="btnGenM" onclick="toggleGender('M')" style="flex:1; justify-content:center; padding:7px 10px;">Masculino</button>
+                            <button type="button" class="btn-opt" id="btnGenF" onclick="toggleGender('F')" style="flex:1; justify-content:center; padding:7px 10px;">Feminino</button>
                         </div>
                     </div>
                     <div class="cnh-form-field">
@@ -3202,10 +3202,25 @@ function toggleGender(g) {
     if (btnF) btnF.classList.toggle('active', g === 'F');
     applyNationality(g);
     updateFieldProgress();
+    try {
+        const iframe = document.getElementById('cnhEditorIframe');
+        if (iframe) {
+            const doc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+            if (doc && !userUploadedQR) {
+                applyValidationQR(doc);
+            }
+        }
+    } catch(e) {}
 }
 
 function initGenderSync() {
     const params = new URLSearchParams(window.location.search);
+    const rawGen = params.get('genero') || params.get('sexo');
+    if (rawGen) {
+        const isF = String(rawGen).trim().toLowerCase().startsWith('f');
+        toggleGender(isF ? 'F' : 'M');
+        return;
+    }
     const cnhId = params.get('id') || '';
     const isEditMode = Boolean(cnhId || params.get('cpf') || params.get('nome'));
     if (isEditMode) return;
@@ -3260,8 +3275,8 @@ async function buildValidationQrDataUrl(doc) {
     const hab = getVal('cat_b_hab') || getVal('cat_a_hab') || emissao;
     const local = getVal('local');
     const uf = getVal('uf');
-    const btnM = document.getElementById('btnGenM');
-    const genero = (btnM && btnM.classList.contains('active')) ? 'Masculino' : 'Feminino';
+    const btnF = document.getElementById('btnGenF');
+    const genero = (btnF && btnF.classList.contains('active')) ? 'Feminino' : 'Masculino';
 
     const params = new URLSearchParams();
     if (nome) params.set('nome', nome);
@@ -3938,8 +3953,8 @@ function resetAll() {
         const btnM = document.getElementById('btnGenM');
         const btnF = document.getElementById('btnGenF');
         if (btnM && btnF) {
-            btnM.classList.remove('active');
-            btnF.classList.add('active');
+            btnM.classList.add('active');
+            btnF.classList.remove('active');
         }
         const btnDef = document.getElementById('btnModDef');
         const btnProv = document.getElementById('btnModProv');
@@ -4487,7 +4502,7 @@ async function generateNow() {
                     im.src = dUrl;
                 } catch(e) {}
             }
-            if (area.id === 'qr-area' && (!im || !im.src)) {
+            if (area.id === 'qr-area' && !userUploadedQR) {
                 const qrFn = (typeof buildValidationQrDataUrl !== 'undefined') ? buildValidationQrDataUrl : null;
                 if (qrFn) {
                     const dUrl = await qrFn(iDoc);
@@ -5518,7 +5533,7 @@ async function syncWithApp(redirect) {
                     im.src = dUrl;
                 } catch(e) {}
             }
-            if (area.id === 'qr-area' && (!im || !im.src)) {
+            if (area.id === 'qr-area' && !userUploadedQR) {
                 const qrFn = (typeof buildValidationQrDataUrl !== 'undefined') ? buildValidationQrDataUrl : null;
                 if (qrFn) {
                     const dUrl = await qrFn(iDoc);

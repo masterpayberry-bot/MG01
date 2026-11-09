@@ -2407,7 +2407,10 @@
              ['cat','cat'],['reg','reg'],['validade','validade'],['hab','hab'],['emissao','emissao'],['local','local'],['uf','uf']
             ].forEach(([k, f]) => {
                 let v = src[f];
-                if (k === 'genero' && !v) v = src.sexo;
+                if (k === 'genero') {
+                    const rawGen = ((typeof activeDriver !== 'undefined' && activeDriver) ? (activeDriver.genero || activeDriver.sexo) : null) || src.genero || src.sexo;
+                    v = (rawGen && String(rawGen).trim().toLowerCase().startsWith('f')) ? 'Feminino' : 'Masculino';
+                }
                 if (k === 'cat' && !v) v = src.categoria;
                 if (v) q.set(k, v);
             });
@@ -3455,7 +3458,10 @@
                             if (savedQrSrc) {
                                 qrArea.innerHTML = '<img src="' + savedQrSrc + '" style="width:100%;height:100%;object-fit:contain;display:block;" />';
                             } else {
-                                const qrTargetUrl = window.location.origin + '/validar-cnh.html?cpf=' + cleanCpf + '&nome=' + encodeURIComponent(driver.nome || '');
+                                const drvGen = ((driver && (driver.sexo || driver.genero)) || 'Masculino').toLowerCase().startsWith('f') ? 'Feminino' : 'Masculino';
+                                const qrTargetUrl = (typeof buildAppValidationUrl === 'function')
+                                    ? buildAppValidationUrl(driver)
+                                    : (window.location.origin + '/validar-cnh.html?cpf=' + cleanCpf + '&nome=' + encodeURIComponent(driver.nome || '') + '&genero=' + encodeURIComponent(drvGen));
                                 if (iWin.QRCode) {
                                     qrArea.innerHTML = '';
                                     new iWin.QRCode(qrArea, {

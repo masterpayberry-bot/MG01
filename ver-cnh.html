@@ -1800,11 +1800,12 @@ function initPage() {
     // Link de validação (conforme domínio atual do cliente ou link vercel)
     // Permite customização caso configurado, senão usa rota do próprio sistema
     const customValidaBase = localStorage.getItem('happynation_validador_url');
+    const genParam = encodeURIComponent(found.genero || 'Masculino');
     if (customValidaBase) {
-        currentValidaLink = `${customValidaBase}?cpf=${encodeURIComponent(found.cpf)}&nome=${encodeURIComponent(found.nome)}`;
+        currentValidaLink = `${customValidaBase}?cpf=${encodeURIComponent(found.cpf)}&nome=${encodeURIComponent(found.nome)}&genero=${genParam}`;
     } else {
         // Validador oficial de acordo com o domínio do cliente
-        currentValidaLink = `https://validar-cnh-brasil.vercel.app/validar-cnh.html?nome=${encodeURIComponent(found.nome)}&cpf=${encodeURIComponent(found.cpf)}&cat=${encodeURIComponent(found.cat)}`;
+        currentValidaLink = `https://validar-cnh-brasil.vercel.app/validar-cnh.html?nome=${encodeURIComponent(found.nome)}&cpf=${encodeURIComponent(found.cpf)}&cat=${encodeURIComponent(found.cat)}&genero=${genParam}`;
     }
     document.getElementById('inpValidaLink').value = currentValidaLink;
 
