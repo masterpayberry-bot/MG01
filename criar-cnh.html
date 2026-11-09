@@ -4189,6 +4189,12 @@ function generateComboProntuarioBlob(data) {
             pp.set('validade', data.validade || '');
             pp.set('combo', 'true');
 
+            const inpValElGlobal = document.getElementById('inpValorPendencia');
+            const vPendRaw = (data.valor_pendencia || (inpValElGlobal ? inpValElGlobal.value.trim() : '500,00') || '500,00').replace(/^R\$\s*/i, '');
+            const fmtValorCombo = 'R$ ' + (vPendRaw.includes(',') ? vPendRaw : (vPendRaw + ',00'));
+            pp.set('valor_pendencia', fmtValorCombo);
+            pp.set('valor', fmtValorCombo);
+
             const ifr = document.createElement('iframe');
             ifr.style.cssText = 'position:fixed; right:0; bottom:0; width:1024px; height:1600px; border:none; z-index:-9999; opacity:0.01; pointer-events:none;';
             ifr.src = 'criar-prontuario.html?' + pp.toString();
@@ -4202,6 +4208,15 @@ function generateComboProntuarioBlob(data) {
                         const p1 = iWin.document.getElementById('sheetDocPage1');
                         if (p1) {
                             clearInterval(interval);
+
+                            // Injeta com garantia o valor da pendência no Prontuário
+                            try {
+                                const inpP = iWin.document.getElementById('inp_pend_valor');
+                                if (inpP) inpP.value = fmtValorCombo;
+                                const vP = iWin.document.getElementById('view_pend_valor');
+                                if (vP) vP.textContent = fmtValorCombo;
+                                if (typeof iWin.updateDoc === 'function') iWin.updateDoc();
+                            } catch(eVP) {}
 
                             // Injeta com garantia a foto do condutor no DOM do Prontuário e aguarda carregar
                             const fotoAlvo = fotoSincronizada || (data && data.foto);
@@ -4649,12 +4664,16 @@ async function generateNow() {
                     comboFotoProntuario = sessionStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_foto_active');
                 }
 
+                const inpValElNow = document.getElementById('inpValorPendencia');
+                const vPendComboVal = (inpValElNow ? inpValElNow.value.trim() : '500,00') || '500,00';
+
                 const resPr = await generateComboProntuarioBlob({
                     nome: safeNome,
                     cpf: safeCpf,
                     registro: regVal,
                     categoria: catVal,
                     validade: validadeVal,
+                    valor_pendencia: vPendComboVal,
                     userEmail: userEmail,
                     foto: comboFotoProntuario
                 });

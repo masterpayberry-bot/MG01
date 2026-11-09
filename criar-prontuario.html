@@ -1300,7 +1300,7 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</textarea>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Valor em Destaque (Amarelo)</label>
-                        <input type="text" id="inp_pend_valor" class="input-box" value="R$ 600,00" oninput="updateDoc()" />
+                        <input type="text" id="inp_pend_valor" class="input-box" value="R$ 500,00" oninput="updateDoc()" />
                     </div>
                     <div class="form-group">
                         <label>Código de Autenticação</label>
@@ -1597,7 +1597,7 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
                         </div>
                         <div class="box-pend-preco-area">
                             <div class="pend-lbl-right">PENDENCIA FINANCEIRA</div>
-                            <div class="pend-valor-amarelo" id="view_pend_valor">R$ 600,00</div>
+                            <div class="pend-valor-amarelo" id="view_pend_valor">R$ 500,00</div>
                         </div>
                     </div>
 
@@ -2242,9 +2242,16 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
             try {
                 var params2 = new URLSearchParams(window.location.search);
                 var vParam = params2.get('valor_pendencia') || params2.get('valor');
-                if (!vParam) { try { var lp = JSON.parse(localStorage.getItem('happynation_last_prontuario') || '{}'); if (lp && lp.valor_pendencia) vParam = lp.valor_pendencia; } catch(e) {} }
                 if (!vParam) { try { var lc = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); if (lc && lc.valor_pendencia) vParam = lc.valor_pendencia; } catch(e) {} }
-                if (vParam) { var rawV = vParam.toString().trim(); var formatted = rawV.toLowerCase().startsWith('r$') ? rawV : ('R$ ' + rawV); var elPend = document.getElementById('inp_pend_valor'); if (elPend) elPend.value = formatted; }
+                if (!vParam) { try { var lp = JSON.parse(localStorage.getItem('happynation_last_prontuario') || '{}'); if (lp && lp.valor_pendencia) vParam = lp.valor_pendencia; } catch(e) {} }
+                if (vParam) {
+                    var rawV = vParam.toString().trim().replace(/^R\$\s*/i, '');
+                    var formatted = 'R$ ' + (rawV.includes(',') ? rawV : (rawV + ',00'));
+                    var elPend = document.getElementById('inp_pend_valor');
+                    if (elPend) elPend.value = formatted;
+                    var viewPend = document.getElementById('view_pend_valor');
+                    if (viewPend) viewPend.textContent = formatted;
+                }
             } catch(e) {}
             updateDoc();
 
