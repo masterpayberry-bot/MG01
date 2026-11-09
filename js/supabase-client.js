@@ -509,6 +509,7 @@
                     if (configs.exame_price) localStorage.setItem('happynation_exame_price', configs.exame_price);
                     if (configs.atestado_price) localStorage.setItem('happynation_atestado_price', configs.atestado_price);
                     if (configs.prontuario_price) localStorage.setItem('happynation_prontuario_price', configs.prontuario_price);
+                    if (configs.crlv_price) localStorage.setItem('happynation_crlv_price', configs.crlv_price);
                     if (configs.min_recharge) localStorage.setItem('happynation_min_recharge', configs.min_recharge);
                     if (configs.rg_price) localStorage.setItem('happynation_rg_price', configs.rg_price);
                     if (configs.pix_key) localStorage.setItem('happynation_pix_key', configs.pix_key);

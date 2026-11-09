@@ -2828,6 +2828,18 @@
 
                     <div class="cfg-card">
                         <div class="cfg-label">
+                            <span>Valor por CRLV Digital (Veículo)</span>
+                            <span style="font-size:11px; color:#34d399; font-weight:700;">Desconto Automático</span>
+                        </div>
+                        <div class="cfg-subtext">Valor debitado do saldo do cliente cada vez que um novo CRLV Digital for gerado.</div>
+                        <div class="cfg-input-row">
+                            <input type="text" class="cfg-input" id="cfgCrlvPriceInp" value="25.00">
+                            <button class="btn-save-cfg" onclick="saveCrlvPrice()">Salvar Preço</button>
+                        </div>
+                    </div>
+
+                    <div class="cfg-card">
+                        <div class="cfg-label">
                             <span>Recarga Mínima via PIX</span>
                             <span style="font-size:11px; color:#fbbf24; font-weight:700;">Segurança</span>
                         </div>
@@ -6331,6 +6343,17 @@ function updateDashboardMetrics() {
             showToast(`✅ Preço do Prontuário salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
         }
 
+        function saveCrlvPrice() {
+            const inp = document.getElementById('cfgCrlvPriceInp');
+            const val = (inp ? inp.value : '25.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 25.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_crlv_price', strVal);
+            syncPriceToServer('crlv_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço do CRLV Digital salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
         function saveRgPrice() {
             const inp = document.getElementById('cfgRgPriceInp');
             const val = (inp ? inp.value : '20.00').trim().replace(',', '.');
@@ -6411,6 +6434,10 @@ function updateDashboardMetrics() {
             const rgInp = document.getElementById('cfgRgPriceInp');
             if (rgInp) rgInp.value = rgPrice;
 
+            const crlvPrice = localStorage.getItem('happynation_crlv_price') || '25.00';
+            const crlvInp = document.getElementById('cfgCrlvPriceInp');
+            if (crlvInp) crlvInp.value = crlvPrice;
+
             // 2. Sincroniza em tempo real com o banco de dados Supabase
             try {
                 if (window.MGSupabase && typeof window.MGSupabase.getAllConfigs === 'function') {
@@ -6436,6 +6463,10 @@ function updateDashboardMetrics() {
                         if (cfg.rg_price) {
                             localStorage.setItem('happynation_rg_price', cfg.rg_price);
                             if (rgInp) rgInp.value = cfg.rg_price;
+                        }
+                        if (cfg.crlv_price) {
+                            localStorage.setItem('happynation_crlv_price', cfg.crlv_price);
+                            if (crlvInp) crlvInp.value = cfg.crlv_price;
                         }
                         if (cfg.min_recharge) {
                             localStorage.setItem('happynation_min_recharge', cfg.min_recharge);
