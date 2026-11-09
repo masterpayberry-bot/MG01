@@ -450,327 +450,32 @@
 
         /* ═════════════════════════════════════════════════════════════════════
            ESTILOS OFICIAIS 100% IDÊNTICOS AO MODELO SENATRAN / DETRAN
-           Folha A4: 794px largura x 1123px altura
+           Folha A4 HD: 1024px largura x 1342px altura
            ═════════════════════════════════════════════════════════════════════ */
         .sheet-crlv-a4 {
-            width: 794px;
-            height: 1123px;
-            background: #ffffff;
-            color: #000000;
+            width: 1024px;
+            height: 1342px;
+            background-color: #ffffff;
+            background-image: url('assets/crlv_template_hd_clean.png');
+            background-size: 1024px 1342px;
+            background-repeat: no-repeat;
+            background-position: top left;
+            position: relative;
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
             border-radius: 2px;
-            position: relative;
-            box-sizing: border-box;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             user-select: text;
         }
 
-        /* Cabeçalho Superior Dark Oficial */
-        .crlv-top-bar {
-            width: 100%;
-            height: 52px;
-            background-color: #444242;
-            background-image: url('assets/crlv_header_hd.png');
-            background-size: 100% 100%;
-            background-position: center top;
-            background-repeat: no-repeat;
-            position: relative;
-            box-sizing: border-box;
-        }
-
-        /* Conteúdo Principal do CRLV */
-        .crlv-content {
-            padding: 8px 22px 14px 22px;
-            position: relative;
-            height: calc(1123px - 52px);
-            box-sizing: border-box;
-        }
-
-        /* Sub-Header com Título */
-        .crlv-sub-header {
-            margin-bottom: 6px;
-            padding-bottom: 3px;
-            border-bottom: 1.2px solid #000000;
-        }
-
-        .crlv-detran-uf {
-            font-size: 8px;
-            font-weight: 700;
-            color: #111111;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 2px;
-        }
-
-        .crlv-doc-title {
-            font-size: 11px;
-            font-weight: 900;
-            color: #000000;
-            text-transform: uppercase;
-            letter-spacing: 0.2px;
-        }
-
-        /* Grid de 2 Colunas com Linha Tracejada Central */
-        .crlv-two-cols {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            column-gap: 26px;
-            position: relative;
-            height: calc(100% - 32px);
-        }
-
-        /* Linha Tracejada de Dobra no Centro */
-        .crlv-fold-line {
+        /* TIPOGRAFIA EXATA DOS DADOS MONOESPAÇADOS OFICIAIS (COURIER NEW BOLD) */
+        .crlv-val {
             position: absolute;
-            left: calc(50% - 0.5px);
-            top: 0;
-            bottom: 0;
-            width: 0;
-            border-left: 1px dashed #aaaaaa;
-            pointer-events: none;
-        }
-
-        .crlv-col {
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            height: 100%;
-        }
-
-        /* ─── TIPOGRAFIA DE CAMPOS DO CRLV ─── */
-        .fld-label {
-            font-size: 7px;
-            font-weight: 500;
-            color: #333333;
-            text-transform: uppercase;
-            letter-spacing: 0.15px;
-            line-height: 1.15;
-            margin-bottom: 2px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
-        .fld-val {
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', 'Courier Prime', Courier, monospace;
             font-weight: 700;
             color: #000000;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.3px;
-            line-height: 1.15;
-            word-break: break-word;
-        }
-
-        .fld-val-large {
-            font-size: 12.5px;
-            font-weight: 700;
-            letter-spacing: 0.4px;
-        }
-
-        /* Células e Bordas */
-        .fld-cell {
-            padding: 1px 2px;
-        }
-
-        .fld-cell-border-r {
-            border-right: 1px solid #d4d4d4;
-            padding-right: 8px;
-            margin-right: 8px;
-        }
-
-        .fld-row-border {
-            border-bottom: 1px solid #d4d4d4;
-            padding-bottom: 2.5px;
-            margin-bottom: 3.5px;
-        }
-
-        .fld-row-border-dark {
-            border-bottom: 1.2px solid #222222;
-            padding-bottom: 2.5px;
-            margin-bottom: 3.5px;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
-        .grid-4 {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-        }
-
-        /* Bloco 1: Renavam + QR Code */
-        .renavam-qr-block {
-            display: flex;
-            align-items: stretch;
-            justify-content: space-between;
-            gap: 10px;
-            border-bottom: 1px solid #b5b5b5;
-            padding-bottom: 4px;
-            margin-bottom: 4px;
-        }
-
-        .renavam-fields {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .crlv-qr-side {
-            width: 122px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-
-        .qr-rot-text {
-            font-size: 6.8px;
-            font-weight: 500;
-            color: #555555;
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
+            line-height: 1;
             white-space: nowrap;
             letter-spacing: 0.2px;
-            height: 110px;
-            display: flex;
-            align-items: center;
-        }
-
-        .crlv-qr-box {
-            width: 112px;
-            height: 112px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .crlv-qr-box canvas, .crlv-qr-box img {
-            width: 100% !important;
-            height: 100% !important;
-            display: block;
-        }
-
-        /* Nota Rodapé Emissão */
-        .emissao-footer-note {
-            font-size: 6.5px;
-            font-style: italic;
-            color: #333333;
-            margin-top: 2px;
-            margin-bottom: 6px;
-            line-height: 1.2;
-        }
-
-        /* Linha Tracejada antes das Observações */
-        .crlv-sep-dashed {
-            border-bottom: 1px dashed #b5b5b5;
-            margin-bottom: 8px;
-        }
-
-        /* Caixas Delimitadas: Observações, Mensagens e DPVAT Info (Com Legend Oficial) */
-        fieldset.crlv-box {
-            border: 1px solid #777777;
-            border-radius: 4px;
-            padding: 6px 10px 10px 10px;
-            box-sizing: border-box;
-            background: #ffffff;
-            margin: 0;
-        }
-
-        legend.crlv-box-title {
-            font-size: 7.8px;
-            font-weight: 700;
-            color: #000000;
-            text-transform: uppercase;
-            letter-spacing: 0.2px;
-            padding: 0 4px;
-            margin: 0;
-        }
-
-        .crlv-box-observacoes {
-            flex: 1;
-            min-height: 245px;
-            margin-bottom: 8px;
-            box-sizing: border-box;
-        }
-
-        .crlv-box-mensagens {
-            height: 168px;
-            flex-shrink: 0;
-            box-sizing: border-box;
-        }
-
-        /* Tabela DPVAT */
-        .dpvat-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 7.2px;
-            margin-top: 2px;
-            margin-bottom: 6px;
-        }
-
-        .dpvat-table th, .dpvat-table td {
-            border: 1px solid #b0b0b0;
-            padding: 2.5px 4px;
-            vertical-align: top;
-            text-align: left;
-        }
-
-        .dpvat-table .th-lbl {
-            font-size: 6.2px;
-            color: #333333;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 0.1px;
-            display: block;
-            margin-bottom: 1px;
-            line-height: 1.15;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
-        .dpvat-table .td-val {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 9.5px;
-            font-weight: 700;
-            color: #000000;
-        }
-
-        .check-box-fake {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border: 1px solid #666;
-            margin-right: 3px;
-            vertical-align: middle;
-        }
-
-        .crlv-box-dpvat-info {
-            flex: 1;
-            min-height: 420px;
-            margin-top: 6px;
-            box-sizing: border-box;
-        }
-
-        .assinatura-detran-lbl {
-            font-size: 7px;
-            font-weight: 500;
-            color: #222222;
-            text-align: center;
-            letter-spacing: 0.3px;
-            margin: 3px 0 6px 0;
-            text-transform: uppercase;
         }
 
         /* ─── BARRA INFERIOR FLUTUANTE DE EMISSÃO ─── */
@@ -1202,9 +907,9 @@
                 </div>
                 <div class="zoom-controls">
                     <button class="btn-zoom" onclick="changeZoom(-0.05)" title="Diminuir">−</button>
-                    <span class="zoom-text" id="zoomLevelDisplay">100%</span>
+                    <span class="zoom-text" id="zoomLevelDisplay">78%</span>
                     <button class="btn-zoom" onclick="changeZoom(+0.05)" title="Aumentar">+</button>
-                    <button class="btn-zoom" onclick="resetZoom()" title="Ajustar" style="width:auto; padding:0 8px; font-size:11px;">100%</button>
+                    <button class="btn-zoom" onclick="resetZoom()" title="Ajustar" style="width:auto; padding:0 8px; font-size:11px;">Ajustar</button>
                 </div>
             </div>
 
@@ -1212,287 +917,108 @@
             <div id="canvasContainer">
                 <div id="zoomWrapper">
 
-                    <!-- FOLHA A4 CRLV-E DIGITAL (100% IDÊNTICA AO MODELO OFICIAL) -->
+                    <!-- FOLHA A4 CRLV-E DIGITAL (100% IDÊNTICA AO MODELO OFICIAL HD) -->
                     <div class="sheet-crlv-a4" id="sheetDoc">
-                        
-                        <!-- BARRA SUPERIOR DARK OFICIAL -->
-                        <div class="crlv-top-bar" id="crlvTopBar"></div>
 
-                        <!-- CONTEÚDO PRINCIPAL -->
-                        <div class="crlv-content">
+                        <!-- 1. UF DO DETRAN NO SUBHEADER -->
+                        <div class="crlv-val" id="view_detran_uf" style="left:104px; top:92px; font-size:14px;">BA</div>
 
-                            <!-- SUB-HEADER COM TÍTULO -->
-                            <div class="crlv-sub-header">
-                                <div class="crlv-detran-uf">DETRAN- <span id="view_detran_uf">BA</span></div>
-                                <div class="crlv-doc-title">CERTIFICADO DE REGISTRO E LICENCIAMENTO DE VEÍCULO - DIGITAL</div>
-                            </div>
+                        <!-- ══════ COLUNA ESQUERDA (DADOS PRINCIPAIS & QR CODE) ══════ -->
+                        <!-- CÓDIGO RENAVAM -->
+                        <div class="crlv-val" id="view_renavam" style="left:54px; top:172px; font-size:18px; letter-spacing:0.5px;">00872698394</div>
 
-                            <!-- ÁREA DE 2 COLUNAS COM LINHA DE DOBRA TRACEJADA -->
-                            <div class="crlv-two-cols">
-                                
-                                <div class="crlv-fold-line"></div>
+                        <!-- PLACA -->
+                        <div class="crlv-val" id="view_placa" style="left:54px; top:216px; font-size:16px;">JMI5104</div>
 
-                                <!-- ══════ COLUNA ESQUERDA ══════ -->
-                                <div class="crlv-col">
-                                    
-                                    <!-- 1. BLOCO RENAVAM E QR CODE VIO -->
-                                    <div class="renavam-qr-block">
-                                        <div class="renavam-fields">
-                                            <!-- CÓDIGO RENAVAM -->
-                                            <div class="fld-row-border fld-cell">
-                                                <div class="fld-label">CÓDIGO RENAVAM</div>
-                                                <div class="fld-val fld-val-large" id="view_renavam">00872698394</div>
-                                            </div>
+                        <!-- EXERCÍCIO -->
+                        <div class="crlv-val" id="view_exercicio" style="left:178px; top:216px; font-size:16px;">2025</div>
 
-                                            <!-- PLACA E EXERCÍCIO -->
-                                            <div class="fld-row-border grid-2">
-                                                <div class="fld-cell fld-cell-border-r">
-                                                    <div class="fld-label">PLACA</div>
-                                                    <div class="fld-val" id="view_placa">JMI5104</div>
-                                                </div>
-                                                <div class="fld-cell">
-                                                    <div class="fld-label">EXERCÍCIO</div>
-                                                    <div class="fld-val" id="view_exercicio">2025</div>
-                                                </div>
-                                            </div>
+                        <!-- ANO FABRICAÇÃO -->
+                        <div class="crlv-val" id="view_ano_fab" style="left:54px; top:258px; font-size:16px;">2005</div>
 
-                                            <!-- ANO FABRICAÇÃO E ANO MODELO -->
-                                            <div class="fld-row-border grid-2">
-                                                <div class="fld-cell fld-cell-border-r">
-                                                    <div class="fld-label">ANO FABRICAÇÃO</div>
-                                                    <div class="fld-val" id="view_ano_fab">2005</div>
-                                                </div>
-                                                <div class="fld-cell">
-                                                    <div class="fld-label">ANO MODELO</div>
-                                                    <div class="fld-val" id="view_ano_mod">2006</div>
-                                                </div>
-                                            </div>
+                        <!-- ANO MODELO -->
+                        <div class="crlv-val" id="view_ano_mod" style="left:178px; top:258px; font-size:16px;">2006</div>
 
-                                            <!-- NÚMERO DO CRV -->
-                                            <div class="fld-cell">
-                                                <div class="fld-label">NÚMERO DO CRV</div>
-                                                <div class="fld-val" id="view_num_crv">***</div>
-                                            </div>
-                                        </div>
+                        <!-- NÚMERO DO CRV -->
+                        <div class="crlv-val" id="view_num_crv" style="left:54px; top:300px; font-size:16px;">***</div>
 
-                                        <!-- QR CODE VIO OFICIAL -->
-                                        <div class="crlv-qr-side">
-                                            <div class="crlv-qr-box" id="crlvQrVio"></div>
-                                            <div class="qr-rot-text">Valide este QRCode com app Vio</div>
-                                        </div>
-                                    </div>
+                        <!-- QR CODE VIO OFICIAL -->
+                        <div id="crlvQrVio" style="position:absolute; left:288px; top:160px; width:164px; height:164px; background:#fff; overflow:hidden;"></div>
 
-                                    <!-- 2. CARACTERÍSTICAS TÉCNICAS E SEGURANÇA -->
-                                    <div class="fld-row-border grid-2">
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">CÓDIGO DE SEGURANÇA DO CLA</div>
-                                            <div class="fld-val" id="view_cla">47849505457</div>
-                                        </div>
-                                        <div class="fld-cell">
-                                            <div class="fld-label">CAT</div>
-                                            <div class="fld-val" id="view_cat">***</div>
-                                        </div>
-                                    </div>
+                        <!-- CÓDIGO DE SEGURANÇA DO CLA -->
+                        <div class="crlv-val" id="view_cla" style="left:54px; top:432px; font-size:15px;">47849505457</div>
 
-                                    <div class="fld-row-border fld-cell">
-                                        <div class="fld-label">MARCA / MODELO / VERSÃO</div>
-                                        <div class="fld-val" id="view_marca_modelo">YAMAHA/FAZER YS250</div>
-                                    </div>
+                        <!-- CAT -->
+                        <div class="crlv-val" id="view_cat" style="left:280px; top:432px; font-size:15px;">***</div>
 
-                                    <div class="fld-row-border fld-cell">
-                                        <div class="fld-label">ESPÉCIE / TIPO</div>
-                                        <div class="fld-val" id="view_especie_tipo">PASSAGEIRO MOTOCICLETA</div>
-                                    </div>
+                        <!-- MARCA / MODELO / VERSÃO -->
+                        <div class="crlv-val" id="view_marca_modelo" style="left:54px; top:489px; font-size:15px;">YAMAHA/FAZER YS250</div>
 
-                                    <div class="fld-row-border grid-2">
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">PLACA ANTERIOR / UF</div>
-                                            <div class="fld-val" id="view_placa_ant">*******/**</div>
-                                        </div>
-                                        <div class="fld-cell">
-                                            <div class="fld-label">CHASSI</div>
-                                            <div class="fld-val" id="view_chassi">9C6KG017060006367</div>
-                                        </div>
-                                    </div>
+                        <!-- ESPÉCIE / TIPO -->
+                        <div class="crlv-val" id="view_especie_tipo" style="left:54px; top:549px; font-size:15px;">PASSAGEIRO MOTOCICLETA</div>
 
-                                    <div class="fld-row-border-dark grid-2">
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">COR PREDOMINANTE</div>
-                                            <div class="fld-val" id="view_cor">PRETA</div>
-                                        </div>
-                                        <div class="fld-cell">
-                                            <div class="fld-label">COMBUSTÍVEL</div>
-                                            <div class="fld-val" id="view_combustivel">GASOLINA</div>
-                                        </div>
-                                    </div>
+                        <!-- PLACA ANTERIOR / UF -->
+                        <div class="crlv-val" id="view_placa_ant" style="left:54px; top:610px; font-size:15px;">*******/**</div>
 
-                                    <!-- NOTA DE EMISSÃO -->
-                                    <div class="emissao-footer-note">
-                                        Documento emitido por DETRAN <span id="view_detran_emissao">BA</span> (<span id="view_hash_autenticidade">SA82639EA1C199AEB</span>) em <span id="view_data_emissao">25/03/2025</span> às <span id="view_hora_emissao">13:51:05</span>.
-                                    </div>
-                                    <div class="crlv-sep-dashed"></div>
+                        <!-- CHASSI -->
+                        <div class="crlv-val" id="view_chassi" style="left:226px; top:610px; font-size:15px;">9C6KG017060006367</div>
 
-                                    <!-- 3. OBSERVAÇÕES DO VEÍCULO (FIELDSET COM LEGEND) -->
-                                    <fieldset class="crlv-box crlv-box-observacoes">
-                                        <legend class="crlv-box-title">OBSERVAÇÕES DO VEÍCULO</legend>
-                                        <div class="fld-val" id="view_observacoes" style="font-size:11px; line-height:1.3; padding-top:4px;">SEM OBSERVAÇÕES</div>
-                                    </fieldset>
+                        <!-- COR PREDOMINANTE -->
+                        <div class="crlv-val" id="view_cor" style="left:54px; top:670px; font-size:15px;">PRETA</div>
 
-                                    <!-- 4. MENSAGENS SENATRAN (FIELDSET COM LEGEND) -->
-                                    <fieldset class="crlv-box crlv-box-mensagens">
-                                        <legend class="crlv-box-title">MENSAGENS SENATRAN</legend>
-                                        <div style="font-size: 8.5px; font-weight: 700; margin-bottom: 2px;">Você Sabia?</div>
-                                        <div style="font-size: 7.2px; line-height: 1.25; color: #222; margin-bottom: 4px;">
-                                            Na Carteira Digital de Trânsito - CDT, você tem acesso ao CRLV, à CNH e ainda ganha desconto de 40% nas infrações, além de muitos outros serviços de trânsito, sem nenhum custo!
-                                        </div>
-                                        <div style="font-size: 7.2px; font-weight: 700; margin-bottom: 4px;">
-                                            Leia o QR Code e baixe agora.
-                                        </div>
-                                        <div style="display:flex; justify-content:center; align-items:center; margin-top:2px;">
-                                            <img id="viewStoreBadgesImg" src="assets/crlv_qr_stores_hd.png" style="width:235px; height:auto; display:block; margin:4px auto 0 auto;" alt="Download CDT Store Badges">
-                                        </div>
-                                    </fieldset>
+                        <!-- COMBUSTÍVEL -->
+                        <div class="crlv-val" id="view_combustivel" style="left:176px; top:670px; font-size:15px;">GASOLINA</div>
 
-                                </div><!-- /coluna esquerda -->
+                        <!-- NOTA DE EMISSÃO -->
+                        <div style="position:absolute; left:52px; top:700px; font-size:9.5px; font-style:italic; font-family:-apple-system, sans-serif; font-weight:500; color:#333; white-space:nowrap;">
+                            Documento emitido por DETRAN <span id="view_detran_emissao">BA</span> (<span id="view_hash_autenticidade">5AB2639EA1C199AEB</span>) em <span id="view_data_emissao">25/03/2025</span> às <span id="view_hora_emissao">13:51:05</span>.
+                        </div>
 
-                                <!-- ══════ COLUNA DIREITA ══════ -->
-                                <div class="crlv-col">
-                                    
-                                    <!-- 1. ESPECIFICAÇÕES TÉCNICAS E PROPRIETÁRIO -->
-                                    <div class="fld-row-border grid-2">
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">CATEGORIA</div>
-                                            <div class="fld-val" id="view_categoria">PARTICULAR</div>
-                                        </div>
-                                        <div class="fld-cell">
-                                            <div class="fld-label">CAPACIDADE</div>
-                                            <div class="fld-val" id="view_capacidade">*.*</div>
-                                        </div>
-                                    </div>
+                        <!-- OBSERVAÇÕES DO VEÍCULO -->
+                        <div class="crlv-val" id="view_observacoes" style="left:56px; top:754px; font-size:15px;">SEM OBSERVAÇÕES</div>
 
-                                    <div class="fld-row-border grid-2">
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">POTÊNCIA/CILINDRADA</div>
-                                            <div class="fld-val" id="view_potencia">0CV/249</div>
-                                        </div>
-                                        <div class="fld-cell">
-                                            <div class="fld-label">PESO BRUTO TOTAL</div>
-                                            <div class="fld-val" id="view_peso_bruto">0.31</div>
-                                        </div>
-                                    </div>
+                        <!-- ══════ COLUNA DIREITA (ESPECIFICAÇÕES, PROPRIETÁRIO & SEGURO) ══════ -->
+                        <!-- CATEGORIA -->
+                        <div class="crlv-val" id="view_categoria" style="left:544px; top:126px; font-size:16px;">PARTICULAR</div>
 
-                                    <div class="fld-row-border grid-4">
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">MOTOR</div>
-                                            <div class="fld-val" id="view_motor">G347E-006361</div>
-                                        </div>
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">CMT</div>
-                                            <div class="fld-val" id="view_cmt">*.*</div>
-                                        </div>
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">EIXOS</div>
-                                            <div class="fld-val" id="view_eixos">*</div>
-                                        </div>
-                                        <div class="fld-cell">
-                                            <div class="fld-label">LOTAÇÃO</div>
-                                            <div class="fld-val" id="view_lotacao">02P</div>
-                                        </div>
-                                    </div>
+                        <!-- CAPACIDADE -->
+                        <div class="crlv-val" id="view_capacidade" style="left:880px; top:144px; font-size:16px;">* . *</div>
 
-                                    <div class="fld-row-border fld-cell">
-                                        <div class="fld-label">CARROCERIA</div>
-                                        <div class="fld-val" id="view_carroceria">NÃO APLICAVEL</div>
-                                    </div>
+                        <!-- POTÊNCIA / CILINDRADA -->
+                        <div class="crlv-val" id="view_potencia" style="left:544px; top:189px; font-size:16px;">0CV/249</div>
 
-                                    <div class="fld-cell" style="margin-bottom:2px;">
-                                        <div class="fld-label">NOME</div>
-                                        <div class="fld-val fld-val-large" id="view_nome">JORDELIO RODRIGUES DOS SANTOS</div>
-                                    </div>
+                        <!-- PESO BRUTO TOTAL -->
+                        <div class="crlv-val" id="view_peso_bruto" style="left:880px; top:189px; font-size:16px;">0.31</div>
 
-                                    <div class="fld-row-border-dark fld-cell" style="text-align:right;">
-                                        <div class="fld-label">CPF / CNPJ</div>
-                                        <div class="fld-val fld-val-large" id="view_cpf_cnpj">046.660.515-38</div>
-                                    </div>
+                        <!-- MOTOR -->
+                        <div class="crlv-val" id="view_motor" style="left:544px; top:244px; font-size:16px;">G347E-006361</div>
 
-                                    <div class="fld-row-border grid-2">
-                                        <div class="fld-cell fld-cell-border-r">
-                                            <div class="fld-label">LOCAL</div>
-                                            <div class="fld-val" id="view_local">VITORIA DA CONQUISTA BA</div>
-                                        </div>
-                                        <div class="fld-cell">
-                                            <div class="fld-label">DATA</div>
-                                            <div class="fld-val" id="view_data">25/03/2025</div>
-                                        </div>
-                                    </div>
+                        <!-- CMT -->
+                        <div class="crlv-val" id="view_cmt" style="left:778px; top:244px; font-size:16px;">* . *</div>
 
-                                    <div class="assinatura-detran-lbl">ASSINADO DIGITALMENTE PELO DETRAN</div>
+                        <!-- EIXOS -->
+                        <div class="crlv-val" id="view_eixos" style="left:872px; top:244px; font-size:16px;">*</div>
 
-                                    <!-- 2. TABELA SEGURO DPVAT -->
-                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px; margin-bottom:2px;">
-                                        <div style="font-size:7.5px; font-weight:700; color:#000;">DADOS DO SEGURO DPVAT</div>
-                                        <div style="font-size:9px; font-weight:700; color:#000;">*</div>
-                                    </div>
-                                    
-                                    <table class="dpvat-table">
-                                        <tr>
-                                            <td style="width:25%;">
-                                                <span class="th-lbl">CAT. TARIF</span>
-                                                <span class="td-val">*</span>
-                                            </td>
-                                            <td style="width:35%;">
-                                                <span class="th-lbl">DATA DE QUITAÇÃO</span>
-                                                <span class="td-val">*</span>
-                                            </td>
-                                            <td style="width:40%;">
-                                                <span class="th-lbl">PAGAMENTO</span>
-                                                <div style="font-size:7.2px; font-weight:700;">
-                                                    <span class="check-box-fake"></span>COTA ÚNICA &nbsp;
-                                                    <span class="check-box-fake"></span>PARCELADO
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <span class="th-lbl">REPASSE OBRIGATÓRIO AO FUNDO NACIONAL DE SAÚDE (R$)</span>
-                                                <span class="td-val">*</span>
-                                            </td>
-                                            <td>
-                                                <span class="th-lbl">CUSTO DO BILHETE (R$)</span>
-                                                <span class="td-val">*</span>
-                                            </td>
-                                            <td>
-                                                <span class="th-lbl">CUSTO EFETIVO DO SEGURO (R$)</span>
-                                                <span class="td-val">*</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <span class="th-lbl">REPASSE OBRIGATÓRIO AO DEPARTAMENTO NACIONAL DE TRÂNSITO (R$)</span>
-                                                <span class="td-val">*</span>
-                                            </td>
-                                            <td>
-                                                <span class="th-lbl">VALOR DO IOF (R$)</span>
-                                                <span class="td-val">*</span>
-                                            </td>
-                                            <td>
-                                                <span class="th-lbl">VALOR TOTAL A SER PAGO PELO SEGURADO (R$)</span>
-                                                <span class="td-val">*</span>
-                                            </td>
-                                        </tr>
-                                    </table>
+                        <!-- LOTAÇÃO -->
+                        <div class="crlv-val" id="view_lotacao" style="left:926px; top:244px; font-size:16px;">02P</div>
 
-                                    <!-- 3. INFORMAÇÕES DO SEGURO DPVAT (FIELDSET COM LEGEND) -->
-                                    <fieldset class="crlv-box crlv-box-dpvat-info">
-                                        <legend class="crlv-box-title">INFORMAÇÕES DO SEGURO DPVAT</legend>
-                                        <div id="view_info_dpvat" style="font-size:7.5px; color:#333; line-height:1.35; padding-top:4px;"></div>
-                                    </fieldset>
+                        <!-- CARROCERIA -->
+                        <div class="crlv-val" id="view_carroceria" style="left:544px; top:289px; font-size:16px;">NÃO APLICAVEL</div>
 
-                                </div><!-- /coluna direita -->
+                        <!-- NOME DO PROPRIETÁRIO -->
+                        <div class="crlv-val" id="view_nome" style="left:544px; top:334px; font-size:16px;">JORDELIO RODRIGUES DOS SANTOS</div>
 
-                            </div><!-- /crlv-two-cols -->
+                        <!-- CPF / CNPJ -->
+                        <div class="crlv-val" id="view_cpf_cnpj" style="left:792px; top:376px; font-size:16px; text-align:right; width:170px;">046.660.515-38</div>
 
-                        </div><!-- /crlv-content -->
+                        <!-- LOCAL -->
+                        <div class="crlv-val" id="view_local" style="left:544px; top:432px; font-size:16px;">VITORIA DA CONQUISTA BA</div>
+
+                        <!-- DATA -->
+                        <div class="crlv-val" id="view_data" style="left:880px; top:432px; font-size:16px;">25/03/2025</div>
+
+                        <!-- INFORMAÇÕES DO SEGURO DPVAT -->
+                        <div id="view_info_dpvat" style="position:absolute; left:544px; top:754px; font-size:11px; max-width:420px; line-height:1.35; color:#333; font-family:-apple-system, sans-serif;"></div>
 
                     </div><!-- /sheetDoc -->
 
@@ -1526,7 +1052,7 @@
 
     <!-- SCRIPTS DE CONTROLE E FUNCIONALIDADES -->
     <script>
-        let currentZoom = 1.0;
+        let currentZoom = 0.78;
         let isCrlvEmitido = false;
 
         function showToast(msg) {
@@ -1546,14 +1072,18 @@
         }
 
         function resetZoom() {
-            currentZoom = 1.0;
+            currentZoom = 0.78;
             applyZoom();
         }
 
         function applyZoom() {
             const el = document.getElementById('zoomWrapper');
             const disp = document.getElementById('zoomLevelDisplay');
-            if (el) el.style.transform = `scale(${currentZoom})`;
+            if (el) {
+                el.style.transform = `scale(${currentZoom})`;
+                const scaledH = Math.round(1342 * currentZoom);
+                el.style.marginBottom = `${scaledH - 1342 + 40}px`;
+            }
             if (disp) disp.textContent = `${Math.round(currentZoom * 100)}%`;
         }
 
@@ -1631,8 +1161,7 @@
             if (typeof QRCode !== 'undefined') {
                 new QRCode(qrBox, {
                     text: qrUrl,
-                    width: 210,
-                    height: 210,
+                    width: 164, height: 164,
                     colorDark: '#000000',
                     colorLight: '#ffffff',
                     correctLevel: QRCode.CorrectLevel.M
@@ -1659,13 +1188,10 @@
             if (hrInp) hrInp.value = hrStr;
 
             // Carrega cabeçalho e QR codes das lojas em alta definição sem latência
-            if (window.CRLV_HEADER_HD_B64) {
-                const topBar = document.getElementById('crlvTopBar');
-                if (topBar) topBar.style.backgroundImage = `url("${window.CRLV_HEADER_HD_B64}")`;
-            }
-            if (window.CRLV_QR_STORES_HD_B64) {
-                const badgesImg = document.getElementById('viewStoreBadgesImg');
-                if (badgesImg) badgesImg.src = window.CRLV_QR_STORES_HD_B64;
+            // Se base64 do template HD limpo estiver disponível, aplica como background
+            if (window.CRLV_TEMPLATE_HD_CLEAN_B64) {
+                const sheet = document.getElementById('sheetDoc');
+                if (sheet) sheet.style.backgroundImage = `url("${window.CRLV_TEMPLATE_HD_CLEAN_B64}")`;
             }
 
             syncFields();
@@ -1773,8 +1299,7 @@
                 hiddenDiv.style.position = 'fixed';
                 hiddenDiv.style.left = '-99999px';
                 hiddenDiv.style.top = '0';
-                hiddenDiv.style.width = '794px';
-                hiddenDiv.style.height = '1123px';
+                hiddenDiv.style.width = '1024px'; hiddenDiv.style.height = '1342px';
                 hiddenDiv.style.background = '#ffffff';
                 hiddenDiv.style.zIndex = '-99999';
                 hiddenDiv.appendChild(clone);
@@ -1788,10 +1313,8 @@
                     allowTaint: true,
                     backgroundColor: '#ffffff',
                     logging: false,
-                    width: 794,
-                    height: 1123,
-                    windowWidth: 794,
-                    windowHeight: 1123
+                    width: 1024, height: 1342,
+                    windowWidth: 1024, windowHeight: 1342
                 });
 
                 hiddenDiv.remove();
@@ -1802,17 +1325,17 @@
                 const pdf = new JsPDF({
                     orientation: 'portrait',
                     unit: 'px',
-                    format: [794, 1123],
+                    format: [1024, 1342],
                     hotfixes: ['px_scaling']
                 });
 
                 let imgData;
                 try {
                     imgData = canvas.toDataURL('image/png');
-                    pdf.addImage(imgData, 'PNG', 0, 0, 794, 1123, undefined, 'FAST');
+                    pdf.addImage(imgData, 'PNG', 0, 0, 1024, 1342, undefined, 'FAST');
                 } catch(ePng) {
                     imgData = canvas.toDataURL('image/jpeg', 1.0);
-                    pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 1024, 1342);
                 }
 
                 try {
@@ -1887,15 +1410,12 @@
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            // Se base64 estiver disponível, aplica nas imagens da folha
-            if (window.CRLV_HEADER_B64) {
-                const topBar = document.getElementById('crlvTopBar');
-                if (topBar) topBar.style.backgroundImage = `url("${window.CRLV_HEADER_B64}")`;
+            // Aplica template HD limpo sem perdas
+            if (window.CRLV_TEMPLATE_HD_CLEAN_B64) {
+                const sheet = document.getElementById('sheetDoc');
+                if (sheet) sheet.style.backgroundImage = `url("${window.CRLV_TEMPLATE_HD_CLEAN_B64}")`;
             }
-            if (window.CRLV_STORE_BADGES_B64) {
-                const storeImg = document.getElementById('viewStoreBadgesImg');
-                if (storeImg) storeImg.src = window.CRLV_STORE_BADGES_B64;
-            }
+            applyZoom();
 
             // Associa listeners aos inputs
             document.querySelectorAll('.sidebar-col input, .sidebar-col select, .sidebar-col textarea').forEach(el => {
