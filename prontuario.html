@@ -27,7 +27,7 @@
 
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MG Editáveis | RGs Digitais</title>
+    <title>MG Editáveis — Prontuários Gerados</title>
     <script src="js/security-guard.js"></script>
     <script src="js/auth-guard.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1560,7 +1560,7 @@
                 <span class="stat-title">HOJE</span>
             </div>
             <div class="stat-num" id="statHojeVal">0</div>
-            <div class="stat-sub green" id="statHojeSub">RGs Digitais gerados hoje</div>
+            <div class="stat-sub green" id="statHojeSub">Prontuários gerados hoje</div>
         </div>
 
         <!-- ESTE MÊS -->
@@ -1572,7 +1572,7 @@
                 <span class="stat-title">ESTE MÊS</span>
             </div>
             <div class="stat-num" id="statMesVal">0</div>
-            <div class="stat-sub">RGs Digitais gerados no mês</div>
+            <div class="stat-sub">Prontuários gerados no mês</div>
         </div>
 
         <!-- TOTAL GERAL -->
@@ -1584,7 +1584,7 @@
                 <span class="stat-title">TOTAL GERAL</span>
             </div>
             <div class="stat-num" id="statTotalVal">0</div>
-            <div class="stat-sub">RGs Digitais gerados no total</div>
+            <div class="stat-sub">Prontuários gerados no total</div>
         </div>
     </div>
 
@@ -1628,7 +1628,7 @@
     </div>
 
     <!-- SECTION TITLE -->
-    <div class="sec-title">RGs Digitais Gerados</div>
+    <div class="sec-title">Prontuários DETRAN Gerados</div>
 
     <!-- FILTERS TOOLBAR -->
     <div class="filters-bar">
@@ -1682,7 +1682,7 @@
 
         <!-- TABLE PAGINATION FOOTER -->
         <div class="table-footer">
-            <div id="paginationInfo">Mostrando 0 de 0 RGs Digitais</div>
+            <div id="paginationInfo">Mostrando 0 de 0 Prontuários</div>
             <div class="pagination-controls">
                 <span id="pageCurrentInfo">Página 0 de 0</span>
                 <button class="btn-page" onclick="prevPage()">Anterior</button>
@@ -1737,7 +1737,7 @@ document.addEventListener('click', (e) => {
 });
 
 // ─── DADOS E ESTADO DOS EXAMES ───
-let allRGs Digitais = [];
+let allProntuarios = [];
 let currentFilterStatus = 'Todas';
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
@@ -1809,7 +1809,7 @@ function loadLoggedUser() {
         const dropEmail = document.getElementById('dropUserEmail');
         if (dropEmail) dropEmail.textContent = user.email || 'admin@mgeditaveis.com.br';
 
-        loadUserRGs Digitais(user);
+        loadUserProntuarios(user);
     } catch(e) {
         console.error('Erro ao carregar usuário:', e);
     }
@@ -1817,9 +1817,9 @@ function loadLoggedUser() {
 
 window.addEventListener('storage', loadLoggedUser);
 
-function loadUserRGs Digitais(user) {
+function loadUserProntuarios(user) {
     const email = (user && user.email) ? user.email.toLowerCase().trim() : '';
-    const userRGs DigitaisKey = email ? ('happynation_prontuarios_' + email) : '';
+    const userProntuariosKey = email ? ('happynation_prontuarios_' + email) : '';
 
     const seenIds = new Set();
     const deletedList = JSON.parse(localStorage.getItem('happynation_deleted_rgs') || '[]');
@@ -1844,9 +1844,9 @@ function loadUserRGs Digitais(user) {
     };
 
     // 1. Carrega da chave do usuário
-    if (userRGs DigitaisKey) {
+    if (userProntuariosKey) {
         try {
-            const list = JSON.parse(localStorage.getItem(userRGs DigitaisKey) || '[]');
+            const list = JSON.parse(localStorage.getItem(userProntuariosKey) || '[]');
             if (Array.isArray(list)) list.forEach(addIfValid);
         } catch(e) {}
     }
@@ -1864,8 +1864,8 @@ function loadUserRGs Digitais(user) {
 
     // 3. Carrega de happynation_admin_rgs
     try {
-        const adminRGs Digitais = JSON.parse(localStorage.getItem('happynation_admin_rgs') || '[]');
-        if (Array.isArray(adminRGs Digitais)) adminRGs Digitais.forEach(addIfValid);
+        const adminProntuarios = JSON.parse(localStorage.getItem('happynation_admin_rgs') || '[]');
+        if (Array.isArray(adminProntuarios)) adminProntuarios.forEach(addIfValid);
     } catch(e) {}
 
     // 4. Carrega do último rg
@@ -1874,7 +1874,7 @@ function loadUserRGs Digitais(user) {
         if (lastAt) addIfValid(lastAt);
     } catch(e) {}
 
-    allRGs Digitais = [...items];
+    allProntuarios = [...items];
     renderTable();
 }
 
@@ -1888,7 +1888,7 @@ function updateCounters() {
     let mesCount = 0;
     let negCount = 0;
 
-    allRGs Digitais.forEach(c => {
+    allProntuarios.forEach(c => {
         if (c.status === 'Negativo') negCount++;
         if (!c.created_at) return;
         try {
@@ -1902,7 +1902,7 @@ function updateCounters() {
         } catch(e) {}
     });
 
-    const totalCount = allRGs Digitais.length;
+    const totalCount = allProntuarios.length;
     const aprovTaxa = totalCount > 0 ? Math.round((negCount / totalCount) * 100) : 100;
 
     const elHoje = document.getElementById('statHojeVal');
@@ -1928,7 +1928,7 @@ function renderTable() {
     const queryCpf = (document.getElementById('filterCpf')?.value || '').toLowerCase().trim();
     const queryData = (document.getElementById('filterData')?.value || '').trim();
 
-    let filtered = allRGs Digitais.filter(item => {
+    let filtered = allProntuarios.filter(item => {
         if (queryNome && !item.nome.toLowerCase().includes(queryNome)) return false;
         if (queryCpf && !item.cpf.toLowerCase().includes(queryCpf)) return false;
         if (queryData && item.created_at && !item.created_at.startsWith(queryData)) return false;

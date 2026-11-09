@@ -897,7 +897,7 @@
         <div class="cards-grid" id="cardsGrid">
 
             <!-- 1. CNH DIGITAL -->
-            <article class="doc-card" data-category="transito" data-name="cnh digital carteira habilitacao senatran detran cdt" style="--card-accent:#00dc82; --card-glow:rgba(0,220,130,0.25); --card-icon-bg:rgba(0,220,130,0.1); --card-icon-border:rgba(0,220,130,0.3); --card-pill-bg:rgba(0,220,130,0.12); --card-pill-border:rgba(0,220,130,0.3); --card-btn-bg:#00dc82; --card-btn-glow:rgba(0,220,130,0.35); --card-border-hover:rgba(0,220,130,0.4);">
+            <article class="doc-card" data-category="transito" data-name="cnh digital carteira habilitacao senatran detran cdt" onclick="handleCardOptionClick(event, 'cnh.html')" title="Clique para ver as CNHs geradas pelo cliente" style="cursor:pointer; --card-accent:#00dc82; --card-glow:rgba(0,220,130,0.25); --card-icon-bg:rgba(0,220,130,0.1); --card-icon-border:rgba(0,220,130,0.3); --card-pill-bg:rgba(0,220,130,0.12); --card-pill-border:rgba(0,220,130,0.3); --card-btn-bg:#00dc82; --card-btn-glow:rgba(0,220,130,0.35); --card-border-hover:rgba(0,220,130,0.4);">
                 <div>
                     <div class="card-top">
                         <div class="card-icon-box">
@@ -948,11 +948,11 @@
                     </div>
 
                     <div class="card-actions-group">
-                        <a href="criar-cnh.html" class="btn-card-emitir">
+                        <a href="criar-cnh.html" class="btn-card-emitir" onclick="event.stopPropagation()">
                             <span>Emitir CNH Agora</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('cnh')" title="Ver detalhes e amostra">
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='cnh.html';" title="Ver CNHs geradas pelo cliente">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
@@ -960,7 +960,7 @@
             </article>
 
             <!-- 2. ATESTADO MÉDICO -->
-            <article class="doc-card" data-category="saude" data-name="atestado medico upa sus cid repouso afastamento saude" style="--card-accent:#a855f7; --card-glow:rgba(168,85,247,0.25); --card-icon-bg:rgba(168,85,247,0.1); --card-icon-border:rgba(168,85,247,0.3); --card-pill-bg:rgba(168,85,247,0.12); --card-pill-border:rgba(168,85,247,0.3); --card-btn-bg:#a855f7; --card-btn-glow:rgba(168,85,247,0.35); --card-border-hover:rgba(168,85,247,0.4);">
+            <article class="doc-card" data-category="saude" data-name="atestado medico upa sus cid repouso afastamento saude" onclick="handleCardOptionClick(event, 'atestados.html')" title="Clique para ver os Atestados gerados pelo cliente" style="cursor:pointer; --card-accent:#a855f7; --card-glow:rgba(168,85,247,0.25); --card-icon-bg:rgba(168,85,247,0.1); --card-icon-border:rgba(168,85,247,0.3); --card-pill-bg:rgba(168,85,247,0.12); --card-pill-border:rgba(168,85,247,0.3); --card-btn-bg:#a855f7; --card-btn-glow:rgba(168,85,247,0.35); --card-border-hover:rgba(168,85,247,0.4);">
                 <div>
                     <div class="card-top">
                         <div class="card-icon-box">
@@ -1011,11 +1011,11 @@
                     </div>
 
                     <div class="card-actions-group">
-                        <a href="criar-atestado.html" class="btn-card-emitir" style="background:#a855f7; color:#fff; box-shadow:0 4px 14px -2px rgba(168,85,247,0.35);">
+                        <a href="criar-atestado.html" class="btn-card-emitir" onclick="event.stopPropagation()" style="background:#a855f7; color:#fff; box-shadow:0 4px 14px -2px rgba(168,85,247,0.35);">
                             <span>Criar Atestado Agora</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('atestado')" title="Ver detalhes e amostra">
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='atestados.html';" title="Ver Atestados gerados pelo cliente">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
@@ -1023,7 +1023,7 @@
             </article>
 
             <!-- 3. EXAME TOXICOLÓGICO -->
-            <article class="doc-card" data-category="saude transito" data-name="exame toxicologico laudo laboratorio drogas cnh clt c d e" style="--card-accent:#38bdf8; --card-glow:rgba(56,189,248,0.25); --card-icon-bg:rgba(56,189,248,0.1); --card-icon-border:rgba(56,189,248,0.3); --card-pill-bg:rgba(56,189,248,0.12); --card-pill-border:rgba(56,189,248,0.3); --card-btn-bg:#38bdf8; --card-btn-glow:rgba(56,189,248,0.35); --card-border-hover:rgba(56,189,248,0.4);">
+            <article class="doc-card" data-category="saude transito" data-name="exame toxicologico laudo laboratorio drogas cnh clt c d e" onclick="handleCardOptionClick(event, 'exames.html')" title="Clique para ver os Exames gerados pelo cliente" style="cursor:pointer; --card-accent:#38bdf8; --card-glow:rgba(56,189,248,0.25); --card-icon-bg:rgba(56,189,248,0.1); --card-icon-border:rgba(56,189,248,0.3); --card-pill-bg:rgba(56,189,248,0.12); --card-pill-border:rgba(56,189,248,0.3); --card-btn-bg:#38bdf8; --card-btn-glow:rgba(56,189,248,0.35); --card-border-hover:rgba(56,189,248,0.4);">
                 <div>
                     <div class="card-top">
                         <div class="card-icon-box">
@@ -1074,11 +1074,11 @@
                     </div>
 
                     <div class="card-actions-group">
-                        <a href="criar-exame.html" class="btn-card-emitir" style="background:#38bdf8; color:#082f49; box-shadow:0 4px 14px -2px rgba(56,189,248,0.35);">
+                        <a href="criar-exame.html" class="btn-card-emitir" onclick="event.stopPropagation()" style="background:#38bdf8; color:#082f49; box-shadow:0 4px 14px -2px rgba(56,189,248,0.35);">
                             <span>Gerar Toxicológico Agora</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('exame')" title="Ver detalhes e amostra">
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='exames.html';" title="Ver Exames gerados pelo cliente">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
@@ -1086,7 +1086,7 @@
             </article>
 
             <!-- 4. PRONTUÁRIO DETRAN -->
-            <article class="doc-card" data-category="transito" data-name="prontuario detran pontos historico certidao condutor" style="--card-accent:#fbbf24; --card-glow:rgba(251,191,36,0.25); --card-icon-bg:rgba(251,191,36,0.1); --card-icon-border:rgba(251,191,36,0.3); --card-pill-bg:rgba(251,191,36,0.12); --card-pill-border:rgba(251,191,36,0.3); --card-btn-bg:#fbbf24; --card-btn-glow:rgba(251,191,36,0.35); --card-border-hover:rgba(251,191,36,0.4);">
+            <article class="doc-card" data-category="transito" data-name="prontuario detran pontos historico certidao condutor" onclick="handleCardOptionClick(event, 'prontuario.html')" title="Clique para ver os Prontuários gerados pelo cliente" style="cursor:pointer; --card-accent:#fbbf24; --card-glow:rgba(251,191,36,0.25); --card-icon-bg:rgba(251,191,36,0.1); --card-icon-border:rgba(251,191,36,0.3); --card-pill-bg:rgba(251,191,36,0.12); --card-pill-border:rgba(251,191,36,0.3); --card-btn-bg:#fbbf24; --card-btn-glow:rgba(251,191,36,0.35); --card-border-hover:rgba(251,191,36,0.4);">
                 <div>
                     <div class="card-top">
                         <div class="card-icon-box">
@@ -1137,11 +1137,11 @@
                     </div>
 
                     <div class="card-actions-group">
-                        <a href="criar-prontuario.html" class="btn-card-emitir" style="background:#fbbf24; color:#3b2300; box-shadow:0 4px 14px -2px rgba(251,191,36,0.35);">
+                        <a href="criar-prontuario.html" class="btn-card-emitir" onclick="event.stopPropagation()" style="background:#fbbf24; color:#3b2300; box-shadow:0 4px 14px -2px rgba(251,191,36,0.35);">
                             <span>Emitir Prontuário Agora</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('prontuario')" title="Ver detalhes e amostra">
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='prontuario.html';" title="Ver Prontuários gerados pelo cliente">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
@@ -2110,6 +2110,16 @@
                     btn.innerHTML = `<span>Editar ${item.name}</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
                 }
             });
+        }
+
+        // Navegação direta ao clicar sobre a opção de um documento ativo (vai para a aba onde mostra os que foram gerados)
+        function handleCardOptionClick(e, targetUrl) {
+            if (e && e.target && e.target.closest('.btn-card-emitir')) {
+                return;
+            }
+            if (targetUrl) {
+                window.location.href = targetUrl;
+            }
         }
 
         // Ação para o CRLV Digital em desenvolvimento
