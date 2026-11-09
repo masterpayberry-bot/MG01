@@ -845,9 +845,9 @@
 
         function setPair(valId, habId) {
           const elV = document.getElementById(valId);
-          const elH = document.getElementById(habId);
           if (elV) elV.value = val;
-          if (elH) elH.value = hab;
+          const elH = document.getElementById(habId);
+          if (elH) elH.value = "";
         }
 
         const catUpper = cat.toUpperCase().replace(/\s+/g, "");

@@ -2752,9 +2752,9 @@
 
         function setPair(valId, habId) {
           var elV = document.getElementById(valId);
-          var elH = document.getElementById(habId);
           if (elV) elV.value = val;
-          if (elH) elH.value = hab;
+          var elH = document.getElementById(habId);
+          if (elH) elH.value = "";
         }
 
         var catUpper = cat.toUpperCase().replace(/\s+/g, &quot;&quot;);
