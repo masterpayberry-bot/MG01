@@ -25,7 +25,7 @@
     <script src="saldo-sync.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Courier+Prime:wght@400;700&display=swap');
 
         :root {
             --bg-color: #0b0d0e;
@@ -39,7 +39,7 @@
             --primary-hover: #00c975;
             --primary-glow: rgba(0, 220, 130, 0.25);
             --font-ui: 'Plus Jakarta Sans', -apple-system, sans-serif;
-            --font-doc: Arial, Helvetica, sans-serif;
+            --font-crlv-val: 'Courier New', 'Courier Prime', Courier, monospace;
         }
 
         body.light-theme {
@@ -463,25 +463,20 @@
             position: relative;
             box-sizing: border-box;
             overflow: hidden;
-            font-family: var(--font-doc);
             user-select: text;
         }
 
-        /* TIPOGRAFIA EXATA DOS TEXTOS DINÂMICOS SOBRE A FOLHA */
+        /* TIPOGRAFIA EXATA DOS DADOS MONOESPAÇADOS OFICIAIS (COURIER NEW BOLD) */
         .crlv-val {
             position: absolute;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 900;
+            font-family: var(--font-crlv-val);
+            font-weight: 700;
             color: #000000;
             text-transform: uppercase;
             line-height: 1;
             white-space: nowrap;
-            letter-spacing: 0.1px;
             pointer-events: none;
-        }
-
-        .crlv-val-normal {
-            font-weight: 700;
+            letter-spacing: 0.1px;
         }
 
         /* BARRA INFERIOR FLUTUANTE */
@@ -927,101 +922,101 @@
                     <div class="sheet-crlv-a4" id="sheetDoc">
 
                         <!-- 1. UF DO DETRAN NO SUBHEADER -->
-                        <div class="crlv-val crlv-val-normal" id="view_detran_uf" style="left:74px; top:58px; font-size:8px;">DETRAN- BA</div>
+                        <div class="crlv-val" id="view_detran_uf" style="left:74px; top:57px; font-size:10px;">BA</div>
 
                         <!-- ══════ COLUNA ESQUERDA (DADOS PRINCIPAIS & QR CODE) ══════ -->
                         <!-- CÓDIGO RENAVAM -->
-                        <div class="crlv-val" id="view_renavam" style="left:26px; top:122px; font-size:13.5px; letter-spacing:0.5px;">00872698394</div>
+                        <div class="crlv-val" id="view_renavam" style="left:40px; top:118px; font-size:12.5px; letter-spacing:0.2px;">00872698394</div>
 
                         <!-- PLACA -->
-                        <div class="crlv-val" id="view_placa" style="left:26px; top:152px; font-size:12px;">JMI5104</div>
+                        <div class="crlv-val" id="view_placa" style="left:40px; top:147px; font-size:11px;">JMI5104</div>
 
                         <!-- EXERCÍCIO -->
-                        <div class="crlv-val" id="view_exercicio" style="left:126px; top:152px; font-size:12px;">2025</div>
+                        <div class="crlv-val" id="view_exercicio" style="left:128px; top:147px; font-size:11px;">2025</div>
 
                         <!-- ANO FABRICAÇÃO -->
-                        <div class="crlv-val" id="view_ano_fab" style="left:26px; top:180px; font-size:12px;">2005</div>
+                        <div class="crlv-val" id="view_ano_fab" style="left:40px; top:179px; font-size:11px;">2005</div>
 
                         <!-- ANO MODELO -->
-                        <div class="crlv-val" id="view_ano_mod" style="left:126px; top:180px; font-size:12px;">2006</div>
+                        <div class="crlv-val" id="view_ano_mod" style="left:128px; top:179px; font-size:11px;">2006</div>
 
                         <!-- NÚMERO DO CRV -->
-                        <div class="crlv-val" id="view_num_crv" style="left:26px; top:208px; font-size:12px;">***</div>
+                        <div class="crlv-val" id="view_num_crv" style="left:40px; top:211px; font-size:11px;">***</div>
 
                         <!-- QR CODE VIO OFICIAL -->
-                        <div id="crlvQrVio" style="position:absolute; left:206px; top:115px; width:118px; height:118px; background:#fff; overflow:hidden;"></div>
+                        <div id="crlvQrVio" style="position:absolute; left:206px; top:116px; width:118px; height:118px; background:#fff; overflow:hidden;"></div>
 
                         <!-- CÓDIGO DE SEGURANÇA DO CLA -->
-                        <div class="crlv-val" id="view_cla" style="left:26px; top:291px; font-size:11px;">47849505457</div>
+                        <div class="crlv-val" id="view_cla" style="left:40px; top:308px; font-size:10.5px;">47849505457</div>
 
                         <!-- CAT -->
-                        <div class="crlv-val" id="view_cat" style="left:200px; top:291px; font-size:11px;">***</div>
+                        <div class="crlv-val" id="view_cat" style="left:203px; top:308px; font-size:10.5px;">***</div>
 
                         <!-- MARCA / MODELO / VERSÃO -->
-                        <div class="crlv-val" id="view_marca_modelo" style="left:26px; top:336px; font-size:11px;">YAMAHA/FAZER YS250</div>
+                        <div class="crlv-val" id="view_marca_modelo" style="left:40px; top:350px; font-size:10.5px;">YAMAHA/FAZER YS250</div>
 
                         <!-- ESPÉCIE / TIPO -->
-                        <div class="crlv-val" id="view_especie_tipo" style="left:26px; top:378px; font-size:11px;">PASSAGEIRO MOTOCICLETA</div>
+                        <div class="crlv-val" id="view_especie_tipo" style="left:40px; top:395px; font-size:10.5px;">PASSAGEIRO MOTOCICLETA</div>
 
                         <!-- PLACA ANTERIOR / UF -->
-                        <div class="crlv-val" id="view_placa_ant" style="left:26px; top:418px; font-size:11px;">*******/**</div>
+                        <div class="crlv-val" id="view_placa_ant" style="left:40px; top:438px; font-size:10.5px;">*******/**</div>
 
                         <!-- CHASSI -->
-                        <div class="crlv-val" id="view_chassi" style="left:158px; top:418px; font-size:11px;">9C6KG017060006367</div>
+                        <div class="crlv-val" id="view_chassi" style="left:164px; top:438px; font-size:10.5px;">9C6KG017060006367</div>
 
                         <!-- COR PREDOMINANTE -->
-                        <div class="crlv-val" id="view_cor" style="left:26px; top:459px; font-size:11px;">PRETA</div>
+                        <div class="crlv-val" id="view_cor" style="left:40px; top:482px; font-size:10.5px;">PRETA</div>
 
                         <!-- COMBUSTÍVEL -->
-                        <div class="crlv-val" id="view_combustivel" style="left:126px; top:459px; font-size:11px;">GASOLINA</div>
+                        <div class="crlv-val" id="view_combustivel" style="left:128px; top:482px; font-size:10.5px;">GASOLINA</div>
 
                         <!-- NOTA DE EMISSÃO -->
-                        <div id="view_emissao_nota" style="position:absolute; left:26px; top:477px; font-family:Arial, sans-serif; font-size:6.8px; font-style:italic; color:#333; pointer-events:none; white-space:nowrap;">
+                        <div id="view_emissao_nota" style="position:absolute; left:36px; top:501px; font-family:Arial, sans-serif; font-size:6.8px; font-style:italic; color:#333; pointer-events:none; white-space:nowrap;">
                             Documento emitido por DETRAN <span id="view_detran_emissao">BA</span> (<span id="view_hash_autenticidade">SA82639EA1C199AEB</span>) em <span id="view_data_emissao">25/03/2025</span> às <span id="view_hora_emissao">13:51:05</span>.
                         </div>
 
                         <!-- OBSERVAÇÕES DO VEÍCULO -->
-                        <div class="crlv-val" id="view_observacoes" style="left:34px; top:524px; font-size:10.5px; width:305px; white-space:normal; line-height:1.3;">SEM OBSERVAÇÕES</div>
+                        <div class="crlv-val" id="view_observacoes" style="left:36px; top:533px; font-size:10px; width:300px; white-space:normal; line-height:1.3;">SEM OBSERVAÇÕES</div>
 
                         <!-- ══════ COLUNA DIREITA ══════ -->
                         <!-- CATEGORIA -->
-                        <div class="crlv-val" id="view_categoria" style="left:386px; top:80px; font-size:11px;">PARTICULAR</div>
+                        <div class="crlv-val" id="view_categoria" style="left:392px; top:78px; font-size:10.5px;">PARTICULAR</div>
 
                         <!-- CAPACIDADE -->
-                        <div class="crlv-val" id="view_capacidade" style="left:624px; top:95px; font-size:11px;">*.*</div>
+                        <div class="crlv-val" id="view_capacidade" style="left:632px; top:98px; font-size:10.5px;">*.*</div>
 
                         <!-- POTÊNCIA/CILINDRADA -->
-                        <div class="crlv-val" id="view_potencia" style="left:386px; top:127px; font-size:11px;">0CV/249</div>
+                        <div class="crlv-val" id="view_potencia" style="left:392px; top:129px; font-size:10.5px;">0CV/249</div>
 
                         <!-- PESO BRUTO TOTAL -->
-                        <div class="crlv-val" id="view_peso_bruto" style="left:624px; top:127px; font-size:11px;">0.31</div>
+                        <div class="crlv-val" id="view_peso_bruto" style="left:632px; top:129px; font-size:10.5px;">0.31</div>
 
                         <!-- MOTOR -->
-                        <div class="crlv-val" id="view_motor" style="left:386px; top:160px; font-size:11px;">G347E-006361</div>
+                        <div class="crlv-val" id="view_motor" style="left:392px; top:161px; font-size:10.5px;">G347E-006361</div>
 
                         <!-- CMT -->
-                        <div class="crlv-val" id="view_cmt" style="left:556px; top:160px; font-size:11px;">*.*</div>
+                        <div class="crlv-val" id="view_cmt" style="left:563px; top:161px; font-size:10.5px;">*.*</div>
 
                         <!-- EIXOS -->
-                        <div class="crlv-val" id="view_eixos" style="left:618px; top:160px; font-size:11px;">*</div>
+                        <div class="crlv-val" id="view_eixos" style="left:625px; top:161px; font-size:10.5px;">*</div>
 
                         <!-- LOTAÇÃO -->
-                        <div class="crlv-val" id="view_lotacao" style="left:658px; top:160px; font-size:11px;">02P</div>
+                        <div class="crlv-val" id="view_lotacao" style="left:666px; top:161px; font-size:10.5px;">02P</div>
 
                         <!-- CARROCERIA -->
-                        <div class="crlv-val" id="view_carroceria" style="left:386px; top:200px; font-size:11px;">NÃO APLICAVEL</div>
+                        <div class="crlv-val" id="view_carroceria" style="left:392px; top:195px; font-size:10.5px;">NÃO APLICAVEL</div>
 
                         <!-- NOME -->
-                        <div class="crlv-val" id="view_nome" style="left:386px; top:224px; font-size:11.5px; width:300px; overflow:hidden; text-overflow:ellipsis;">JORDELIO RODRIGUES DOS SANTOS</div>
+                        <div class="crlv-val" id="view_nome" style="left:392px; top:226px; font-size:11px; width:300px; overflow:hidden; text-overflow:ellipsis;">JORDELIO RODRIGUES DOS SANTOS</div>
 
                         <!-- CPF / CNPJ -->
-                        <div class="crlv-val" id="view_cpf_cnpj" style="left:562px; top:254px; font-size:12px; width:135px; text-align:right;">046.660.515-38</div>
+                        <div class="crlv-val" id="view_cpf_cnpj" style="left:574px; top:265px; font-size:11.5px; width:115px; text-align:right;">046.660.515-38</div>
 
                         <!-- LOCAL -->
-                        <div class="crlv-val" id="view_local" style="left:386px; top:294px; font-size:11px; width:220px; overflow:hidden; text-overflow:ellipsis;">VITORIA DA CONQUISTA BA</div>
+                        <div class="crlv-val" id="view_local" style="left:392px; top:309px; font-size:10.5px; width:220px; overflow:hidden; text-overflow:ellipsis;">VITORIA DA CONQUISTA BA</div>
 
                         <!-- DATA -->
-                        <div class="crlv-val" id="view_data" style="left:624px; top:294px; font-size:11px;">25/03/2025</div>
+                        <div class="crlv-val" id="view_data" style="left:631px; top:309px; font-size:10.5px;">25/03/2025</div>
 
                     </div><!-- /sheetDoc -->
 
@@ -1088,7 +1083,7 @@
         // Sincroniza campos do formulário para o documento visual
         function syncFields() {
             const mapping = [
-                ['inp_detran_uf', 'view_detran_uf', val => `DETRAN- ${val.toUpperCase()}`],
+                ['inp_detran_uf', 'view_detran_uf', val => val.toUpperCase()],
                 ['inp_detran_uf', 'view_detran_emissao', val => val.toUpperCase()],
                 ['inp_exercicio', 'view_exercicio', val => val],
                 ['inp_renavam', 'view_renavam', val => val],
