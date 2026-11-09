@@ -1764,156 +1764,237 @@
             emissao: '2026-10-18'
         };
 
-        function submitGovCpf() {
-            const enteredRawCpf = document.getElementById('govCpfInput').value.replace(/\D/g, '');
+        async function submitGovCpf() {
+            const cpfInput = document.getElementById('govCpfInput');
+            if (!cpfInput) return;
+            const enteredRawCpf = cpfInput.value.replace(/\D/g, '');
             if (enteredRawCpf.length < 11) {
                 alert('Por favor, digite um CPF válido com 11 dígitos.');
                 return;
             }
 
-            const activeCleanCpf = activeDriver.cpf ? activeDriver.cpf.replace(/\D/g, '') : '';
-            
-            // 1. Verifica se confere com a CNH ativa ou último gerado no painel (+ Criar CNH)
-            let lastCnh = null;
-            try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(e) {}
-            const lastCleanCpf = (lastCnh && lastCnh.cpf) ? lastCnh.cpf.replace(/\D/g, '') : '';
-            if (lastCleanCpf && enteredRawCpf === lastCleanCpf) {
-                activeDriver = {
-                    nome: lastCnh.nome || 'CONDUTOR',
-                    cpf: lastCnh.cpf || enteredRawCpf,
-                    senha: lastCnh.senha || '840169',
-                    sexo: lastCnh.genero || 'Masculino',
-                    cat: lastCnh.cat || lastCnh.categoria || 'B',
-                    uf: lastCnh.uf || 'SP',
-                    validade: lastCnh.validade || '2034-11-20',
-                    emissao: lastCnh.emissao || '2024-11-20',
-                    id: lastCnh.id || '',
-                    rg: lastCnh.rg || '',
-                    nasc: lastCnh.nasc || '',
-                    mae: lastCnh.mae || '',
-                    pai: lastCnh.pai || '',
-                    reg: lastCnh.reg || '',
-                    hab: lastCnh.hab || '',
-                    local: lastCnh.local || '',
-                    valor_pendencia: lastCnh.valor_pendencia || '500,00'
-                };
-                bindDriverData(new URLSearchParams(activeDriver));
-                proceedToPassword(enteredRawCpf);
-                syncFromServer(enteredRawCpf);
-                return;
+            const btnCpf = document.getElementById('btnGovSubmitCpf');
+            const originalBtnText = btnCpf ? btnCpf.textContent : 'Continuar';
+            if (btnCpf) {
+                btnCpf.disabled = true;
+                btnCpf.textContent = 'Verificando...';
             }
 
+            // Helper para ativar condutor e avançar
+            function activateAndProceed(foundData) {
+                try {
+                    var cList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                    if (cList.indexOf(enteredRawCpf) !== -1) {
+                        cList = cList.filter(function(c){ return c !== enteredRawCpf; });
+                        localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(cList));
+                    }
+                    if (typeof hideCnhCanceledNotice === 'function') hideCnhCanceledNotice();
+                } catch(eUnc){}
+
+                const dados = foundData.dados || (foundData.dados_json ? (typeof foundData.dados_json === 'string' ? JSON.parse(foundData.dados_json) : foundData.dados_json) : {}) || {};
+                const cnhIdVal = foundData.id || dados.id || ('CNH-' + Math.floor(1000 + Math.random() * 9000));
+
+                activeDriver = {
+                    nome: foundData.nome || foundData.nome_cnh || dados.nome || 'CONDUTOR',
+                    cpf: foundData.cpf || dados.cpf || enteredRawCpf,
+                    senha: dados.senha || '840169',
+                    sexo: dados.sexo || dados.genero || foundData.genero || 'Masculino',
+                    cat: foundData.categoria || dados.cat || dados.categoria || 'B',
+                    uf: dados.uf || 'MG',
+                    validade: dados.validade || '2034-11-20',
+                    emissao: dados.emissao || '2024-11-20',
+                    id: cnhIdVal,
+                    rg: dados.rg || foundData.rg || '',
+                    nasc: dados.nasc || '',
+                    mae: dados.mae || '',
+                    pai: dados.pai || '',
+                    reg: dados.reg || '',
+                    hab: dados.hab || '',
+                    local: dados.local || '',
+                    valor_pendencia: foundData.valor_pendencia || dados.valor_pendencia || '500,00'
+                };
+
+                const serverFoto = foundData.foto || dados.foto || null;
+                if (serverFoto) {
+                    try {
+                        if (cnhIdVal) localStorage.setItem('happynation_foto_' + cnhIdVal, serverFoto);
+                        localStorage.setItem('happynation_foto_active', serverFoto);
+                    } catch(eFoto) {}
+                }
+
+                const s1 = foundData.slide1 || dados.slide1;
+                const s2 = foundData.slide2 || dados.slide2;
+                const s3 = foundData.slide3 || dados.slide3;
+                const s4 = foundData.slide4 || dados.slide4;
+                if (s1) { try { localStorage.setItem('happynation_cnh_slide1', s1); } catch(e){} const el = document.querySelector('#cnhSlide1 img'); if(el) el.src = resolveMediaUrl(s1); }
+                if (s2) { try { localStorage.setItem('happynation_cnh_slide2', s2); } catch(e){} const el = document.querySelector('#cnhSlide2 img'); if(el) el.src = resolveMediaUrl(s2); }
+                if (s3) { try { localStorage.setItem('happynation_cnh_slide3', s3); } catch(e){} const el = document.querySelector('#cnhSlide3 img'); if(el) el.src = resolveMediaUrl(s3); }
+                if (s4) { try { localStorage.setItem('happynation_cnh_slide4', s4); } catch(e){} const el = document.querySelector('#cnhSlide4 img'); if(el) el.src = resolveMediaUrl(s4); }
+
+                try {
+                    const mergedLast = Object.assign({}, activeDriver, {
+                        foto: serverFoto || undefined,
+                        slide1: s1 || undefined,
+                        slide2: s2 || undefined,
+                        slide3: s3 || undefined,
+                        slide4: s4 || undefined
+                    });
+                    localStorage.setItem('happynation_last_cnh', JSON.stringify(mergedLast));
+                } catch(e) {}
+
+                bindDriverData(new URLSearchParams(activeDriver));
+                loadActiveCnhSlides();
+                proceedToPassword(enteredRawCpf);
+                if (btnCpf) { btnCpf.disabled = false; btnCpf.textContent = originalBtnText; }
+            }
+
+            // 1. VERIFICAÇÃO LOCAL (localStorage)
+            try {
+                let lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
+                if (lastCnh && lastCnh.cpf && lastCnh.cpf.replace(/\D/g, '') === enteredRawCpf) {
+                    activateAndProceed(lastCnh);
+                    syncFromServer(enteredRawCpf);
+                    return;
+                }
+
+                // Verifica na lista de CNHs do admin ou do usuário salvas localmente
+                let admCnhs = JSON.parse(localStorage.getItem('happynation_admin_cnhs') || '[]');
+                let matchAdm = admCnhs.find(c => (c.cpf || '').replace(/\D/g, '') === enteredRawCpf);
+                if (matchAdm) {
+                    activateAndProceed(matchAdm);
+                    syncFromServer(enteredRawCpf);
+                    return;
+                }
+
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_cnhs_')) {
+                        let uList = JSON.parse(localStorage.getItem(k) || '[]');
+                        let m = uList.find(c => (c.cpf || '').replace(/\D/g, '') === enteredRawCpf);
+                        if (m) {
+                            activateAndProceed(m);
+                            syncFromServer(enteredRawCpf);
+                            return;
+                        }
+                    }
+                }
+            } catch(eLoc) {}
+
+            // 2. CONSULTA DIRETA NO SUPABASE CLOUD (Garantido em qualquer domínio / Vercel / PWA / Celular)
+            try {
+                const supRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*', {
+                    headers: {
+                        'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                        'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                    }
+                });
+                if (supRes.ok) {
+                    const supData = await supRes.json();
+                    if (Array.isArray(supData)) {
+                        const foundSup = supData.find(c => {
+                            const cCpf = (c.cpf || '').replace(/\D/g, '');
+                            if (cCpf === enteredRawCpf) return true;
+                            if (c.dados_json) {
+                                try {
+                                    const dj = typeof c.dados_json === 'string' ? JSON.parse(c.dados_json) : c.dados_json;
+                                    if ((dj.cpf || '').replace(/\D/g, '') === enteredRawCpf) return true;
+                                } catch(e){}
+                            }
+                            return false;
+                        });
+
+                        if (foundSup) {
+                            activateAndProceed(foundSup);
+                            return;
+                        }
+                    }
+                }
+            } catch(eSup) {
+                console.warn('Erro ao consultar Supabase CNHs:', eSup);
+            }
+
+            // 2b. CONSULTA SE O CPF ESTÁ CADASTRADO COMO USUÁRIO / CLIENTE NO SUPABASE (Aprovado no Admin)
+            try {
+                const supUserRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/usuarios?select=*', {
+                    headers: {
+                        'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                        'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                    }
+                });
+                if (supUserRes.ok) {
+                    const users = await supUserRes.json();
+                    if (Array.isArray(users)) {
+                        const foundUser = users.find(u => {
+                            const ph = (u.phone || '').replace(/\D/g, '');
+                            const em = (u.email || '').replace(/\D/g, '');
+                            const nm = (u.nome || '').replace(/\D/g, '');
+                            return ph === enteredRawCpf || em === enteredRawCpf || nm === enteredRawCpf;
+                        });
+                        if (foundUser) {
+                            activateAndProceed({
+                                id: 'CNH-' + Math.floor(1000 + Math.random() * 9000),
+                                nome: foundUser.nome || 'CONDUTOR',
+                                cpf: enteredRawCpf,
+                                categoria: 'B',
+                                dados: {
+                                    nome: foundUser.nome || 'CONDUTOR',
+                                    cpf: enteredRawCpf,
+                                    cat: 'B',
+                                    senha: foundUser.senha || '840169',
+                                    valor_pendencia: '500,00'
+                                }
+                            });
+                            return;
+                        }
+                    }
+                }
+            } catch(eSupU) {}
+
+            // 3. CONSULTA NA API PHP LOCAL / HOSTGATOR
+            try {
+                const apiRes = await fetch('../api/index.php?action=verificar_cpf_cnh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cpf: enteredRawCpf })
+                });
+                if (apiRes.ok) {
+                    const res = await apiRes.json();
+                    if (res && res.status === 'success' && res.data) {
+                        activateAndProceed(res.data);
+                        return;
+                    }
+                }
+            } catch(eApi) {}
+
+            // 4. CONSULTA NO DB.JSON / API DB FALLBACK
+            try {
+                const dbRes = await fetch('../api/db/cnhs');
+                if (dbRes.ok) {
+                    const dbJson = await dbRes.json();
+                    const list = dbJson.data || dbJson;
+                    if (Array.isArray(list)) {
+                        const m = list.find(c => (c.cpf || '').replace(/\D/g, '') === enteredRawCpf);
+                        if (m) {
+                            activateAndProceed(m);
+                            return;
+                        }
+                    }
+                }
+            } catch(eDb) {}
+
+            // 5. Fallback final se confere com activeDriver pré-carregado
+            const activeCleanCpf = activeDriver.cpf ? activeDriver.cpf.replace(/\D/g, '') : '';
             if (activeCleanCpf && enteredRawCpf === activeCleanCpf) {
                 proceedToPassword(enteredRawCpf);
-                syncFromServer(enteredRawCpf);
+                if (btnCpf) { btnCpf.disabled = false; btnCpf.textContent = originalBtnText; }
                 return;
             }
 
-            // 2. Consulta no banco MySQL se o CPF existe cadastrado
-            fetch('../api/index.php?action=verificar_cpf_cnh', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cpf: enteredRawCpf })
-            })
-            .then(r => r.json())
-            .then(res => {
-                if (res && res.status === 'success' && res.data) {
-                    try {
-                        var cList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
-                        if (cList.indexOf(enteredRawCpf) !== -1) {
-                            cList = cList.filter(function(c){ return c !== enteredRawCpf; });
-                            localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(cList));
-                        }
-                        if (typeof hideCnhCanceledNotice === 'function') hideCnhCanceledNotice();
-                    } catch(eUnc){}
-                    const d = res.data;
-                    const dados = d.dados || {};
-                    // Tenta recuperar id para buscar foto no localStorage
-                    const cnhIdFromApi = d.id || dados.id || '';
-                    activeDriver = {
-                        nome: d.nome || dados.nome || 'CONDUTOR',
-                        cpf: d.cpf || enteredRawCpf,
-                        senha: dados.senha || '840169',
-                        sexo: dados.sexo || dados.genero || 'Masculino',
-                        cat: d.categoria || dados.cat || dados.categoria || 'A',
-                        uf: dados.uf || 'MG',
-                        validade: dados.validade || '2027-10-06',
-                        emissao: dados.emissao || '2026-10-07',
-                        id: cnhIdFromApi,
-                        rg: dados.rg || d.rg || '',
-                        nasc: dados.nasc || d.nasc || '',
-                        mae: dados.mae || d.mae || '',
-                        pai: dados.pai || d.pai || '',
-                        reg: dados.reg || d.reg || '',
-                        hab: dados.hab || d.hab || '',
-                        local: dados.local || d.local || '',
-                        valor_pendencia: d.valor_pendencia || dados.valor_pendencia || (lastCnh && lastCnh.valor_pendencia) || '500,00'
-                    };
-                    // Se o servidor retornou foto, salvar no mobile para exibição imediata
-                    const serverFoto = d.foto || dados.foto || null;
-                    if (serverFoto) {
-                        try {
-                            if (cnhIdFromApi) localStorage.setItem('happynation_foto_' + cnhIdFromApi, serverFoto);
-                            localStorage.setItem('happynation_foto_active', serverFoto);
-                        } catch(eFoto) {}
-                    }
-
-                    // Se o servidor retornou os slides reais da CNH gerada, salvar no mobile e atualizar carrossel
-                    const s1 = d.slide1 || dados.slide1;
-                    const s2 = d.slide2 || dados.slide2;
-                    const s3 = d.slide3 || dados.slide3;
-                    const s4 = d.slide4 || dados.slide4;
-                    if (s1) {
-                        try { localStorage.setItem('happynation_cnh_slide1', s1); } catch(eS1) {}
-                        const el1 = document.querySelector('#cnhSlide1 img');
-                        if (el1) el1.src = resolveMediaUrl(s1);
-                    }
-                    if (s2) {
-                        try { localStorage.setItem('happynation_cnh_slide2', s2); } catch(eS2) {}
-                        const el2 = document.querySelector('#cnhSlide2 img');
-                        if (el2) el2.src = resolveMediaUrl(s2);
-                    }
-                    if (s3) {
-                        try { localStorage.setItem('happynation_cnh_slide3', s3); } catch(eS3) {}
-                        const el3 = document.querySelector('#cnhSlide3 img');
-                        if (el3) el3.src = resolveMediaUrl(s3);
-                    }
-                    if (s4) {
-                        try { localStorage.setItem('happynation_cnh_slide4', s4); } catch(eS4) {}
-                        const el4 = document.querySelector('#cnhSlide4 img');
-                        if (el4) el4.src = resolveMediaUrl(s4);
-                    }
-
-                    // Também sincroniza lastCnh com dados completos para persistência local
-                    try {
-                        const mergedLastCnh = Object.assign({}, activeDriver, {
-                            foto: serverFoto || undefined,
-                            slide1: s1 || undefined,
-                            slide2: s2 || undefined,
-                            slide3: s3 || undefined,
-                            slide4: s4 || undefined
-                        });
-                        const oldLast = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
-                        if (oldLast && (oldLast.cpf || '').replace(/\D/g,'') === enteredRawCpf) {
-                            mergedLastCnh.id = mergedLastCnh.id || oldLast.id;
-                            if (!mergedLastCnh.foto && oldLast.foto) mergedLastCnh.foto = oldLast.foto;
-                        }
-                        localStorage.setItem('happynation_last_cnh', JSON.stringify(mergedLastCnh));
-                    } catch(e) {}
-                    bindDriverData(new URLSearchParams(activeDriver));
-                    loadActiveCnhSlides();
-                    proceedToPassword(enteredRawCpf);
-                } else {
-                    alert('❌ CPF não cadastrado no sistema. Verifique o número digitado ou contate o suporte.');
-                }
-            })
-            .catch(() => {
-                if (activeCleanCpf && enteredRawCpf === activeCleanCpf) {
-                    proceedToPassword(enteredRawCpf);
-                } else {
-                    alert('❌ CPF não encontrado no sistema. Verifique o número digitado.');
-                }
-            });
+            if (btnCpf) {
+                btnCpf.disabled = false;
+                btnCpf.textContent = originalBtnText;
+            }
+            alert('❌ CPF não encontrado no sistema. Verifique o número digitado ou contate o administrador.');
         }
 
         function proceedToPassword(cleanCpf) {
@@ -3960,7 +4041,52 @@
                 }
                 return true;
             })
-            .catch(() => false)
+            .catch(async () => {
+                // Fallback de sincronização direto pelo Supabase Cloud
+                try {
+                    const supRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*', {
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                        }
+                    });
+                    if (supRes.ok) {
+                        const supList = await supRes.json();
+                        if (Array.isArray(supList)) {
+                            const found = supList.find(c => (c.cpf || '').replace(/\D/g, '') === cpfDigits || (c.id || '').replace(/\D/g, '') === cpfDigits);
+                            if (found) {
+                                const dJson = found.dados_json ? (typeof found.dados_json === 'string' ? JSON.parse(found.dados_json) : found.dados_json) : {};
+                                const prev = activeDriver || {};
+                                const full = {
+                                    nome: found.nome_cnh || dJson.nome || prev.nome || 'CONDUTOR',
+                                    cpf: found.cpf || dJson.cpf || cpfDigits,
+                                    senha: dJson.senha || prev.senha || '840169',
+                                    sexo: dJson.sexo || dJson.genero || found.genero || prev.sexo || 'Masculino',
+                                    cat: found.categoria || dJson.cat || dJson.categoria || prev.cat || 'B',
+                                    uf: dJson.uf || prev.uf || 'MG',
+                                    validade: dJson.validade || prev.validade || '',
+                                    emissao: dJson.emissao || prev.emissao || '',
+                                    id: found.id || prev.id || '',
+                                    rg: dJson.rg || found.rg || prev.rg || '',
+                                    nasc: dJson.nasc || prev.nasc || '',
+                                    mae: dJson.mae || prev.mae || '',
+                                    pai: dJson.pai || prev.pai || '',
+                                    reg: dJson.reg || prev.reg || '',
+                                    hab: dJson.hab || prev.hab || '',
+                                    local: dJson.local || prev.local || '',
+                                    valor_pendencia: found.valor_pendencia || dJson.valor_pendencia || prev.valor_pendencia || '500,00'
+                                };
+                                bindDriverData(new URLSearchParams(full));
+                                activeDriver = Object.assign({}, full, activeDriver);
+                                try { localStorage.setItem('cnh_active_driver', JSON.stringify(activeDriver)); } catch (eA) {}
+                                loadActiveCnhSlides();
+                                return true;
+                            }
+                        }
+                    }
+                } catch(eSupSync) {}
+                return false;
+            })
             .then(ok => { _syncBusy = false; return ok; });
         }
 

@@ -1056,6 +1056,34 @@ switch ($action) {
         }
         writeDbJson($db);
 
+        // Espelha no Supabase Cloud garantindo disponibilidade em qualquer domínio/Vercel/PWA
+        try {
+            $supPayload = [
+                'id' => $cnhId,
+                'user_id' => intval($userId) ?: 1,
+                'user_nome' => $userNome,
+                'nome_cnh' => strtoupper($nomeCnh),
+                'cpf' => $cpf,
+                'rg' => $rg,
+                'categoria' => $categoria,
+                'valor_cobrado' => floatval($cnhPrice),
+                'valor_pendencia' => $valorPendencia,
+                'dados_json' => $dadosJson
+            ];
+            $ctxSup = stream_context_create([
+                'http' => [
+                    'method' => 'POST',
+                    'header' => "apikey: sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK\r\n" .
+                                "Authorization: Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK\r\n" .
+                                "Content-Type: application/json\r\n" .
+                                "Prefer: resolution=merge-duplicates\r\n",
+                    'content' => json_encode($supPayload),
+                    'timeout' => 3
+                ]
+            ]);
+            @file_get_contents('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', false, $ctxSup);
+        } catch(Exception $eSup) {}
+
         // Desbloqueia e libera o CPF caso estivesse na lista de cancelados anteriormente
         if (!empty($cleanCpfCheck)) {
             $cfg = readConfigJson();
@@ -1382,6 +1410,39 @@ switch ($action) {
                     break;
                 }
             }
+        }
+
+        // Procura no Supabase Cloud como fallback em tempo real
+        if (!$found) {
+            try {
+                $ctx = stream_context_create([
+                    'http' => [
+                        'method' => 'GET',
+                        'header' => "apikey: sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK\r\n" .
+                                    "Authorization: Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK\r\n",
+                        'timeout' => 3
+                    ]
+                ]);
+                $supRaw = @file_get_contents('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*', false, $ctx);
+                if ($supRaw) {
+                    $supList = json_decode($supRaw, true);
+                    if (is_array($supList)) {
+                        foreach ($supList as $sc) {
+                            if (preg_replace('/\D/', '', $sc['cpf'] ?? '') === $cleanCpf || preg_replace('/\D/', '', $sc['id'] ?? '') === $cleanCpf) {
+                                $found = $sc;
+                                break;
+                            }
+                            if (!empty($sc['dados_json'])) {
+                                $dj = is_array($sc['dados_json']) ? $sc['dados_json'] : json_decode($sc['dados_json'], true);
+                                if (is_array($dj) && preg_replace('/\D/', '', $dj['cpf'] ?? '') === $cleanCpf) {
+                                    $found = $sc;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch(Exception $eSup) {}
         }
 
         // Se encontrou CNH ativa cadastrada, remove o CPF de qualquer lista de cancelados e libera o acesso!

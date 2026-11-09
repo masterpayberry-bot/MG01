@@ -517,7 +517,30 @@
                             }
                         }
                     })
-                    .catch(() => {});
+                    .catch(async () => {
+                        try {
+                            const supR = await fetch(`https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*`, {
+                                headers: {
+                                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                                }
+                            });
+                            if (supR.ok) {
+                                const list = await supR.json();
+                                const sc = list.find(x => (x.cpf || '').replace(/\D/g, '') === activeCpf);
+                                if (sc && sc.dados_json) {
+                                    const dj = typeof sc.dados_json === 'string' ? JSON.parse(sc.dados_json) : sc.dados_json;
+                                    [1, 2, 3, 4].forEach(n => {
+                                        if (dj['slide' + n]) {
+                                            localStorage.setItem('happynation_cnh_slide' + n, dj['slide' + n]);
+                                            const el = document.querySelector('#cnhSlide' + n + ' img');
+                                            if (el) el.src = resolveMediaUrl(dj['slide' + n]);
+                                        }
+                                    });
+                                }
+                            }
+                        } catch(e) {}
+                    });
             }
 
             if (s1) {

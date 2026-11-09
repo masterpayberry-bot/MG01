@@ -2652,9 +2652,15 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/></svg>
                             <span>Todas as CNHs Emitidas</span>
                         </div>
-                        <div class="search-box-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            <input type="text" class="search-inp" id="searchCnhInp" placeholder="Buscar CPF ou Nome do Condutor..." onkeyup="filterCnhsTable()">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <button class="btn-act" onclick="openAddCnhModal()" style="background:#00dc82; color:#062517; font-weight:700; border:none; padding:7px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                <span>+ Cadastrar CNH / CPF</span>
+                            </button>
+                            <div class="search-box-wrap">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="text" class="search-inp" id="searchCnhInp" placeholder="Buscar CPF ou Nome do Condutor..." onkeyup="filterCnhsTable()">
+                            </div>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -4056,6 +4062,11 @@
             </div>
 
             <div class="modal-field">
+                <label>CPF do Cliente (Opcional - Libera Login no App CNH)</label>
+                <input type="text" class="modal-inp" id="editUserCpf" placeholder="000.000.000-00" maxlength="14" oninput="maskCpfInputAdmin(this)">
+            </div>
+
+            <div class="modal-field">
                 <label>Saldo em R$</label>
                 <input type="number" step="0.01" class="modal-inp" id="editUserSaldo" placeholder="0.00">
             </div>
@@ -4072,6 +4083,65 @@
             <div class="modal-btns">
                 <button class="btn-m-cancel" onclick="closeModal('modalUser')">Cancelar</button>
                 <button class="btn-m-submit" onclick="saveUserModal()">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CADASTRAR NOVA CNH / CPF -->
+    <div class="modal-overlay" id="modalAddCnh">
+        <div class="modal-card" style="max-width:500px;">
+            <div class="modal-header">
+                <div class="modal-title">Cadastrar CNH / CPF</div>
+                <div class="modal-sub">Cadastre um condutor com CPF para liberar acesso imediato no App CNH do Brasil.</div>
+            </div>
+            
+            <div class="modal-field">
+                <label>Nome Completo do Condutor *</label>
+                <input type="text" class="modal-inp" id="newCnhNome" placeholder="Ex: MARCOS ANTONIO SILVA">
+            </div>
+
+            <div class="modal-field">
+                <label>CPF do Condutor * (11 dígitos)</label>
+                <input type="text" class="modal-inp" id="newCnhCpf" placeholder="000.000.000-00" maxlength="14" oninput="maskCpfInputAdmin(this)">
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="modal-field">
+                    <label>RG</label>
+                    <input type="text" class="modal-inp" id="newCnhRg" placeholder="MG-12.345.678">
+                </div>
+                <div class="modal-field">
+                    <label>Categoria</label>
+                    <select class="modal-inp" id="newCnhCat">
+                        <option value="AB">AB (Carro e Moto)</option>
+                        <option value="B" selected>B (Carro)</option>
+                        <option value="A">A (Moto)</option>
+                        <option value="C">C (Caminhão)</option>
+                        <option value="D">D (Ônibus)</option>
+                        <option value="E">E (Articulado)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="modal-field">
+                    <label>Senha gov.br App</label>
+                    <input type="text" class="modal-inp" id="newCnhSenha" value="840169">
+                </div>
+                <div class="modal-field">
+                    <label>Valor Pendência (R$)</label>
+                    <input type="text" class="modal-inp" id="newCnhPendencia" value="500,00">
+                </div>
+            </div>
+
+            <div class="modal-field">
+                <label>Cliente Solicitante (Vínculo)</label>
+                <input type="text" class="modal-inp" id="newCnhUser" value="Administrador Geral">
+            </div>
+
+            <div class="modal-btns">
+                <button class="btn-m-cancel" onclick="closeModal('modalAddCnh')">Cancelar</button>
+                <button class="btn-m-submit" id="btnSubmitAddCnh" onclick="saveCnhModalAdmin()">Cadastrar e Ativar CNH ⚡</button>
             </div>
         </div>
     </div>
@@ -5487,6 +5557,15 @@ function updateDashboardMetrics() {
                 }
             } catch(e) {}
 
+            // Remove do Supabase Cloud
+            fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?id=eq.' + encodeURIComponent(cnhId), {
+                method: 'DELETE',
+                headers: {
+                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                }
+            }).catch(() => {});
+
             fetch('api/index.php?action=delete_cnh', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -5729,12 +5808,154 @@ function updateDashboardMetrics() {
             );
         }
 
+        function maskCpfInputAdmin(el) {
+            let v = el.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.substring(0, 11);
+            if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+            else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+            el.value = v;
+        }
+
+        function openAddCnhModal() {
+            document.getElementById('newCnhNome').value = '';
+            document.getElementById('newCnhCpf').value = '';
+            document.getElementById('newCnhRg').value = '';
+            document.getElementById('newCnhCat').value = 'B';
+            document.getElementById('newCnhSenha').value = '840169';
+            document.getElementById('newCnhPendencia').value = '500,00';
+            document.getElementById('newCnhUser').value = 'Administrador Geral';
+            document.getElementById('modalAddCnh').style.display = 'flex';
+            setTimeout(() => { document.getElementById('newCnhNome').focus(); }, 100);
+        }
+
+        async function saveCnhModalAdmin() {
+            const nomeVal = document.getElementById('newCnhNome').value.trim();
+            const cpfVal = document.getElementById('newCnhCpf').value.trim();
+            const rgVal = document.getElementById('newCnhRg').value.trim();
+            const catVal = document.getElementById('newCnhCat').value;
+            const senhaVal = document.getElementById('newCnhSenha').value.trim() || '840169';
+            const pendenciaVal = document.getElementById('newCnhPendencia').value.trim() || '500,00';
+            const userVal = document.getElementById('newCnhUser').value.trim() || 'Administrador Geral';
+
+            const cleanCpf = cpfVal.replace(/\D/g, '');
+            if (!nomeVal || cleanCpf.length !== 11) {
+                showToast('⚠️ Informe o Nome Completo e um CPF válido com 11 dígitos.');
+                return;
+            }
+
+            const btn = document.getElementById('btnSubmitAddCnh');
+            if (btn) { btn.disabled = true; btn.textContent = 'Cadastrando...'; }
+
+            const cnhId = 'CNH-' + Math.floor(1000 + Math.random() * 9000);
+            const dadosCnh = {
+                id: cnhId,
+                nome: nomeVal.toUpperCase(),
+                cpf: cpfVal,
+                rg: rgVal || 'MG-12.345.678',
+                cat: catVal,
+                categoria: catVal,
+                senha: senhaVal,
+                sexo: 'Masculino',
+                uf: 'MG',
+                validade: '2034-11-20',
+                emissao: '2024-11-20',
+                valor_pendencia: pendenciaVal
+            };
+
+            // Remove de qualquer lista de cancelados
+            try {
+                let canceled = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                if (canceled.includes(cleanCpf)) {
+                    canceled = canceled.filter(c => c !== cleanCpf);
+                    localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceled));
+                }
+            } catch(eCan) {}
+
+            // 1. Salva no Supabase Cloud imediatamente (garante login em qualquer domínio/Vercel/PWA)
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+            const supPayload = {
+                id: cnhId,
+                user_id: 1,
+                user_nome: userVal,
+                nome_cnh: nomeVal.toUpperCase(),
+                cpf: cpfVal,
+                rg: rgVal || 'MG-12.345.678',
+                categoria: catVal,
+                genero: 'Masculino',
+                valor_cobrado: 26.00,
+                valor_pendencia: pendenciaVal,
+                dados_json: JSON.stringify(dadosCnh)
+            };
+
+            try {
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client) {
+                    await client.from('cnhs').upsert(supPayload);
+                } else {
+                    await fetch(`${SUP_URL}/rest/v1/cnhs`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUP_KEY,
+                            'Authorization': `Bearer ${SUP_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'resolution=merge-duplicates'
+                        },
+                        body: JSON.stringify(supPayload)
+                    });
+                }
+            } catch(eSup) {
+                console.warn('Erro ao salvar no Supabase cnhs:', eSup);
+            }
+
+            // 2. Salva localmente e atualiza tabela do admin
+            const newAdminItem = {
+                id: cnhId,
+                user: userVal,
+                nomeCnh: nomeVal.toUpperCase(),
+                cpf: cpfVal,
+                data: new Date().toLocaleString('pt-BR'),
+                valor: 'R$ 26,00'
+            };
+            cnhsData.unshift(newAdminItem);
+            saveStorage();
+            renderCnhsTable();
+
+            // Salva como last_cnh também para carregamento instantâneo se testar no mesmo navegador
+            try {
+                localStorage.setItem('happynation_last_cnh', JSON.stringify(dadosCnh));
+            } catch(eLast) {}
+
+            // 3. Notifica API PHP se estiver ativa
+            fetch('api/index.php?action=gerar_cnh', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: cnhId,
+                    userId: 1,
+                    nomeCnh: nomeVal.toUpperCase(),
+                    cpf: cpfVal,
+                    rg: rgVal,
+                    categoria: catVal,
+                    valor_pendencia: pendenciaVal,
+                    dados: dadosCnh
+                })
+            }).catch(() => {});
+
+            if (btn) { btn.disabled = false; btn.textContent = 'Cadastrar e Ativar CNH ⚡'; }
+            closeModal('modalAddCnh');
+            showToast(`✅ CNH de ${nomeVal.toUpperCase()} (CPF: ${cpfVal}) cadastrada e ativada com sucesso!`);
+        }
+
         function openAddUserModal() {
             document.getElementById('modalUserTitle').textContent = 'Adicionar Novo Cliente';
             document.getElementById('editUserId').value = '';
             document.getElementById('editUserNome').value = '';
             document.getElementById('editUserEmail').value = '';
             document.getElementById('editUserPhone').value = '';
+            const cpfField = document.getElementById('editUserCpf');
+            if (cpfField) cpfField.value = '';
             document.getElementById('editUserSaldo').value = '0.00';
             document.getElementById('editUserStatus').value = 'approved';
             document.getElementById('modalUser').style.display = 'flex';
@@ -5748,6 +5969,8 @@ function updateDashboardMetrics() {
             document.getElementById('editUserNome').value = u.nome || '';
             document.getElementById('editUserEmail').value = u.email || '';
             document.getElementById('editUserPhone').value = u.phone || '';
+            const cpfField = document.getElementById('editUserCpf');
+            if (cpfField) cpfField.value = u.cpf || '';
             document.getElementById('editUserSaldo').value = parseFloat(u.saldo || 0).toFixed(2);
             document.getElementById('editUserStatus').value = u.status || 'approved';
             document.getElementById('modalUser').style.display = 'flex';
@@ -5758,6 +5981,8 @@ function updateDashboardMetrics() {
             const nome = document.getElementById('editUserNome').value.trim();
             const email = document.getElementById('editUserEmail').value.trim();
             const phone = document.getElementById('editUserPhone').value.trim();
+            const cpfVal = (document.getElementById('editUserCpf')?.value || '').trim();
+            const cleanCpf = cpfVal.replace(/\D/g, '');
             const saldoInput = document.getElementById('editUserSaldo').value;
             const rawSaldo = String(saldoInput || '0').replace(',', '.');
             const saldo = (!isNaN(parseFloat(rawSaldo))) ? parseFloat(rawSaldo) : 0.00;
@@ -5788,6 +6013,7 @@ function updateDashboardMetrics() {
                     u.nome = nome;
                     u.email = email;
                     u.phone = phone;
+                    u.cpf = cpfVal;
                     u.saldo = saldo;
                     u.status = status;
                     savedObj = u;
@@ -5800,6 +6026,7 @@ function updateDashboardMetrics() {
                     nome: nome,
                     email: email,
                     phone: phone,
+                    cpf: cpfVal,
                     saldo: saldo,
                     cnhsCount: 0,
                     status: status,
@@ -5808,6 +6035,43 @@ function updateDashboardMetrics() {
                 usersData.unshift(newUser);
                 savedObj = newUser;
                 showToast(`✅ Novo cliente "${nome}" adicionado com sucesso!`);
+            }
+
+            // Se informou CPF com 11 dígitos, garante que está ativado na tabela cnhs do Supabase
+            if (cleanCpf.length === 11) {
+                try {
+                    const cnhIdUser = 'CNH-' + Math.floor(1000 + Math.random() * 9000);
+                    const cnhPayload = {
+                        id: cnhIdUser,
+                        user_id: 1,
+                        user_nome: nome,
+                        nome_cnh: nome.toUpperCase(),
+                        cpf: cpfVal,
+                        rg: 'MG-12.345.678',
+                        categoria: 'B',
+                        genero: 'Masculino',
+                        valor_cobrado: 26.00,
+                        valor_pendencia: '500,00',
+                        dados_json: JSON.stringify({
+                            id: cnhIdUser,
+                            nome: nome.toUpperCase(),
+                            cpf: cpfVal,
+                            senha: '840169',
+                            cat: 'B',
+                            valor_pendencia: '500,00'
+                        })
+                    };
+                    fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
+                        method: 'POST',
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Content-Type': 'application/json',
+                            'Prefer': 'resolution=merge-duplicates'
+                        },
+                        body: JSON.stringify(cnhPayload)
+                    }).catch(() => {});
+                } catch(eCpfSup) {}
             }
 
             saveStorage();
@@ -5859,6 +6123,7 @@ function updateDashboardMetrics() {
                     }
                 } catch(eREST) {}
             }
+        }
         }
 
         

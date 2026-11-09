@@ -5059,8 +5059,35 @@ async function generateNow() {
             } catch(e) { console.error('Erro ao descontar saldo localmente:', e); }
         }
 
-        // 2b. Notificar / sincronizar com a API MySQL no HostGator
+        // 2b. Notificar / sincronizar com a API MySQL e Supabase Cloud
         try {
+            const cleanCpfSync = (cpfVal || '').replace(/\D/g, '');
+            const supPayload = {
+                id: cnhId,
+                user_id: parseInt(userId, 10) || 1,
+                user_nome: (loggedUser && loggedUser.nome) ? loggedUser.nome : 'Cliente',
+                nome_cnh: (nomeVal || 'CONDUTOR').toUpperCase(),
+                cpf: cpfVal,
+                rg: rgVal || '',
+                categoria: catVal || 'B',
+                genero: (generoVal && generoVal.toLowerCase().startsWith('f')) ? 'Feminino' : 'Masculino',
+                valor_cobrado: parseFloat(cnhPrice || 26.00),
+                valor_pendencia: valorPendenciaVal || '500,00',
+                dados_json: JSON.stringify(cnhData)
+            };
+
+            // Envia para Supabase Cloud garantindo funcionamento em qualquer ambiente (PWA / Vercel / Local)
+            fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
+                method: 'POST',
+                headers: {
+                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                    'Content-Type': 'application/json',
+                    'Prefer': 'resolution=merge-duplicates'
+                },
+                body: JSON.stringify(supPayload)
+            }).catch(eS => console.warn('Supabase sync cnh err:', eS));
+
             const apiRes = await fetch('api/index.php?action=gerar_cnh', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

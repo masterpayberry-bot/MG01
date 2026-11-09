@@ -430,7 +430,32 @@ window.addEventListener('load', () => {
                         }
                     }
                 })
-                .catch(() => {});
+                .catch(async () => {
+                    try {
+                        const supR = await fetch(`https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*`, {
+                            headers: {
+                                'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                                'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+                            }
+                        });
+                        if (supR.ok) {
+                            const list = await supR.json();
+                            const sc = list.find(x => (x.cpf || '').replace(/\D/g, '') === cleanCpf);
+                            if (sc) {
+                                const dj = sc.dados_json ? (typeof sc.dados_json === 'string' ? JSON.parse(sc.dados_json) : sc.dados_json) : {};
+                                if (sc.nome_cnh || dj.nome) document.getElementById('valNome').textContent = (sc.nome_cnh || dj.nome).toUpperCase();
+                                if (sc.cpf) document.getElementById('valCPF').textContent = sc.cpf;
+                                if (sc.categoria || dj.cat) document.getElementById('valCat').textContent = (sc.categoria || dj.cat).toUpperCase();
+                                if (dj.rg || sc.rg) document.getElementById('valRG').textContent = (dj.rg || sc.rg).toUpperCase();
+                                if (dj.validade) document.getElementById('valValidade').textContent = dj.validade;
+                                if (dj.emissao) document.getElementById('valEmissao').textContent = dj.emissao;
+                                if (dj.local) document.getElementById('valLocal').textContent = dj.local.toUpperCase();
+                                if (dj.uf) document.getElementById('valUF').textContent = dj.uf.toUpperCase();
+                                if (dj.foto) document.getElementById('driverPhoto').innerHTML = `<img src="${dj.foto}" alt="Foto Condutor" />`;
+                            }
+                        }
+                    } catch(eSup) {}
+                });
         }
     }
 });
