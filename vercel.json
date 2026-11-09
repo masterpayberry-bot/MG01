@@ -82,6 +82,10 @@
       "destination": "/editaveis.html"
     },
     {
+      "source": "/bot-puxada",
+      "destination": "/bot-puxada.html"
+    },
+    {
       "source": "/app",
       "destination": "/app/index.html"
     },
