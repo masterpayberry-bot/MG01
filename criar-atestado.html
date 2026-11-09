@@ -1075,48 +1075,96 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-end;
             text-align: center;
-            min-width: 240px;
+            min-width: 250px;
         }
 
-        .liberado-info {
-            font-size: 11px;
-            font-weight: 700;
-            line-height: 1.3;
-            color: #000;
-            margin-bottom: 4px;
-        }
-
-        .medico-sig-wrap {
+        .carimbo-container {
             position: relative;
-            width: 150px;
-            height: 60px;
+            width: 250px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            text-align: center;
+            padding-top: 6px;
+        }
+
+        .carimbo-text-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            font-family: "Times New Roman", Times, Georgia, serif;
+            color: #262626;
+            user-select: none;
             margin-bottom: 2px;
         }
 
-        .medico-sig-wrap img {
-            max-height: 100%;
-            max-width: 100%;
+        .carimbo-dr-nome {
+            font-size: 13.5px;
+            font-weight: 500;
+            line-height: 1.25;
+            color: #1f2429;
+            white-space: nowrap;
+        }
+
+        .carimbo-dr-esp {
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.25;
+            color: #33383f;
+            white-space: nowrap;
+        }
+
+        .carimbo-dr-crm {
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.25;
+            color: #22262a;
+            white-space: nowrap;
+        }
+
+        .carimbo-sig-svg-wrap {
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .carimbo-sig-svg-wrap svg {
+            width: 240px;
+            height: 85px;
+            overflow: visible;
+        }
+
+        .carimbo-sig-svg-wrap img {
+            max-height: 75px;
+            max-width: 220px;
             object-fit: contain;
         }
 
-        .medico-nome-display {
-            font-size: 12px;
-            font-weight: 400;
-            text-align: center;
-            width: 100%;
-            color: #000;
+        .carimbo-divider {
+            width: 240px;
+            height: 1.2px;
+            background: #1f2429;
+            margin: 4px 0 4px 0;
         }
 
-        .medico-crm-display {
-            font-size: 11.5px;
-            font-weight: 400;
+        .carimbo-caption {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            color: #111827;
             text-align: center;
-            width: 100%;
-            color: #000;
         }
 
         /* ─── MODAL / POPUP DE SELEÇÃO DE CID ─── */
@@ -1569,13 +1617,20 @@
 
                 <div class="form-row">
                     <div class="form-field">
-                        <label>Médico(a) Responsável</label>
-                        <input type="text" class="input-box" id="inp_medico" value="Dra. Flávia Nunes Maruyama" oninput="syncFromCheckout()">
+                        <label>Médico(a) Responsável (com Dr./Dra.)</label>
+                        <input type="text" class="input-box" id="inp_medico" value="Dr. Jair Dacas" placeholder="Dr. Jair Dacas" oninput="syncFromCheckout()">
                     </div>
 
                     <div class="form-field">
-                        <label>CRM do Médico</label>
-                        <input type="text" class="input-box" id="inp_crm" value="CRM 216997" oninput="syncFromCheckout()">
+                        <label>Especialidade / Cargo</label>
+                        <input type="text" class="input-box" id="inp_medico_esp" value="Médica Clínica" placeholder="Médica Clínica" oninput="syncFromCheckout()">
+                    </div>
+                </div>
+
+                <div class="form-row single">
+                    <div class="form-field">
+                        <label>Registro Profissional CRM</label>
+                        <input type="text" class="input-box" id="inp_crm" value="CRM 29022 RS" placeholder="CRM 29022 RS" oninput="syncFromCheckout()">
                     </div>
                 </div>
             </div>
@@ -1730,25 +1785,24 @@
                                     <!-- Gerado dinamicamente -->
                                 </div>
 
-                                <!-- Coluna Direita: Assinatura Eletrônica e Médico -->
+                                <!-- Coluna Direita: Carimbo e Assinatura -->
                                 <div class="footer-right-col">
-                                    <div class="liberado-info">
-                                        Liberado e assinado<br>
-                                        eletronicamente em <span id="fld_liberado_data">04/11/2023</span><br>
-                                        <span id="fld_liberado_hora">10:40</span> por:
+                                    <div class="carimbo-container">
+                                        <div class="carimbo-text-box">
+                                            <div class="carimbo-dr-nome" id="fld_medico_nome">Dr. Jair Dacas</div>
+                                            <div class="carimbo-dr-esp" id="fld_medico_esp">Médica Clínica</div>
+                                            <div class="carimbo-dr-crm" id="fld_medico_crm">CRM 29022 RS</div>
+                                        </div>
+                                        <div class="carimbo-sig-svg-wrap">
+                                            <svg id="sigSvgElement" viewBox="0 0 240 85" width="240" height="85">
+                                                <path d="M 98 46 C 110 34, 120 13, 132 11 C 141 9, 145 20, 134 42 C 125 60, 106 70, 112 76 C 118 80, 128 68, 140 58 C 153 48, 168 44, 180 48 C 190 51, 202 48, 214 46" fill="none" stroke="#1d4ed8" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <circle cx="170" cy="31" r="1.6" fill="#1d4ed8"/>
+                                            </svg>
+                                            <input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">
+                                        </div>
+                                        <div class="carimbo-divider"></div>
+                                        <div class="carimbo-caption">ASSINATURA/CARIMBO</div>
                                     </div>
-
-                                    <div class="medico-sig-wrap">
-                                        <svg id="sigSvgElement" viewBox="0 0 160 70" width="130" height="55">
-                                            <path d="M 20 45 C 35 15, 45 10, 60 55 C 65 65, 75 20, 85 15 C 95 10, 105 50, 115 45 C 125 40, 135 10, 140 30" fill="none" stroke="#000000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <circle cx="45" cy="42" r="18" fill="none" stroke="#000000" stroke-width="1.8"/>
-                                            <line x1="15" y1="52" x2="145" y2="48" stroke="#000000" stroke-width="1.5"/>
-                                        </svg>
-                                        <input type="file" id="sigUploadInput" accept="image/*" style="display:none;" onchange="handleSigUpload(this)">
-                                    </div>
-
-                                    <div class="medico-nome-display" id="fld_medico_nome">Dra. Flávia Nunes Maruyama</div>
-                                    <div class="medico-crm-display" id="fld_medico_crm">CRM 216997</div>
                                 </div>
 
                             </div>
@@ -1919,8 +1973,9 @@
         const cid = (document.getElementById('inp_cid')?.value || 'J02.').trim();
         const dias = currentDiasNum || 3;
         const unidade = (document.getElementById('inp_unidade')?.value || 'UPA 24h Itaquera - Consultórios').trim();
-        const medico = (document.getElementById('inp_medico')?.value || 'Dra. Flávia Nunes Maruyama').trim();
-        const crm = (document.getElementById('inp_crm')?.value || 'CRM 216997').trim();
+        const medico = (document.getElementById('inp_medico')?.value || 'Dr. Jair Dacas').trim();
+        const medicoEsp = (document.getElementById('inp_medico_esp')?.value || 'Médica Clínica').trim();
+        const crm = (document.getElementById('inp_crm')?.value || 'CRM 29022 RS').trim();
         const data = (document.getElementById('inp_data')?.value || '04/11/2026').trim();
         const hora = (document.getElementById('inp_hora')?.value || '08:12:23').trim();
         const end1 = (document.getElementById('inp_end1')?.value || 'Av. Miguel Ignácio Curi, 41').trim();
@@ -1936,9 +1991,10 @@
         params.set('cpf', cns);
         params.set('cid', cid);
         params.set('dias', dias);
-        if (unidade && !unidade.includes('Itaquera - Consultórios')) params.set('unidade', unidade);
-        if (medico && !medico.includes('Flávia Nunes')) params.set('medico', medico);
-        if (crm && !crm.includes('216997')) params.set('crm', crm);
+        if (unidade) params.set('unidade', unidade);
+        if (medico) params.set('medico', medico);
+        if (medicoEsp) params.set('esp', medicoEsp);
+        if (crm) params.set('crm', crm);
         params.set('data', data);
         params.set('hora', hora);
         params.set('auth', authHash);
@@ -2138,8 +2194,9 @@
         const data = document.getElementById('inp_data')?.value || '';
         const hora = document.getElementById('inp_hora')?.value || '';
         const unidade = document.getElementById('inp_unidade')?.value || '';
-        const medico = document.getElementById('inp_medico')?.value || '';
-        const crm = document.getElementById('inp_crm')?.value || '';
+        const medico = (document.getElementById('inp_medico')?.value || '').trim();
+        const medicoEsp = (document.getElementById('inp_medico_esp')?.value || '').trim();
+        const crm = (document.getElementById('inp_crm')?.value || '').trim();
 
         // Atualiza campos estáticos na folha (preview 100% fiel e limpo)
         // Sincroniza endereço da unidade no cabeçalho da folha
@@ -2160,11 +2217,23 @@
         const fldCid = document.getElementById('fld_cid');
         if (fldCid) fldCid.textContent = cid;
 
+        // Formatação inteligente e sincronização do Carimbo Médico
+        let medicoDisplay = medico;
+        if (medicoDisplay && !/^(dr\.|dra\.|dr|dra)\b/i.test(medicoDisplay)) {
+            medicoDisplay = 'Dr. ' + medicoDisplay;
+        }
         const fldMed = document.getElementById('fld_medico_nome');
-        if (fldMed) fldMed.textContent = medico;
+        if (fldMed) fldMed.textContent = medicoDisplay || 'Dr. Jair Dacas';
 
+        const fldEsp = document.getElementById('fld_medico_esp');
+        if (fldEsp) fldEsp.textContent = medicoEsp || 'Médica Clínica';
+
+        let crmDisplay = crm;
+        if (crmDisplay && !/^crm\b/i.test(crmDisplay)) {
+            crmDisplay = 'CRM ' + crmDisplay;
+        }
         const fldCrm = document.getElementById('fld_medico_crm');
-        if (fldCrm) fldCrm.textContent = crm;
+        if (fldCrm) fldCrm.textContent = crmDisplay || 'CRM 29022 RS';
 
         const fldEmit = document.getElementById('fld_emitido_em');
         if (fldEmit) fldEmit.textContent = `${data} ${hora}`;
@@ -2229,8 +2298,9 @@
             const e1 = document.getElementById('inp_end1'); if (e1) e1.value = "Av. Miguel Ignácio Curi, 41";
             const e2 = document.getElementById('inp_end2'); if (e2) e2.value = "Vila Carmosina - São Paulo - SP";
             const e3 = document.getElementById('inp_end3'); if (e3) e3.value = "CEP: 08295-005";
-            document.getElementById('inp_medico').value = "Dra. Flávia Nunes Maruyama";
-            document.getElementById('inp_crm').value = "CRM 216997";
+            document.getElementById('inp_medico').value = "Dr. Jair Dacas";
+            const esp = document.getElementById('inp_medico_esp'); if (esp) esp.value = "Médica Clínica";
+            document.getElementById('inp_crm').value = "CRM 29022 RS";
             currentDiasNum = 3;
             currentDiasExt = 'três';
 
