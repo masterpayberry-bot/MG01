@@ -1635,25 +1635,11 @@
                     </div>
 
                     <div class="form-field">
-                        <label>Estilo da Assinatura à Caneta</label>
-                        <select class="input-box" id="sel_estilo_sig" onchange="trocarEstiloAssinatura(this.value)">
-                            <option value="original" selected>✒️ Modelo Original da Foto (100% Idem)</option>
-                            <option value="cursiva">✍️ Cursiva Dinâmica (Nome do Médico)</option>
-                            <option value="rubrica_svg">🖋️ Rubrica Médica Clássica (SVG)</option>
-                            <option value="desenhar">🎨 Desenhar Minha Assinatura na Tela</option>
-                            <option value="upload">📁 Enviar Imagem da Minha Assinatura</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row single">
-                    <div class="form-field">
                         <label>Cor da Tinta da Caneta</label>
-                        <div style="display:flex; gap:12px; align-items:center; background:#111415; border:1px solid var(--border); border-radius:10px; padding:8px 14px;">
-                            <button type="button" class="btn-cor-caneta" id="btnCorAzul" onclick="setCorCaneta('#1d4ed8', this)" style="background:#1d4ed8; width:28px; height:28px; border-radius:50%; border:2px solid #fff; cursor:pointer;" title="Azul Caneta"></button>
-                            <button type="button" class="btn-cor-caneta" id="btnCorRoyal" onclick="setCorCaneta('#002e99', this)" style="background:#002e99; width:28px; height:28px; border-radius:50%; border:2px solid transparent; cursor:pointer;" title="Azul Escuro Royal"></button>
-                            <button type="button" class="btn-cor-caneta" id="btnCorPreto" onclick="setCorCaneta('#18181b', this)" style="background:#18181b; width:28px; height:28px; border-radius:50%; border:2px solid transparent; cursor:pointer;" title="Preto"></button>
-                            <span id="lblCorCaneta" style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left:6px;">Azul Caneta Clássica</span>
+                        <div style="display:flex; gap:10px; align-items:center; background:#111415; border:1px solid var(--border); border-radius:10px; padding:6px 14px; height:42px;">
+                            <button type="button" class="btn-cor-caneta" id="btnCorAzul" onclick="setCorCaneta('#1040cf', this)" style="background:#1040cf; width:26px; height:26px; border-radius:50%; border:2px solid #fff; cursor:pointer;" title="Azul"></button>
+                            <button type="button" class="btn-cor-caneta" id="btnCorPreto" onclick="setCorCaneta('#18181b', this)" style="background:#18181b; width:26px; height:26px; border-radius:50%; border:2px solid transparent; cursor:pointer;" title="Preta"></button>
+                            <span id="lblCorCaneta" style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left:4px;">Azul</span>
                         </div>
                     </div>
                 </div>
@@ -1845,29 +1831,6 @@
 
         </div>
 
-    </div>
-
-    <!-- MODAL DE DESENHO DE ASSINATURA -->
-    <div class="sig-pad-modal-overlay" id="sigPadModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:10001; align-items:center; justify-content:center; backdrop-filter:blur(6px); padding:20px;">
-        <div style="background:#141718; border:1px solid #232729; border-radius:14px; width:100%; max-width:480px; padding:22px; box-shadow:0 20px 45px rgba(0,0,0,0.7);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <h3 style="font-size:16px; font-weight:800; color:#fff; margin:0; display:flex; align-items:center; gap:8px;">
-                    <span>✍️ Desenhar Assinatura na Tela</span>
-                </h3>
-                <button type="button" onclick="fecharModalDesenho()" style="background:none; border:none; color:#9ca3af; font-size:24px; cursor:pointer; line-height:1;">&times;</button>
-            </div>
-            <p style="font-size:12px; color:#9ca3af; margin:0 0 12px 0;">Assine com o mouse ou passe o dedo na tela do celular:</p>
-            <div style="background:#ffffff; border-radius:10px; overflow:hidden; border:2px dashed #00dc82; position:relative;">
-                <canvas id="padCanvas" width="440" height="180" style="display:block; width:100%; height:180px; cursor:crosshair; touch-action:none;"></canvas>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
-                <button type="button" onclick="limparPadCanvas()" style="background:#1e2224; border:1px solid #2d3438; color:#cbd5e1; font-weight:700; font-size:12px; padding:9px 16px; border-radius:8px; cursor:pointer;">Limpar Desenho</button>
-                <div style="display:flex; gap:10px;">
-                    <button type="button" onclick="fecharModalDesenho()" style="background:none; border:1px solid #2d3438; color:#9ca3af; font-size:12px; padding:9px 14px; border-radius:8px; cursor:pointer;">Cancelar</button>
-                    <button type="button" onclick="salvarPadAssinatura()" style="background:#00dc82; color:#062517; font-weight:800; font-size:12px; padding:9px 18px; border-radius:8px; border:none; cursor:pointer; box-shadow:0 4px 14px rgba(0,220,130,0.35);">Salvar Assinatura</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- MODAL DE SELEÇÃO DE CID -->
@@ -2369,10 +2332,8 @@
         }
     }
 
-    // ─── CONTROLADOR DE ASSINATURA À CANETA (ORIGINAL 100% IDEM, CURSIVA DINÂMICA OU LIVRE) ───
-    let currentSigMode = 'original';
-    let currentSigColor = '#1d4ed8';
-    let customSigDataUrl = null;
+    // ─── CONTROLADOR DE ASSINATURA À CANETA (AZUL E PRETA) ───
+    let currentSigColor = '#1040cf';
 
     function setCorCaneta(color, btn) {
         currentSigColor = color;
@@ -2380,48 +2341,14 @@
         if (btn) btn.style.borderColor = '#fff';
         const lbl = document.getElementById('lblCorCaneta');
         if (lbl) {
-            if (color === '#1d4ed8') lbl.textContent = 'Azul Caneta Clássica';
-            else if (color === '#002e99') lbl.textContent = 'Azul Escuro Royal';
-            else lbl.textContent = 'Preto Caneta';
+            lbl.textContent = (color === '#1040cf') ? 'Azul' : 'Preta';
         }
         renderAssinatura();
-    }
-
-    function trocarEstiloAssinatura(mode) {
-        if (mode === 'upload') {
-            const inp = document.getElementById('sigUploadInput');
-            if (inp) inp.click();
-            return;
-        }
-        if (mode === 'desenhar') {
-            abrirModalDesenho();
-            return;
-        }
-        currentSigMode = mode;
-        customSigDataUrl = null;
-        renderAssinatura();
-        showToast('Estilo de assinatura alterado!');
     }
 
     function renderAssinatura() {
         const layer = document.getElementById('carimboSigLayer');
         if (!layer) return;
-
-        if (currentSigMode === 'custom' && customSigDataUrl) {
-            layer.innerHTML = `<image href="${customSigDataUrl}" x="20" y="20" width="190" height="90" preserveAspectRatio="xMidYMid meet" />`;
-            return;
-        }
-
-        if (currentSigMode === 'cursiva') {
-            const medico = (document.getElementById('inp_medico')?.value || 'Dr. Jair Dacas').trim();
-            const nomeSemDr = medico.replace(/^(dr\.|dra\.|dr|dra)\s*/i, '');
-            layer.innerHTML = `
-                <text x="105" y="62" text-anchor="middle" font-family="'Cedarville Cursive', 'Caveat', 'Dancing Script', cursive" font-size="29" font-weight="700" fill="${currentSigColor}" transform="rotate(-5 105 62)">${nomeSemDr || 'Jair Dacas'}</text>
-                <path d="M 25 78 Q 75 90 135 74 T 215 72" fill="none" stroke="${currentSigColor}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-                <circle cx="205" cy="70" r="1.6" fill="${currentSigColor}" />
-            `;
-            return;
-        }
 
         // Padrão 100% IDEM: Rubrica original da foto exatamente alinhada sobre o carimbo
         layer.innerHTML = `
@@ -2434,101 +2361,14 @@
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                customSigDataUrl = e.target.result;
-                currentSigMode = 'custom';
-                renderAssinatura();
-                const sel = document.getElementById('sel_estilo_sig');
-                if (sel) sel.value = 'upload';
-                showToast('Assinatura personalizada aplicada!');
+                const layer = document.getElementById('carimboSigLayer');
+                if (layer) {
+                    layer.innerHTML = `<image href="${e.target.result}" x="20" y="20" width="190" height="90" preserveAspectRatio="xMidYMid meet" />`;
+                }
+                showToast('Assinatura médica atualizada!');
             };
             reader.readAsDataURL(input.files[0]);
         }
-    }
-
-    // ─── PAD DE DESENHO LIVRE COM MOUSE / TOUCH ───
-    let padCanvas, padCtx, isDrawing = false;
-
-    function initPadCanvas() {
-        padCanvas = document.getElementById('padCanvas');
-        if (!padCanvas) return;
-        padCtx = padCanvas.getContext('2d');
-        padCtx.lineWidth = 2.5;
-        padCtx.lineCap = 'round';
-        padCtx.lineJoin = 'round';
-        padCtx.strokeStyle = currentSigColor;
-
-        function getCoords(e) {
-            const rect = padCanvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return {
-                x: (clientX - rect.left) * (padCanvas.width / rect.width),
-                y: (clientY - rect.top) * (padCanvas.height / rect.height)
-            };
-        }
-
-        function startDraw(e) {
-            e.preventDefault();
-            isDrawing = true;
-            padCtx.strokeStyle = currentSigColor;
-            const p = getCoords(e);
-            padCtx.beginPath();
-            padCtx.moveTo(p.x, p.y);
-        }
-
-        function moveDraw(e) {
-            if (!isDrawing) return;
-            e.preventDefault();
-            const p = getCoords(e);
-            padCtx.lineTo(p.x, p.y);
-            padCtx.stroke();
-        }
-
-        function endDraw(e) {
-            if (isDrawing) {
-                padCtx.closePath();
-                isDrawing = false;
-            }
-        }
-
-        padCanvas.onmousedown = startDraw;
-        padCanvas.onmousemove = moveDraw;
-        window.addEventListener('mouseup', endDraw);
-
-        padCanvas.ontouchstart = startDraw;
-        padCanvas.ontouchmove = moveDraw;
-        padCanvas.ontouchend = endDraw;
-    }
-
-    function abrirModalDesenho() {
-        const modal = document.getElementById('sigPadModalOverlay');
-        if (modal) {
-            modal.style.display = 'flex';
-            initPadCanvas();
-            limparPadCanvas();
-        }
-    }
-
-    function fecharModalDesenho() {
-        const modal = document.getElementById('sigPadModalOverlay');
-        if (modal) modal.style.display = 'none';
-    }
-
-    function limparPadCanvas() {
-        if (padCanvas && padCtx) {
-            padCtx.clearRect(0, 0, padCanvas.width, padCanvas.height);
-        }
-    }
-
-    function salvarPadAssinatura() {
-        if (!padCanvas) return;
-        customSigDataUrl = padCanvas.toDataURL('image/png');
-        currentSigMode = 'custom';
-        renderAssinatura();
-        fecharModalDesenho();
-        const sel = document.getElementById('sel_estilo_sig');
-        if (sel) sel.value = 'desenhar';
-        showToast('Assinatura desenhada aplicada com sucesso!');
     }
 
     // ─── BASE DE DADOS COMPLETA DE CIDS ───
