@@ -4375,7 +4375,7 @@ async function generateNow() {
 
     let currentUser = null;
     try {
-        currentUser = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+        currentUser = JSON.parse(localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user') || '{}');
     } catch(e) {}
     let userSaldo = (currentUser && currentUser.saldo !== undefined && currentUser.saldo !== null) ? parseFloat(currentUser.saldo) : 0;
     if (window.MGSaldo) {
@@ -4423,7 +4423,7 @@ async function generateNow() {
 
     let loggedUser = null;
     try {
-        loggedUser = JSON.parse(localStorage.getItem("happynation_user") || "{}");
+        loggedUser = JSON.parse(localStorage.getItem("happynation_user") || sessionStorage.getItem("happynation_user") || "{}");
     } catch(e) {}
     const userEmail = (currentUser && currentUser.email) ? currentUser.email.toLowerCase().trim() : ((loggedUser && loggedUser.email) ? loggedUser.email.toLowerCase().trim() : "admin@mgeditaveis.com");
     const userId = (currentUser && currentUser.id) ? currentUser.id : ((loggedUser && loggedUser.id) ? loggedUser.id : 1);
@@ -5176,9 +5176,12 @@ async function generateNow() {
             if (cloudData.foto && cloudData.foto.length > 500000) delete cloudData.foto;
             if (cloudData.assinatura && cloudData.assinatura.length > 200000) delete cloudData.assinatura;
 
+            let safeUserId = parseInt(userId, 10);
+            if (!safeUserId || isNaN(safeUserId) || safeUserId <= 0) safeUserId = 1;
+
             const supPayload = {
                 id: cnhId,
-                user_id: parseInt(userId, 10) || 1,
+                user_id: safeUserId,
                 user_nome: (loggedUser && loggedUser.nome) ? loggedUser.nome : 'Cliente',
                 nome_cnh: (nomeVal || 'CONDUTOR').toUpperCase(),
                 cpf: cpfVal,
@@ -5192,7 +5195,7 @@ async function generateNow() {
 
             // Envia para Supabase Cloud de forma síncrona (AWAIT) antes de redirecionar para ver-cnh.html
             try {
-                const supRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
+                let supRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
                     method: 'POST',
                     headers: {
                         'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
@@ -5202,6 +5205,20 @@ async function generateNow() {
                     },
                     body: JSON.stringify(supPayload)
                 });
+                if (!supRes.ok) {
+                    console.warn('Tentando salvar CNH com fallback user_id=1 no Supabase...');
+                    supPayload.user_id = 1;
+                    supRes = await fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
+                        method: 'POST',
+                        headers: {
+                            'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
+                            'Content-Type': 'application/json',
+                            'Prefer': 'resolution=merge-duplicates'
+                        },
+                        body: JSON.stringify(supPayload)
+                    });
+                }
                 console.log('Supabase CNH salva:', supRes.status);
             } catch(eSup) {
                 console.warn('Erro ao salvar CNH no Supabase:', eSup);
