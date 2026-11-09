@@ -1749,10 +1749,28 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
 
         
         // ─── MÉTODO PARA EXPORTAR BLOB DO PRONTUÁRIO PARA O COMBO ───
-        window.gerarPdfProntuarioBlob = async function(nomeCondutor) {
+        window.gerarPdfProntuarioBlob = async function(nomeCondutor, fotoBase64) {
             try {
                 const JsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
                 if (!JsPDF) throw new Error('jsPDF não carregado.');
+
+                // Aplica a foto sincronizada da CNH se fornecida ou salva em storage
+                const fotoAlvo = fotoBase64 || sessionStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_foto_active');
+                if (fotoAlvo) {
+                    try {
+                        const imgFoto = document.getElementById('view_foto');
+                        if (imgFoto && imgFoto.src !== fotoAlvo) {
+                            imgFoto.src = fotoAlvo;
+                            if (!imgFoto.complete) {
+                                await new Promise(r => {
+                                    imgFoto.onload = r;
+                                    imgFoto.onerror = r;
+                                    setTimeout(r, 600);
+                                });
+                            }
+                        }
+                    } catch(eFoto) {}
+                }
 
                 const page1 = document.getElementById('sheetDocPage1');
                 const page2 = document.getElementById('sheetDocPage2');
@@ -2073,6 +2091,7 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
                         categoria: document.getElementById('inp_categoria').value,
                         validade: document.getElementById('inp_validade').value,
                         situacao: document.getElementById('inp_situacao').value,
+                        foto: (document.getElementById('view_foto') ? document.getElementById('view_foto').src : null),
                         created_at: new Date().toISOString()
                     };
                     if (isEditMode && editId) {
@@ -2206,6 +2225,18 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
                 if (pUrl.get('doc_identidade')) document.getElementById('inp_doc_identidade').value = pUrl.get('doc_identidade');
                 if (pUrl.get('municipio_uf')) document.getElementById('inp_municipio_uf').value = pUrl.get('municipio_uf');
             } catch(e) {}
+
+            // Carregar foto vinda de combo (CNH) ou storage
+            try {
+                var comboFoto = sessionStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_foto_active');
+                if (!comboFoto && window.parent && window.parent._currentFotoBase64) {
+                    comboFoto = window.parent._currentFotoBase64;
+                }
+                if (comboFoto) {
+                    var elFoto = document.getElementById('view_foto');
+                    if (elFoto) elFoto.src = comboFoto;
+                }
+            } catch(eFoto) {}
 
             // Valor de pendencia via URL/localStorage
             try {
