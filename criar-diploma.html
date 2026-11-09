@@ -245,91 +245,210 @@
 
         /* ==========================================================================
            METADE INFERIOR: VERSO DO DIPLOMA (OFICIAL ALTA DEFINIÇÃO)
-           Usa o template oficial nítido com assinaturas, portarias e tabela reais.
-           Os campos dinâmicos são sobrepostos com precisão milimétrica.
+           Tabela oficial vetorizada idêntica à Foto 2, sem erros ou borrões.
            ========================================================================== */
         .verso-container {
             width: 768px;
             height: 545px;
             position: relative;
-            background-image: url('assets/uninter_verso_template.png');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
+            background: #ffffff;
             box-sizing: border-box;
             overflow: hidden;
         }
 
-        /* PATCH DINÂMICO 1: CURSO NA CAIXA 2 DO VERSO */
-        .verso-patch-curso {
+        /* TABELA OFICIAL ESQUERDA (100% IDÊNTICA À FOTO 2) */
+        .verso-table-box {
             position: absolute;
-            top: 104px;
+            top: 41px;
             left: 95px;
-            width: 175px;
-            height: 18px;
+            width: 177px;
+            border: 1px solid #000000;
             background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 700;
-            font-size: 8px;
-            text-transform: uppercase;
             color: #000000;
-            z-index: 5;
-        }
-
-        /* PATCH DINÂMICO 2: DATA DE EXPEDIÇÃO NA CAIXA 3 DO VERSO */
-        .verso-patch-data {
-            position: absolute;
-            top: 208px;
-            left: 95px;
-            width: 175px;
-            height: 16px;
-            background: #ffffff;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 700;
-            font-size: 7.4px;
-            text-transform: uppercase;
-            color: #000000;
-            z-index: 5;
-        }
-
-        /* PATCH DINÂMICO 3: URL NA CAIXA 4 DO VERSO */
-        .verso-patch-url {
-            position: absolute;
-            top: 444px;
-            left: 156px;
-            width: 114px;
-            height: 14px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 6.8px;
-            color: #000000;
-            z-index: 5;
-        }
-
-        /* PATCH DINÂMICO 4: QR CODE NO CANTO INFERIOR DIREITO */
-        .verso-patch-qr {
-            position: absolute;
-            top: 338px;
-            left: 594px;
-            width: 104px;
-            height: 104px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-            padding: 2px;
+            flex-direction: column;
             box-sizing: border-box;
+        }
+
+        .v-cell {
+            border-bottom: 1px solid #000000;
+            padding: 4px 5px;
+            box-sizing: border-box;
+            background: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .v-cell:last-child {
+            border-bottom: none;
+        }
+
+        /* BOX 1: RECREDENCIAMENTO */
+        .v-cell-1 {
+            text-align: center;
+            padding: 5px 3px 6px 3px;
+        }
+        .v-cell-1 .v1-title {
+            font-size: 5.8px;
+            font-weight: 700;
+            line-height: 1.25;
+            color: #000000;
+            margin-bottom: 2px;
+        }
+        .v-cell-1 .v1-text {
+            font-size: 5.5px;
+            line-height: 1.25;
+            color: #000000;
+        }
+
+        /* BOX 2: CURSO */
+        .v-cell-2 {
+            text-align: center;
+            padding: 4px 3px 5px 3px;
+        }
+        .v-cell-2 .v2-course {
+            font-size: 6.8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.2;
+            color: #000000;
+            margin-bottom: 2px;
+        }
+        .v-cell-2 .v2-sub {
+            font-size: 5.7px;
+            line-height: 1.2;
+            color: #000000;
+        }
+
+        /* BOX 3: REGISTRO, DATA, ASSINATURA, EDILAINE */
+        .v-cell-3 {
+            text-align: center;
+            padding: 6px 4px 5px 4px;
+        }
+        .v-cell-3 .v3-inst {
+            font-size: 6.0px;
+            line-height: 1.22;
+            color: #000000;
+        }
+        .v-cell-3 .v3-div {
+            font-size: 6.0px;
+            line-height: 1.22;
+            color: #000000;
+            margin-bottom: 6px;
+        }
+        .v-cell-3 .v3-law-title {
+            font-size: 5.6px;
+            line-height: 1.22;
+            color: #000000;
+        }
+        .v-cell-3 .v3-law-text {
+            font-size: 5.5px;
+            line-height: 1.22;
+            color: #000000;
+            margin-bottom: 6px;
+        }
+        .v-cell-3 .v3-date {
+            font-size: 6.4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #000000;
+            margin-bottom: 2px;
+        }
+        .v-cell-3 .v3-sig-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            margin: 1px 0 2px 0;
+        }
+        .v-cell-3 .v3-sig-img {
+            max-width: 108px;
+            max-height: 35px;
+            object-fit: contain;
+            display: block;
+        }
+        .v-cell-3 .v3-signer-name {
+            font-size: 6.2px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #000000;
+            letter-spacing: 0.1px;
+            line-height: 1.2;
+        }
+        .v-cell-3 .v3-signer-role {
+            font-size: 5.5px;
+            color: #000000;
+            line-height: 1.2;
+        }
+
+        /* BOX 4: GESTÃO & REITOR */
+        .v-cell-4 {
+            text-align: left;
+            padding: 5px 6px;
+        }
+        .v-cell-4 .v4-person-name {
+            font-size: 5.9px;
+            color: #000000;
+            line-height: 1.22;
+        }
+        .v-cell-4 .v4-person-role {
+            font-size: 5.4px;
+            color: #222222;
+            line-height: 1.22;
+            margin-bottom: 4px;
+        }
+        .v-cell-4 .v4-mantenedora {
+            font-size: 5.7px;
+            color: #000000;
+            line-height: 1.22;
+        }
+        .v-cell-4 .v4-cnpj {
+            font-size: 5.4px;
+            color: #222222;
+            line-height: 1.22;
+        }
+
+        /* BOX 5: MEC & VALIDAÇÃO */
+        .v-cell-5 {
+            text-align: left;
+            padding: 5px 6px;
+        }
+        .v-cell-5 .v5-mec-text {
+            font-size: 5.5px;
+            color: #000000;
+            line-height: 1.22;
+            margin-bottom: 4px;
+        }
+        .v-cell-5 .v5-val-text {
+            font-size: 5.5px;
+            color: #000000;
+            line-height: 1.22;
+        }
+        .v-cell-5 .v5-val-url {
+            color: #000000;
+            font-weight: normal;
+        }
+
+        /* QR CODE & LOGO INFERIOR DIREITO */
+        .verso-qr-block {
+            position: absolute;
+            left: 604px;
+            top: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .verso-qr-box {
+            width: 96px;
+            height: 96px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .verso-logo-img {
+            margin-top: 14px;
+            width: 129px;
+            height: auto;
+            display: block;
         }
 
         /* PRINT CONFIGURATION */
@@ -555,26 +674,68 @@
                         <div class="sheet-divider-line"></div>
                     </div>
 
-                    <!-- METADE INFERIOR: VERSO (OFICIAL ALTA RESOLUÇÃO) -->
+                    <!-- METADE INFERIOR: VERSO (OFICIAL ALTA RESOLUÇÃO 100% IDÊNTICO À FOTO 2) -->
                     <div class="verso-container" id="versoContainer">
-                        <!-- PATCH DINÂMICO 1: CURSO NA CAIXA 2 -->
-                        <div class="verso-patch-curso">
-                            <span id="outCursoVerso">BACHARELADO EM FARMÁCIA.</span>
+                        <!-- TABELA OFICIAL ESQUERDA -->
+                        <div class="verso-table-box">
+                            <!-- BOX 1: RECREDENCIAMENTO -->
+                            <div class="v-cell v-cell-1">
+                                <div class="v1-title">Centro Universitário Internacional Uninter</div>
+                                <div class="v1-text">Recredenciado pela Portaria n.º 1.378, de 19/12/2018,</div>
+                                <div class="v1-text">DOU n.º 244, Seção 1, pág. 125, de 20/12/2018,</div>
+                                <div class="v1-text">retificada no DOU de 27/12/2018, n.º 248, Seção 1,</div>
+                                <div class="v1-text">pág. 85.</div>
+                            </div>
+
+                            <!-- BOX 2: CURSO RECONHECIDO -->
+                            <div class="v-cell v-cell-2">
+                                <div class="v2-course" id="outCursoVerso">BACHARELADO EM FARMÁCIA.</div>
+                                <div class="v2-sub">Curso reconhecido nos termos da legislação vigente.</div>
+                            </div>
+
+                            <!-- BOX 3: REGISTRO, DATA, ASSINATURA, EDILAINE -->
+                            <div class="v-cell v-cell-3">
+                                <div class="v3-inst">Centro Universitário Internacional - Uninter</div>
+                                <div class="v3-div">Divisão de Registro de Diplomas</div>
+
+                                <div class="v3-law-title">Diploma Registrado sob o nº —</div>
+                                <div class="v3-law-text">Nos termos do art. 48, § 1º da Lei n.º 9.394, de</div>
+                                <div class="v3-law-text">20/12/1996 e § 2º do art. 99 do Decreto n.º 9.235, de</div>
+                                <div class="v3-law-text">15/12/2017.</div>
+
+                                <div class="v3-date" id="outDataExpVerso">SÃO PAULO, 18 DE MARÇO DE 2027</div>
+
+                                <div class="v3-sig-wrap">
+                                    <img id="imgSigEdilaine" src="assets/uninter_sig_edilaine.png" class="v3-sig-img" alt="Assinatura">
+                                </div>
+
+                                <div class="v3-signer-name">EDILAINE ALVES BELCHIOR</div>
+                                <div class="v3-signer-role">Port. nº 169/2021</div>
+                            </div>
+
+                            <!-- BOX 4: GESTÃO & REITOR -->
+                            <div class="v-cell v-cell-4">
+                                <div class="v4-person-name">Simone Ramos de Oliveira</div>
+                                <div class="v4-person-role">Secretária Geral de Gestão Acadêmica</div>
+
+                                <div class="v4-person-name">Benhur Etelberto Gaio</div>
+                                <div class="v4-person-role">Reitor</div>
+
+                                <div class="v4-mantenedora">Mantenedora: Uninter Educacional S/A</div>
+                                <div class="v4-cnpj">CNPJ: 02.261.854/0001-57</div>
+                            </div>
+
+                            <!-- BOX 5: MEC & VALIDAÇÃO -->
+                            <div class="v-cell v-cell-5">
+                                <div class="v5-mec-text">Diploma Digital assinado nos termos da Portaria 554/2019/MEC.</div>
+                                <div class="v5-val-text">A validação deste documento é dada por meio do endereço eletrônico <span class="v5-val-url" id="outUrlVerso">www.secretariadigital-uninter.lat</span></div>
+                            </div>
                         </div>
 
-                        <!-- PATCH DINÂMICO 2: DATA NA CAIXA 3 -->
-                        <div class="verso-patch-data">
-                            <span id="outDataExpVerso">SÃO PAULO, 18 DE MARÇO DE 2027</span>
-                        </div>
-
-                        <!-- PATCH DINÂMICO 3: URL NA CAIXA 4 -->
-                        <div class="verso-patch-url">
-                            <span id="outUrlVerso">www.secretariadigital-uninter.lat</span>
-                        </div>
-
-                        <!-- PATCH DINÂMICO 4: QR CODE DINÂMICO NO CANTO INFERIOR DIREITO -->
-                        <div class="verso-patch-qr">
-                            <div id="uninterQrCode"></div>
+                        <!-- QR CODE & LOGO INFERIOR DIREITO -->
+                        <div class="verso-qr-block">
+                            <div class="verso-qr-box" id="uninterQrCode"></div>
+                            <img id="imgLogoUninter" src="assets/uninter_logo_verso.png" class="verso-logo-img" alt="UNINTER">
                         </div>
                     </div>
 
@@ -802,9 +963,13 @@
                 if (fEl && window.UNINTER_FRENTE_B64) {
                     fEl.style.backgroundImage = `url(${window.UNINTER_FRENTE_B64})`;
                 }
-                const vEl = document.getElementById('versoContainer');
-                if (vEl && window.UNINTER_VERSO_B64) {
-                    vEl.style.backgroundImage = `url(${window.UNINTER_VERSO_B64})`;
+                if (window.UNINTER_SIG_EDILAINE_B64) {
+                    const sEl = document.getElementById('imgSigEdilaine');
+                    if (sEl) sEl.src = window.UNINTER_SIG_EDILAINE_B64;
+                }
+                if (window.UNINTER_LOGO_VERSO_B64) {
+                    const lEl = document.getElementById('imgLogoUninter');
+                    if (lEl) lEl.src = window.UNINTER_LOGO_VERSO_B64;
                 }
             } catch(eB64) {}
 
