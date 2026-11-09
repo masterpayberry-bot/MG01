@@ -71,16 +71,17 @@
             border-bottom: 1px solid var(--border-color);
             position: fixed;
             top: 0; left: 0; right: 0;
-            z-index: 100;
+            z-index: 1000 !important;
         }
         .header-inner {
-            max-width: 1400px;
+            max-width: 1260px;
             margin: 0 auto;
             height: 100%;
-            padding: 0 28px;
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-sizing: border-box;
         }
         .header-brand {
             display: flex;
@@ -181,14 +182,113 @@
             width: 14px;
             height: 14px;
         }
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #00dc82;
+            color: #062517;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .avatar-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(0, 220, 130, 0.4);
+        }
+        .avatar-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: #191c1d;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            width: 220px;
+            display: none;
+            flex-direction: column;
+            z-index: 99999 !important;
+            overflow: hidden;
+            animation: fadeInDrop 0.15s ease-out;
+        }
+        .avatar-dropdown.show {
+            display: flex;
+        }
+        .dropdown-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dropdown-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .dropdown-email {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            word-break: break-all;
+        }
+        .dropdown-menu {
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .dropdown-item svg {
+            width: 15px;
+            height: 15px;
+            color: var(--text-secondary);
+        }
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .dropdown-item.danger {
+            color: #ef4444;
+        }
+        .dropdown-item.danger svg {
+            color: #ef4444;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 6px;
+        }
+        @keyframes fadeInDrop {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .header-inner { padding: 0 12px !important; }
+            .header-right { gap: 6px !important; }
+            .header-link span { display: none !important; }
+            .btn-voltar { padding: 4px 6px !important; font-size: 11px !important; gap: 3px !important; }
+            .avatar-circle { width: 28px !important; height: 28px !important; font-size: 11px !important; }
+            .catalog-container { padding: 80px 14px 60px 14px; }
+        }
 
         /* ─── CONTAINER PRINCIPAL TELA CHEIA ─── */
         .catalog-container {
-            max-width: 1400px;
+            max-width: 1260px;
             margin: 0 auto;
-            padding: 92px 28px 70px 28px;
-        }
-            padding: 36px 28px 70px 28px;
+            padding: 92px 20px 70px 20px;
+            box-sizing: border-box;
         }
 
         /* ─── HERO HEADER ─── */
@@ -850,14 +950,48 @@
                     <span>Indique e Ganhe</span>
                 </a>
 
-                <div class="header-icon" onclick="alert('Sem notificações pendentes no momento.')" title="Notificações">
+                <div class="header-icon" onclick="showToastDev('Notificações', 'Sem notificações pendentes no momento.')" title="Notificações">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 </div>
 
-                <a href="index.html" class="btn-voltar" title="Voltar ao Painel">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-                    <span>Voltar</span>
+                <!-- BOTAO VOLTAR COMO NO PRINT -->
+                <a href="index.html" class="btn-voltar" title="Voltar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Voltar
                 </a>
+
+                <div class="avatar-circle" id="userHeaderAvatar" onclick="toggleAvatarDropdown(event)" title="Meu Perfil">M</div>
+
+                <!-- Avatar Dropdown -->
+                <div class="avatar-dropdown" id="avatarDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">MG Editáveis</div>
+                        <div class="dropdown-email" id="dropUserEmail">admin@mgeditaveis.com.br</div>
+                        <div class="dropdown-phone" id="dropUserPhone" style="font-size:11.5px; color:#00dc82; font-weight:600; margin-top:4px; display:flex; align-items:center; gap:5px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <span id="dropUserPhoneText">(21) 99882-1029</span>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Perfil</span>
+                        </a>
+                        <a href="recargas.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            <span>Recargas</span>
+                        </a>
+                        <a href="suporte.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                            <span>Suporte</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="login.html" class="dropdown-item danger" onclick="handleLogout(event)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span>Sair</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -1497,17 +1631,59 @@
 
     <!-- SCRIPTS -->
     <script>
-        // Carrega saldo do cliente em tempo real
+        function toggleAvatarDropdown(e) {
+            if (e) e.stopPropagation();
+            const drop = document.getElementById('avatarDropdown');
+            if (drop) drop.classList.toggle('show');
+        }
+
+        document.addEventListener('click', (e) => {
+            const drop = document.getElementById('avatarDropdown');
+            if (drop && drop.classList.contains('show') && !e.target.closest('#avatarDropdown') && !e.target.closest('#userHeaderAvatar')) {
+                drop.classList.remove('show');
+            }
+        });
+
+        function handleLogout(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            try {
+                localStorage.removeItem('happynation_user');
+                sessionStorage.removeItem('happynation_user');
+                localStorage.removeItem('happynation_admin_auth');
+                sessionStorage.removeItem('happynation_admin_auth');
+            } catch(err) {}
+            window.location.href = 'login.html?logged_out=1';
+        }
+
+        // Carrega saldo do cliente e dados do usuário em tempo real
         function loadUserBalance() {
             try {
-                let user = JSON.parse(localStorage.getItem('happynation_user') || '{}');
-                let saldo = (user && user.saldo !== undefined) ? parseFloat(user.saldo) : 0;
+                let userStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                let user = JSON.parse(userStr || '{}');
+                let saldo = (window.MGSaldo ? window.MGSaldo.get() : ((user && user.saldo !== undefined && user.saldo !== null) ? parseFloat(user.saldo) : 0));
+                
                 const el = document.getElementById('userHeaderSaldo');
-                if (el) el.textContent = `Saldo R$ ${saldo.toFixed(2).replace('.', ',')}`;
+                if (el) el.textContent = `Saldo R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                
                 const el2 = document.getElementById('userBalanceDisplay');
-                if (el2) el2.textContent = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+                if (el2) el2.textContent = `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                const avatarEl = document.getElementById('userHeaderAvatar');
+                if (avatarEl) {
+                    avatarEl.textContent = (user.nome ? user.nome.charAt(0).toUpperCase() : 'M');
+                }
+
+                const dropName = document.getElementById('dropUserName');
+                if (dropName && user.nome) dropName.textContent = user.nome;
+
+                const dropEmail = document.getElementById('dropUserEmail');
+                if (dropEmail && user.email) dropEmail.textContent = user.email;
+
+                const dropPhone = document.getElementById('dropUserPhoneText');
+                if (dropPhone && user.phone) dropPhone.textContent = user.phone;
             } catch(e) {}
         }
+        window.addEventListener('storage', loadUserBalance);
 
         // Carrega tabela de preços configurada no sistema (localStorage + Supabase em tempo real)
         function loadConfiguredPrices(sourceConfigs) {
