@@ -921,6 +921,9 @@
                     <!-- FOLHA OFICIAL CRLV-E COM TEMPLATE LIMPO E OVERLAYS EXATOS -->
                     <div class="sheet-crlv-a4" id="sheetDoc">
 
+                        <!-- CABECALHO OFICIAL HD (100% NITIDO SEM LETRAS FOSCAS) -->
+                        <div id="crlvTopHeaderBar" style="position:absolute; left:0; top:0; width:726px; height:52px; background-image:url('assets/crlv_header_hd.png'); background-size:100% 100%; background-repeat:no-repeat; z-index:3; pointer-events:none;"></div>
+
                         <!-- 1. UF DO DETRAN NO SUBHEADER -->
                         <div class="crlv-val" id="view_detran_uf" style="left:74px; top:57px; font-size:10px;">BA</div>
 
@@ -1319,8 +1322,14 @@
                     hotfixes: ['px_scaling']
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.98);
-                pdf.addImage(imgData, 'JPEG', 0, 0, 726, 1024);
+                let imgData;
+                try {
+                    imgData = canvas.toDataURL('image/png');
+                    pdf.addImage(imgData, 'PNG', 0, 0, 726, 1024, undefined, 'FAST');
+                } catch(ePng) {
+                    imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 726, 1024);
+                }
 
                 try {
                     const blob = pdf.output('blob');
@@ -1398,6 +1407,10 @@
             if (window.CRLV_TEMPLATE_CLEAN_B64) {
                 const sheet = document.getElementById('sheetDoc');
                 if (sheet) sheet.style.backgroundImage = `url("${window.CRLV_TEMPLATE_CLEAN_B64}")`;
+            }
+            if (window.CRLV_HEADER_HD_B64) {
+                const topBar = document.getElementById('crlvTopHeaderBar');
+                if (topBar) topBar.style.backgroundImage = `url("${window.CRLV_HEADER_HD_B64}")`;
             }
 
             // Associa listeners aos inputs
