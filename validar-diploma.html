@@ -12,7 +12,8 @@
     <meta property="og:description" content="Consulta pública e validação oficial de diplomas digitais emitidos pelo Centro Universitário Internacional UNINTER em conformidade com a Portaria MEC 554/2019.">
     <meta name="theme-color" content="#1e3a8a">
 
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="assets/uninter_logo_oficial.png">
+    <link rel="apple-touch-icon" href="assets/uninter_logo_oficial.png">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap');
@@ -54,79 +55,91 @@
             align-items: center;
         }
 
-        /* TOPBAR INSTITUCIONAL */
+        /* TOPBAR INSTITUCIONAL OFICIAL */
         .topbar {
             width: 100%;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #091f42 0%, #0d3880 100%);
+            border-bottom: 2px solid #2563eb;
             color: #ffffff;
-            padding: 16px 20px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            box-shadow: 0 4px 18px rgba(9, 31, 66, 0.3);
             position: sticky;
             top: 0;
             z-index: 50;
         }
 
         .topbar-content {
-            max-width: 720px;
+            max-width: 760px;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 14px;
+            gap: 12px;
         }
 
         .brand-block {
             display: flex;
             align-items: center;
             gap: 12px;
+            min-width: 0;
         }
 
         .brand-logo-badge {
-            width: 40px;
-            height: 40px;
+            height: 42px;
+            padding: 4px 8px;
             background: #ffffff;
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
         }
 
-        .brand-logo-badge img {
-            width: 100%;
-            height: 100%;
+        .uninter-logo-img {
+            height: 32px;
+            width: auto;
+            max-width: 95px;
             object-fit: contain;
+            display: block;
+        }
+
+        .brand-text-block {
+            min-width: 0;
         }
 
         .brand-text-block h1 {
-            font-size: 15px;
+            font-size: 13.5px;
             font-weight: 800;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.1px;
             color: #ffffff;
-            line-height: 1.2;
+            line-height: 1.25;
+            white-space: normal;
         }
 
         .brand-text-block p {
-            font-size: 11.5px;
-            color: #bfdbfe;
+            font-size: 11px;
+            color: #93c5fd;
             font-weight: 500;
+            margin-top: 1px;
         }
 
         .mec-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 6px 12px;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            padding: 6px 10px;
             border-radius: 20px;
-            font-size: 11.5px;
+            font-size: 10.5px;
             font-weight: 700;
             color: #ffffff;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         /* CONTAINER PRINCIPAL */
@@ -343,7 +356,7 @@
         <div class="topbar-content">
             <div class="brand-block">
                 <div class="brand-logo-badge">
-                    <img src="logo-icone.png" alt="UNINTER Logo">
+                    <img src="assets/uninter_logo_oficial.png" alt="UNINTER" class="uninter-logo-img">
                 </div>
                 <div class="brand-text-block">
                     <h1>Centro Universitário Internacional UNINTER</h1>
@@ -351,7 +364,7 @@
                 </div>
             </div>
             <div class="mec-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 <span>MEC / Portaria 554</span>
             </div>
         </div>
