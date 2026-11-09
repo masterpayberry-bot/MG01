@@ -140,8 +140,48 @@
 
   // ─── Sincronização em Tempo Real com o Banco Supabase (REST Nativo + SDK) ───
   let isFetching = false;
+  let lastLocalUpdate = 0;
+
+  // Persiste a alteração de saldo diretamente na nuvem (Supabase Cloud)
+  async function persistRemote(val) {
+    lastLocalUpdate = Date.now();
+    try {
+      const user = safeJSON(USER_KEY, {});
+      if (!user || (!user.id && !user.email)) return;
+      if (user.role === 'admin' && String(user.email).toUpperCase() === 'MG' && !user.id) return;
+
+      const cleanEmail = (user.email || '').toLowerCase().trim();
+      let patchUrl = '';
+
+      if (user.id) {
+        patchUrl = `${SUPABASE_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(user.id)}`;
+      } else if (cleanEmail) {
+        patchUrl = `${SUPABASE_URL}/rest/v1/usuarios?email=ilike.${encodeURIComponent(cleanEmail)}`;
+      } else {
+        return;
+      }
+
+      await fetch(patchUrl, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ saldo: val })
+      });
+      console.log('[SaldoSync] Saldo atualizado com sucesso no Supabase:', val);
+    } catch(err) {
+      console.warn('[SaldoSync] Erro ao persistir saldo remoto no Supabase:', err);
+    }
+  }
+
   async function fetchSaldoFromSupabase() {
     if (isFetching) return;
+    // Se houve desconto ou atualização local nos últimos 6 segundos, aguarda para não reverter o saldo
+    if (Date.now() - lastLocalUpdate < 6000) return;
+
     try {
       const user = safeJSON(USER_KEY, {});
       if (!user || (!user.id && !user.email)) return;
@@ -179,7 +219,7 @@
           const row = rows[0];
           if (row.saldo !== undefined && row.saldo !== null) {
             const remoteSaldo = parseFloat(row.saldo);
-            if (!isNaN(remoteSaldo)) {
+            if (!isNaN(remoteSaldo) && (Date.now() - lastLocalUpdate >= 6000)) {
               persistAll(remoteSaldo);
             }
           }
@@ -206,13 +246,17 @@
     },
     set: function (val) {
       const num = Math.max(0, parseFloat(val) || 0);
+      lastLocalUpdate = Date.now();
       persistAll(num);
+      persistRemote(num);
       return num;
     },
     update: function (delta) {
       const current = getSaldoNumber();
       const novo = Math.max(0, current + (parseFloat(delta) || 0));
+      lastLocalUpdate = Date.now();
       persistAll(novo);
+      persistRemote(novo);
       return novo;
     },
     format: function (val) {
