@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Diplomas Universitários Gerados</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="saldo-sync.js"></script>
+
+    <style>
+        :root {
+            --bg-page: #0b0d0e;
+            --bg-header: #141718;
+            --bg-card: #191c1d;
+            --bg-card-hover: #1e2223;
+            --bg-input: #121415;
+            --border-color: #242829;
+            --border-subtle: #1e2223;
+            
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: rgba(37, 99, 235, 0.12);
+            --primary-border: rgba(37, 99, 235, 0.28);
+            
+            --text-main: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            
+            --font: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+        body { background: var(--bg-page); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* HEADER */
+        .header { height: 64px; background: rgba(20,23,24,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; }
+        .header-inner { max-width: 1400px; height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .header-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+        .brand-logo { width: 32px; height: 32px; background: #00dc82; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+        .brand-icon-img { width: 20px; height: 20px; object-fit: contain; }
+        .brand-text { font-size: 16px; font-weight: 800; color: #fff; }
+
+        .header-right { display: flex; align-items: center; gap: 12px; position: relative; }
+        .saldo-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: rgba(0,220,130,0.12); border: 1px solid rgba(0,220,130,0.25); border-radius: 20px; color: #00dc82; font-size: 13px; font-weight: 700; text-decoration: none; }
+        .header-link { display: inline-flex; align-items: center; gap: 6px; color: #94a3b8; font-size: 13px; font-weight: 600; text-decoration: none; }
+        .header-link:hover { color: #fff; }
+        .header-icon { width: 34px; height: 34px; border-radius: 8px; border: 1px solid #27272a; background: rgba(255,255,255,0.03); color: #94a3b8; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-voltar { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: #94a3b8; font-size: 13px; font-weight: 600; text-decoration: none; }
+        .btn-voltar:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+        .avatar-circle { width: 34px; height: 34px; border-radius: 50%; background: #27272a; color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #3f3f46; }
+        .avatar-dropdown { position: absolute; top: calc(100% + 8px); right: 0; width: 220px; background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 8px; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
+        .avatar-dropdown.active { display: block; }
+        .dropdown-header { padding: 10px 12px; border-bottom: 1px solid #27272a; }
+        .dropdown-name { font-weight: 700; font-size: 13px; color: #fff; }
+        .dropdown-email { font-size: 11px; color: #71717a; }
+        .dropdown-item { display: flex; align-items: center; gap: 8px; padding: 9px 12px; color: #d4d4d8; text-decoration: none; font-size: 12.5px; font-weight: 500; border-radius: 6px; }
+        .dropdown-item:hover { background: #27272a; color: #fff; }
+        .dropdown-item.danger { color: #ef4444; }
+
+        /* MAIN CONTENT */
+        .page-container { max-width: 1400px; width: 100%; margin: 0 auto; padding: 24px 24px 60px 24px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+        .page-title-group h1 { font-size: 22px; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .page-title-group p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* STATS GRID */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .stat-card.action-card { background: linear-gradient(135deg, rgba(37,99,235,0.15) 0%, rgba(37,99,235,0.05) 100%); border-color: rgba(37,99,235,0.3); }
+        .stat-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 26px; font-weight: 900; color: #fff; }
+        .btn-new-doc { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #2563eb; color: #fff; padding: 11px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 700; text-decoration: none; margin-top: 6px; box-shadow: 0 4px 14px rgba(37,99,235,0.35); transition: all 0.2s; }
+        .btn-new-doc:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+        /* SEARCH BAR */
+        .toolbar-wrap { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .search-box { display: flex; align-items: center; gap: 10px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 14px; width: 360px; max-width: 100%; }
+        .search-input { background: transparent; border: none; outline: none; color: #fff; font-size: 13px; width: 100%; }
+
+        /* DATA TABLE */
+        .table-wrap { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .data-table th { padding: 14px 18px; background: #141718; font-size: 11.5px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); }
+        .data-table td { padding: 14px 18px; font-size: 13px; color: var(--text-main); border-bottom: 1px solid var(--border-subtle); vertical-align: middle; }
+        .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(37,99,235,0.12); color: #60a5fa; border: 1px solid rgba(37,99,235,0.3); }
+        .actions-cell { display: flex; align-items: center; gap: 8px; }
+        .btn-action { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .btn-action-view { background: rgba(37,99,235,0.15); color: #60a5fa; border-color: rgba(37,99,235,0.3); }
+        .btn-action-view:hover { background: #2563eb; color: #fff; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="editaveis.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                </div>
+                <span class="brand-text">MG Editáveis</span>
+            </a>
+
+            <div class="header-right">
+                <a href="recargas.html" class="saldo-pill" title="Seu Saldo Atual">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+
+                <a href="indicacoes.html" class="header-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <span>Indique e Ganhe</span>
+                </a>
+
+                <a href="editaveis.html" class="btn-voltar" title="Voltar ao Catálogo">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Catálogo
+                </a>
+
+                <div class="avatar-circle" id="userHeaderAvatar" onclick="toggleAvatarDropdown(event)" title="Meu Perfil">M</div>
+
+                <div class="avatar-dropdown" id="avatarDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">MG Editáveis</div>
+                        <div class="dropdown-email" id="dropUserEmail">admin@mgeditaveis.com.br</div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.html" class="dropdown-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Perfil</span>
+                        </a>
+                        <a href="recargas.html" class="dropdown-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            <span>Recargas</span>
+                        </a>
+                        <a href="suporte.html" class="dropdown-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <span>Suporte</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="login.html" class="dropdown-item danger" onclick="handleLogout(event)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span>Sair</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-container">
+        <div class="page-header">
+            <div class="page-title-group">
+                <h1>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.3"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    <span>Diplomas Universitários Emitidos</span>
+                </h1>
+                <p>Histórico completo de diplomas oficiais (UNINTER) gerados com validação por QR Code e assinatura digital.</p>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">Total Gerados</span>
+                <span class="stat-value" id="statTotal">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Saldo Disponível</span>
+                <span class="stat-value" id="statSaldo" style="color:#00dc82;">R$ 0,00</span>
+            </div>
+            <div class="stat-card action-card">
+                <span class="stat-label" style="color:#60a5fa;">Novo Documento</span>
+                <a href="criar-diploma.html" class="btn-new-doc">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Emitir Novo Diploma</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="toolbar-wrap">
+            <div class="search-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar por aluno, curso ou protocolo..." oninput="filterTable()">
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Protocolo</th>
+                        <th>Diplomado</th>
+                        <th>Curso</th>
+                        <th>Expedição</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="diplomasTableBody">
+                    <!-- Registros inseridos via script -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function toggleAvatarDropdown(e) {
+            e.stopPropagation();
+            const dd = document.getElementById('avatarDropdown');
+            if (dd) dd.classList.toggle('active');
+        }
+        document.addEventListener('click', () => {
+            const dd = document.getElementById('avatarDropdown');
+            if (dd) dd.classList.remove('active');
+        });
+
+        function handleLogout(e) {
+            e.preventDefault();
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        let allDiplomas = [];
+
+        function renderTable(items) {
+            const tbody = document.getElementById('diplomasTableBody');
+            if (!tbody) return;
+            if (!items || items.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                                <span style="font-size:14px; font-weight:700; color:#fff;">Nenhum diploma gerado ainda</span>
+                                <span style="font-size:12.5px;">Clique em "Emitir Novo Diploma" para criar seu primeiro documento.</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = items.map(d => `
+                <tr>
+                    <td style="font-family: var(--font-mono); font-size:12px; font-weight:700; color:#9ca3af;">${d.id || 'DIP-UNINTER'}</td>
+                    <td style="font-weight:700; color:#fff;">${d.nome || 'FERNANDO CEZAR DA SILVA'}</td>
+                    <td>${d.curso || 'BACHARELADO EM FARMÁCIA'}</td>
+                    <td>${d.dataExp || '18/03/2027'}</td>
+                    <td>
+                        <span class="status-badge">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            Oficial UNINTER
+                        </span>
+                    </td>
+                    <td style="text-align: right;">
+                        <div class="actions-cell" style="justify-content: flex-end;">
+                            <a href="criar-diploma.html" class="btn-action btn-action-view" title="Abrir e Editar">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span>Visualizar / Editar</span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterTable() {
+            const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            if (!q) {
+                renderTable(allDiplomas);
+                return;
+            }
+            const filtered = allDiplomas.filter(d => 
+                (d.nome && d.nome.toLowerCase().includes(q)) ||
+                (d.curso && d.curso.toLowerCase().includes(q)) ||
+                (d.id && d.id.toLowerCase().includes(q))
+            );
+            renderTable(filtered);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carrega histórico
+            try {
+                let history = JSON.parse(localStorage.getItem('happynation_diplomas_history') || '[]');
+                if (!history || history.length === 0) {
+                    // Adiciona registro modelo padrão para demonstração inicial
+                    history = [{
+                        id: 'DIP-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                        nome: 'FERNANDO CEZAR DA SILVA',
+                        curso: 'BACHARELADO EM FARMÁCIA',
+                        rg: 'SP- 21225232 / SSP/SP - SP',
+                        dataExp: '18 DE MARÇO DE 2027',
+                        hash: '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17',
+                        created_at: new Date().toISOString()
+                    }];
+                    localStorage.setItem('happynation_diplomas_history', JSON.stringify(history));
+                }
+                allDiplomas = history;
+                document.getElementById('statTotal').textContent = allDiplomas.length;
+                renderTable(allDiplomas);
+            } catch(e) {}
+
+            // Carrega saldo do usuário
+            try {
+                let user = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+                let saldo = (user && user.saldo !== undefined) ? parseFloat(user.saldo) : 0;
+                const saldoTxt = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+                const elHeader = document.getElementById('userHeaderSaldo');
+                if (elHeader) elHeader.textContent = `Saldo ${saldoTxt}`;
+                const elStat = document.getElementById('statSaldo');
+                if (elStat) elStat.textContent = saldoTxt;
+                if (user.name) {
+                    const elName = document.getElementById('dropUserName');
+                    if (elName) elName.textContent = user.name;
+                    const elAv = document.getElementById('userHeaderAvatar');
+                    if (elAv) elAv.textContent = user.name.charAt(0).toUpperCase();
+                }
+                if (user.email) {
+                    const elEmail = document.getElementById('dropUserEmail');
+                    if (elEmail) elEmail.textContent = user.email;
+                }
+            } catch(e) {}
+        });
+    </script>
+</body>
+</html>

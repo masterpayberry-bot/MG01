@@ -1282,14 +1282,14 @@
                 </div>
             </article>
 
-                        <!-- 5. DIPLOMA UNIVERSITÁRIO UNINTER (ACESSO ADMIN / MANUTENÇÃO) -->
-            <article class="doc-card card-crlv-em-desenvolvimento" data-category="educacao" data-name="diploma universitario uninter mec graduacao ensino superior certificado faculdade autenticidade qr code" onclick="handleDiplomaEmBreve(event)" style="--card-accent:#2563eb; --card-glow:rgba(37,99,235,0.2); --card-icon-bg:rgba(37,99,235,0.1); --card-icon-border:rgba(37,99,235,0.3); --card-pill-bg:rgba(37,99,235,0.12); --card-pill-border:rgba(37,99,235,0.3); --card-btn-bg:#2563eb; --card-btn-glow:rgba(37,99,235,0.35); --card-border-hover:rgba(37,99,235,0.4);">
+            <!-- 5. DIPLOMA UNIVERSITÁRIO UNINTER -->
+            <article class="doc-card" data-category="educacao" data-name="diploma universitario uninter mec graduacao ensino superior certificado faculdade autenticidade qr code" onclick="handleCardOptionClick(event, 'diploma.html')" title="Clique para ver os Diplomas gerados pelo cliente" style="cursor:pointer; --card-accent:#2563eb; --card-glow:rgba(37,99,235,0.25); --card-icon-bg:rgba(37,99,235,0.1); --card-icon-border:rgba(37,99,235,0.3); --card-pill-bg:rgba(37,99,235,0.12); --card-pill-border:rgba(37,99,235,0.3); --card-btn-bg:#2563eb; --card-btn-glow:rgba(37,99,235,0.35); --card-border-hover:rgba(37,99,235,0.4);">
                 <div>
                     <div class="card-top">
                         <div class="card-icon-box" style="color:#2563eb; background:rgba(37,99,235,0.1); border-color:rgba(37,99,235,0.25);">
                             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                         </div>
-                        <span class="card-badge-pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.1);">🔧 EM MANUTENÇÃO</span>
+                        <span class="card-badge-pill" style="color:#60a5fa; border-color:rgba(37,99,235,0.4); background:rgba(37,99,235,0.12);">Graduação UNINTER</span>
                     </div>
 
                     <div class="card-title-group">
@@ -1327,18 +1327,18 @@
                             <span class="price-sub">Valor Unitário</span>
                             <div class="price-main"><span class="price-currency" style="color:#2563eb;">R$</span><span id="priceDiploma">35,00</span></div>
                         </div>
-                        <div class="delivery-pill" style="color:#f59e0b; background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.25);">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                            <span>Em manutenção</span>
+                        <div class="delivery-pill" style="color:#60a5fa; background:rgba(37,99,235,0.08); border-color:rgba(37,99,235,0.2);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 20s</span>
                         </div>
                     </div>
 
                     <div class="card-actions-group">
-                        <a href="javascript:void(0)" onclick="handleDiplomaEmBreve(event)" class="btn-card-emitir" style="background:#222629; color:#8d989e; border:1px solid #333a3d; box-shadow:none; cursor:pointer;">
-                            <span>Em manutenção</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <a href="criar-diploma.html" class="btn-card-emitir" onclick="event.stopPropagation()" style="background:#2563eb; color:#fff; box-shadow:0 4px 14px -2px rgba(37,99,235,0.35);">
+                            <span>Emitir Diploma Agora</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('diploma')" title="Ver detalhes do Diploma Uninter">
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='diploma.html';" title="Ver Diplomas gerados pelo cliente">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
