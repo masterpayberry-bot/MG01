@@ -1547,82 +1547,32 @@
 <!-- PAGE CONTAINER (NO SIDEBAR - EXACTLY AS IN SCREENSHOT) -->
 <div class="page-container">
 
-    
-
-    <!-- ROW 1: 3 KPI METRIC CARDS -->
-    <div class="grid-3">
-        <!-- HOJE -->
-        <div class="card">
-            <div class="card-stat-header">
-                <div class="stat-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                </div>
-                <span class="stat-title">HOJE</span>
-            </div>
-            <div class="stat-num" id="statHojeVal">0</div>
-            <div class="stat-sub green" id="statHojeSub">CNHs geradas hoje</div>
-        </div>
-
-        <!-- ESTE MÊS -->
-        <div class="card">
-            <div class="card-stat-header">
-                <div class="stat-icon-wrap blue">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                </div>
-                <span class="stat-title">ESTE MÊS</span>
-            </div>
-            <div class="stat-num" id="statMesVal">0</div>
-            <div class="stat-sub">CNHs geradas no mês</div>
-        </div>
-
-        <!-- TOTAL GERAL -->
-        <div class="card">
-            <div class="card-stat-header">
-                <div class="stat-icon-wrap teal">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                </div>
-                <span class="stat-title">TOTAL GERAL</span>
-            </div>
-            <div class="stat-num" id="statTotalVal">0</div>
-            <div class="stat-sub">CNHs geradas no total</div>
+    <!-- PAGE HEADER ESPECÍFICO CNH -->
+    <div class="page-header" style="margin-bottom: 20px;">
+        <div class="page-title-group">
+            <h1 style="font-size: 22px; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 10px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00dc82" stroke-width="2.3"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/><circle cx="6" cy="15" r="2"/></svg>
+                <span>CNHs Digitais Emitidas</span>
+            </h1>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Histórico completo de CNHs geradas com validação por QR Code Vio e espelho oficial SENATRAN.</p>
         </div>
     </div>
 
-    <!-- ROW 2: RENOVAÇÕES + CNH FÍSICA + NOVA CNH -->
-    <div class="grid-3">
-        <!-- RENOVAÇÕES -->
-        <div class="card">
-            <div class="card-stat-header">
-                <div class="stat-icon-wrap orange">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                </div>
-                <span class="stat-title">RENOVAÇÕES</span>
-            </div>
-            <div class="stat-num" id="statRenovVal">0</div>
-            <div class="stat-sub orange">Renovações feitas hoje • R$ 20,00</div>
+    <!-- 3 CARDS KPI PADRÃO ORGANIZADO -->
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;">
+            <span class="stat-label" style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total Geradas</span>
+            <span class="stat-value" id="statTotalVal" style="font-size: 26px; font-weight: 900; color: #fff;">0</span>
         </div>
-
-        <!-- CNH FÍSICA -->
-        <div class="card-action">
-            <div class="card-action-text">
-                <div class="action-title">CNH Física</div>
-                <div class="action-sub">Solicite uma CNH física</div>
-            </div>
-            <button class="btn-green-action" onclick="showToast('CNH Física')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                Adquirir
-            </button>
+        <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;">
+            <span class="stat-label" style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Saldo Disponível</span>
+            <span class="stat-value" id="statSaldo" style="font-size: 26px; font-weight: 900; color: #00dc82;">R$ 0,00</span>
         </div>
-
-        <!-- NOVA CNH -->
-        <div class="card-action">
-            <div class="card-action-text">
-                <div class="action-title">Nova CNH</div>
-                <div class="action-sub">Crie uma nova CNH</div>
-            </div>
-            <a href="criar-cnh.html" class="btn-green-action" onclick="try{sessionStorage.removeItem('happynation_edit_cnh');localStorage.removeItem('happynation_edit_cnh');}catch(e){}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Criar CNH
+        <div class="stat-card action-card" style="background: linear-gradient(135deg, rgba(0,220,130,0.15) 0%, rgba(0,220,130,0.05) 100%); border: 1px solid rgba(0,220,130,0.3); border-radius: var(--radius-md); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;">
+            <span class="stat-label" style="font-size: 12px; font-weight: 700; color: #00dc82; text-transform: uppercase; letter-spacing: 0.5px;">Novo Documento</span>
+            <a href="criar-cnh.html" class="btn-new-doc" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #00dc82; color: #000; padding: 11px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 800; text-decoration: none; margin-top: 6px; box-shadow: 0 4px 14px rgba(0,220,130,0.35); transition: all 0.2s;" onclick="try{sessionStorage.removeItem('happynation_edit_cnh');localStorage.removeItem('happynation_edit_cnh');}catch(e){}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <span>Emitir Nova CNH</span>
             </a>
         </div>
     </div>
@@ -1800,6 +1750,7 @@ function loadLoggedUser() {
 
         const saldo = (window.MGSaldo ? window.MGSaldo.get() : ((user && user.saldo !== undefined && user.saldo !== null) ? parseFloat(user.saldo) : 0));
         const saldoHeader = document.getElementById('userHeaderSaldo');
+        const statSaldoEl = document.getElementById('statSaldo'); if (statSaldoEl) statSaldoEl.textContent = 'R$ ' + saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         if (saldoHeader) saldoHeader.textContent = `Saldo R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
         const avatarEl = document.getElementById('userHeaderAvatar');

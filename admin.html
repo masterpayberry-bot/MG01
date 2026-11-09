@@ -2846,6 +2846,42 @@
 
                     <div class="cfg-card">
                         <div class="cfg-label">
+                            <span>Valor por Diploma Universitário Uninter</span>
+                            <span style="font-size:11px; color:#34d399; font-weight:700;">Desconto Automático</span>
+                        </div>
+                        <div class="cfg-subtext">Valor debitado do saldo do cliente cada vez que um novo Diploma Universitário for emitido.</div>
+                        <div class="cfg-input-row">
+                            <input type="text" class="cfg-input" id="cfgDiplomaPriceInp" value="35.00">
+                            <button class="btn-save-cfg" onclick="saveDiplomaPrice()">Salvar Preço</button>
+                        </div>
+                    </div>
+
+                    <div class="cfg-card">
+                        <div class="cfg-label">
+                            <span>Valor por Atestado Unimed</span>
+                            <span style="font-size:11px; color:#34d399; font-weight:700;">Desconto Automático</span>
+                        </div>
+                        <div class="cfg-subtext">Valor debitado do saldo do cliente cada vez que um novo atestado Unimed for gerado.</div>
+                        <div class="cfg-input-row">
+                            <input type="text" class="cfg-input" id="cfgUnimedPriceInp" value="25.00">
+                            <button class="btn-save-cfg" onclick="saveUnimedPrice()">Salvar Preço</button>
+                        </div>
+                    </div>
+
+                    <div class="cfg-card">
+                        <div class="cfg-label">
+                            <span>Valor por DUT ATPV-e</span>
+                            <span style="font-size:11px; color:#34d399; font-weight:700;">Desconto Automático</span>
+                        </div>
+                        <div class="cfg-subtext">Valor debitado do saldo do cliente cada vez que um novo DUT ATPV-e for gerado.</div>
+                        <div class="cfg-input-row">
+                            <input type="text" class="cfg-input" id="cfgDutPriceInp" value="25.00">
+                            <button class="btn-save-cfg" onclick="saveDutPrice()">Salvar Preço</button>
+                        </div>
+                    </div>
+
+                    <div class="cfg-card">
+                        <div class="cfg-label">
                             <span>Recarga Mínima via PIX</span>
                             <span style="font-size:11px; color:#fbbf24; font-weight:700;">Segurança</span>
                         </div>
@@ -6628,6 +6664,39 @@ function updateDashboardMetrics() {
             showToast(`✅ Preço do RG salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
         }
 
+        function saveDiplomaPrice() {
+            const inp = document.getElementById('cfgDiplomaPriceInp');
+            const val = (inp ? inp.value : '35.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 35.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_diploma_price', strVal);
+            syncPriceToServer('diploma_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço do Diploma salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
+        function saveUnimedPrice() {
+            const inp = document.getElementById('cfgUnimedPriceInp');
+            const val = (inp ? inp.value : '25.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 25.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_unimed_price', strVal);
+            syncPriceToServer('unimed_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço do Atestado Unimed salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
+        function saveDutPrice() {
+            const inp = document.getElementById('cfgDutPriceInp');
+            const val = (inp ? inp.value : '25.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 25.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_dut_price', strVal);
+            syncPriceToServer('dut_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço do DUT ATPV-e salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
         function saveMinRec() {
             const raw = document.getElementById('cfgMinRecInp').value.trim().replace(',', '.');
             const num = parseFloat(raw);
@@ -6700,6 +6769,18 @@ function updateDashboardMetrics() {
             const crlvPrice = localStorage.getItem('happynation_crlv_price') || '25.00';
             const crlvInp = document.getElementById('cfgCrlvPriceInp');
             if (crlvInp) crlvInp.value = crlvPrice;
+
+            const dipPrice = localStorage.getItem('happynation_diploma_price') || '35.00';
+            const dipInp = document.getElementById('cfgDiplomaPriceInp');
+            if (dipInp) dipInp.value = dipPrice;
+
+            const unimedPrice = localStorage.getItem('happynation_unimed_price') || '25.00';
+            const unimedInp = document.getElementById('cfgUnimedPriceInp');
+            if (unimedInp) unimedInp.value = unimedPrice;
+
+            const dutPrice = localStorage.getItem('happynation_dut_price') || '25.00';
+            const dutInp = document.getElementById('cfgDutPriceInp');
+            if (dutInp) dutInp.value = dutPrice;
 
             // 2. Sincroniza em tempo real com o banco de dados Supabase
             try {

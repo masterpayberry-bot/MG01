@@ -1731,6 +1731,27 @@
                     const el = document.getElementById('priceRg');
                     if (el) el.textContent = parseFloat(rgPrice).toFixed(2).replace('.', ',');
                 }
+
+                // 7. Diploma Universitário Uninter
+                const dipPrice = (sourceConfigs && (sourceConfigs.diploma_price || sourceConfigs.diploma)) || localStorage.getItem('happynation_diploma_price');
+                if (dipPrice) {
+                    const el = document.getElementById('priceDiploma');
+                    if (el) el.textContent = parseFloat(dipPrice).toFixed(2).replace('.', ',');
+                }
+
+                // 8. Atestado Unimed
+                const uniPrice = (sourceConfigs && (sourceConfigs.unimed_price || sourceConfigs.unimed)) || localStorage.getItem('happynation_unimed_price');
+                if (uniPrice) {
+                    const el = document.getElementById('priceUnimed');
+                    if (el) el.textContent = parseFloat(uniPrice).toFixed(2).replace('.', ',');
+                }
+
+                // 9. DUT ATPV-e
+                const dutPrice = (sourceConfigs && (sourceConfigs.dut_price || sourceConfigs.dut)) || localStorage.getItem('happynation_dut_price');
+                if (dutPrice) {
+                    const el = document.getElementById('priceDut');
+                    if (el) el.textContent = parseFloat(dutPrice).toFixed(2).replace('.', ',');
+                }
             } catch(e) {
                 console.warn('[Editaveis] Erro ao carregar preços:', e);
             }
@@ -1765,6 +1786,9 @@
                         if (data.prontuario_price) localStorage.setItem('happynation_prontuario_price', data.prontuario_price);
                         if (data.crlv_price) localStorage.setItem('happynation_crlv_price', data.crlv_price);
                         if (data.rg_price) localStorage.setItem('happynation_rg_price', data.rg_price);
+                        if (data.diploma_price) localStorage.setItem('happynation_diploma_price', data.diploma_price);
+                        if (data.unimed_price) localStorage.setItem('happynation_unimed_price', data.unimed_price);
+                        if (data.dut_price) localStorage.setItem('happynation_dut_price', data.dut_price);
                         loadConfiguredPrices(data);
                     }
                 }

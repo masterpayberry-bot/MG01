@@ -73,7 +73,7 @@
     });
 
     // 2. Elementos de valor puro ("R$ ...")
-    const valueIds = ['mainSaldoValor', 'metricSaldo', 'bottomBarSaldo', 'userSaldo', 'saldoDisplay', 'saldo-display', 'dashSaldo', 'saldoValue', 'costUserSaldo'];
+    const valueIds = ['mainSaldoValor', 'metricSaldo', 'bottomBarSaldo', 'userSaldo', 'saldoDisplay', 'saldo-display', 'dashSaldo', 'saldoValue', 'costUserSaldo', 'statSaldo'];
     valueIds.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.textContent = moneyStr;
