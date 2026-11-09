@@ -27,6 +27,17 @@
       "has": [
         {
           "type": "host",
+          "value": "diploma-uninter.vercel.app"
+        }
+      ],
+      "destination": "/validar-diploma.html",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "app-cnh-brasil.vercel.app"
         }
       ],
@@ -54,6 +65,16 @@
         }
       ],
       "destination": "/validar-cnh.html"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "diploma-uninter.vercel.app"
+        }
+      ],
+      "destination": "/validar-diploma.html"
     },
     {
       "source": "/",
@@ -92,6 +113,10 @@
     {
       "source": "/verificador",
       "destination": "/validar-cnh.html"
+    },
+    {
+      "source": "/validar-diploma",
+      "destination": "/validar-diploma.html"
     }
   ]
 }

@@ -608,7 +608,7 @@
 
             <div class="form-group">
                 <label class="form-label">URL de Validação</label>
-                <input type="text" class="form-input" id="inpUrl" value="https://secretariadigital-uninter.lat" oninput="updateDiploma(); updateQr();">
+                <input type="text" class="form-input" id="inpUrl" value="https://diploma-uninter.vercel.app" oninput="updateDiploma(); updateQr();">
             </div>
 
             <!-- BOTÕES DE AÇÃO: "BAIXAR PDF" -->
@@ -665,7 +665,7 @@
                         <div class="frente-hash-overlay">
                             <div class="frente-hash-title">Código de Validação</div>
                             <div class="frente-hash-code" id="outHash">4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17</div>
-                            <div class="frente-hash-url" id="outUrl">https://secretariadigital-uninter.lat</div>
+                            <div class="frente-hash-url" id="outUrl">https://diploma-uninter.vercel.app</div>
                         </div>
                     </div>
 
@@ -728,7 +728,7 @@
                             <!-- BOX 5: MEC & VALIDAÇÃO -->
                             <div class="v-cell v-cell-5">
                                 <div class="v5-mec-text">Diploma Digital assinado nos termos da Portaria 554/2019/MEC.</div>
-                                <div class="v5-val-text">A validação deste documento é dada por meio do endereço eletrônico <span class="v5-val-url" id="outUrlVerso">www.secretariadigital-uninter.lat</span></div>
+                                <div class="v5-val-text">A validação deste documento é dada por meio do endereço eletrônico <span class="v5-val-url" id="outUrlVerso">diploma-uninter.vercel.app</span></div>
                             </div>
                         </div>
 
@@ -799,7 +799,7 @@
             const dataCol = document.getElementById('inpDataCol').value || '11 DE JANEIRO DE 2027';
             const dataExp = document.getElementById('inpDataExp').value || 'SÃO PAULO, 18 DE MARÇO DE 2027';
             const hash = document.getElementById('inpHash').value || '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17';
-            const url = document.getElementById('inpUrl').value || 'https://secretariadigital-uninter.lat';
+            const url = document.getElementById('inpUrl').value || 'https://diploma-uninter.vercel.app';
 
             // Frente
             document.getElementById('outNome').textContent = nome;
@@ -815,10 +815,6 @@
             document.getElementById('outHash').textContent = hash;
             document.getElementById('outUrl').textContent = url;
 
-            // Verso (100% Nítido e Alinhado)
-            document.getElementById('outCursoVerso').textContent = curso + '.';
-            document.getElementById('outDataExpVerso').textContent = dataExp;
-            
             // Verso
             const cursoVerso = curso.endsWith('.') ? curso : (curso + '.');
             const elCursoV = document.getElementById('outCursoVerso');
@@ -831,12 +827,43 @@
             const cleanUrl = url.replace(/^https?:\/\//i, '').replace(/\/$/, '');
             const elUrlV = document.getElementById('outUrlVerso');
             if (elUrlV) elUrlV.textContent = cleanUrl;
+
+            // Mantém QR Code atualizado com todos os dados
+            updateQr();
+        }
+
+        function getQrTargetUrl() {
+            let baseUrl = (document.getElementById('inpUrl').value || 'https://diploma-uninter.vercel.app').trim();
+            if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+                baseUrl = 'https://' + baseUrl;
+            }
+            const nome = document.getElementById('inpNome').value || 'FERNANDO CEZAR DA SILVA';
+            const curso = document.getElementById('inpCurso').value || 'BACHARELADO EM FARMÁCIA';
+            const hash = document.getElementById('inpHash').value || '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17';
+            const dataExp = document.getElementById('inpDataExp').value || 'SÃO PAULO, 18 DE MARÇO DE 2027';
+            const dataConc = document.getElementById('inpDataConc').value || '12 DE AGOSTO DE 2026';
+            const dataCol = document.getElementById('inpDataCol').value || '11 DE JANEIRO DE 2027';
+            const rg = document.getElementById('inpRg').value || 'SP- 21225232 / SSP/SP - SP';
+
+            try {
+                const u = new URL(baseUrl);
+                u.searchParams.set('codigo', hash);
+                u.searchParams.set('nome', nome);
+                u.searchParams.set('curso', curso);
+                u.searchParams.set('rg', rg);
+                u.searchParams.set('conclusao', dataConc);
+                u.searchParams.set('colacao', dataCol);
+                u.searchParams.set('expedicao', dataExp);
+                return u.toString();
+            } catch(e) {
+                return baseUrl;
+            }
         }
 
         function updateQr() {
             const qrEl = document.getElementById('uninterQrCode');
             if (!qrEl || typeof QRCode === 'undefined') return;
-            const targetUrl = document.getElementById('inpUrl').value || 'https://secretariadigital-uninter.lat';
+            const targetUrl = getQrTargetUrl();
             qrEl.innerHTML = '';
             new QRCode(qrEl, {
                 text: targetUrl,
