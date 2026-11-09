@@ -16,6 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="saldo-sync.js"></script>
+    <script src="assets/uninter_diploma_b64.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;700&display=swap');
@@ -143,15 +144,14 @@
 
         /* ==========================================================================
            A4 SHEET WRAPPER (FOLHA A4 COM FRENTE EM CIMA, ESPAÇO, E VERSO EMBAIXO)
-           Proporção A4: 210mm x 297mm (1 : 1.414).
-           No display: 792px x 1120px.
+           Proporção A4 Oficial: 210mm x 297mm (794px x 1123px a 96 DPI).
            ========================================================================== */
         .a4-sheet {
-            width: 792px;
-            height: 1120px;
+            width: 794px;
+            height: 1123px;
             background: #ffffff;
             box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-            padding: 12px 12px;
+            padding: 12px 13px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -160,7 +160,7 @@
             position: relative;
         }
 
-        /* METADE SUPERIOR: FRENTE DO DIPLOMA (1024 x 727 proporcional) */
+        /* METADE SUPERIOR: FRENTE DO DIPLOMA (1024 x 727 proporcional -> 768 x 545) */
         .frente-container {
             width: 768px;
             height: 545px;
@@ -168,6 +168,7 @@
             background-image: url('assets/uninter_frente_template.jpg');
             background-size: 100% 100%;
             background-repeat: no-repeat;
+            background-position: center;
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -175,10 +176,10 @@
         /* Bloco Branco Central que cobre o texto anterior e recebe o texto dinâmico */
         .frente-text-overlay {
             position: absolute;
-            top: 31.2%;
+            top: 31.0%;
             left: 10.4%;
             width: 79.2%;
-            height: 35.5%;
+            height: 35.8%;
             background: #ffffff;
             display: flex;
             flex-direction: column;
@@ -186,7 +187,6 @@
             justify-content: flex-start;
             text-align: center;
             font-family: 'Times New Roman', Times, serif;
-            font-weight: 700;
             color: #111;
             z-index: 10;
             line-height: 1.34;
@@ -194,25 +194,25 @@
             box-sizing: border-box;
         }
 
-        .frente-line-reitor { font-size: 10.5px; letter-spacing: 0.1px; }
-        .frente-line-curso-conc { font-size: 10.5px; letter-spacing: 0.1px; }
-        .frente-line-colacao { font-size: 10.5px; letter-spacing: 0.1px; }
-        .frente-line-titulo-de { font-size: 10.5px; letter-spacing: 0.1px; margin-top: 1px; }
-        .frente-line-degree { font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin: 2px 0 1px 0; }
-        .frente-line-name { font-size: 18.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #000; margin: 2px 0 2px 0; }
-        .frente-line-bio { font-size: 10.5px; letter-spacing: 0.1px; }
-        .frente-line-doc { font-size: 10.5px; letter-spacing: 0.1px; }
-        .frente-line-outorga { font-size: 10.5px; letter-spacing: 0.1px; margin-top: 1px; }
-        .frente-line-prerro { font-size: 10.5px; letter-spacing: 0.1px; }
+        .frente-line-reitor { font-size: 10.4px; letter-spacing: 0.1px; font-weight: 400; }
+        .frente-line-curso-conc { font-size: 10.4px; letter-spacing: 0.1px; font-weight: 400; }
+        .frente-line-colacao { font-size: 10.4px; letter-spacing: 0.1px; font-weight: 400; }
+        .frente-line-titulo-de { font-size: 10.4px; letter-spacing: 0.1px; margin-top: 1px; font-weight: 400; }
+        .frente-line-degree { font-size: 12.8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin: 2px 0 1px 0; }
+        .frente-line-name { font-size: 18.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #000; margin: 2px 0 2px 0; }
+        .frente-line-bio { font-size: 10.4px; letter-spacing: 0.1px; font-weight: 400; }
+        .frente-line-doc { font-size: 10.4px; letter-spacing: 0.1px; font-weight: 400; }
+        .frente-line-outorga { font-size: 10.4px; letter-spacing: 0.1px; margin-top: 1px; font-weight: 400; }
+        .frente-line-prerro { font-size: 10.4px; letter-spacing: 0.1px; font-weight: 400; }
         .frente-line-data-exp { font-size: 10.8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 4px; }
 
         /* Overlay do Código de Validação / Hash na Frente */
         .frente-hash-overlay {
             position: absolute;
-            top: 81.3%;
+            top: 81.0%;
             left: 51.5%;
             width: 36.8%;
-            height: 7.2%;
+            height: 7.5%;
             background: #ffffff;
             display: flex;
             flex-direction: column;
@@ -231,7 +231,7 @@
         /* DIVISOR CENTRAL ENTRE AS DUAS METADES (EXATAMENTE COMO NA FOTO 3) */
         .sheet-divider-zone {
             width: 100%;
-            height: 10px;
+            height: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -244,125 +244,92 @@
         }
 
         /* ==========================================================================
-           METADE INFERIOR: VERSO DO DIPLOMA (100% VETORIAL DE ALTA DEFINIÇÃO)
-           Sem rasterização borrada! Tabela vetorial nítida, fontes limpas e QR Code nítido.
+           METADE INFERIOR: VERSO DO DIPLOMA (OFICIAL ALTA DEFINIÇÃO)
+           Usa o template oficial nítido com assinaturas, portarias e tabela reais.
+           Os campos dinâmicos são sobrepostos com precisão milimétrica.
            ========================================================================== */
         .verso-container {
             width: 768px;
-            height: 544px;
+            height: 545px;
             position: relative;
-            background: #ffffff;
+            background-image: url('assets/uninter_verso_template.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
             box-sizing: border-box;
             overflow: hidden;
         }
 
-        /* TABELA DE REGISTRO OFICIAL À ESQUERDA (100% VETORIAL NÍTIDA) */
-        .verso-table-vector {
+        /* PATCH DINÂMICO 1: CURSO NA CAIXA 2 DO VERSO */
+        .verso-patch-curso {
             position: absolute;
-            top: 50px;
-            left: 92px;
-            width: 182px;
-            border: 1px solid #111;
+            top: 104px;
+            left: 95px;
+            width: 175px;
+            height: 18px;
             background: #ffffff;
             display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             font-family: Arial, Helvetica, sans-serif;
-            color: #000;
+            font-weight: 700;
+            font-size: 8px;
+            text-transform: uppercase;
+            color: #000000;
+            z-index: 5;
         }
 
-        /* Caixa 1: Recredenciamento */
-        .v-box-1 {
-            border-bottom: 1px solid #111;
-            padding: 5px 6px;
-            text-align: center;
-            font-size: 7.2px;
-            line-height: 1.25;
-        }
-        .v-box-1-title { font-weight: 700; font-size: 7.6px; margin-bottom: 2px; }
-
-        /* Caixa 2: Reconhecimento do Curso */
-        .v-box-2 {
-            border-bottom: 1px solid #111;
-            padding: 6px 6px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .v-box-2-course { font-weight: 700; font-size: 8.2px; text-transform: uppercase; line-height: 1.2; }
-        .v-box-2-sub { font-size: 6.8px; margin-top: 2px; }
-
-        /* Caixa 3: Divisão de Registro de Diplomas */
-        .v-box-3 {
-            border-bottom: 1px solid #111;
-            padding: 5px 6px;
-            font-size: 7.2px;
-            line-height: 1.25;
-            display: flex;
-            flex-direction: column;
-        }
-        .v-box-3-header { text-align: center; font-weight: 700; font-size: 7.5px; }
-        .v-box-3-reg { margin-top: 4px; font-size: 7px; line-height: 1.25; }
-        .v-box-3-date { text-align: center; font-weight: 700; font-size: 7.5px; margin-top: 5px; text-transform: uppercase; }
-        .v-box-3-sig {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 3px 0 2px 0;
-            text-align: center;
-        }
-        .v-box-3-sig-canvas {
-            width: 100px;
-            height: 38px;
-        }
-        .v-box-3-name { font-weight: 700; font-size: 7.6px; margin-top: 1px; text-transform: uppercase; }
-        .v-box-3-port { font-size: 7.2px; }
-
-        /* Caixa 4: Mantenedora e Termos da Portaria */
-        .v-box-4 {
-            padding: 5px 6px;
-            font-size: 7px;
-            line-height: 1.25;
-            display: flex;
-            flex-direction: column;
-        }
-        .v-box-4-sec-name { font-weight: 700; }
-        .v-box-4-sec-role { font-size: 6.8px; margin-bottom: 3px; }
-        .v-box-4-reit-name { font-weight: 700; }
-        .v-box-4-reit-role { font-size: 6.8px; margin-bottom: 4px; }
-        .v-box-4-mant { font-size: 6.8px; }
-        .v-box-4-cnpj { font-size: 6.8px; margin-bottom: 4px; }
-        .v-box-4-mec { font-weight: 700; font-size: 7px; margin-bottom: 3px; line-height: 1.2; }
-        .v-box-4-val { font-size: 6.8px; line-height: 1.2; }
-
-        /* ÁREA DO QR CODE E LOGO UNINTER NO VERSO (CANTO INFERIOR DIREITO) */
-        .verso-qr-zone {
+        /* PATCH DINÂMICO 2: DATA DE EXPEDIÇÃO NA CAIXA 3 DO VERSO */
+        .verso-patch-data {
             position: absolute;
-            bottom: 45px;
-            right: 65px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .verso-qr-holder {
-            width: 110px;
-            height: 110px;
+            top: 208px;
+            left: 95px;
+            width: 175px;
+            height: 16px;
             background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            padding: 4px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            font-size: 7.4px;
+            text-transform: uppercase;
+            color: #000000;
+            z-index: 5;
         }
-        .verso-uninter-brand {
+
+        /* PATCH DINÂMICO 3: URL NA CAIXA 4 DO VERSO */
+        .verso-patch-url {
+            position: absolute;
+            top: 444px;
+            left: 156px;
+            width: 114px;
+            height: 14px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 6.8px;
+            color: #000000;
+            z-index: 5;
+        }
+
+        /* PATCH DINÂMICO 4: QR CODE NO CANTO INFERIOR DIREITO */
+        .verso-patch-qr {
+            position: absolute;
+            top: 338px;
+            left: 594px;
+            width: 104px;
+            height: 104px;
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 5;
+            padding: 2px;
+            box-sizing: border-box;
         }
 
         /* PRINT CONFIGURATION */
@@ -588,74 +555,26 @@
                         <div class="sheet-divider-line"></div>
                     </div>
 
-                    <!-- METADE INFERIOR: VERSO (100% VETORIAL NÍTIDO) -->
+                    <!-- METADE INFERIOR: VERSO (OFICIAL ALTA RESOLUÇÃO) -->
                     <div class="verso-container" id="versoContainer">
-                        <!-- TABELA OFICIAL DE REGISTRO E PORTARIAS (VETORIAL DE ALTA DEFINIÇÃO) -->
-                        <div class="verso-table-vector">
-                            <!-- CAIXA 1: RECREDENCIAMENTO -->
-                            <div class="v-box-1">
-                                <div class="v-box-1-title">Centro Universitário Internacional Uninter</div>
-                                Recredenciado pela Portaria n.º 1.378, de 19/12/2018,<br>
-                                DOU n.º 244, Seção 1, pág. 125, de 20/12/2018,<br>
-                                retificada no DOU de 27/12/2018, n.º 248, Seção 1,<br>
-                                pág. 85.
-                            </div>
-
-                            <!-- CAIXA 2: RECONHECIMENTO DO CURSO -->
-                            <div class="v-box-2">
-                                <div class="v-box-2-course" id="outCursoVerso">BACHARELADO EM FARMÁCIA.</div>
-                                <div class="v-box-2-sub">Curso reconhecido nos termos da legislação vigente.</div>
-                            </div>
-
-                            <!-- CAIXA 3: DIVISÃO DE REGISTRO DE DIPLOMAS -->
-                            <div class="v-box-3">
-                                <div class="v-box-3-header">
-                                    Centro Universitário Internacional - Uninter<br>
-                                    Divisão de Registro de Diplomas
-                                </div>
-                                <div class="v-box-3-reg">
-                                    Diploma Registrado <span id="outRegNum">sob o nº —</span><br>
-                                    Nos termos do art. 48, § 1º da Lei n.º 9.394, de<br>
-                                    20/12/1996 e § 2º do art. 99 do Decreto n.º 9.235, de<br>
-                                    15/12/2017.
-                                </div>
-                                <div class="v-box-3-date" id="outDataExpVerso">
-                                    SÃO PAULO, 18 DE MARÇO DE 2027
-                                </div>
-                                <div class="v-box-3-sig">
-                                    <canvas id="canvasEdilaineSig" class="v-box-3-sig-canvas" width="130" height="46"></canvas>
-                                    <div class="v-box-3-name">EDILAINE ALVES BELCHIOR</div>
-                                    <div class="v-box-3-port">Port. nº 169/2021</div>
-                                </div>
-                            </div>
-
-                            <!-- CAIXA 4: MANTENEDORA E ASSINATURA DIGITAL MEC -->
-                            <div class="v-box-4">
-                                <div class="v-box-4-sec-name">Simone Ramos de Oliveira</div>
-                                <div class="v-box-4-sec-role">Secretária Geral de Gestão Acadêmica</div>
-                                <div class="v-box-4-reit-name">Benhur Etelberto Gaio</div>
-                                <div class="v-box-4-reit-role">Reitor</div>
-                                <div class="v-box-4-mant">Mantenedora: Uninter Educacional S/A</div>
-                                <div class="v-box-4-cnpj">CNPJ: 02.261.854/0001-57</div>
-                                <div class="v-box-4-mec">
-                                    Diploma Digital assinado nos termos da Portaria<br>
-                                    554/2019/MEC.
-                                </div>
-                                <div class="v-box-4-val">
-                                    A validação deste documento é dada por meio do<br>
-                                    endereço eletrônico <span id="outUrlVerso">www.secretariadigital-uninter.lat</span>
-                                </div>
-                            </div>
+                        <!-- PATCH DINÂMICO 1: CURSO NA CAIXA 2 -->
+                        <div class="verso-patch-curso">
+                            <span id="outCursoVerso">BACHARELADO EM FARMÁCIA.</span>
                         </div>
 
-                        <!-- LADO DIREITO DO VERSO: QR CODE + LOGO UNINTER ORIGINAL -->
-                        <div class="verso-qr-zone">
-                            <div class="verso-qr-holder">
-                                <div id="uninterQrCode"></div>
-                            </div>
-                            <div class="verso-uninter-brand">
-                                <canvas id="canvasUninterLogo" width="180" height="50" style="width: 135px; height: auto; display: block;"></canvas>
-                            </div>
+                        <!-- PATCH DINÂMICO 2: DATA NA CAIXA 3 -->
+                        <div class="verso-patch-data">
+                            <span id="outDataExpVerso">SÃO PAULO, 18 DE MARÇO DE 2027</span>
+                        </div>
+
+                        <!-- PATCH DINÂMICO 3: URL NA CAIXA 4 -->
+                        <div class="verso-patch-url">
+                            <span id="outUrlVerso">www.secretariadigital-uninter.lat</span>
+                        </div>
+
+                        <!-- PATCH DINÂMICO 4: QR CODE DINÂMICO NO CANTO INFERIOR DIREITO -->
+                        <div class="verso-patch-qr">
+                            <div id="uninterQrCode"></div>
                         </div>
                     </div>
 
@@ -739,9 +658,18 @@
             document.getElementById('outCursoVerso').textContent = curso + '.';
             document.getElementById('outDataExpVerso').textContent = dataExp;
             
-            // Format URL for verso
-            const cleanUrl = url.replace(/^https?:\/\//i, '');
-            document.getElementById('outUrlVerso').textContent = cleanUrl;
+            // Verso
+            const cursoVerso = curso.endsWith('.') ? curso : (curso + '.');
+            const elCursoV = document.getElementById('outCursoVerso');
+            if (elCursoV) elCursoV.textContent = cursoVerso;
+            
+            const dataExpVerso = dataExp.replace(/\.$/, '');
+            const elDataV = document.getElementById('outDataExpVerso');
+            if (elDataV) elDataV.textContent = dataExpVerso;
+            
+            const cleanUrl = url.replace(/^https?:\/\//i, '').replace(/\/$/, '');
+            const elUrlV = document.getElementById('outUrlVerso');
+            if (elUrlV) elUrlV.textContent = cleanUrl;
         }
 
         function updateQr() {
@@ -751,97 +679,82 @@
             qrEl.innerHTML = '';
             new QRCode(qrEl, {
                 text: targetUrl,
-                width: 100,
-                height: 100,
+                width: 98,
+                height: 98,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.M
             });
         }
 
-        // Carrega a assinatura autêntica de Edilaine Alves Belchior diretamente do modelo
-        function loadEdilaineSignature() {
-            const sigImg = new Image();
-            sigImg.crossOrigin = 'anonymous';
-            sigImg.onload = () => {
-                const cv = document.getElementById('canvasEdilaineSig');
-                if (!cv) return;
-                const ctx = cv.getContext('2d');
-                ctx.clearRect(0, 0, cv.width, cv.height);
-
-                const tempCv = document.createElement('canvas');
-                tempCv.width = 135;
-                tempCv.height = 58;
-                const tctx = tempCv.getContext('2d');
-                tctx.drawImage(sigImg, 170, 348, 135, 58, 0, 0, 135, 58);
-
-                const idata = tctx.getImageData(0, 0, 135, 58);
-                const d = idata.data;
-                for (let i = 0; i < d.length; i += 4) {
-                    const r = d[i], g = d[i+1], b = d[i+2];
-                    if (r > 205 && g > 205 && b > 205) {
-                        d[i+3] = 0;
-                    } else {
-                        d[i] = 15;
-                        d[i+1] = 15;
-                        d[i+2] = 15;
-                        d[i+3] = 255;
-                    }
-                }
-                tctx.putImageData(idata, 0, 0);
-                ctx.drawImage(tempCv, 0, 0, cv.width, cv.height);
-            };
-            sigImg.src = 'assets/uninter_verso_template.png';
-        }
-
-        // Carrega o logo oficial autêntico da UNINTER sob o QR Code (idêntico ao modelo original)
-        function loadUninterLogo() {
-            const cv = document.getElementById('canvasUninterLogo');
-            if (!cv) return;
-            const ctx = cv.getContext('2d');
-            const logoImg = new Image();
-            logoImg.crossOrigin = 'anonymous';
-            logoImg.onload = () => {
-                ctx.clearRect(0, 0, cv.width, cv.height);
-                ctx.drawImage(logoImg, 775, 615, 180, 50, 0, 0, cv.width, cv.height);
-            };
-            logoImg.src = 'assets/uninter_verso_template.png';
-        }
-
-        // Exportação Completa da Folha A4 em PDF e redirecionamento para tela de recentes gerados
+        // Exportação Completa da Folha A4 em PDF de Alta Fidelidade (Sem erros, idêntico aos dados preenchidos)
         async function exportA4SheetPdf() {
             const btn = document.querySelector('.btn-export');
             const originalText = btn.innerHTML;
-            btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg><span>Baixando PDF...</span>`;
+            btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg><span>Baixando PDF...</span>`;
             btn.disabled = true;
 
             const zoomWrapper = document.getElementById('zoomWrapper');
             const origTransform = zoomWrapper ? zoomWrapper.style.transform : '';
-            if (zoomWrapper) zoomWrapper.style.transform = 'none';
+            const origTransition = zoomWrapper ? zoomWrapper.style.transition : '';
+            
+            // Remove instantaneamente qualquer zoom e transição CSS para captura 1:1 pixel-perfect
+            if (zoomWrapper) {
+                zoomWrapper.style.transition = 'none';
+                zoomWrapper.style.transform = 'none';
+            }
+
+            // Aguarda 120ms para recalcular o DOM
+            await new Promise(r => setTimeout(r, 120));
 
             try {
                 const sheetEl = document.getElementById('diplomaA4Sheet');
+
+                // Renderiza folha A4 em alta resolução (escala 3x)
                 const canvas = await html2canvas(sheetEl, {
-                    scale: 3.0,
+                    scale: 3,
                     useCORS: true,
-                    backgroundColor: '#ffffff'
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    width: 794,
+                    height: 1123,
+                    windowWidth: 794,
+                    windowHeight: 1123,
+                    logging: false
                 });
-                
-                const imgData = canvas.toDataURL('image/jpeg', 0.98);
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({
+
+                const JsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+                if (!JsPDF) throw new Error('Biblioteca jsPDF não carregada.');
+
+                // A4 padrão internacional: 794 x 1123 px
+                const pdf = new JsPDF({
                     orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
+                    unit: 'px',
+                    format: [794, 1123],
+                    hotfixes: ['px_scaling']
                 });
 
-                // A4 dimensions: 210mm x 297mm
-                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
 
-                const nomeAluno = (document.getElementById('inpNome').value || 'Diploma').trim().replace(/\s+/g, '_');
-                pdf.save(`Diploma_UNINTER_A4_${nomeAluno}.pdf`);
+                const nomeAluno = (document.getElementById('inpNome').value || 'FERNANDO_CEZAR_DA_SILVA').trim().replace(/\s+/g, '_');
+                const filename = `Diploma_UNINTER_${nomeAluno}.pdf`;
 
-                // Salva no histórico de diplomas gerados
+                // Download oficial via Blob (garante compatibilidade mobile e desktop)
+                try {
+                    const blob = pdf.output('blob');
+                    const blobUrl = URL.createObjectURL(blob);
+                    const dlLink = document.createElement('a');
+                    dlLink.href = blobUrl;
+                    dlLink.download = filename;
+                    document.body.appendChild(dlLink);
+                    dlLink.click();
+                    setTimeout(() => { dlLink.remove(); URL.revokeObjectURL(blobUrl); }, 4000);
+                } catch(eBlob) {
+                    pdf.save(filename);
+                }
+
+                // Salva registro no histórico de diplomas emitidos
                 try {
                     let history = JSON.parse(localStorage.getItem('happynation_diplomas_history') || '[]');
                     const newDoc = {
@@ -863,27 +776,40 @@
                     }
                 } catch(eHist) {}
 
-                // Redireciona para a tela dos recentes gerados de Diploma
+                // Redireciona para a tela de recentes gerados
                 setTimeout(() => {
                     window.location.href = 'diploma.html';
                 }, 1500);
 
             } catch (err) {
                 console.error('Erro ao gerar PDF da folha A4:', err);
-                alert('Erro ao gerar PDF. Abrindo modo de impressão...');
-                window.print();
+                alert('Erro ao gerar PDF do Diploma: ' + (err.message || err));
             } finally {
-                if (zoomWrapper) zoomWrapper.style.transform = origTransform;
+                // Restaura o zoom de exibição na tela
+                if (zoomWrapper) {
+                    zoomWrapper.style.transition = origTransition;
+                    zoomWrapper.style.transform = origTransform;
+                }
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Inicializa backgrounds com Base64 (zero falhas de carregamento e CORS)
+            try {
+                const fEl = document.getElementById('frenteContainer');
+                if (fEl && window.UNINTER_FRENTE_B64) {
+                    fEl.style.backgroundImage = `url(${window.UNINTER_FRENTE_B64})`;
+                }
+                const vEl = document.getElementById('versoContainer');
+                if (vEl && window.UNINTER_VERSO_B64) {
+                    vEl.style.backgroundImage = `url(${window.UNINTER_VERSO_B64})`;
+                }
+            } catch(eB64) {}
+
             updateDiploma();
             updateQr();
-            loadEdilaineSignature();
-            loadUninterLogo();
             updateZoomDisplay();
 
             // Carrega saldo do usuário se logado
