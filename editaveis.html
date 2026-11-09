@@ -719,11 +719,9 @@
             </div>
 
             <div class="filter-chips">
-                <button type="button" class="filter-btn active" onclick="setFilter('todos', this)">Todos (<span id="countTotal">7</span>)</button>
+                <button type="button" class="filter-btn active" onclick="setFilter('todos', this)">Todos (<span id="countTotal">5</span>)</button>
                 <button type="button" class="filter-btn" onclick="setFilter('transito', this)">Trânsito & CNH</button>
                 <button type="button" class="filter-btn" onclick="setFilter('saude', this)">Saúde & Médicos</button>
-                <button type="button" class="filter-btn" onclick="setFilter('identidade', this)">Identificação & RG</button>
-                <button type="button" class="filter-btn" onclick="setFilter('combos', this)">Combos</button>
                 <button type="button" class="filter-btn" onclick="setFilter('puxadas', this)" style="border-color:rgba(239,68,68,0.3); color:#f87171;">● Bot Puxadas (Breve)</button>
             </div>
         </section>
@@ -983,132 +981,7 @@
                 </div>
             </article>
 
-            <!-- 5. RG DIGITAL / CIN -->
-            <article class="doc-card" data-category="identidade" data-name="rg digital cin carteira identidade nacional mrz biometria" style="--card-accent:#10b981; --card-glow:rgba(16,185,129,0.25); --card-icon-bg:rgba(16,185,129,0.1); --card-icon-border:rgba(16,185,129,0.3); --card-pill-bg:rgba(16,185,129,0.12); --card-pill-border:rgba(16,185,129,0.3); --card-btn-bg:#10b981; --card-btn-glow:rgba(16,185,129,0.35); --card-border-hover:rgba(16,185,129,0.4);">
-                <div>
-                    <div class="card-top">
-                        <div class="card-icon-box">
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="3"/><path d="M15 8h2"/><path d="M15 12h2"/><path d="M7 16h10"/></svg>
-                        </div>
-                        <span class="card-badge-pill" style="color:#10b981; border-color:rgba(16,185,129,0.35);">Nova CIN 2026</span>
-                    </div>
-
-                    <div class="card-title-group">
-                        <div class="card-category-lbl">MINISTÉRIO DA JUSTIÇA • GOV.BR</div>
-                        <h2 class="card-title">RG Digital / CIN (Identidade)</h2>
-                    </div>
-
-                    <p class="card-desc">
-                        Carteira de Identidade Nacional (CIN) com número unificado de CPF, código de segurança MRZ para leitura digital e QR Code Gov.br integrado.
-                    </p>
-
-                    <ul class="card-features">
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Padrão nacional CIN unificado com CPF</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Zona óptica MRZ legível por scanners</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Frente e verso oficiais com digital biométrica</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Exportação vetorial de altíssima nitidez</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card-footer">
-                    <div class="price-row">
-                        <div class="price-info">
-                            <span class="price-sub">Valor Unitário</span>
-                            <div class="price-main"><span class="price-currency" style="color:#10b981;">R$</span><span id="priceRg">20,00</span></div>
-                        </div>
-                        <div class="delivery-pill" style="color:#10b981; background:rgba(16,185,129,0.08); border-color:rgba(16,185,129,0.2);">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            <span>Imediato &lt; 30s</span>
-                        </div>
-                    </div>
-
-                    <div class="card-actions-group">
-                        <a href="criar-rg.html" class="btn-card-emitir" style="background:#10b981; color:#032818; box-shadow:0 4px 14px -2px rgba(16,185,129,0.35);">
-                            <span>Emitir RG Digital</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                        </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('rg')" title="Ver detalhes e amostra">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- 6. COMBO COMPLETO CONDUTOR -->
-            <article class="doc-card" data-category="combos transito" data-name="combo condutor cnh exame toxicologico prontuario pacote desconto" style="--card-accent:#f59e0b; --card-glow:rgba(245,158,11,0.28); --card-icon-bg:rgba(245,158,11,0.12); --card-icon-border:rgba(245,158,11,0.35); --card-pill-bg:rgba(245,158,11,0.14); --card-pill-border:rgba(245,158,11,0.38); --card-btn-bg:linear-gradient(135deg, #f59e0b, #d97706); --card-btn-glow:rgba(245,158,11,0.4); --card-border-hover:rgba(245,158,11,0.45); border:1px solid rgba(245,158,11,0.3);">
-                <div>
-                    <div class="card-top">
-                        <div class="card-icon-box">
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        </div>
-                        <span class="card-badge-pill" style="color:#fbbf24; border-color:rgba(251,191,36,0.4); background:rgba(251,191,36,0.15);">★ Super Pacote 3 em 1</span>
-                    </div>
-
-                    <div class="card-title-group">
-                        <div class="card-category-lbl" style="color:#fbbf24;">PACOTE ECONÔMICO COMPLETO</div>
-                        <h2 class="card-title">Combo Condutor Pro</h2>
-                    </div>
-
-                    <p class="card-desc">
-                        CNH Digital + Exame Toxicológico + Prontuário DETRAN emitidos juntos. Preencha apenas uma vez e gere todos os 3 documentos com super desconto!
-                    </p>
-
-                    <ul class="card-features">
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>3 Documentos sincronizados de uma só vez</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>CNH + Toxicológico + Prontuário inclusos</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Economia de R$ 10,00 no saldo</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Download em lote ZIP ou PDFs individuais</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card-footer">
-                    <div class="price-row">
-                        <div class="price-info">
-                            <span class="price-sub" style="color:#fbbf24;">Preço do Combo (3x)</span>
-                            <div class="price-main"><span class="price-currency" style="color:#fbbf24;">R$</span><span>50,00</span></div>
-                        </div>
-                        <div class="delivery-pill" style="color:#fbbf24; background:rgba(245,158,11,0.12); border-color:rgba(245,158,11,0.3);">
-                            <span>Economize R$ 10</span>
-                        </div>
-                    </div>
-
-                    <div class="card-actions-group">
-                        <a href="criar-cnh.html?combo=true" class="btn-card-emitir" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#351a02; box-shadow:0 4px 16px -2px rgba(245,158,11,0.45);">
-                            <span>Acessar Combo Condutor</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                        </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('combo')" title="Ver detalhes do combo">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- 7. BOT PUXADA DE DADOS COMPLETOS (EM BREVE) -->
+            <!-- 5. BOT PUXADA DE DADOS COMPLETOS (EM BREVE) -->
             <article class="doc-card" data-category="puxadas" data-name="bot puxada dados consultas placa cnh cpf rg veiculo debito cnpj" style="--card-accent:#ef4444; --card-glow:rgba(239,68,68,0.25); --card-icon-bg:rgba(239,68,68,0.1); --card-icon-border:rgba(239,68,68,0.3); --card-pill-bg:rgba(239,68,68,0.12); --card-pill-border:rgba(239,68,68,0.3); --card-btn-bg:#ef4444; --card-btn-glow:rgba(239,68,68,0.35); --card-border-hover:rgba(239,68,68,0.4);">
                 <div>
                     <div class="card-top">
