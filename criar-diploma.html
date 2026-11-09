@@ -9,7 +9,7 @@
     <script src="js/dev-guard.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MG Editáveis | Diploma Universitário Digital (MEC)</title>
+    <title>MG Editáveis | Diploma Universitário Uninter</title>
     <link rel="icon" type="image/png" href="favicon.png">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -18,7 +18,7 @@
     <script src="saldo-sync.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Roboto+Mono:wght@500;700&display=swap');
 
         :root {
             --bg-color: #0b0d0e;
@@ -27,8 +27,10 @@
             --border: #232729;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --primary: #f43f5e;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
             --font-ui: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --uninter-blue: #0f3460;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); }
@@ -36,81 +38,369 @@
 
         /* HEADER */
         .header { height: 64px; background: rgba(20,23,24,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
-        .header-inner { max-width: 1480px; height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
-        .brand-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-weight: 800; font-size: 17px; }
-        .brand-icon { width: 34px; height: 34px; border-radius: 9px; background: rgba(244,63,94,0.15); border: 1px solid rgba(244,63,94,0.35); display: flex; align-items: center; justify-content: center; color: #f43f5e; }
+        .header-inner { max-width: 1560px; height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .brand-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; font-weight: 800; font-size: 16px; }
+        .brand-icon { width: 34px; height: 34px; border-radius: 9px; background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.35); display: flex; align-items: center; justify-content: center; color: #2563eb; }
         .badge-dev-admin { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.35); color: #10b981; font-size: 11.5px; font-weight: 800; }
         .btn-back-cat { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 9px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #94a3b8; font-size: 12.5px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
         .btn-back-cat:hover { background: rgba(255,255,255,0.12); color: #fff; }
 
         /* WORKSPACE */
-        .workspace { flex: 1; max-width: 1480px; width: 100%; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 460px 1fr; gap: 24px; }
-        @media(max-width: 1024px) { .workspace { grid-template-columns: 1fr; } }
+        .workspace { flex: 1; max-width: 1560px; width: 100%; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 460px 1fr; gap: 20px; }
+        @media(max-width: 1100px) { .workspace { grid-template-columns: 1fr; } }
 
         /* FORM PANEL */
-        .form-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; height: calc(100vh - 112px); overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
-        .form-section-title { font-size: 13px; font-weight: 800; color: #f43f5e; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-        .form-group { display: flex; flex-direction: column; gap: 6px; }
-        .form-label { font-size: 11.5px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.3px; }
-        .form-input { background: #0c0e10; border: 1px solid #23282b; border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; transition: border-color 0.2s; }
-        .form-input:focus { border-color: #f43f5e; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; height: calc(100vh - 104px); overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .form-section-title { font-size: 12px; font-weight: 800; color: #60a5fa; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-label { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-input { background: #0c0e10; border: 1px solid #23282b; border-radius: 8px; padding: 9px 12px; color: #fff; font-size: 13px; outline: none; transition: border-color 0.2s; }
+        .form-input:focus { border-color: #2563eb; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .btn-export { background: #f43f5e; color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(244,63,94,0.35); margin-top: auto; transition: transform 0.15s; }
-        .btn-export:hover { transform: translateY(-1px); }
+        .btn-export-group { display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-top: 10px; }
+        .btn-export { background: #2563eb; color: #fff; border: none; border-radius: 10px; padding: 12px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(37,99,235,0.35); transition: transform 0.15s, background-color 0.15s; }
+        .btn-export:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .btn-export-sec { background: #191c1d; color: #cbd5e1; border: 1px solid #2e3538; border-radius: 10px; padding: 10px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-export-sec:hover { background: #23282b; color: #fff; }
 
         /* PREVIEW PANEL */
-        .preview-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-x: auto; }
-        .preview-header { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-        .preview-title { font-size: 14px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .preview-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-x: auto; min-height: 700px; }
+        .preview-controls { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+        .view-tabs { display: flex; background: #0c0e10; border: 1px solid #23282b; border-radius: 8px; padding: 3px; gap: 3px; }
+        .view-tab { padding: 6px 14px; border-radius: 6px; border: none; background: transparent; color: #9ca3af; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .view-tab.active { background: #2563eb; color: #fff; }
 
-        /* DIPLOMA A4 CANVAS */
-        .diploma-page {
-            width: 794px;
-            min-height: 560px;
-            background: #fdfbf7;
-            color: #1e1e1e;
-            border: 12px double #8b6b23;
-            padding: 36px 44px;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+        /* PAGES CONTAINER */
+        .pages-container { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; }
+
+        /* ==========================================================================
+           DIPLOMA UNINTER CANVAS (FRENTE) - 860px x 608px (A4 Paisagem Proporcional)
+           ========================================================================== */
+        .diploma-sheet {
+            width: 860px;
+            height: 608px;
+            background: #ffffff;
+            color: #0c1a2e;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+
+        /* Moldura Guilhoché Frente */
+        .guilloche-border-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .diploma-front-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            padding: 42px 64px 32px 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        /* Topo da Frente: Brasão + Logo Uninter */
+        .front-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            margin-bottom: 6px;
+        }
+
+        .brasao-brasil-box {
+            position: absolute;
+            left: 20px;
+            top: -2px;
+            width: 78px;
+            height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brasao-img {
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+        }
+
+        .uninter-logo-center {
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            position: relative;
-            background-image: radial-gradient(circle at center, rgba(212,175,55,0.04) 0%, transparent 70%);
+            justify-content: center;
         }
 
-        .diploma-crest { width: 62px; height: 62px; margin-bottom: 8px; }
-        .diploma-rep { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #5c4b18; }
-        .diploma-mec { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1.5px; color: #7a6832; margin-bottom: 12px; }
-        .diploma-ies { font-family: 'Cinzel', serif; font-size: 21px; font-weight: 900; letter-spacing: 1.8px; color: #1c2430; text-transform: uppercase; margin-bottom: 10px; }
-        .diploma-main-title { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 900; letter-spacing: 5px; color: #8b6b23; text-transform: uppercase; margin: 10px 0; border-top: 1px solid #d4af37; border-bottom: 1px solid #d4af37; padding: 4px 30px; }
-        .diploma-text { font-family: 'Playfair Display', serif; font-size: 14px; line-height: 1.8; color: #333; max-width: 680px; margin: 12px 0; }
-        .diploma-student { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 800; color: #0c1a2e; letter-spacing: 1.2px; text-transform: uppercase; margin: 6px 0; }
-        .diploma-course { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 800; color: #8b6b23; letter-spacing: 1px; text-transform: uppercase; margin: 4px 0; }
-        .diploma-sigs { display: flex; justify-content: space-around; width: 100%; margin-top: 28px; }
-        .sig-box { display: flex; flex-direction: column; align-items: center; width: 220px; }
-        .sig-font { font-family: 'Great Vibes', cursive; font-size: 26px; color: #0c1a2e; transform: rotate(-3deg); margin-bottom: 2px; }
-        .sig-line { width: 100%; border-top: 1px solid #444; margin-bottom: 4px; }
-        .sig-role { font-size: 10px; font-weight: 700; color: #555; text-transform: uppercase; }
+        .uninter-brand-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #0d2b5c;
+        }
+        .uninter-brand-title .uninter-name {
+            font-family: 'Cinzel', serif;
+            font-size: 27px;
+            font-weight: 900;
+            letter-spacing: 2.5px;
+            color: #0f356d;
+        }
+        .uninter-sub-title {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-align: center;
+            color: #0f356d;
+            line-height: 1.25;
+            margin-top: 2px;
+        }
 
-        .diploma-qr-box { position: absolute; bottom: 20px; right: 28px; display: flex; flex-direction: column; align-items: center; }
-        .diploma-qr { width: 62px; height: 62px; background: #fff; padding: 2px; border: 1px solid #ccc; }
-        .diploma-qr-lbl { font-size: 8px; font-weight: 700; color: #555; margin-top: 3px; }
+        /* Texto solene do Reitor e outorga */
+        .diploma-body-text {
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13.5px;
+            line-height: 1.48;
+            color: #111;
+            margin: 6px 0;
+            padding: 0 10px;
+        }
+
+        .diploma-degree-callout {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 15.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 4px 0 2px 0;
+        }
+
+        .diploma-student-name {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 23px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #000;
+            margin: 3px 0 4px 0;
+        }
+
+        .diploma-date-emissao {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 8px;
+        }
+
+        /* Rodapé de assinaturas e hash */
+        .front-footer-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 24px 6px 24px;
+            margin-top: 6px;
+        }
+
+        .signature-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 250px;
+            text-align: center;
+        }
+        .sig-image-holder {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2px;
+        }
+        .sig-image-holder img {
+            max-height: 46px;
+            max-width: 140px;
+            object-fit: contain;
+        }
+        .sig-fallback-font {
+            font-family: 'Great Vibes', cursive;
+            font-size: 30px;
+            color: #0b1a30;
+            transform: rotate(-3deg);
+        }
+        .sig-person-name {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #111;
+        }
+        .sig-person-role {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10.5px;
+            color: #333;
+        }
+
+        .validation-hash-box {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 7.5px;
+            color: #333;
+            text-align: center;
+            line-height: 1.35;
+            margin-top: 4px;
+            max-width: 320px;
+            word-break: break-all;
+        }
+        .validation-url-txt {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 9.5px;
+            color: #111;
+            text-decoration: underline;
+        }
+
+        /* ==========================================================================
+           DIPLOMA UNINTER CANVAS (VERSO) - 860px x 608px
+           ========================================================================== */
+        .diploma-back-content {
+            width: 100%;
+            height: 100%;
+            padding: 34px 44px;
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            box-sizing: border-box;
+            background: #fff;
+            position: relative;
+        }
+
+        .verso-left-table {
+            width: 310px;
+            border: 1px solid #111;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10px;
+            line-height: 1.35;
+            color: #111;
+        }
+
+        .verso-subbox {
+            padding: 7px 9px;
+            border-bottom: 1px solid #111;
+        }
+        .verso-subbox:last-child {
+            border-bottom: none;
+            flex: 1;
+        }
+
+        .verso-subbox-title {
+            font-weight: 700;
+            font-size: 10.5px;
+            margin-bottom: 3px;
+        }
+
+        .verso-sig-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 8px 0 3px 0;
+            text-align: center;
+        }
+        .verso-sig-holder {
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .verso-sig-holder img {
+            max-height: 36px;
+            max-width: 110px;
+            object-fit: contain;
+        }
+
+        /* Lado direito do Verso: QR Code e Logo */
+        .verso-right-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 0 20px 10px 0;
+        }
+
+        .verso-qr-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .verso-qr-frame {
+            background: #fff;
+            padding: 6px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .verso-uninter-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #0f3460;
+        }
+        .verso-uninter-logo span {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #0f356d;
+        }
+
+        /* PRINT STYLES FOR HIGH RESOLUTION PDF */
+        @media print {
+            body { background: #fff !important; }
+            .header, .form-panel, .preview-controls, .preview-header { display: none !important; }
+            .workspace { padding: 0 !important; margin: 0 !important; display: block !important; }
+            .preview-panel { background: transparent !important; border: none !important; padding: 0 !important; }
+            .pages-container { gap: 0 !important; }
+            .diploma-sheet {
+                box-shadow: none !important;
+                margin: 0 !important;
+                page-break-after: always;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- HEADER SUPERIOR -->
     <header class="header">
         <div class="header-inner">
             <a href="editaveis.html" class="brand-link">
                 <div class="brand-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                 </div>
-                <span>Diploma Universitário (MEC)</span>
+                <span>Diploma Universitário Uninter</span>
             </a>
             <div style="display:flex; align-items:center; gap:12px;">
-                <span class="badge-dev-admin">👑 MODO DESENVOLVIMENTO (ADMIN)</span>
+                <span class="badge-dev-admin">👑 ACESSO ADMIN (DEV)</span>
                 <span id="userHeaderSaldo" style="font-size:12.5px; font-weight:700; color:#10b981;">Saldo R$ 0,00</span>
                 <a href="editaveis.html" class="btn-back-cat">← Voltar ao Catálogo</a>
             </div>
@@ -118,156 +408,578 @@
     </header>
 
     <main class="workspace">
+        <!-- FORMULÁRIO DE EDIÇÃO LATERAL -->
         <div class="form-panel">
-            <div class="form-section-title">🎓 Dados do Aluno &amp; Curso</div>
-            <div class="form-group">
-                <label class="form-label">Nome Completo do Diplomado</label>
-                <input type="text" class="form-input" id="inpNome" value="LEONARDO HENRIQUE DE ALMEIDA" oninput="updateDiploma()">
+            <div class="form-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Dados do Diplomado</span>
             </div>
+            
+            <div class="form-group">
+                <label class="form-label">Nome Completo</label>
+                <input type="text" class="form-input" id="inpNome" value="FERNANDO CEZAR DA SILVA" oninput="updateDiploma()">
+            </div>
+
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">CPF do Diplomado</label>
-                    <input type="text" class="form-input" id="inpCpf" value="042.819.340-92" oninput="updateDiploma()">
+                    <label class="form-label">Nacionalidade</label>
+                    <input type="text" class="form-input" id="inpNac" value="brasileiro" oninput="updateDiploma()">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Nacionalidade / UF</label>
-                    <input type="text" class="form-input" id="inpNac" value="Brasileiro(a), Natural de SP" oninput="updateDiploma()">
+                    <label class="form-label">Naturalidade / Estado</label>
+                    <input type="text" class="form-input" id="inpNat" value="Estado de CATANDUVA" oninput="updateDiploma()">
                 </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Data de Nascimento</label>
+                    <input type="text" class="form-input" id="inpNasc" value="4 DE OUTUBRO DE 1971" oninput="updateDiploma()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Documento RG / Órgão</label>
+                    <input type="text" class="form-input" id="inpRg" value="SP- 21225232 / SSP/SP - SP" oninput="updateDiploma()">
+                </div>
+            </div>
+
+            <div class="form-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg>
+                <span>Curso &amp; Colação de Grau</span>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Curso de Graduação</label>
-                <input type="text" class="form-input" id="inpCurso" value="BACHARELADO EM DIREITO" oninput="updateDiploma()">
+                <input type="text" class="form-input" id="inpCurso" value="BACHARELADO EM FARMÁCIA" oninput="updateDiploma()">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Data Conclusão</label>
+                    <input type="text" class="form-input" id="inpDataConc" value="12 DE AGOSTO DE 2026" oninput="updateDiploma()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Data Colação de Grau</label>
+                    <input type="text" class="form-input" id="inpDataCol" value="11 DE JANEIRO DE 2027" oninput="updateDiploma()">
+                </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Instituição de Ensino Superior (IES)</label>
-                <input type="text" class="form-input" id="inpIes" value="UNIVERSIDADE FEDERAL PAULISTA - UNIFEP" oninput="updateDiploma()">
+                <label class="form-label">Local e Data de Expedição</label>
+                <input type="text" class="form-input" id="inpDataExp" value="SÃO PAULO, 18 DE MARÇO DE 2027" oninput="updateDiploma()">
             </div>
 
-            <div class="form-section-title">🏛️ Dados de Registro &amp; Colação</div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Data de Colação de Grau</label>
-                    <input type="text" class="form-input" id="inpDataColacao" value="18 de Dezembro de 2024" oninput="updateDiploma()">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Data de Expedição</label>
-                    <input type="text" class="form-input" id="inpDataExp" value="15 de Janeiro de 2025" oninput="updateDiploma()">
-                </div>
+            <div class="form-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>Assinaturas &amp; Autenticidade</span>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Livro / Folha / Registro</label>
-                    <input type="text" class="form-input" id="inpRegistro" value="Livro 42 • Fls. 18 • Reg. 84920" oninput="updateDiploma()">
+                    <label class="form-label">Secretária Geral Acadêmica</label>
+                    <input type="text" class="form-input" id="inpSec" value="Simone Ramos de Oliveira" oninput="updateDiploma()">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Processo MEC Digital</label>
-                    <input type="text" class="form-input" id="inpProcesso" value="MEC-23000.084129/2024" oninput="updateDiploma()">
+                    <label class="form-label">Reitor Uninter</label>
+                    <input type="text" class="form-input" id="inpReitor" value="Benhur Etelberto Gaio" oninput="updateDiploma()">
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Código Hash de Validação</label>
+                <input type="text" class="form-input" id="inpHash" value="4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17" oninput="updateDiploma()">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">URL de Validação</label>
+                <input type="text" class="form-input" id="inpUrl" value="https://secretariadigital-uninter.lat" oninput="updateDiploma(); updateQr();">
+            </div>
+
+            <div class="form-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span>Registro &amp; Portarias (Verso)</span>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Nome do Reitor(a)</label>
-                    <input type="text" class="form-input" id="inpReitor" value="Prof. Dr. Marcos Vasconcelos" oninput="updateDiploma()">
+                    <label class="form-label">Registro Divisão de Diplomas</label>
+                    <input type="text" class="form-input" id="inpRegNum" value="sob o nº —" oninput="updateDiploma()">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Secretário(a) Geral</label>
-                    <input type="text" class="form-input" id="inpSec" value="Dra. Helena Ribeiro Pinto" oninput="updateDiploma()">
+                    <label class="form-label">Resp. Registro / Portaria</label>
+                    <input type="text" class="form-input" id="inpEdilaine" value="EDILAINE ALVES BELCHIOR" oninput="updateDiploma()">
                 </div>
             </div>
 
-            <button type="button" class="btn-export" onclick="window.print()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span>Baixar Diploma em PDF (Alta Resolução)</span>
-            </button>
+            <div class="form-group">
+                <label class="form-label">Portaria Responsável</label>
+                <input type="text" class="form-input" id="inpPortariaResp" value="Port. nº 169/2021" oninput="updateDiploma()">
+            </div>
+
+            <!-- BOTÕES DE AÇÃO -->
+            <div class="btn-export-group">
+                <button type="button" class="btn-export" onclick="exportDiplomaPdf()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Baixar Diploma em PDF (Frente + Verso)</span>
+                </button>
+                <button type="button" class="btn-export-sec" onclick="window.print()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    <span>Imprimir / Salvar Navegador</span>
+                </button>
+            </div>
         </div>
 
+        <!-- PAINEL DE VISUALIZAÇÃO DO DOCUMENTO -->
         <div class="preview-panel">
-            <div class="preview-header">
-                <div class="preview-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.3"><path d="M2 12h20M12 2v20"/></svg>
-                    <span>Espelho Oficial do Diploma (Padrão MEC Digital)</span>
+            <div class="preview-controls">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:13.5px; font-weight:800; color:#fff;">Espelho Oficial UNINTER</span>
+                    <span style="font-size:11.5px; color:#9ca3af;">• Frente e Verso em Alta Fidelidade</span>
                 </div>
-                <span style="font-size:12px; color:#9ca3af;">Visualização em tempo real (Formato A4 Paisagem)</span>
+                <div class="view-tabs">
+                    <button type="button" class="view-tab active" id="tabAmbos" onclick="setViewMode('ambos')">Frente &amp; Verso</button>
+                    <button type="button" class="view-tab" id="tabFrente" onclick="setViewMode('frente')">Apenas Frente</button>
+                    <button type="button" class="view-tab" id="tabVerso" onclick="setViewMode('verso')">Apenas Verso</button>
+                </div>
             </div>
 
-            <div class="diploma-page" id="diplomaCanvas">
-                <div class="diploma-rep">República Federativa do Brasil</div>
-                <div class="diploma-mec">Ministério da Educação • Secretaria de Regulação e Supervisão da Educação Superior</div>
-                <div class="diploma-ies" id="outIes">UNIVERSIDADE FEDERAL PAULISTA - UNIFEP</div>
-                <div class="diploma-main-title">DIPLOMA</div>
-                <p class="diploma-text">
-                    A Reitoria da Universidade, no uso de suas atribuições legais e tendo em vista a conclusão do curso regular e a colação de grau realizada em <span id="outDataColacao" style="font-weight:700;">18 de Dezembro de 2024</span>, confere o presente Diploma a:
-                </p>
-                <div class="diploma-student" id="outNome">LEONARDO HENRIQUE DE ALMEIDA</div>
-                <div style="font-size:12px; color:#555; margin-bottom:8px;">portador(a) do CPF nº <span id="outCpf" style="font-weight:700;">042.819.340-92</span>, <span id="outNac">Brasileiro(a), Natural de SP</span>, outorgando-lhe o respectivo grau de:</div>
-                <div class="diploma-course" id="outCurso">BACHAREL EM DIREITO</div>
-                <p class="diploma-text" style="font-size:12px; margin-top:8px;">
-                    com todas as prerrogativas, direitos e deveres assegurados pelas leis do país. Expedido em <span id="outDataExp" style="font-weight:700;">15 de Janeiro de 2025</span> sob o <span id="outReg">Livro 42 • Fls. 18 • Reg. 84920</span>. Processo: <span id="outProc">MEC-23000.084129/2024</span>.
-                </p>
+            <div class="pages-container" id="pagesContainer">
+                
+                <!-- ==================== PÁGINA 1: FRENTE ==================== -->
+                <div class="diploma-sheet" id="diplomaFrenteSheet">
+                    <!-- MOLDURA GUILHOCHÉ VETORIAL AZUL -->
+                    <svg class="guilloche-border-svg" viewBox="0 0 860 608" preserveAspectRatio="none">
+                        <defs>
+                            <!-- Padrão guilhoché de onda entrelaçada -->
+                            <pattern id="guillocheWaveH" width="24" height="16" patternUnits="userSpaceOnUse">
+                                <path d="M 0 8 Q 6 0 12 8 T 24 8 M 0 8 Q 6 16 12 8 T 24 8 M 0 4 Q 6 12 12 4 T 24 4 M 0 12 Q 6 4 12 12 T 24 12" fill="none" stroke="#1d488a" stroke-width="0.8" opacity="0.85"/>
+                            </pattern>
+                            <pattern id="guillocheWaveV" width="16" height="24" patternUnits="userSpaceOnUse">
+                                <path d="M 8 0 Q 0 6 8 12 T 8 24 M 8 0 Q 16 6 8 12 T 8 24 M 4 0 Q 12 6 4 12 T 4 24 M 12 0 Q 4 6 12 12 T 12 24" fill="none" stroke="#1d488a" stroke-width="0.8" opacity="0.85"/>
+                            </pattern>
+                        </defs>
 
-                <div class="diploma-sigs">
-                    <div class="sig-box">
-                        <div class="sig-font" id="outSigReitor">M. Vasconcelos</div>
-                        <div class="sig-line"></div>
-                        <div class="sig-role" id="outReitor">Prof. Dr. Marcos Vasconcelos</div>
-                        <div style="font-size:8.5px; color:#777;">Reitor da Instituição</div>
-                    </div>
-                    <div class="sig-box">
-                        <div class="sig-font" id="outSigSec">H. Ribeiro Pinto</div>
-                        <div class="sig-line"></div>
-                        <div class="sig-role" id="outSec">Dra. Helena Ribeiro Pinto</div>
-                        <div style="font-size:8.5px; color:#777;">Secretária Geral de Registros</div>
+                        <!-- Borda externa escura com efeito entalhado -->
+                        <rect x="10" y="10" width="840" height="588" fill="none" stroke="#0f3460" stroke-width="2.5" />
+                        <rect x="13" y="13" width="834" height="582" fill="none" stroke="#2563eb" stroke-width="1" opacity="0.6" />
+
+                        <!-- Faixas ornamentais guilhoché nos 4 lados -->
+                        <!-- Superior -->
+                        <rect x="36" y="14" width="788" height="18" fill="url(#guillocheWaveH)" />
+                        <!-- Inferior -->
+                        <rect x="36" y="576" width="788" height="18" fill="url(#guillocheWaveH)" />
+                        <!-- Esquerda -->
+                        <rect x="14" y="36" width="18" height="536" fill="url(#guillocheWaveV)" />
+                        <!-- Direita -->
+                        <rect x="828" y="36" width="18" height="536" fill="url(#guillocheWaveV)" />
+
+                        <!-- Moldura interna fina -->
+                        <rect x="33" y="33" width="794" height="542" fill="none" stroke="#0f3460" stroke-width="1.8" />
+                        <rect x="36" y="36" width="788" height="536" fill="none" stroke="#1d488a" stroke-width="0.8" />
+
+                        <!-- Rosáceas ornamentais nos 4 cantos -->
+                        <g transform="translate(23, 23)">
+                            <circle cx="0" cy="0" r="14" fill="#ffffff" stroke="#0f3460" stroke-width="1.5" />
+                            <circle cx="0" cy="0" r="10" fill="none" stroke="#1d488a" stroke-width="1" />
+                            <path d="M-9,0 L9,0 M0,-9 L0,9 M-6,-6 L6,6 M-6,6 L6,-6" stroke="#0f3460" stroke-width="1.2" />
+                        </g>
+                        <g transform="translate(837, 23)">
+                            <circle cx="0" cy="0" r="14" fill="#ffffff" stroke="#0f3460" stroke-width="1.5" />
+                            <circle cx="0" cy="0" r="10" fill="none" stroke="#1d488a" stroke-width="1" />
+                            <path d="M-9,0 L9,0 M0,-9 L0,9 M-6,-6 L6,6 M-6,6 L6,-6" stroke="#0f3460" stroke-width="1.2" />
+                        </g>
+                        <g transform="translate(23, 585)">
+                            <circle cx="0" cy="0" r="14" fill="#ffffff" stroke="#0f3460" stroke-width="1.5" />
+                            <circle cx="0" cy="0" r="10" fill="none" stroke="#1d488a" stroke-width="1" />
+                            <path d="M-9,0 L9,0 M0,-9 L0,9 M-6,-6 L6,6 M-6,6 L6,-6" stroke="#0f3460" stroke-width="1.2" />
+                        </g>
+                        <g transform="translate(837, 585)">
+                            <circle cx="0" cy="0" r="14" fill="#ffffff" stroke="#0f3460" stroke-width="1.5" />
+                            <circle cx="0" cy="0" r="10" fill="none" stroke="#1d488a" stroke-width="1" />
+                            <path d="M-9,0 L9,0 M0,-9 L0,9 M-6,-6 L6,6 M-6,6 L6,-6" stroke="#0f3460" stroke-width="1.2" />
+                        </g>
+                    </svg>
+
+                    <!-- CONTEÚDO OFICIAL DA FRENTE -->
+                    <div class="diploma-front-content">
+                        <!-- CABEÇALHO COM BRASÃO E LOGO UNINTER -->
+                        <div class="front-header-row">
+                            <div class="brasao-brasil-box">
+                                <!-- Brasão Vetorial Oficial da República Federativa do Brasil -->
+                                <svg class="brasao-img" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="46" fill="none" stroke="#1e293b" stroke-width="1.2" stroke-dasharray="2,2"/>
+                                    <circle cx="50" cy="50" r="43" fill="none" stroke="#0f172a" stroke-width="2"/>
+                                    <!-- Texto circular República Federativa do Brasil -->
+                                    <path id="textArcRep" d="M 12 50 A 38 38 0 0 1 88 50" fill="none"/>
+                                    <text font-size="6.2" font-family="'Cinzel', serif" font-weight="900" fill="#0f172a" letter-spacing="1.2">
+                                        <textPath href="#textArcRep" startOffset="50%" text-anchor="middle">REPÚBLICA FEDERATIVA DO BRASIL</textPath>
+                                    </text>
+                                    <path id="textArcEst" d="M 88 50 A 38 38 0 0 1 12 50" fill="none"/>
+                                    <text font-size="5.5" font-family="'Cinzel', serif" font-weight="700" fill="#0f172a" letter-spacing="1">
+                                        <textPath href="#textArcEst" startOffset="50%" text-anchor="middle">15 DE NOVEMBRO DE 1889</textPath>
+                                    </text>
+                                    <!-- Estrela da República ao centro -->
+                                    <polygon points="50,22 53,35 66,35 56,43 59,56 50,48 41,56 44,43 34,35 47,35" fill="#1e3a8a" stroke="#0f172a" stroke-width="1"/>
+                                    <circle cx="50" cy="40" r="7" fill="#0284c7" stroke="#0f172a" stroke-width="0.8"/>
+                                    <!-- Estrelas do Cruzeiro do Sul -->
+                                    <circle cx="50" cy="37" r="1" fill="#fff"/>
+                                    <circle cx="50" cy="43" r="1" fill="#fff"/>
+                                    <circle cx="47" cy="40" r="1" fill="#fff"/>
+                                    <circle cx="53" cy="39" r="1" fill="#fff"/>
+                                    <!-- Ramos de café e fumo -->
+                                    <path d="M 30 65 Q 40 75 50 78 Q 60 75 70 65" fill="none" stroke="#15803d" stroke-width="2.5"/>
+                                    <path d="M 32 60 Q 42 70 50 72 Q 58 70 68 60" fill="none" stroke="#ca8a04" stroke-width="1.5"/>
+                                </svg>
+                            </div>
+
+                            <div class="uninter-logo-center">
+                                <div class="uninter-brand-title">
+                                    <span class="uninter-name">UNINTER</span>
+                                    <!-- Ícone do Globo com Anéis da UNINTER -->
+                                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                                        <circle cx="20" cy="20" r="12" stroke="#0f356d" stroke-width="2" fill="none"/>
+                                        <ellipse cx="20" cy="20" rx="6" ry="12" stroke="#0f356d" stroke-width="1.4" fill="none"/>
+                                        <ellipse cx="20" cy="20" rx="12" ry="6" stroke="#0f356d" stroke-width="1.4" fill="none"/>
+                                        <line x1="8" y1="20" x2="32" y2="20" stroke="#0f356d" stroke-width="1.4"/>
+                                        <line x1="20" y1="8" x2="20" y2="32" stroke="#0f356d" stroke-width="1.4"/>
+                                        <!-- Anel orbital inclinado -->
+                                        <ellipse cx="20" cy="20" rx="18" ry="7" transform="rotate(-30 20 20)" stroke="#0f356d" stroke-width="1.8" fill="none"/>
+                                    </svg>
+                                </div>
+                                <div class="uninter-sub-title">
+                                    CENTRO<br>UNIVERSITÁRIO<br>INTERNACIONAL
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEXTO DE OUTORGA E DADOS DO ALUNO -->
+                        <div class="diploma-body-text">
+                            O Reitor do Centro Universitário Internacional UNINTER, no uso de suas<br>
+                            atribuições, e tendo em vista a conclusão do <span id="outCurso1" style="font-weight:700;">BACHARELADO EM FARMÁCIA</span>,,<br>
+                            em <span id="outDataConc" style="font-weight:700;">12 DE AGOSTO DE 2026</span> e a colação de grau em <span id="outDataCol" style="font-weight:700;">11 DE JANEIRO DE 2027</span>, confere o<br>
+                            título de
+                            <div class="diploma-degree-callout"><span id="outCurso2">BACHARELADO EM FARMÁCIA</span> a</div>
+                            <div class="diploma-student-name" id="outNome">FERNANDO CEZAR DA SILVA</div>
+                            de nacionalidade <span id="outNac">brasileiro</span>, natural do <span id="outNat">Estado de CATANDUVA</span>, nascido a <span id="outNasc">4 DE OUTUBRO DE 1971</span>,<br>
+                            portador do documento nº <span id="outRg" style="font-weight:700;">SP- 21225232 / SSP/SP - SP</span>,<br>
+                            e outorga-lhe o presente Diploma,<br>
+                            a fim de que possa gozar de todos os direitos e prerrogativas legais.
+                            <div class="diploma-date-emissao" id="outDataExp">SÃO PAULO, 18 DE MARÇO DE 2027.</div>
+                        </div>
+
+                        <!-- ASSINATURAS E VALIDAÇÃO DIGITAL -->
+                        <div class="front-footer-row">
+                            <!-- Assinatura Secretária Geral -->
+                            <div class="signature-block">
+                                <div class="sig-image-holder" id="holderSimone">
+                                    <div class="sig-fallback-font">Simone R. Oliveira</div>
+                                </div>
+                                <div class="sig-person-name" id="outSec">Simone Ramos de Oliveira</div>
+                                <div class="sig-person-role">Secretária Geral de Gestão Acadêmica</div>
+                            </div>
+
+                            <!-- Assinatura Reitor e Código de Validação -->
+                            <div class="signature-block">
+                                <div class="sig-image-holder" id="holderBenhur">
+                                    <div class="sig-fallback-font">Benhur E. Gaio</div>
+                                </div>
+                                <div class="sig-person-name" id="outReitor">Benhur Etelberto Gaio</div>
+                                <div class="sig-person-role">Reitor</div>
+                                <div style="font-size:9.5px; font-weight:700; color:#111; margin-top:4px;">Código de Validação</div>
+                                <div class="validation-hash-box" id="outHash">4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17</div>
+                                <div class="validation-url-txt" id="outUrl">https://secretariadigital-uninter.lat</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="diploma-qr-box">
-                    <div class="diploma-qr" id="diplomaQrCode"></div>
-                    <div class="diploma-qr-lbl">MEC • ICP-BRASIL</div>
+                <!-- ==================== PÁGINA 2: VERSO ==================== -->
+                <div class="diploma-sheet" id="diplomaVersoSheet">
+                    <div class="diploma-back-content">
+                        <!-- TABELA DE REGISTRO OFICIAL DO VERSO -->
+                        <div class="verso-left-table">
+                            <!-- BLOCO 1: RECREDENCIAMENTO -->
+                            <div class="verso-subbox">
+                                <div class="verso-subbox-title">Centro Universitário Internacional Uninter</div>
+                                Recredenciado pela Portaria n.º 1.378, de 19/12/2018,<br>
+                                DOU n.º 244, Seção 1, pág. 125, de 20/12/2018,<br>
+                                retificada no DOU de 27/12/2018, n.º 248, Seção 1, pág. 85.
+                            </div>
+
+                            <!-- BLOCO 2: RECONHECIMENTO DO CURSO -->
+                            <div class="verso-subbox" style="text-align:center;">
+                                <div class="verso-subbox-title" id="outCursoVerso" style="font-size:11px;">BACHARELADO EM FARMÁCIA</div>
+                                Curso reconhecido nos termos da legislação vigente.
+                            </div>
+
+                            <!-- BLOCO 3: DIVISÃO DE REGISTRO DE DIPLOMAS -->
+                            <div class="verso-subbox">
+                                <div style="text-align:center; font-weight:700;">
+                                    Centro Universitário Internacional - Uninter<br>
+                                    Divisão de Registro de Diplomas
+                                </div>
+                                <div style="margin-top:6px;">
+                                    Diploma Registrado <span id="outRegNum">sob o nº —</span><br>
+                                    Nos termos do art. 48, § 1º da Lei n.º 9.394, de<br>
+                                    20/12/1996 e § 2º do art. 99 do Decreto n.º 9.235, de 15/12/2017.
+                                </div>
+                                <div style="text-align:center; margin-top:8px; font-weight:700;" id="outDataExpVerso">
+                                    SÃO PAULO, 18 DE MARÇO DE 2027
+                                </div>
+
+                                <div class="verso-sig-box">
+                                    <div class="verso-sig-holder" id="holderEdilaine">
+                                        <div class="sig-fallback-font" style="font-size:26px;">Edilaine A. Belchior</div>
+                                    </div>
+                                    <div style="font-weight:700; font-size:10px;" id="outEdilaine">EDILAINE ALVES BELCHIOR</div>
+                                    <div style="font-size:9.5px;" id="outPortariaResp">Port. nº 169/2021</div>
+                                </div>
+                            </div>
+
+                            <!-- BLOCO 4: MANTENEDORA E ASSINATURA DIGITAL MEC -->
+                            <div class="verso-subbox">
+                                <div style="font-weight:700;" id="outSecVerso">Simone Ramos de Oliveira</div>
+                                <div style="font-size:9px; margin-bottom:4px;">Secretária Geral de Gestão Acadêmica</div>
+
+                                <div style="font-weight:700;" id="outReitorVerso">Benhur Etelberto Gaio</div>
+                                <div style="font-size:9px; margin-bottom:6px;">Reitor</div>
+
+                                <div>Mantenedora: Uninter Educacional S/A</div>
+                                <div style="margin-bottom:6px;">CNPJ: 02.261.854/0001-57</div>
+
+                                <div style="font-weight:700; margin-bottom:4px;">
+                                    Diploma Digital assinado nos termos da Portaria 554/2019/MEC.
+                                </div>
+
+                                <div style="font-size:9px; line-height:1.3;">
+                                    A validação deste documento é dada por meio do endereço eletrônico <span id="outUrlVerso">www.secretariadigital-uninter.lat</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LADO DIREITO: QR CODE FUNCIONAL E LOGO UNINTER -->
+                        <div class="verso-right-area">
+                            <div class="verso-qr-block">
+                                <div class="verso-qr-frame">
+                                    <div id="uninterQrCode"></div>
+                                </div>
+                                <div class="verso-uninter-logo">
+                                    <span>UNINTER</span>
+                                    <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                                        <circle cx="20" cy="20" r="12" stroke="#0f356d" stroke-width="2" fill="none"/>
+                                        <ellipse cx="20" cy="20" rx="6" ry="12" stroke="#0f356d" stroke-width="1.4" fill="none"/>
+                                        <ellipse cx="20" cy="20" rx="12" ry="6" stroke="#0f356d" stroke-width="1.4" fill="none"/>
+                                        <line x1="8" y1="20" x2="32" y2="20" stroke="#0f356d" stroke-width="1.4"/>
+                                        <line x1="20" y1="8" x2="20" y2="32" stroke="#0f356d" stroke-width="1.4"/>
+                                        <ellipse cx="20" cy="20" rx="18" ry="7" transform="rotate(-30 20 20)" stroke="#0f356d" stroke-width="1.8" fill="none"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </main>
 
+    <!-- SCRIPT DE SINCRONIZAÇÃO E EXTRAÇÃO -->
     <script>
         function updateDiploma() {
-            document.getElementById('outNome').textContent = document.getElementById('inpNome').value || 'NOME DO DIPLOMADO';
-            document.getElementById('outCpf').textContent = document.getElementById('inpCpf').value || '000.000.000-00';
-            document.getElementById('outNac').textContent = document.getElementById('inpNac').value || '';
-            document.getElementById('outCurso').textContent = document.getElementById('inpCurso').value || '';
-            document.getElementById('outIes').textContent = document.getElementById('inpIes').value || '';
-            document.getElementById('outDataColacao').textContent = document.getElementById('inpDataColacao').value || '';
-            document.getElementById('outDataExp').textContent = document.getElementById('inpDataExp').value || '';
-            document.getElementById('outReg').textContent = document.getElementById('inpRegistro').value || '';
-            document.getElementById('outProc').textContent = document.getElementById('inpProcesso').value || '';
-            document.getElementById('outReitor').textContent = document.getElementById('inpReitor').value || '';
-            document.getElementById('outSec').textContent = document.getElementById('inpSec').value || '';
+            const nome = document.getElementById('inpNome').value || 'FERNANDO CEZAR DA SILVA';
+            const nac = document.getElementById('inpNac').value || 'brasileiro';
+            const nat = document.getElementById('inpNat').value || 'Estado de CATANDUVA';
+            const nasc = document.getElementById('inpNasc').value || '4 DE OUTUBRO DE 1971';
+            const rg = document.getElementById('inpRg').value || 'SP- 21225232 / SSP/SP - SP';
+            const curso = document.getElementById('inpCurso').value || 'BACHARELADO EM FARMÁCIA';
+            const dataConc = document.getElementById('inpDataConc').value || '12 DE AGOSTO DE 2026';
+            const dataCol = document.getElementById('inpDataCol').value || '11 DE JANEIRO DE 2027';
+            const dataExp = document.getElementById('inpDataExp').value || 'SÃO PAULO, 18 DE MARÇO DE 2027';
+            const sec = document.getElementById('inpSec').value || 'Simone Ramos de Oliveira';
+            const reitor = document.getElementById('inpReitor').value || 'Benhur Etelberto Gaio';
+            const hash = document.getElementById('inpHash').value || '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17';
+            const url = document.getElementById('inpUrl').value || 'https://secretariadigital-uninter.lat';
+            const regNum = document.getElementById('inpRegNum').value || 'sob o nº —';
+            const edilaine = document.getElementById('inpEdilaine').value || 'EDILAINE ALVES BELCHIOR';
+            const portariaResp = document.getElementById('inpPortariaResp').value || 'Port. nº 169/2021';
 
-            const rName = document.getElementById('inpReitor').value.split(' ');
-            document.getElementById('outSigReitor').textContent = (rName[0] ? rName[0][0] + '. ' : '') + (rName[rName.length - 1] || '');
-            const sName = document.getElementById('inpSec').value.split(' ');
-            document.getElementById('outSigSec').textContent = (sName[0] ? sName[0][0] + '. ' : '') + (sName[sName.length - 1] || '');
+            // Frente
+            document.getElementById('outNome').textContent = nome;
+            document.getElementById('outNac').textContent = nac;
+            document.getElementById('outNat').textContent = nat;
+            document.getElementById('outNasc').textContent = nasc;
+            document.getElementById('outRg').textContent = rg;
+            document.getElementById('outCurso1').textContent = curso;
+            document.getElementById('outCurso2').textContent = curso;
+            document.getElementById('outDataConc').textContent = dataConc;
+            document.getElementById('outDataCol').textContent = dataCol;
+            document.getElementById('outDataExp').textContent = dataExp + '.';
+            document.getElementById('outSec').textContent = sec;
+            document.getElementById('outReitor').textContent = reitor;
+            document.getElementById('outHash').textContent = hash;
+            document.getElementById('outUrl').textContent = url;
+
+            // Verso
+            document.getElementById('outCursoVerso').textContent = curso;
+            document.getElementById('outRegNum').textContent = regNum;
+            document.getElementById('outDataExpVerso').textContent = dataExp;
+            document.getElementById('outEdilaine').textContent = edilaine;
+            document.getElementById('outPortariaResp').textContent = portariaResp;
+            document.getElementById('outSecVerso').textContent = sec;
+            document.getElementById('outReitorVerso').textContent = reitor;
+            
+            // Format URL for verso
+            const cleanUrl = url.replace(/^https?:\/\//i, '');
+            document.getElementById('outUrlVerso').textContent = cleanUrl;
         }
 
-        // Gera QR Code de autenticidade
-        document.addEventListener('DOMContentLoaded', () => {
-            const qrEl = document.getElementById('diplomaQrCode');
-            if (qrEl && typeof QRCode !== 'undefined') {
-                qrEl.innerHTML = '';
-                new QRCode(qrEl, {
-                    text: 'https://validador.educacaosuperior.mec.gov.br/diploma-digital/valida?id=' + Math.random().toString(36).substring(2, 12).toUpperCase(),
-                    width: 58,
-                    height: 58,
-                    colorDark: '#000000',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.M
-                });
-            }
+        function updateQr() {
+            const qrEl = document.getElementById('uninterQrCode');
+            if (!qrEl || typeof QRCode === 'undefined') return;
+            const targetUrl = document.getElementById('inpUrl').value || 'https://secretariadigital-uninter.lat';
+            qrEl.innerHTML = '';
+            new QRCode(qrEl, {
+                text: targetUrl,
+                width: 100,
+                height: 100,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
 
-            // Carrega saldo do usuário
+        function setViewMode(mode) {
+            const frente = document.getElementById('diplomaFrenteSheet');
+            const verso = document.getElementById('diplomaVersoSheet');
+            const tabAmbos = document.getElementById('tabAmbos');
+            const tabFrente = document.getElementById('tabFrente');
+            const tabVerso = document.getElementById('tabVerso');
+
+            tabAmbos.classList.remove('active');
+            tabFrente.classList.remove('active');
+            tabVerso.classList.remove('active');
+
+            if (mode === 'frente') {
+                frente.style.display = 'flex';
+                verso.style.display = 'none';
+                tabFrente.classList.add('active');
+            } else if (mode === 'verso') {
+                frente.style.display = 'none';
+                verso.style.display = 'flex';
+                tabVerso.classList.add('active');
+            } else {
+                frente.style.display = 'flex';
+                verso.style.display = 'flex';
+                tabAmbos.classList.add('active');
+            }
+        }
+
+        // Tenta extrair as assinaturas originais do arquivo modelo se disponível
+        function tryLoadSignaturesFromOriginal() {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                try {
+                    function sliceSignature(sx, sy, sw, sh) {
+                        const c = document.createElement('canvas');
+                        c.width = sw;
+                        c.height = sh;
+                        const ctx = c.getContext('2d');
+                        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+                        const idata = ctx.getImageData(0, 0, sw, sh);
+                        const d = idata.data;
+                        for (let i = 0; i < d.length; i += 4) {
+                            const r = d[i], g = d[i+1], b = d[i+2];
+                            // Remove fundo branco/cinza claro
+                            if (r > 200 && g > 200 && b > 200) {
+                                d[i+3] = 0;
+                            } else {
+                                const avg = (r + g + b) / 3;
+                                if (avg > 140) {
+                                    d[i+3] = Math.max(0, 255 - (avg - 140) * 3);
+                                }
+                            }
+                        }
+                        ctx.putImageData(idata, 0, 0);
+                        return c.toDataURL('image/png');
+                    }
+
+                    // Simone: x: 128, y: 345, w: 95, h: 45
+                    const simoneData = sliceSignature(126, 344, 98, 46);
+                    document.getElementById('holderSimone').innerHTML = `<img src="${simoneData}" alt="Simone Ramos">`;
+
+                    // Benhur: x: 455, y: 340, w: 105, h: 48
+                    const benhurData = sliceSignature(452, 338, 108, 50);
+                    document.getElementById('holderBenhur').innerHTML = `<img src="${benhurData}" alt="Benhur Etelberto">`;
+
+                    // Edilaine: x: 120, y: 675, w: 100, h: 45
+                    const edilaineData = sliceSignature(118, 674, 102, 46);
+                    document.getElementById('holderEdilaine').innerHTML = `<img src="${edilaineData}" alt="Edilaine Alves">`;
+                } catch(e) {
+                    console.warn('Signatures canvas extraction skipped:', e);
+                }
+            };
+            img.src = 'assets/uninter_diploma_original.jpg';
+        }
+
+        // Exportação Completa em PDF (Frente + Verso)
+        async function exportDiplomaPdf() {
+            const btn = document.querySelector('.btn-export');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<span>Gerando PDF em Alta Resolução...</span>`;
+            btn.disabled = true;
+
+            const originalDisplayFrente = document.getElementById('diplomaFrenteSheet').style.display;
+            const originalDisplayVerso = document.getElementById('diplomaVersoSheet').style.display;
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                // 1. Renderiza Frente
+                document.getElementById('diplomaFrenteSheet').style.display = 'flex';
+                const canvasFrente = await html2canvas(document.getElementById('diplomaFrenteSheet'), {
+                    scale: 2.5,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+                const imgDataFrente = canvasFrente.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgDataFrente, 'JPEG', 0, 0, 297, 210);
+
+                // 2. Renderiza Verso
+                pdf.addPage('a4', 'landscape');
+                document.getElementById('diplomaVersoSheet').style.display = 'flex';
+                const canvasVerso = await html2canvas(document.getElementById('diplomaVersoSheet'), {
+                    scale: 2.5,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+                const imgDataVerso = canvasVerso.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgDataVerso, 'JPEG', 0, 0, 297, 210);
+
+                const nomeAluno = (document.getElementById('inpNome').value || 'Diploma').trim().replace(/\s+/g, '_');
+                pdf.save(`Diploma_UNINTER_${nomeAluno}.pdf`);
+            } catch (err) {
+                console.error('Erro ao gerar PDF:', err);
+                alert('Erro ao gerar PDF do diploma. Abrindo modo de impressão...');
+                window.print();
+            } finally {
+                document.getElementById('diplomaFrenteSheet').style.display = originalDisplayFrente;
+                document.getElementById('diplomaVersoSheet').style.display = originalDisplayVerso;
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDiploma();
+            updateQr();
+            tryLoadSignaturesFromOriginal();
+
+            // Carrega saldo do usuário se logado
             try {
                 let user = JSON.parse(localStorage.getItem('happynation_user') || '{}');
                 let saldo = (user && user.saldo !== undefined) ? parseFloat(user.saldo) : 0;
