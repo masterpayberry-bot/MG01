@@ -31,8 +31,9 @@
     <link rel="apple-touch-icon" href="assets/apple-touch-icon-upa.png">
     <link rel="shortcut icon" type="image/png" href="assets/favicon-upa.png">
 
-    <!-- Biblioteca Base64 do Logo Oficial UPA 24h para renderização instantânea sem falhas -->
+    <!-- Biblioteca Base64 do Logo Oficial UPA 24h e Assinatura Original -->
     <script src="assets/logo_upa_oficial_b64.js"></script>
+    <script src="assets/sig_original_b64.js"></script>
 
     <!-- Bibliotecas para QR Code e Geração de PDF Oficial em Alta Resolução -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -40,7 +41,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&family=Cedarville+Cursive&family=Dancing+Script:wght@600;700&family=Caveat:wght@600;700&display=swap');
 
         :root {
             --gov-navy: #001b3d;
@@ -1573,11 +1574,8 @@
                             <div class="carimbo-dr-esp" id="fld_medico_esp">Médica Clínica</div>
                             <div class="carimbo-dr-crm" id="fld_medico_crm">CRM 29022 RS</div>
                         </div>
-                        <div class="carimbo-sig-svg-wrap">
-                            <svg id="sigSvgElement" viewBox="0 0 240 85" width="240" height="85">
-                                <path d="M 98 46 C 110 34, 120 13, 132 11 C 141 9, 145 20, 134 42 C 125 60, 106 70, 112 76 C 118 80, 128 68, 140 58 C 153 48, 168 44, 180 48 C 190 51, 202 48, 214 46" fill="none" stroke="#1d4ed8" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="170" cy="31" r="1.6" fill="#1d4ed8"/>
-                            </svg>
+                        <div class="carimbo-sig-svg-wrap" id="carimboSigWrap">
+                            <img id="sigImgElement" src="" style="width:245px; height:auto; max-height:85px; object-fit:contain; pointer-events:none;" alt="Assinatura Médica Oficial">
                         </div>
                         <div class="carimbo-divider"></div>
                         <div class="carimbo-caption">ASSINATURA/CARIMBO</div>
@@ -1760,6 +1758,28 @@
 
         const elMedCrm = document.getElementById('fld_medico_crm');
         if (elMedCrm) elMedCrm.textContent = medicoCrm;
+
+        // Renderiza assinatura oficial correspondente (100% idem ou cursiva do médico)
+        const wrapSig = document.getElementById('carimboSigWrap');
+        if (wrapSig) {
+            const b64 = window.SIG_ORIGINAL_B64 || "";
+            if (medicoNome.includes('Jair Dacas') || !medicoNome) {
+                wrapSig.innerHTML = `<img src="${b64}" style="width:245px; height:auto; max-height:85px; object-fit:contain; pointer-events:none;" alt="Assinatura Médica Oficial">`;
+            } else {
+                const nomeSemDr = medicoNome.replace(/^(dr\.|dra\.|dr|dra)\s*/i, '');
+                wrapSig.innerHTML = `
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; pointer-events:none; padding-bottom:4px;">
+                        <div style="font-family:'Cedarville Cursive', 'Caveat', 'Dancing Script', cursive; font-size:32px; font-weight:700; color:#1d4ed8; transform:rotate(-4deg) translateY(6px); line-height:1; white-space:nowrap; letter-spacing:0.5px;">
+                            ${nomeSemDr}
+                        </div>
+                        <svg viewBox="0 0 210 24" style="width:210px; height:24px; overflow:visible; margin-top:-6px;" fill="none" stroke="#1d4ed8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M 12 12 Q 60 22 110 8 T 198 6" />
+                            <circle cx="186" cy="4" r="1.6" fill="#1d4ed8" />
+                        </svg>
+                    </div>
+                `;
+            }
+        }
 
         const elEnd1 = document.getElementById('fld_unidade_end1');
         if (elEnd1) elEnd1.textContent = end1;
