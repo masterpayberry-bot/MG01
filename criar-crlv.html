@@ -462,7 +462,7 @@
             position: relative;
             box-sizing: border-box;
             overflow: hidden;
-            font-family: var(--font-doc);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             user-select: text;
         }
 
@@ -481,7 +481,7 @@
 
         /* Conteúdo Principal do CRLV */
         .crlv-content {
-            padding: 8px 24px 12px 24px;
+            padding: 8px 22px 14px 22px;
             position: relative;
             height: calc(1123px - 52px);
             box-sizing: border-box;
@@ -490,23 +490,23 @@
         /* Sub-Header com Título */
         .crlv-sub-header {
             margin-bottom: 6px;
-            padding-bottom: 4px;
-            border-bottom: 1.2px solid #222222;
+            padding-bottom: 3px;
+            border-bottom: 1.2px solid #000000;
         }
 
         .crlv-detran-uf {
             font-size: 8px;
             font-weight: 700;
-            color: #222;
+            color: #111111;
             text-transform: uppercase;
             letter-spacing: 0.3px;
             margin-bottom: 2px;
         }
 
         .crlv-doc-title {
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 900;
-            color: #000;
+            color: #000000;
             text-transform: uppercase;
             letter-spacing: 0.2px;
         }
@@ -540,13 +540,13 @@
 
         /* ─── TIPOGRAFIA DE CAMPOS DO CRLV ─── */
         .fld-label {
-            font-size: 7.2px;
+            font-size: 7px;
             font-weight: 500;
             color: #333333;
             text-transform: uppercase;
             letter-spacing: 0.15px;
             line-height: 1.15;
-            margin-bottom: 1.5px;
+            margin-bottom: 2px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
@@ -567,34 +567,42 @@
             letter-spacing: 0.4px;
         }
 
+        /* Células e Bordas */
+        .fld-cell {
+            padding: 1px 2px;
+        }
+
+        .fld-cell-border-r {
+            border-right: 1px solid #d4d4d4;
+            padding-right: 8px;
+            margin-right: 8px;
+        }
+
         .fld-row-border {
             border-bottom: 1px solid #d4d4d4;
-            padding-bottom: 2px;
+            padding-bottom: 2.5px;
             margin-bottom: 3.5px;
         }
 
         .fld-row-border-dark {
             border-bottom: 1.2px solid #222222;
-            padding-bottom: 2px;
+            padding-bottom: 2.5px;
             margin-bottom: 3.5px;
         }
 
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            column-gap: 8px;
         }
 
         .grid-3 {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            column-gap: 6px;
         }
 
         .grid-4 {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
-            column-gap: 4px;
         }
 
         /* Bloco 1: Renavam + QR Code */
@@ -602,7 +610,7 @@
             display: flex;
             align-items: stretch;
             justify-content: space-between;
-            gap: 8px;
+            gap: 10px;
             border-bottom: 1px solid #b5b5b5;
             padding-bottom: 4px;
             margin-bottom: 4px;
@@ -611,34 +619,37 @@
         .renavam-fields {
             flex: 1;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .crlv-qr-side {
-            width: 115px;
+            width: 122px;
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: flex-end;
-            gap: 2px;
+            gap: 4px;
             flex-shrink: 0;
         }
 
         .qr-rot-text {
             font-size: 6.8px;
-            font-weight: 600;
+            font-weight: 500;
             color: #555555;
             writing-mode: vertical-rl;
             transform: rotate(180deg);
             white-space: nowrap;
             letter-spacing: 0.2px;
-            height: 100px;
+            height: 110px;
             display: flex;
             align-items: center;
         }
 
         .crlv-qr-box {
-            width: 105px;
-            height: 105px;
+            width: 112px;
+            height: 112px;
             background: #ffffff;
             display: flex;
             align-items: center;
@@ -654,35 +665,43 @@
 
         /* Nota Rodapé Emissão */
         .emissao-footer-note {
-            font-size: 6.8px;
+            font-size: 6.5px;
             font-style: italic;
             color: #333333;
-            margin-top: 1px;
+            margin-top: 2px;
             margin-bottom: 6px;
             line-height: 1.2;
         }
 
-        /* Caixas Delimitadas: Observações e Mensagens */
-        .crlv-box {
-            border: 1px solid #777777;
-            border-radius: 3px;
-            padding: 5px 8px;
-            box-sizing: border-box;
-            background: #ffffff;
+        /* Linha Tracejada antes das Observações */
+        .crlv-sep-dashed {
+            border-bottom: 1px dashed #b5b5b5;
+            margin-bottom: 8px;
         }
 
-        .crlv-box-title {
+        /* Caixas Delimitadas: Observações, Mensagens e DPVAT Info (Com Legend Oficial) */
+        fieldset.crlv-box {
+            border: 1px solid #777777;
+            border-radius: 4px;
+            padding: 6px 10px 10px 10px;
+            box-sizing: border-box;
+            background: #ffffff;
+            margin: 0;
+        }
+
+        legend.crlv-box-title {
             font-size: 7.8px;
             font-weight: 700;
             color: #000000;
             text-transform: uppercase;
             letter-spacing: 0.2px;
-            margin-bottom: 4px;
+            padding: 0 4px;
+            margin: 0;
         }
 
         .crlv-box-observacoes {
             flex: 1;
-            min-height: 240px;
+            min-height: 245px;
             margin-bottom: 8px;
             box-sizing: border-box;
         }
@@ -698,12 +717,12 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 7.2px;
-            margin-top: 3px;
+            margin-top: 2px;
             margin-bottom: 6px;
         }
 
         .dpvat-table th, .dpvat-table td {
-            border: 1px solid #999999;
+            border: 1px solid #b0b0b0;
             padding: 2.5px 4px;
             vertical-align: top;
             text-align: left;
@@ -712,7 +731,7 @@
         .dpvat-table .th-lbl {
             font-size: 6.2px;
             color: #333333;
-            font-weight: 500;
+            font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 0.1px;
             display: block;
@@ -723,9 +742,9 @@
 
         .dpvat-table .td-val {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: 700;
-            color: #000;
+            color: #000000;
         }
 
         .check-box-fake {
@@ -739,18 +758,18 @@
 
         .crlv-box-dpvat-info {
             flex: 1;
-            min-height: 380px;
+            min-height: 420px;
             margin-top: 6px;
             box-sizing: border-box;
         }
 
         .assinatura-detran-lbl {
-            font-size: 7.2px;
-            font-weight: 700;
+            font-size: 7px;
+            font-weight: 500;
             color: #222222;
             text-align: center;
             letter-spacing: 0.3px;
-            margin: 4px 0 6px 0;
+            margin: 3px 0 6px 0;
             text-transform: uppercase;
         }
 
@@ -1193,7 +1212,7 @@
             <div id="canvasContainer">
                 <div id="zoomWrapper">
 
-                    <!-- FOLHA A4 CRLV-E DIGITAL -->
+                    <!-- FOLHA A4 CRLV-E DIGITAL (100% IDÊNTICA AO MODELO OFICIAL) -->
                     <div class="sheet-crlv-a4" id="sheetDoc">
                         
                         <!-- BARRA SUPERIOR DARK OFICIAL -->
@@ -1220,18 +1239,18 @@
                                     <div class="renavam-qr-block">
                                         <div class="renavam-fields">
                                             <!-- CÓDIGO RENAVAM -->
-                                            <div class="fld-row-border">
+                                            <div class="fld-row-border fld-cell">
                                                 <div class="fld-label">CÓDIGO RENAVAM</div>
                                                 <div class="fld-val fld-val-large" id="view_renavam">00872698394</div>
                                             </div>
 
                                             <!-- PLACA E EXERCÍCIO -->
                                             <div class="fld-row-border grid-2">
-                                                <div>
+                                                <div class="fld-cell fld-cell-border-r">
                                                     <div class="fld-label">PLACA</div>
                                                     <div class="fld-val" id="view_placa">JMI5104</div>
                                                 </div>
-                                                <div>
+                                                <div class="fld-cell">
                                                     <div class="fld-label">EXERCÍCIO</div>
                                                     <div class="fld-val" id="view_exercicio">2025</div>
                                                 </div>
@@ -1239,18 +1258,18 @@
 
                                             <!-- ANO FABRICAÇÃO E ANO MODELO -->
                                             <div class="fld-row-border grid-2">
-                                                <div>
+                                                <div class="fld-cell fld-cell-border-r">
                                                     <div class="fld-label">ANO FABRICAÇÃO</div>
                                                     <div class="fld-val" id="view_ano_fab">2005</div>
                                                 </div>
-                                                <div>
+                                                <div class="fld-cell">
                                                     <div class="fld-label">ANO MODELO</div>
                                                     <div class="fld-val" id="view_ano_mod">2006</div>
                                                 </div>
                                             </div>
 
                                             <!-- NÚMERO DO CRV -->
-                                            <div>
+                                            <div class="fld-cell">
                                                 <div class="fld-label">NÚMERO DO CRV</div>
                                                 <div class="fld-val" id="view_num_crv">***</div>
                                             </div>
@@ -1265,43 +1284,43 @@
 
                                     <!-- 2. CARACTERÍSTICAS TÉCNICAS E SEGURANÇA -->
                                     <div class="fld-row-border grid-2">
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">CÓDIGO DE SEGURANÇA DO CLA</div>
                                             <div class="fld-val" id="view_cla">47849505457</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell">
                                             <div class="fld-label">CAT</div>
                                             <div class="fld-val" id="view_cat">***</div>
                                         </div>
                                     </div>
 
-                                    <div class="fld-row-border">
+                                    <div class="fld-row-border fld-cell">
                                         <div class="fld-label">MARCA / MODELO / VERSÃO</div>
                                         <div class="fld-val" id="view_marca_modelo">YAMAHA/FAZER YS250</div>
                                     </div>
 
-                                    <div class="fld-row-border">
+                                    <div class="fld-row-border fld-cell">
                                         <div class="fld-label">ESPÉCIE / TIPO</div>
                                         <div class="fld-val" id="view_especie_tipo">PASSAGEIRO MOTOCICLETA</div>
                                     </div>
 
                                     <div class="fld-row-border grid-2">
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">PLACA ANTERIOR / UF</div>
                                             <div class="fld-val" id="view_placa_ant">*******/**</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell">
                                             <div class="fld-label">CHASSI</div>
                                             <div class="fld-val" id="view_chassi">9C6KG017060006367</div>
                                         </div>
                                     </div>
 
                                     <div class="fld-row-border-dark grid-2">
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">COR PREDOMINANTE</div>
                                             <div class="fld-val" id="view_cor">PRETA</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell">
                                             <div class="fld-label">COMBUSTÍVEL</div>
                                             <div class="fld-val" id="view_combustivel">GASOLINA</div>
                                         </div>
@@ -1311,18 +1330,19 @@
                                     <div class="emissao-footer-note">
                                         Documento emitido por DETRAN <span id="view_detran_emissao">BA</span> (<span id="view_hash_autenticidade">SA82639EA1C199AEB</span>) em <span id="view_data_emissao">25/03/2025</span> às <span id="view_hora_emissao">13:51:05</span>.
                                     </div>
+                                    <div class="crlv-sep-dashed"></div>
 
-                                    <!-- 3. OBSERVAÇÕES DO VEÍCULO -->
-                                    <div class="crlv-box crlv-box-observacoes">
-                                        <div class="crlv-box-title">OBSERVAÇÕES DO VEÍCULO</div>
-                                        <div class="fld-val" id="view_observacoes" style="font-size:10px; line-height:1.3;">SEM OBSERVAÇÕES</div>
-                                    </div>
+                                    <!-- 3. OBSERVAÇÕES DO VEÍCULO (FIELDSET COM LEGEND) -->
+                                    <fieldset class="crlv-box crlv-box-observacoes">
+                                        <legend class="crlv-box-title">OBSERVAÇÕES DO VEÍCULO</legend>
+                                        <div class="fld-val" id="view_observacoes" style="font-size:11px; line-height:1.3; padding-top:4px;">SEM OBSERVAÇÕES</div>
+                                    </fieldset>
 
-                                    <!-- 4. MENSAGENS SENATRAN -->
-                                    <div class="crlv-box crlv-box-mensagens">
-                                        <div class="crlv-box-title">MENSAGENS SENATRAN</div>
+                                    <!-- 4. MENSAGENS SENATRAN (FIELDSET COM LEGEND) -->
+                                    <fieldset class="crlv-box crlv-box-mensagens">
+                                        <legend class="crlv-box-title">MENSAGENS SENATRAN</legend>
                                         <div style="font-size: 8.5px; font-weight: 700; margin-bottom: 2px;">Você Sabia?</div>
-                                        <div style="font-size: 7.5px; line-height: 1.25; color: #222; margin-bottom: 4px;">
+                                        <div style="font-size: 7.2px; line-height: 1.25; color: #222; margin-bottom: 4px;">
                                             Na Carteira Digital de Trânsito - CDT, você tem acesso ao CRLV, à CNH e ainda ganha desconto de 40% nas infrações, além de muitos outros serviços de trânsito, sem nenhum custo!
                                         </div>
                                         <div style="font-size: 7.2px; font-weight: 700; margin-bottom: 4px;">
@@ -1331,7 +1351,7 @@
                                         <div style="display:flex; justify-content:center; align-items:center; margin-top:2px;">
                                             <img id="viewStoreBadgesImg" src="assets/crlv_qr_stores_hd.png" style="width:235px; height:auto; display:block; margin:4px auto 0 auto;" alt="Download CDT Store Badges">
                                         </div>
-                                    </div>
+                                    </fieldset>
 
                                 </div><!-- /coluna esquerda -->
 
@@ -1340,67 +1360,67 @@
                                     
                                     <!-- 1. ESPECIFICAÇÕES TÉCNICAS E PROPRIETÁRIO -->
                                     <div class="fld-row-border grid-2">
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">CATEGORIA</div>
                                             <div class="fld-val" id="view_categoria">PARTICULAR</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell">
                                             <div class="fld-label">CAPACIDADE</div>
                                             <div class="fld-val" id="view_capacidade">*.*</div>
                                         </div>
                                     </div>
 
                                     <div class="fld-row-border grid-2">
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">POTÊNCIA/CILINDRADA</div>
                                             <div class="fld-val" id="view_potencia">0CV/249</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell">
                                             <div class="fld-label">PESO BRUTO TOTAL</div>
                                             <div class="fld-val" id="view_peso_bruto">0.31</div>
                                         </div>
                                     </div>
 
                                     <div class="fld-row-border grid-4">
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">MOTOR</div>
                                             <div class="fld-val" id="view_motor">G347E-006361</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">CMT</div>
                                             <div class="fld-val" id="view_cmt">*.*</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">EIXOS</div>
                                             <div class="fld-val" id="view_eixos">*</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell">
                                             <div class="fld-label">LOTAÇÃO</div>
                                             <div class="fld-val" id="view_lotacao">02P</div>
                                         </div>
                                     </div>
 
-                                    <div class="fld-row-border">
+                                    <div class="fld-row-border fld-cell">
                                         <div class="fld-label">CARROCERIA</div>
                                         <div class="fld-val" id="view_carroceria">NÃO APLICAVEL</div>
                                     </div>
 
-                                    <div style="margin-bottom:2px;">
+                                    <div class="fld-cell" style="margin-bottom:2px;">
                                         <div class="fld-label">NOME</div>
                                         <div class="fld-val fld-val-large" id="view_nome">JORDELIO RODRIGUES DOS SANTOS</div>
                                     </div>
 
-                                    <div class="fld-row-border-dark" style="text-align:right;">
+                                    <div class="fld-row-border-dark fld-cell" style="text-align:right;">
                                         <div class="fld-label">CPF / CNPJ</div>
                                         <div class="fld-val fld-val-large" id="view_cpf_cnpj">046.660.515-38</div>
                                     </div>
 
                                     <div class="fld-row-border grid-2">
-                                        <div>
+                                        <div class="fld-cell fld-cell-border-r">
                                             <div class="fld-label">LOCAL</div>
                                             <div class="fld-val" id="view_local">VITORIA DA CONQUISTA BA</div>
                                         </div>
-                                        <div>
+                                        <div class="fld-cell">
                                             <div class="fld-label">DATA</div>
                                             <div class="fld-val" id="view_data">25/03/2025</div>
                                         </div>
@@ -1409,7 +1429,10 @@
                                     <div class="assinatura-detran-lbl">ASSINADO DIGITALMENTE PELO DETRAN</div>
 
                                     <!-- 2. TABELA SEGURO DPVAT -->
-                                    <div class="crlv-box-title" style="margin-top:2px;">DADOS DO SEGURO DPVAT</div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px; margin-bottom:2px;">
+                                        <div style="font-size:7.5px; font-weight:700; color:#000;">DADOS DO SEGURO DPVAT</div>
+                                        <div style="font-size:9px; font-weight:700; color:#000;">*</div>
+                                    </div>
                                     
                                     <table class="dpvat-table">
                                         <tr>
@@ -1423,7 +1446,7 @@
                                             </td>
                                             <td style="width:40%;">
                                                 <span class="th-lbl">PAGAMENTO</span>
-                                                <div style="font-size:7.5px; font-weight:700;">
+                                                <div style="font-size:7.2px; font-weight:700;">
                                                     <span class="check-box-fake"></span>COTA ÚNICA &nbsp;
                                                     <span class="check-box-fake"></span>PARCELADO
                                                 </div>
@@ -1459,11 +1482,11 @@
                                         </tr>
                                     </table>
 
-                                    <!-- 3. INFORMAÇÕES DO SEGURO DPVAT -->
-                                    <div class="crlv-box crlv-box-dpvat-info">
-                                        <div class="crlv-box-title">INFORMAÇÕES DO SEGURO DPVAT</div>
-                                        <div id="view_info_dpvat" style="font-size:7.5px; color:#333; line-height:1.35;"></div>
-                                    </div>
+                                    <!-- 3. INFORMAÇÕES DO SEGURO DPVAT (FIELDSET COM LEGEND) -->
+                                    <fieldset class="crlv-box crlv-box-dpvat-info">
+                                        <legend class="crlv-box-title">INFORMAÇÕES DO SEGURO DPVAT</legend>
+                                        <div id="view_info_dpvat" style="font-size:7.5px; color:#333; line-height:1.35; padding-top:4px;"></div>
+                                    </fieldset>
 
                                 </div><!-- /coluna direita -->
 
