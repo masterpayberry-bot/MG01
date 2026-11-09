@@ -1703,10 +1703,8 @@
         }
 
         function openCnhApp() {
-            // Always go directly to Gov.br login (skip update/download screen)
-            document.getElementById('screenLanding').style.display = 'none';
-            document.getElementById('screenUpdate').style.display = 'none';
-            document.getElementById('screenGovLogin').style.display = 'flex';
+            // Vai para a tela de Login do Gov.br
+            showAppScreen('screenGovLogin');
             document.getElementById('govStepCpf').style.display = 'block';
             document.getElementById('govStepPassword').style.display = 'none';
 
@@ -2562,9 +2560,7 @@
             localStorage.removeItem('cnh_logged_in');
             localStorage.removeItem('cnh_current_screen');
             localStorage.removeItem('cnh_active_driver');
-            showAppScreen('screenGovLogin');
-            document.getElementById('govStepCpf').style.display = 'block';
-            document.getElementById('govStepPassword').style.display = 'none';
+            showAppScreen('screenLanding');
         }
 
         // Ao clicar no card CONDUTOR na Home, abre as Informações do Condutor
@@ -4270,7 +4266,7 @@
                 setCnhSlide(1);
             } else {
                 syncFromServer();
-                openCnhApp();
+                showAppScreen('screenLanding');
             }
 
             // Sync periódico e ao focar no app para refletir alterações feitas no painel
