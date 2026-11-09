@@ -1605,10 +1605,10 @@
         <!-- EXAME FÍSICO -->
         <div class="card-action">
             <div class="card-action-text">
-                <div class="action-title">Prontuário SETRAN Físico</div>
-                <div class="action-sub">Solicite via impressa do rg</div>
+                <div class="action-title">Prontuário DETRAN Físico</div>
+                <div class="action-sub">Solicite via impressa do prontuário</div>
             </div>
-            <button class="btn-green-action" onclick="showToast('Solicitação de Prontuário SETRAN Físico em breve!')">
+            <button class="btn-green-action" onclick="showToast('Solicitação de Prontuário DETRAN Físico em breve!')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                 Adquirir
             </button>
@@ -1617,12 +1617,12 @@
         <!-- NOVO ATESTADO -->
         <div class="card-action">
             <div class="card-action-text">
-                <div class="action-title">Novo Prontuário SETRAN</div>
-                <div class="action-sub">Crie um novo rg médico</div>
+                <div class="action-title">Novo Prontuário DETRAN</div>
+                <div class="action-sub">Crie um novo prontuário de condutor</div>
             </div>
             <a href="criar-prontuario.html" class="btn-green-action" style="text-decoration:none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Criar Prontuário SETRAN
+                Criar Prontuário DETRAN
             </a>
         </div>
     </div>
@@ -1669,7 +1669,7 @@
                         <th>ID</th>
                         <th>Nome</th>
                         <th>CPF</th>
-                        <th>Prontuário SETRAN Status</th>
+                        <th>Prontuário DETRAN Status</th>
                         <th>Data e Hora da Geração</th>
                         <th>Ações</th>
                     </tr>
@@ -1974,25 +1974,25 @@ function renderTable() {
             <tr>
                 <td><input type="checkbox" style="accent-color:var(--primary); cursor:pointer;"></td>
                 <td class="id-cell">${c.id}</td>
-                <td class="name-cell" style="cursor:pointer;" onclick="verProntuário SETRAN('${c.id}')">${c.nome}</td>
+                <td class="name-cell" style="cursor:pointer;" onclick="verProntuario('${c.id}')">${c.nome}</td>
                 <td class="cpf-cell">${c.cpf}</td>
                 <td class="status-cell" style="color:${badgeColor} !important;">${badgeText}</td>
                 <td class="date-cell">${dateFormatted}</td>
                 <td>
                     <div class="actions-cell">
-                        <button class="btn-edit-cnh" onclick="editarProntuário SETRAN('${c.id}')">
+                        <button class="btn-edit-cnh" onclick="editarProntuario('${c.id}')">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            Editar Prontuário SETRAN
+                            Editar Prontuário DETRAN
                         </button>
                         <button class="btn-dots" onclick="toggleDropdown(event, this)">•••</button>
                         <div class="action-dropdown">
-                            <div class="dropdown-item" onclick="verProntuário SETRAN('${c.id}')">
+                            <div class="dropdown-item" onclick="verProntuario('${c.id}')">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 Ver Informações
                             </div>
-                            <div class="dropdown-item danger" onclick="deleteProntuário SETRANRow('${c.id}')">
+                            <div class="dropdown-item danger" onclick="deleteProntuarioRow('${c.id}')">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                                Excluir Prontuário SETRAN
+                                Excluir Prontuário DETRAN
                             </div>
                         </div>
                     </div>
@@ -2004,17 +2004,17 @@ function renderTable() {
     tbody.innerHTML = html;
 }
 
-function verProntuário SETRAN(atestId) {
+function verProntuario(atestId) {
     window.location.href = 'ver-prontuario.html?id=' + encodeURIComponent(atestId);
 }
 
-function editarProntuário SETRAN(atestId) {
+function editarProntuario(atestId) {
     window.location.href = 'criar-prontuario.html?id=' + encodeURIComponent(atestId) + '&edit=true';
 }
 
-function deleteProntuário SETRANRow(atestId) {
-    if (!confirm('Deseja realmente excluir este rg médico?')) return;
-    allRGs Digitais = allRGs Digitais.filter(c => c.id !== atestId);
+function deleteProntuarioRow(atestId) {
+    if (!confirm('Deseja realmente excluir este prontuário?')) return;
+    allProntuarios = (typeof allProntuarios !== 'undefined' ? allProntuarios : []).filter(c => c.id !== atestId);
 
     try {
         const deletedIds = JSON.parse(localStorage.getItem('happynation_deleted_rgs') || '[]');
@@ -2039,7 +2039,7 @@ function deleteProntuário SETRANRow(atestId) {
     } catch(e) {}
 
     renderTable();
-    showToast('Prontuário SETRAN excluído com sucesso.');
+    showToast('Prontuário DETRAN excluído com sucesso.');
 }
 
 function toggleDropdown(e, btn) {

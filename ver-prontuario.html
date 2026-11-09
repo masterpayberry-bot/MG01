@@ -6,7 +6,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MG Editáveis — Informações do Prontuário SETRAN</title>
+    <title>MG Editáveis — Informações do Prontuário DETRAN</title>
 
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -286,9 +286,9 @@
                 <span>Voltar</span>
             </a>
             <div class="top-page-title">Informações e Acesso</div>
-            <a href="criar-prontuario.html" class="btn-edit-top" id="btnEditProntuário SETRANTop">
+            <a href="criar-prontuario.html" class="btn-edit-top" id="btnEditProntuarioTop">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                <span>Editar Prontuário SETRAN</span>
+                <span>Editar Prontuário DETRAN</span>
             </a>
         </div>
 
@@ -339,7 +339,7 @@
                 </div>
 
                 <div class="info-group">
-                    <span class="info-label">Status do Prontuário SETRAN</span>
+                    <span class="info-label">Status do Prontuário DETRAN</span>
                     <div class="badge-status">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                         <span>Emitido (Ativo)</span>
@@ -351,7 +351,7 @@
         <!-- 2. DOWNLOAD DO RG DIGITAL -->
         <div class="card">
             <div class="card-header-title">DOWNLOAD DO DOCUMENTO</div>
-            <p style="font-size:12.5px; color:var(--text-muted); margin-top:-6px;">Clique no botão abaixo para realizar novamente o download em PDF do Prontuário SETRAN Médico oficial.</p>
+            <p style="font-size:12.5px; color:var(--text-muted); margin-top:-6px;">Clique no botão abaixo para realizar novamente o download em PDF do Prontuário DETRAN oficial.</p>
             
             <button class="btn-green-full" onclick="reDownloadPdf()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -371,7 +371,7 @@
 
             <div class="message-box" id="clientMsgPreview">Olá, <strong id="msgNome">TATIANI RODRIGUES MOR</strong>!
 
-Seu **Prontuário SETRAN Médico Oficial** foi emitido com sucesso na **<span id="msgUnidade">UPA 24h Itaquera</span>**.
+Seu **Prontuário DETRAN Oficial** foi emitido com sucesso na **<span id="msgUnidade">UPA 24h Itaquera</span>**.
 
 📋 **Dados do Atendimento:**
 • Paciente: <span id="msgNome2">TATIANI RODRIGUES MOR</span>
@@ -451,7 +451,7 @@ O documento digital em PDF com assinatura eletrônica e QR Code de autenticidade
         document.getElementById('msgUnidade').textContent = currentRecord.unidade.split('-')[0].trim();
         document.getElementById('msgMed').textContent = `${currentRecord.medico} (${currentRecord.crm})`;
 
-        const btnEdit = document.getElementById('btnEditProntuário SETRANTop');
+        const btnEdit = document.getElementById('btnEditProntuarioTop');
         if (btnEdit) {
             const q = new URLSearchParams();
             q.set('id', currentRecord.id);

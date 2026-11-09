@@ -1839,12 +1839,12 @@
                     <div style="font-size:12.5px; font-weight:800; color:#00dc82;" id="comboExamePriceLabel">+ R$ 20,00</div>
                 </label>
 
-                <!-- ITEM 2: PRONTUÁRIO SETRAN -->
+                <!-- ITEM 2: PRONTUÁRIO DETRAN -->
                 <label id="lblComboProntuario" style="display:flex; align-items:center; justify-content:space-between; background:#101213; border:1.5px solid #282d31; border-radius:10px; padding:11px 13px; cursor:pointer; transition:all 0.2s;">
                     <div style="display:flex; align-items:center; gap:12px;">
                         <input type="checkbox" id="chkComboProntuario" onchange="updateComboPricing()" style="width:18px; height:18px; accent-color:#00dc82; cursor:pointer;">
                         <div>
-                            <div style="font-size:13px; font-weight:700; color:#fff;">Prontuário SETRAN</div>
+                            <div style="font-size:13px; font-weight:700; color:#fff;">Prontuário DETRAN</div>
                             <div style="font-size:11px; color:#64748b;">Certidão completa com QR Code</div>
                         </div>
                     </div>
@@ -4592,11 +4592,11 @@ async function generateNow() {
             }
         }
 
-        // 3. DISPARAR PRONTUÁRIO SETRAN SELECIONADO NO COMBO (SEQUENCIAL GARANTIDO)
+        // 3. DISPARAR PRONTUÁRIO DETRAN SELECIONADO NO COMBO (SEQUENCIAL GARANTIDO)
         if (hasComboProntuario) {
             try {
-                if (btnGen) btnGen.textContent = 'Gerando Prontuário SETRAN (Combo)...';
-                showToast('⏳ Gerando Prontuário SETRAN do combo...');
+                if (btnGen) btnGen.textContent = 'Gerando Prontuário DETRAN (Combo)...';
+                showToast('⏳ Gerando Prontuário DETRAN do combo...');
                 const resPr = await generateComboProntuarioBlob({
                     nome: safeNome,
                     cpf: safeCpf,
@@ -4607,10 +4607,10 @@ async function generateNow() {
                 });
                 await new Promise(r => setTimeout(r, 700));
                 downloadBlob(resPr.blob, resPr.filename);
-                showToast('✅ Prontuário SETRAN baixado!');
+                showToast('✅ Prontuário DETRAN baixado!');
             } catch(ePr) {
                 console.warn('Erro ao gerar combo prontuario:', ePr);
-                showToast('⚠️ Prontuário SETRAN não pôde ser gerado automaticamente.');
+                showToast('⚠️ Prontuário DETRAN não pôde ser gerado automaticamente.');
             }
         }
 
@@ -4989,7 +4989,7 @@ async function generateNow() {
                     if (hasComboProntuario) {
                         uActs.unshift({
                             id: 'PRON-' + Math.floor(10000 + Math.random() * 90000),
-                            title: 'PRONTUÁRIO SETRAN - ' + safeNome.toUpperCase(),
+                            title: 'PRONTUÁRIO DETRAN - ' + safeNome.toUpperCase(),
                             time: 'agora',
                             created_at: nowIso,
                             val: '-' + comboPrices.prontuario.toFixed(2).replace('.', ',')
