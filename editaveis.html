@@ -64,135 +64,130 @@
             background-attachment: fixed;
         }
 
-        /* ─── TOPO / NAVBAR ─── */
-        .catalog-navbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(12, 15, 18, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        /* ─── HEADER PADRÃO (IGUAL DEMAIS PÁGINAS) ─── */
+        .header {
+            height: 62px;
+            background: #141716;
             border-bottom: 1px solid var(--border-color);
-            padding: 14px 28px;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
         }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .brand-logo-badge {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, rgba(0, 220, 130, 0.2), rgba(16, 185, 129, 0.05));
-            border: 1px solid rgba(0, 220, 130, 0.35);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            box-shadow: 0 4px 14px rgba(0, 220, 130, 0.15);
-        }
-
-        .brand-name {
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .brand-tag {
-            font-size: 10px;
-            font-weight: 800;
-            padding: 2px 7px;
-            border-radius: 6px;
-            background: rgba(0, 220, 130, 0.12);
-            color: var(--primary);
-            border: 1px solid rgba(0, 220, 130, 0.28);
-            letter-spacing: 0.5px;
-        }
-
-        .nav-actions {
+        .header-brand {
             display: flex;
             align-items: center;
             gap: 12px;
+            text-decoration: none;
+            color: #fff;
         }
-
-        .btn-nav-back {
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #062517;
+            box-shadow: 0 2px 10px rgba(0, 220, 130, 0.3);
+        }
+        .brand-icon-img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+        }
+        .brand-text {
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: -0.4px;
+            color: #ffffff;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+        }
+        .saldo-pill {
+            background: #141f1a;
+            border: 1px solid #1a3f2b;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 12.5px;
+            padding: 6px 14px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 14px;
-            border-radius: 9px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .saldo-pill:hover {
+            background: #1b2e25;
+            border-color: var(--primary);
+        }
+        .header-link {
             color: var(--text-secondary);
             font-size: 13px;
-            font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .btn-nav-back:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(-2px);
-        }
-
-        .user-balance-pill {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 6px 14px;
-            border-radius: 30px;
-            background: rgba(0, 220, 130, 0.08);
-            border: 1px solid rgba(0, 220, 130, 0.25);
-            font-size: 13px;
+            gap: 6px;
+            transition: color 0.2s;
+            font-weight: 500;
         }
-
-        .balance-label {
+        .header-link:hover {
+            color: #ffffff;
+        }
+        .header-icon {
             color: var(--text-secondary);
-            font-size: 11.5px;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .header-icon svg {
+            width: 17px;
+            height: 17px;
+        }
+        .header-icon:hover {
+            color: #ffffff;
+        }
+        .btn-voltar {
+            color: var(--text-secondary);
+            font-size: 13px;
             font-weight: 600;
-        }
-
-        .balance-val {
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 14px;
-        }
-
-        .btn-add-saldo {
-            background: var(--primary);
-            color: #062517;
-            font-size: 11.5px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 20px;
             text-decoration: none;
-            transition: all 0.2s;
-            margin-left: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+            cursor: pointer;
         }
-
-        .btn-add-saldo:hover {
-            background: #05f08f;
-            transform: scale(1.05);
+        .btn-voltar:hover {
+            color: #ffffff;
+        }
+        .btn-voltar svg {
+            width: 14px;
+            height: 14px;
         }
 
         /* ─── CONTAINER PRINCIPAL TELA CHEIA ─── */
         .catalog-container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 92px 28px 70px 28px;
+        }
             padding: 36px 28px 70px 28px;
         }
 
@@ -668,31 +663,36 @@
 </head>
 <body>
 
-    <!-- NAVBAR SUPERIOR -->
-    <header class="catalog-navbar">
-        <a href="index.html" class="nav-brand">
-            <div class="brand-logo-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            </div>
-            <div>
-                <div class="brand-name">
-                    <span>MG Editáveis</span>
-                    <span class="brand-tag">PRO</span>
+    <!-- HEADER PADRÃO IDÊNTICO ÀS DEMAIS PÁGINAS -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
                 </div>
-            </div>
-        </a>
-
-        <div class="nav-actions">
-            <div class="user-balance-pill">
-                <span class="balance-label">Seu Saldo:</span>
-                <span class="balance-val" id="userBalanceDisplay">R$ 0,00</span>
-                <a href="recargas.html" class="btn-add-saldo">+ Recarregar</a>
-            </div>
-
-            <a href="index.html" class="btn-nav-back" title="Voltar ao Painel">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-                <span>Painel Principal</span>
+                <span class="brand-text">MG Editáveis</span>
             </a>
+
+            <div class="header-right">
+                <a href="recargas.html" class="saldo-pill" title="Clique para recarregar saldo">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+
+                <a href="indicacoes.html" class="header-link" style="display:inline-flex; align-items:center; gap:6px; color:#94a3b8; font-size:13px; font-weight:600; text-decoration:none; white-space:nowrap; flex-shrink:0;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px; height:15px; min-width:15px; min-height:15px; flex-shrink:0;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <span>Indique e Ganhe</span>
+                </a>
+
+                <div class="header-icon" onclick="alert('Sem notificações pendentes no momento.')" title="Notificações">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+
+                <a href="index.html" class="btn-voltar" title="Voltar ao Painel">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                    <span>Voltar</span>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -1079,8 +1079,10 @@
             try {
                 let user = JSON.parse(localStorage.getItem('happynation_user') || '{}');
                 let saldo = (user && user.saldo !== undefined) ? parseFloat(user.saldo) : 0;
-                const el = document.getElementById('userBalanceDisplay');
-                if (el) el.textContent = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+                const el = document.getElementById('userHeaderSaldo');
+                if (el) el.textContent = `Saldo R$ ${saldo.toFixed(2).replace('.', ',')}`;
+                const el2 = document.getElementById('userBalanceDisplay');
+                if (el2) el2.textContent = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
             } catch(e) {}
         }
 
