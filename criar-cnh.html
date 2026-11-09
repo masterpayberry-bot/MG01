@@ -2750,54 +2750,37 @@
           if (el) el.value = &quot;&quot;;
         });
 
-        function setPair(valId, habId) {
-          var elV = document.getElementById(valId);
-          if (elV) elV.value = val;
-          var elH = document.getElementById(habId);
-          if (elH) elH.value = "";
+        function setCategoryVal(valId) {
+          var el = document.getElementById(valId);
+          if (el) el.value = val;
         }
 
-        var catUpper = cat.toUpperCase().replace(/\s+/g, &quot;&quot;);
-        var hasACC = catUpper.indexOf(&quot;ACC&quot;) !== -1;
-        var hasA = (catUpper.indexOf(&quot;A&quot;) !== -1 &amp;&amp; !hasACC &amp;&amp; catUpper.indexOf(&quot;A1&quot;) === -1);
-        var hasA1 = catUpper.indexOf(&quot;A1&quot;) !== -1;
+        var catUpper = cat.toUpperCase().replace(/[^A-Z0-9]/g, &quot;&quot;);
 
+        // Categorias específicas/compostas
+        if (catUpper.indexOf(&quot;ACC&quot;) !== -1) setCategoryVal(&quot;cat_acc_val&quot;);
+        if (catUpper.indexOf(&quot;C1E&quot;) !== -1) setCategoryVal(&quot;cat_c1e_val&quot;);
+        if (catUpper.indexOf(&quot;D1E&quot;) !== -1) setCategoryVal(&quot;cat_d1e_val&quot;);
+        if (catUpper.indexOf(&quot;A1&quot;) !== -1)  setCategoryVal(&quot;cat_a1_val&quot;);
+        if (catUpper.indexOf(&quot;B1&quot;) !== -1)  setCategoryVal(&quot;cat_b1_val&quot;);
+        if (catUpper.indexOf(&quot;C1&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;C1E&quot;) === -1) setCategoryVal(&quot;cat_c1_val&quot;);
+        if (catUpper.indexOf(&quot;D1&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;D1E&quot;) === -1) setCategoryVal(&quot;cat_d1_val&quot;);
+        if (catUpper.indexOf(&quot;BE&quot;) !== -1)  setCategoryVal(&quot;cat_be_val&quot;);
+        if (catUpper.indexOf(&quot;CE&quot;) !== -1)  setCategoryVal(&quot;cat_ce_val&quot;);
+        if (catUpper.indexOf(&quot;DE&quot;) !== -1)  setCategoryVal(&quot;cat_de_val&quot;);
+
+        // Categorias principais
+        var hasA = catUpper.indexOf(&quot;A&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;ACC&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;A1&quot;) === -1;
         var hasB = catUpper.indexOf(&quot;B&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;B1&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;BE&quot;) === -1;
-        var hasB1 = catUpper.indexOf(&quot;B1&quot;) !== -1;
-        var hasBE = catUpper.indexOf(&quot;BE&quot;) !== -1;
-
-        var hasC = catUpper.indexOf(&quot;C&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;C1&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;CE&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;C1E&quot;) === -1 &amp;&amp; !hasACC;
-        var hasC1 = catUpper.indexOf(&quot;C1&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;C1E&quot;) === -1;
-        var hasC1E = catUpper.indexOf(&quot;C1E&quot;) !== -1;
-        var hasCE = catUpper.indexOf(&quot;CE&quot;) !== -1;
-
+        var hasC = catUpper.indexOf(&quot;C&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;C1&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;CE&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;C1E&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;ACC&quot;) === -1;
         var hasD = catUpper.indexOf(&quot;D&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;D1&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;DE&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;D1E&quot;) === -1;
-        var hasD1 = catUpper.indexOf(&quot;D1&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;D1E&quot;) === -1;
-        var hasD1E = catUpper.indexOf(&quot;D1E&quot;) !== -1;
-        var hasDE = catUpper.indexOf(&quot;DE&quot;) !== -1;
+        var hasE = (catUpper.indexOf(&quot;E&quot;) !== -1 &amp;&amp; catUpper.indexOf(&quot;BE&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;CE&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;DE&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;C1E&quot;) === -1 &amp;&amp; catUpper.indexOf(&quot;D1E&quot;) === -1);
 
-        var hasE = catUpper.indexOf(&quot;E&quot;) !== -1 &amp;&amp; !hasBE &amp;&amp; !hasCE &amp;&amp; !hasDE &amp;&amp; !hasC1E &amp;&amp; !hasD1E;
-
-        // Regras de progressão de habilitação CTB:
-        if (hasC) { hasB = true; }
-        if (hasD) { hasB = true; hasC = true; }
-        if (hasE || hasCE) { hasB = true; hasC = true; hasCE = true; }
-        if (hasDE) { hasB = true; hasC = true; hasD = true; }
-
-        if (hasACC) setPair(&quot;cat_acc_val&quot;, &quot;cat_acc_hab&quot;);
-        if (hasA1)  setPair(&quot;cat_a1_val&quot;, &quot;cat_a1_hab&quot;);
-        if (hasA)   setPair(&quot;cat_a_val&quot;, &quot;cat_a_hab&quot;);
-        if (hasB1)  setPair(&quot;cat_b1_val&quot;, &quot;cat_b1_hab&quot;);
-        if (hasB)   setPair(&quot;cat_b_val&quot;, &quot;cat_b_hab&quot;);
-        if (hasBE)  setPair(&quot;cat_be_val&quot;, &quot;cat_be_hab&quot;);
-        if (hasC1)  setPair(&quot;cat_c1_val&quot;, &quot;cat_c1_hab&quot;);
-        if (hasC1E) setPair(&quot;cat_c1e_val&quot;, &quot;cat_c1e_hab&quot;);
-        if (hasC)   setPair(&quot;cat_c_val&quot;, &quot;cat_c_hab&quot;);
-        if (hasCE)  setPair(&quot;cat_ce_val&quot;, &quot;cat_ce_hab&quot;);
-        if (hasD1)  setPair(&quot;cat_d1_val&quot;, &quot;cat_d1_hab&quot;);
-        if (hasD1E) setPair(&quot;cat_d1e_val&quot;, &quot;cat_d1e_hab&quot;);
-        if (hasD)   setPair(&quot;cat_d_val&quot;, &quot;cat_d_hab&quot;);
-        if (hasDE)  setPair(&quot;cat_de_val&quot;, &quot;cat_de_hab&quot;);
+        if (hasA) setCategoryVal(&quot;cat_a_val&quot;);
+        if (hasB) setCategoryVal(&quot;cat_b_val&quot;);
+        if (hasC) setCategoryVal(&quot;cat_c_val&quot;);
+        if (hasD) setCategoryVal(&quot;cat_d_val&quot;);
+        if (hasE) setCategoryVal(&quot;cat_ce_val&quot;);
       }
 
       window.sincronizarTabelaCategorias = sincronizarTabelaCategorias;

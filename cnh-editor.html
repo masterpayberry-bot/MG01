@@ -843,54 +843,37 @@
           if (el) el.value = "";
         });
 
-        function setPair(valId, habId) {
-          const elV = document.getElementById(valId);
-          if (elV) elV.value = val;
-          const elH = document.getElementById(habId);
-          if (elH) elH.value = "";
+        function setCategoryVal(valId) {
+          const el = document.getElementById(valId);
+          if (el) el.value = val;
         }
 
-        const catUpper = cat.toUpperCase().replace(/\s+/g, "");
-        let hasACC = catUpper.includes("ACC");
-        let hasA = catUpper.includes("A") && !hasACC && !catUpper.includes("A1");
-        let hasA1 = catUpper.includes("A1");
+        const catUpper = cat.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
-        let hasB = catUpper.includes("B") && !catUpper.includes("B1") && !catUpper.includes("BE");
-        let hasB1 = catUpper.includes("B1");
-        let hasBE = catUpper.includes("BE");
+        // Categorias específicas/compostas
+        if (catUpper.includes("ACC")) setCategoryVal("cat_acc_val");
+        if (catUpper.includes("C1E")) setCategoryVal("cat_c1e_val");
+        if (catUpper.includes("D1E")) setCategoryVal("cat_d1e_val");
+        if (catUpper.includes("A1"))  setCategoryVal("cat_a1_val");
+        if (catUpper.includes("B1"))  setCategoryVal("cat_b1_val");
+        if (catUpper.includes("C1") && !catUpper.includes("C1E")) setCategoryVal("cat_c1_val");
+        if (catUpper.includes("D1") && !catUpper.includes("D1E")) setCategoryVal("cat_d1_val");
+        if (catUpper.includes("BE"))  setCategoryVal("cat_be_val");
+        if (catUpper.includes("CE"))  setCategoryVal("cat_ce_val");
+        if (catUpper.includes("DE"))  setCategoryVal("cat_de_val");
 
-        let hasC = catUpper.includes("C") && !catUpper.includes("C1") && !catUpper.includes("CE") && !catUpper.includes("C1E") && !hasACC;
-        let hasC1 = catUpper.includes("C1") && !catUpper.includes("C1E");
-        let hasC1E = catUpper.includes("C1E");
-        let hasCE = catUpper.includes("CE");
+        // Categorias principais
+        const hasA = catUpper.includes("A") && !catUpper.includes("ACC") && !catUpper.includes("A1");
+        const hasB = catUpper.includes("B") && !catUpper.includes("B1") && !catUpper.includes("BE");
+        const hasC = catUpper.includes("C") && !catUpper.includes("C1") && !catUpper.includes("CE") && !catUpper.includes("C1E") && !catUpper.includes("ACC");
+        const hasD = catUpper.includes("D") && !catUpper.includes("D1") && !catUpper.includes("DE") && !catUpper.includes("D1E");
+        const hasE = (catUpper.includes("E") && !catUpper.includes("BE") && !catUpper.includes("CE") && !catUpper.includes("DE") && !catUpper.includes("C1E") && !catUpper.includes("D1E"));
 
-        let hasD = catUpper.includes("D") && !catUpper.includes("D1") && !catUpper.includes("DE") && !catUpper.includes("D1E");
-        let hasD1 = catUpper.includes("D1") && !catUpper.includes("D1E");
-        let hasD1E = catUpper.includes("D1E");
-        let hasDE = catUpper.includes("DE");
-
-        let hasE = catUpper.includes("E") && !hasBE && !hasCE && !hasDE && !hasC1E && !hasD1E;
-
-        // Regras de progressão de habilitação CTB:
-        if (hasC) { hasB = true; }
-        if (hasD) { hasB = true; hasC = true; }
-        if (hasE || hasCE) { hasB = true; hasC = true; hasCE = true; }
-        if (hasDE) { hasB = true; hasC = true; hasD = true; }
-
-        if (hasACC) setPair("cat_acc_val", "cat_acc_hab");
-        if (hasA1)  setPair("cat_a1_val", "cat_a1_hab");
-        if (hasA)   setPair("cat_a_val", "cat_a_hab");
-        if (hasB1)  setPair("cat_b1_val", "cat_b1_hab");
-        if (hasB)   setPair("cat_b_val", "cat_b_hab");
-        if (hasBE)  setPair("cat_be_val", "cat_be_hab");
-        if (hasC1)  setPair("cat_c1_val", "cat_c1_hab");
-        if (hasC1E) setPair("cat_c1e_val", "cat_c1e_hab");
-        if (hasC)   setPair("cat_c_val", "cat_c_hab");
-        if (hasCE)  setPair("cat_ce_val", "cat_ce_hab");
-        if (hasD1)  setPair("cat_d1_val", "cat_d1_hab");
-        if (hasD1E) setPair("cat_d1e_val", "cat_d1e_hab");
-        if (hasD)   setPair("cat_d_val", "cat_d_hab");
-        if (hasDE)  setPair("cat_de_val", "cat_de_hab");
+        if (hasA) setCategoryVal("cat_a_val");
+        if (hasB) setCategoryVal("cat_b_val");
+        if (hasC) setCategoryVal("cat_c_val");
+        if (hasD) setCategoryVal("cat_d_val");
+        if (hasE) setCategoryVal("cat_ce_val");
       }
 
       window.sincronizarTabelaCategorias = sincronizarTabelaCategorias;
