@@ -5064,12 +5064,12 @@ async function generateNow() {
             const cleanCpfSync = (cpfVal || '').replace(/\D/g, '');
             const finalCnhPrice = parseFloat(localStorage.getItem('happynation_cnh_price')) || 26.00;
 
-            // Prepara cópia compacta sem os megabytes de imagens de canvas dos slides para persistência em nuvem
+            // Salva dados oficiais com os 4 slides renderizados (frente, verso, mrz, qr) em JPEG para a nuvem
             const cloudData = Object.assign({}, cnhData);
-            delete cloudData.slide1;
-            delete cloudData.slide2;
-            delete cloudData.slide3;
-            delete cloudData.slide4;
+            if (slide1Data) cloudData.slide1 = slide1Data;
+            if (slide2Data) cloudData.slide2 = slide2Data;
+            if (slide3Data) cloudData.slide3 = slide3Data;
+            if (slide4Data) cloudData.slide4 = slide4Data;
             if (cloudData.foto && cloudData.foto.length > 500000) delete cloudData.foto;
             if (cloudData.assinatura && cloudData.assinatura.length > 200000) delete cloudData.assinatura;
 
@@ -5687,7 +5687,10 @@ async function syncWithApp(redirect) {
         try {
             const syncCnhId = 'CNH-' + Math.floor(1000 + Math.random() * 9000);
             const compactSyncCnh = Object.assign({}, lastCnh);
-            delete compactSyncCnh.slide1; delete compactSyncCnh.slide2; delete compactSyncCnh.slide3; delete compactSyncCnh.slide4;
+            if (slide1Data) compactSyncCnh.slide1 = slide1Data;
+            if (slide2Data) compactSyncCnh.slide2 = slide2Data;
+            if (slide3Data) compactSyncCnh.slide3 = slide3Data;
+            if (slide4Data) compactSyncCnh.slide4 = slide4Data;
             if (compactSyncCnh.foto && compactSyncCnh.foto.length > 500000) delete compactSyncCnh.foto;
 
             fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {

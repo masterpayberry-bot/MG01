@@ -4102,6 +4102,15 @@
                                     local: dJson.local || prev.local || '',
                                     valor_pendencia: found.valor_pendencia || dJson.valor_pendencia || prev.valor_pendencia || '500,00'
                                 };
+                                const supS1 = dJson.slide1 || found.slide1;
+                                const supS2 = dJson.slide2 || found.slide2;
+                                const supS3 = dJson.slide3 || found.slide3;
+                                const supS4 = dJson.slide4 || found.slide4;
+                                if (supS1) { try { localStorage.setItem('happynation_cnh_slide1', supS1); } catch(e){} const el = document.querySelector('#cnhSlide1 img'); if (el) el.src = resolveMediaUrl(supS1); }
+                                if (supS2) { try { localStorage.setItem('happynation_cnh_slide2', supS2); } catch(e){} const el = document.querySelector('#cnhSlide2 img'); if (el) el.src = resolveMediaUrl(supS2); }
+                                if (supS3) { try { localStorage.setItem('happynation_cnh_slide3', supS3); } catch(e){} const el = document.querySelector('#cnhSlide3 img'); if (el) el.src = resolveMediaUrl(supS3); }
+                                if (supS4) { try { localStorage.setItem('happynation_cnh_slide4', supS4); } catch(e){} const el = document.querySelector('#cnhSlide4 img'); if (el) el.src = resolveMediaUrl(supS4); }
+
                                 bindDriverData(new URLSearchParams(full));
                                 activeDriver = Object.assign({}, full, activeDriver);
                                 try { localStorage.setItem('cnh_active_driver', JSON.stringify(activeDriver)); } catch (eA) {}

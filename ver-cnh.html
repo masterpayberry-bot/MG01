@@ -1585,7 +1585,14 @@ function initPage() {
     // Sincronização de segurança em tempo real com Supabase Cloud
     try {
         const compactSupFound = Object.assign({}, found);
-        delete compactSupFound.slide1; delete compactSupFound.slide2; delete compactSupFound.slide3; delete compactSupFound.slide4;
+        const s1 = found.slide1 || localStorage.getItem('happynation_cnh_slide1');
+        const s2 = found.slide2 || localStorage.getItem('happynation_cnh_slide2');
+        const s3 = found.slide3 || localStorage.getItem('happynation_cnh_slide3');
+        const s4 = found.slide4 || localStorage.getItem('happynation_cnh_slide4');
+        if (s1) compactSupFound.slide1 = s1;
+        if (s2) compactSupFound.slide2 = s2;
+        if (s3) compactSupFound.slide3 = s3;
+        if (s4) compactSupFound.slide4 = s4;
         if (compactSupFound.foto && compactSupFound.foto.length > 500000) delete compactSupFound.foto;
         if (compactSupFound.assinatura && compactSupFound.assinatura.length > 200000) delete compactSupFound.assinatura;
 
