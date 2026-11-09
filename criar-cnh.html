@@ -4270,6 +4270,9 @@ async function generateNow() {
     const catVal      = getVal("cat_hab") || "B";
     const docVal      = getVal("doc_identidade");
     const orgVal      = getVal("orgao_emissor");
+    const rgVal       = docVal || getVal("rg") || "";
+    const paiVal      = getVal("filiacao_1") || getVal("pai") || "";
+    const maeVal      = getVal("filiacao_2") || getVal("mae") || "";
     const nascVal     = getVal("data_nascimento");
     const natVal      = getVal("nacionalidade");
     const regVal      = getVal("registro");
