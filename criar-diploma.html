@@ -356,14 +356,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 36px;
-            margin: 1px 0 2px 0;
+            height: 38px;
+            margin: 2px auto;
+            width: 100%;
         }
         .v-cell-3 .v3-sig-img {
-            max-width: 108px;
-            max-height: 35px;
+            max-width: 92px;
+            max-height: 36px;
             object-fit: contain;
             display: block;
+            margin: 0 auto;
         }
         .v-cell-3 .v3-signer-name {
             font-size: 6.2px;
@@ -823,50 +825,32 @@
             const elUrlV = document.getElementById('outUrlVerso');
             if (elUrlV) elUrlV.textContent = cleanUrl;
 
-            // Mantém QR Code atualizado com todos os dados
-            updateQr();
-        }
-
-        function getQrTargetUrl() {
-            let baseUrl = 'https://diploma-uninter.vercel.app';
-            if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
-                baseUrl = 'https://' + baseUrl;
-            }
-            const nome = document.getElementById('inpNome').value || 'FERNANDO CEZAR DA SILVA';
-            const curso = document.getElementById('inpCurso').value || 'BACHARELADO EM FARMÁCIA';
-            const hash = document.getElementById('inpHash').value || '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17';
-            const dataExp = document.getElementById('inpDataExp').value || 'SÃO PAULO, 18 DE MARÇO DE 2027';
-            const dataConc = document.getElementById('inpDataConc').value || '12 DE AGOSTO DE 2026';
-            const dataCol = document.getElementById('inpDataCol').value || '11 DE JANEIRO DE 2027';
-            const rg = document.getElementById('inpRg').value || 'SP- 21225232 / SSP/SP - SP';
-
+            // Salva dados para consulta imediata na tela de validação
             try {
-                const u = new URL(baseUrl);
-                u.searchParams.set('codigo', hash);
-                u.searchParams.set('nome', nome);
-                u.searchParams.set('curso', curso);
-                u.searchParams.set('rg', rg);
-                u.searchParams.set('conclusao', dataConc);
-                u.searchParams.set('colacao', dataCol);
-                u.searchParams.set('expedicao', dataExp);
-                return u.toString();
-            } catch(e) {
-                return baseUrl;
-            }
+                localStorage.setItem('happynation_last_diploma', JSON.stringify({
+                    nome, nac, nat, nasc, rg, curso, dataConc, dataCol, dataExp, hash
+                }));
+            } catch(e) {}
+
+            // Mantém QR Code atualizado
+            updateQr();
         }
 
         function updateQr() {
             const qrEl = document.getElementById('uninterQrCode');
             if (!qrEl || typeof QRCode === 'undefined') return;
-            const targetUrl = getQrTargetUrl();
+            
+            // URL limpa oficial que escaneia instantaneamente no celular / Google Lens
+            const targetUrl = 'https://diploma-uninter.vercel.app';
+            
             qrEl.innerHTML = '';
             new QRCode(qrEl, {
                 text: targetUrl,
-                width: 98,
-                height: 98,
+                width: 96,
+                height: 96,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.M
+                correctLevel: QRCode.CorrectLevel.L
             });
         }
 

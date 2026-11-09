@@ -483,10 +483,15 @@
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
 
-            const nome = params.get('nome') || params.get('aluno') || params.get('diplomado');
+            let last = {};
+            try {
+                last = JSON.parse(localStorage.getItem('happynation_last_diploma') || '{}');
+            } catch(e) {}
+
+            const nome = params.get('nome') || params.get('aluno') || params.get('diplomado') || last.nome;
             if (nome) document.getElementById('lblNome').textContent = nome.toUpperCase();
 
-            const curso = params.get('curso') || params.get('graduacao');
+            const curso = params.get('curso') || params.get('graduacao') || last.curso;
             if (curso) {
                 document.getElementById('lblCurso').textContent = curso.toUpperCase();
                 // Ajusta Grau
@@ -499,19 +504,19 @@
                 }
             }
 
-            const doc = params.get('rg') || params.get('documento') || params.get('doc');
+            const doc = params.get('rg') || params.get('documento') || params.get('doc') || last.rg;
             if (doc) document.getElementById('lblDoc').textContent = doc.toUpperCase();
 
-            const conc = params.get('conclusao') || params.get('dataConc');
+            const conc = params.get('conclusao') || params.get('dataConc') || last.dataConc;
             if (conc) document.getElementById('lblDataConc').textContent = conc.toUpperCase();
 
-            const col = params.get('colacao') || params.get('dataCol');
+            const col = params.get('colacao') || params.get('dataCol') || last.dataCol;
             if (col) document.getElementById('lblDataCol').textContent = col.toUpperCase();
 
-            const exp = params.get('expedicao') || params.get('dataExp') || params.get('data');
+            const exp = params.get('expedicao') || params.get('dataExp') || params.get('data') || last.dataExp;
             if (exp) document.getElementById('lblDataExp').textContent = exp.toUpperCase();
 
-            const hash = params.get('codigo') || params.get('hash') || params.get('id');
+            const hash = params.get('codigo') || params.get('hash') || params.get('id') || last.hash;
             if (hash) document.getElementById('lblHash').textContent = hash;
         });
     </script>
