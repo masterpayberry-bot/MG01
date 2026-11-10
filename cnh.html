@@ -2200,6 +2200,10 @@ function deleteCnhRow(cnhId) {
             if (!canceled.includes(cleanCpf)) {
                 canceled.push(cleanCpf);
                 localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceled));
+            try {
+                const vPendVal = itemToDelete ? (itemToDelete.valor_pendencia || itemToDelete.valor || (itemToDelete.dados && itemToDelete.dados.valor_pendencia) || '500,00') : '500,00';
+                localStorage.setItem('happynation_blocked_cnh_' + cleanCpf, JSON.stringify({ valor_pendencia: vPendVal }));
+            } catch(eBlk) {}
             }
 
             // Se a CNH ativa no app for deste CPF, limpa os dados da CNH

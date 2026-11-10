@@ -1637,7 +1637,59 @@
                         "</head>\n" +
                         "<body style=\"margin:0; background:#121414; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif;\">\n" +
                         "Abrindo CNH Digital...\n" +
-                        "</body>\n" +
+                        "
+    <!-- MODAL OFICIAL: BLOQUEIO DE PRONTUÁRIO / PENDÊNCIA FINANCEIRA DETRAN -->
+    <div id="cnhBlockedEntryModal" style="display:none; position:fixed; inset:0; z-index:9999999; background:rgba(15,23,42,0.85); align-items:center; justify-content:center; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
+        <div style="background:#ffffff; border-radius:22px; width:min(420px, 92vw); box-shadow:0 20px 50px rgba(0,0,0,0.45); overflow:hidden; border:1px solid #fee2e2;">
+            <!-- Header Vermelho Alerta Detran -->
+            <div style="background:#dc2626; color:#ffffff; padding:18px 20px; display:flex; align-items:center; gap:12px;">
+                <div style="width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div>
+                    <div style="font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; opacity:0.9;">SENATRAN / RENACH</div>
+                    <div style="font-size:17px; font-weight:800; line-height:1.2;">Prontuário Bloqueado</div>
+                </div>
+            </div>
+
+            <!-- Corpo da Notificação Oficial -->
+            <div style="padding:22px 20px 24px;">
+                <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:12px; padding:12px 14px; margin-bottom:18px;">
+                    <span style="color:#991b1b; font-size:12.5px; line-height:1.45; display:block; font-weight:500;">
+                        ⚠️ <strong>Atenção:</strong> Foi identificada uma restrição financeira pendente vinculada ao seu prontuário no sistema nacional de trânsito.
+                    </span>
+                </div>
+
+                <p style="font-size:13.5px; color:#334155; line-height:1.6; margin:0 0 16px 0;">
+                    A emissão e o acesso à sua Carteira Digital de Trânsito foram temporariamente descontinuados até que ocorra a regularização dos débitos administrativos pendentes.
+                </p>
+
+                <!-- Card de Débito / Valor Gerado na CNH -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-size:12px; color:#64748b; font-weight:600;">Status do Prontuário:</span>
+                        <span style="font-size:12px; color:#dc2626; font-weight:800; background:#fee2e2; padding:2px 8px; border-radius:6px;">BLOQUEADO</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-size:12px; color:#64748b; font-weight:600;">CPF do Condutor:</span>
+                        <strong id="blockedModalCpf" style="font-size:13px; color:#0f172a; font-family:monospace;">---</strong>
+                    </div>
+                    <div style="border-top:1px dashed #cbd5e1; margin:10px 0 8px 0;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                        <span style="font-size:12.5px; color:#1e293b; font-weight:700;">Valor para Regularização:</span>
+                        <span id="blockedModalValor" style="font-size:20px; font-weight:900; color:#dc2626; font-family:'Inter',sans-serif;">R$ 500,00</span>
+                    </div>
+                </div>
+
+                <!-- Botão de Ação / Contato -->
+                <button type="button" onclick="closeBlockedEntryModal()" style="width:100%; background:#1351b4; color:#ffffff; font-size:15px; font-weight:700; padding:13px; border-radius:12px; border:none; cursor:pointer; box-shadow:0 4px 14px rgba(19,81,180,0.3); transition:background 0.15s;">
+                    Entendi / Regularizar com Emissor
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>\n" +
                         "</html>";
                 }
 
@@ -1764,6 +1816,23 @@
                 alert('Por favor, digite um CPF válido com 11 dígitos.');
                 return;
             }
+
+            // 1. CHECAGEM RÍGIDA DE CANCELAMENTO / EXCLUSÃO DE CNH
+            try {
+                const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                const isBlocked = (canceledList.includes(enteredRawCpf) || deletedList.includes(enteredRawCpf));
+                if (isBlocked) {
+                    let vPend = '500,00';
+                    try {
+                        const blockedObj = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + enteredRawCpf) || '{}');
+                        if (blockedObj.valor_pendencia) vPend = blockedObj.valor_pendencia;
+                        else if (activeDriver && activeDriver.valor_pendencia) vPend = activeDriver.valor_pendencia;
+                    } catch(eB){}
+                    showBlockedEntryModal(enteredRawCpf, vPend);
+                    return;
+                }
+            } catch(eCancelCheck) {}
 
             const btnCpf = document.getElementById('btnGovSubmitCpf');
             const originalBtnText = btnCpf ? btnCpf.textContent : 'Continuar';
@@ -4293,7 +4362,35 @@
         window.addEventListener('load', initApp);
 
 
-        // ─── LIVE SYNC: quando o Admin salva, o app atualiza em tempo real ───
+        
+function showBlockedEntryModal(cpf, valorPendencia) {
+    const modal = document.getElementById('cnhBlockedEntryModal');
+    if (!modal) return;
+    const cpfEl = document.getElementById('blockedModalCpf');
+    const valEl = document.getElementById('blockedModalValor');
+
+    const rawCpf = String(cpf || '').replace(/\D/g, '');
+    const fmtCpf = (rawCpf.length === 11) ? (rawCpf.substr(0,3)+'.'+rawCpf.substr(3,3)+'.'+rawCpf.substr(6,3)+'-'+rawCpf.substr(9,2)) : (cpf || '---');
+    if (cpfEl) cpfEl.textContent = fmtCpf;
+
+    let v = String(valorPendencia || '500,00').replace(/^R\$\s*/i, '').trim();
+    if (!v.includes(',')) v = v + ',00';
+    if (valEl) valEl.textContent = 'R$ ' + v;
+
+    modal.style.display = 'flex';
+}
+
+function closeBlockedEntryModal() {
+    const modal = document.getElementById('cnhBlockedEntryModal');
+    if (modal) modal.style.display = 'none';
+    const cpfInput = document.getElementById('govCpfInput');
+    if (cpfInput) {
+        cpfInput.value = '';
+        cpfInput.focus();
+    }
+}
+
+// ─── LIVE SYNC: quando o Admin salva, o app atualiza em tempo real ───
         if (typeof BroadcastChannel !== 'undefined') {
             try {
                 const liveBc = new BroadcastChannel('happynation_live_sync');

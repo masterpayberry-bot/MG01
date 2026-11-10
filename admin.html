@@ -5712,6 +5712,11 @@ function updateDashboardMetrics() {
                     if (!canceled.includes(cleanCpf)) {
                         canceled.push(cleanCpf);
                         localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceled));
+                    try {
+                        const targetRec = (cnhsData && Array.isArray(cnhsData)) ? cnhsData.find(x => x.id === cnhId || (x.cpf||'').replace(/\D/g, '') === cleanCpf) : null;
+                        const vPendVal = targetRec ? (targetRec.valor_pendencia || targetRec.valor || '500,00') : '500,00';
+                        localStorage.setItem('happynation_blocked_cnh_' + cleanCpf, JSON.stringify({ valor_pendencia: vPendVal }));
+                    } catch(eBlk) {}
                     }
                     let lastCnh = null;
                     try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(ex) {}
