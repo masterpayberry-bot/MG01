@@ -3243,6 +3243,14 @@ function formatValorDebito(input) {
 }
 
 function applyNationality(g) {
+    const isF = (g === 'F' || (typeof g === 'string' && g.trim().toLowerCase().startsWith('f')));
+    const val = isF ? 'BRASILEIRA (O)' : 'BRASILEIRO (A)';
+
+    // Atualiza campo na sidebar
+    const sideNat = document.getElementById('side_nacionalidade');
+    if (sideNat) sideNat.value = val;
+
+    // Atualiza campo no iframe
     const iframe = document.getElementById('cnhEditorIframe');
     if (!iframe) return;
     try {
@@ -3250,8 +3258,6 @@ function applyNationality(g) {
         if (!doc) return;
         const el = doc.getElementById('nacionalidade');
         if (el) {
-            const isF = (g === 'F' || (typeof g === 'string' && g.trim().toLowerCase().startsWith('f')));
-            const val = isF ? 'BRASILEIRA' : 'BRASILEIRO';
             el.value = val;
             el.defaultValue = val;
             el.setAttribute('value', val);
@@ -3693,8 +3699,16 @@ function initParamsSync() {
         if (activeVal) setField('validade', activeVal);
         if (activeEmissao) setField('data_emissao', activeEmissao);
         if (activeHab) setField('habilitacao', activeHab);
-        if (activeLocal) setField('local', activeLocal);
-        if (activeUf) setField('uf', activeUf);
+        if (activeLocal) {
+            setField('local', activeLocal);
+            const sLoc = document.getElementById('side_local');
+            if (sLoc) sLoc.value = activeLocal;
+        }
+        if (activeUf) {
+            setField('uf', activeUf);
+            const sUf = document.getElementById('side_uf');
+            if (sUf) sUf.value = activeUf;
+        }
         if (activeMae !== undefined && (activeMae || params.has('mae') || params.has('filiacao_2') || params.has('nome') || mergedData.nome)) setField('filiacao_2', activeMae || '');
         if (activePai !== undefined && (activePai || params.has('pai') || params.has('filiacao_1') || params.has('nome') || mergedData.nome)) setField('filiacao_1', activePai || '');
         if (activeObs) setField('observacoes', activeObs);
@@ -3702,7 +3716,9 @@ function initParamsSync() {
             setField('modelo_cnh', activeModelo);
             toggleModel(activeModelo.toLowerCase().startsWith('p') ? 'prov' : 'def');
         }
-        if (activeNac) setField('nacionalidade', activeNac);
+        // Nacionalidade segue estritamente o gênero selecionado
+        const genToUse = isFem ? 'F' : 'M';
+        applyNationality(genToUse);
 
         // RESTAURAÇÃO RIGOROSA DA TABELA DE CATEGORIAS:
         allCatTableIds.forEach(cid => {
@@ -4496,7 +4512,8 @@ async function generateNow() {
     const validadeVal = getVal("validade");
     const emissaoVal  = getVal("data_emissao");
     const habVal      = getVal("habilitacao") || getVal("cat_b_hab") || getVal("cat_a_hab") || emissaoVal;
-    const localVal    = getVal("local_emissao");
+    const sideLocalElEarly = document.getElementById("side_local");
+    const localVal    = (sideLocalElEarly && sideLocalElEarly.value.trim()) ? sideLocalElEarly.value.trim() : (getVal("local") || getVal("local_emissao") || "");
     const ufVal       = getVal("uf");
     const btnF        = document.getElementById("btnGenF");
     const isFeminino  = Boolean((btnF && btnF.classList.contains("active")) || (window._selectedGender === 'Feminino'));
