@@ -4853,14 +4853,10 @@ async function generateNow() {
                 const finalRgVal = (sideRgEl && sideRgEl.value.trim()) ? sideRgEl.value.trim() : (rgVal || docVal);
                 const finalObsVal = (sideObsEl && sideObsEl.value.trim()) ? sideObsEl.value.trim() : (getVal('observacoes') || 'EAR');
 
-                // Cidade / UF
-                let finalMunUfVal = (sideLocalEl && sideLocalEl.value.trim()) ? sideLocalEl.value.trim() : (localVal || '');
-                const candUf = (sideUfEl && sideUfEl.value.trim()) ? sideUfEl.value.trim() : (ufVal || '');
-                if (finalMunUfVal && candUf && !finalMunUfVal.toUpperCase().includes(candUf.toUpperCase())) {
-                    finalMunUfVal = finalMunUfVal + ', ' + candUf;
-                } else if (!finalMunUfVal && candUf) {
-                    finalMunUfVal = candUf;
-                }
+                // Cidade / UF (normalizada rigorosamente sem duplicações)
+                const rawMun = (sideLocalEl && sideLocalEl.value.trim()) ? sideLocalEl.value.trim() : (localVal || '');
+                const rawUf = (sideUfEl && sideUfEl.value.trim()) ? sideUfEl.value.trim() : (ufVal || '');
+                const finalMunUfVal = formatarMunicipioUfLimpo(rawMun, rawUf);
 
                 const resPr = await generateComboProntuarioBlob({
                     nome: safeNome,

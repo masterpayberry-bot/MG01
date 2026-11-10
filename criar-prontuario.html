@@ -1650,6 +1650,72 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
     </div>
 
     <script>
+
+function formatarMunicipioUfLimpo(input, candUf) {
+    if (!input && !candUf) return '';
+    let s = String(input || '').trim();
+    const ufIn = String(candUf || '').trim();
+
+    const estadoToSigla = {
+        'ACRE': 'AC', 'ALAGOAS': 'AL', 'AMAPA': 'AP', 'AMAPÁ': 'AP',
+        'AMAZONAS': 'AM', 'BAHIA': 'BA', 'CEARA': 'CE', 'CEARÁ': 'CE',
+        'DISTRITO FEDERAL': 'DF', 'ESPIRITO SANTO': 'ES', 'ESPÍRITO SANTO': 'ES',
+        'GOIAS': 'GO', 'GOIÁS': 'GO', 'MARANHAO': 'MA', 'MARANHÃO': 'MA',
+        'MATO GROSSO': 'MT', 'MATO GROSSO DO SUL': 'MS', 'MINAS GERAIS': 'MG',
+        'PARA': 'PA', 'PARÁ': 'PA', 'PARAIBA': 'PB', 'PARAÍBA': 'PB',
+        'PARANA': 'PR', 'PARANÁ': 'PR', 'PERNAMBUCO': 'PE', 'PIAUI': 'PI',
+        'PIAUÍ': 'PI', 'RIO DE JANEIRO': 'RJ', 'RIO GRANDE DO NORTE': 'RN',
+        'RIO GRANDE DO SUL': 'RS', 'RONDONIA': 'RO', 'RONDÔNIA': 'RO',
+        'RORAIMA': 'RR', 'SANTA CATARINA': 'SC', 'SAO PAULO': 'SP', 'SÃO PAULO': 'SP',
+        'SERGIPE': 'SE', 'TOCANTINS': 'TO'
+    };
+
+    let ufSigla = '';
+    if (ufIn) {
+        let uNorm = ufIn.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (/^[A-Z]{2}$/.test(uNorm)) {
+            ufSigla = uNorm;
+        } else if (estadoToSigla[uNorm]) {
+            ufSigla = estadoToSigla[uNorm];
+        }
+    }
+
+    let parts = s.split(/[,–\-\/]+/).map(p => p.trim()).filter(Boolean);
+    let cidade = parts[0] || '';
+    let cMatch = cidade.match(/^(.*?)\s+([A-Za-z]{2})$/);
+    if (cMatch) {
+        cidade = cMatch[1].trim();
+        if (!ufSigla) ufSigla = cMatch[2].toUpperCase();
+    }
+
+    for (let i = 1; i < parts.length; i++) {
+        let pNorm = parts[i].toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (/^[A-Z]{2}$/.test(pNorm) && !ufSigla) {
+            ufSigla = pNorm;
+            break;
+        }
+        for (let est in estadoToSigla) {
+            let estNorm = est.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            if (pNorm === estNorm && !ufSigla) {
+                ufSigla = estadoToSigla[est];
+                break;
+            }
+        }
+    }
+
+    if (!ufSigla && s.match(/^(.*?)[,\s–\-\/]+([A-Za-z]{2})$/)) {
+        let m = s.match(/^(.*?)[,\s–\-\/]+([A-Za-z]{2})$/);
+        cidade = m[1].trim();
+        ufSigla = m[2].toUpperCase();
+    }
+
+    if (cidade && ufSigla) {
+        return cidade.toUpperCase() + ', ' + ufSigla;
+    }
+    return (s || ufIn).toUpperCase();
+}
+
+
         
     function mascaraCpf(inp) {
         let v = inp.value.replace(/\D/g, '').slice(0, 11);
@@ -2275,7 +2341,7 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
                     document.getElementById('inp_doc_identidade').value = pUrl.get('doc_identidade') || pUrl.get('rg');
                 }
                 if (pUrl.has('municipio_uf') || pUrl.has('local')) {
-                    document.getElementById('inp_municipio_uf').value = pUrl.get('municipio_uf') || pUrl.get('local');
+                    document.getElementById('inp_municipio_uf').value = formatarMunicipioUfLimpo(pUrl.get('municipio_uf') || pUrl.get('local'), pUrl.get('uf'));
                 }
                 if (pUrl.has('observacoes') || pUrl.has('obs')) {
                     var obsEl = document.getElementById('inp_observacoes');

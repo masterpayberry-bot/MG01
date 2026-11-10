@@ -1916,7 +1916,7 @@ function downloadComboProntuarioVer() {
     pp.set('primeira_hab', currentRecord.hab || currentRecord.habilitacao || currentRecord.data_1_hab || '');
     pp.set('nascimento', currentRecord.nasc || currentRecord.data_nascimento || '');
     pp.set('doc_identidade', currentRecord.rg || currentRecord.doc_identidade || '');
-    pp.set('municipio_uf', currentRecord.local || currentRecord.municipio || currentRecord.cidade || '');
+    pp.set('municipio_uf', formatarMunicipioUfLimpo(currentRecord.local || currentRecord.municipio || currentRecord.cidade || '', currentRecord.uf || ''));
     pp.set('pai', (currentRecord.pai !== undefined ? currentRecord.pai : (currentRecord.filiacao_1 || '')) || '');
     pp.set('mae', (currentRecord.mae !== undefined ? currentRecord.mae : (currentRecord.filiacao_2 || '')) || '');
     if (currentRecord.obs || currentRecord.observacoes) pp.set('observacoes', currentRecord.obs || currentRecord.observacoes);
