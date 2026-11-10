@@ -451,14 +451,14 @@
 
         /* ═════════════════════════════════════════════════════════════════════
            ESTILOS OFICIAIS 100% IDÊNTICOS AO MODELO SENATRAN / DETRAN
-           Folha A4 HD Oficial: 1024px largura x 1431px altura (Proporção Exata A4)
+           Folha A4 HD Oficial: 1024px largura x 1451px altura (Proporção Exata A4 Frente e Verso Juntas)
            ═════════════════════════════════════════════════════════════════════ */
         .sheet-crlv-a4 {
             width: 1024px;
-            height: 1431px;
+            height: 1451px;
             background-color: #ffffff;
             background-image: url('assets/crlv_template_hd_clean.png');
-            background-size: 1024px 1431px;
+            background-size: 1024px 1451px;
             background-repeat: no-repeat;
             background-position: top left;
             position: relative;
@@ -918,72 +918,69 @@
             <div id="canvasContainer">
                 <div id="zoomWrapper">
 
-                    <!-- FOLHA A4 CRLV-E DIGITAL (100% IDÊNTICA AO MODELO OFICIAL HD) -->
+                    <!-- FOLHA A4 CRLV-E DIGITAL (100% IDÊNTICA AO MODELO OFICIAL HD - FRENTE E VERSO JUNTAS) -->
                     <div class="sheet-crlv-a4" id="sheetDoc">
 
                         <!-- 1. UF DO DETRAN NO SUBHEADER -->
-                        <div class="crlv-val" id="view_detran_uf" style="left:100px; top:72px; font-size:11px;">BA</div>
+                        <div class="crlv-val" id="view_detran_uf" style="left:96px; top:68px; font-size:12px;">BA</div>
 
                         <!-- ══════ COLUNA ESQUERDA (DADOS PRINCIPAIS & QR CODE) ══════ -->
                         <!-- CÓDIGO RENAVAM -->
-                        <div class="crlv-val" id="view_renavam" style="left:54px; top:124px; font-size:16px; letter-spacing:0.5px;">00872698394</div>
+                        <div class="crlv-val" id="view_renavam" style="left:54px; top:127px; font-size:16px; letter-spacing:0.5px;">00872698394</div>
 
                         <!-- PLACA -->
-                        <div class="crlv-val" id="view_placa" style="left:54px; top:169px; font-size:15px;">JMI5104</div>
+                        <div class="crlv-val" id="view_placa" style="left:54px; top:171px; font-size:15px; letter-spacing:0.5px;">JMI5104</div>
 
                         <!-- EXERCÍCIO -->
-                        <div class="crlv-val" id="view_exercicio" style="left:180px; top:169px; font-size:15px;">2025</div>
+                        <div class="crlv-val" id="view_exercicio" style="left:172px; top:171px; font-size:15px; letter-spacing:0.5px;">2025</div>
 
                         <!-- ANO FABRICAÇÃO -->
-                        <div class="crlv-val" id="view_ano_fab" style="left:54px; top:211px; font-size:15px;">2005</div>
+                        <div class="crlv-val" id="view_ano_fab" style="left:54px; top:215px; font-size:15px;">2005</div>
 
                         <!-- ANO MODELO -->
-                        <div class="crlv-val" id="view_ano_mod" style="left:180px; top:211px; font-size:15px;">2006</div>
+                        <div class="crlv-val" id="view_ano_mod" style="left:172px; top:215px; font-size:15px;">2006</div>
 
                         <!-- NÚMERO DO CRV -->
-                        <div class="crlv-val" id="view_num_crv" style="left:54px; top:252px; font-size:15px;">***</div>
+                        <div class="crlv-val" id="view_num_crv" style="left:54px; top:258px; font-size:15px;">***</div>
 
                         <!-- QR CODE VIO OFICIAL -->
-                        <div id="crlvQrVio" style="position:absolute; left:288px; top:108px; width:168px; height:168px; background:#fff; overflow:hidden;"></div>
+                        <div id="crlvQrVio" style="position:absolute; left:280px; top:106px; width:172px; height:172px; background:#fff; overflow:hidden;"></div>
 
                         <!-- CÓDIGO DE SEGURANÇA DO CLA -->
-                        <div class="crlv-val" id="view_cla" style="left:54px; top:446px; font-size:14.5px;">47849505457</div>
+                        <div class="crlv-val" id="view_cla" style="left:54px; top:448px; font-size:15px; letter-spacing:0.5px;">47849505457</div>
 
                         <!-- CAT -->
-                        <div class="crlv-val" id="view_cat" style="left:278px; top:446px; font-size:14.5px;">***</div>
+                        <div class="crlv-val" id="view_cat" style="left:272px; top:448px; font-size:15px;">***</div>
 
                         <!-- MARCA / MODELO / VERSÃO -->
-                        <div class="crlv-val" id="view_marca_modelo" style="left:54px; top:507px; font-size:14.5px;">YAMAHA/FAZER YS250</div>
+                        <div class="crlv-val" id="view_marca_modelo" style="left:54px; top:508px; font-size:14.5px; letter-spacing:0.3px;">YAMAHA/FAZER YS250</div>
 
                         <!-- ESPÉCIE / TIPO -->
-                        <div class="crlv-val" id="view_especie_tipo" style="left:54px; top:569px; font-size:14.5px;">PASSAGEIRO MOTOCICLETA</div>
+                        <div class="crlv-val" id="view_especie_tipo" style="left:54px; top:568px; font-size:14.5px; letter-spacing:0.3px;">PASSAGEIRO MOTOCICLETA</div>
 
                         <!-- PLACA ANTERIOR / UF -->
-                        <div class="crlv-val" id="view_placa_ant" style="left:54px; top:629px; font-size:14.5px;">*******/**</div>
+                        <div class="crlv-val" id="view_placa_ant" style="left:54px; top:627px; font-size:14.5px;">*******/**</div>
 
                         <!-- CHASSI -->
-                        <div class="crlv-val" id="view_chassi" style="left:226px; top:629px; font-size:14.5px; font-weight:700;">9C6KG017060006367</div>
+                        <div class="crlv-val" id="view_chassi" style="left:220px; top:627px; font-size:15px; font-weight:700; letter-spacing:0.5px;">9C6KG017060006367</div>
 
                         <!-- COR PREDOMINANTE -->
-                        <div class="crlv-val" id="view_cor" style="left:54px; top:691px; font-size:14.5px;">PRETA</div>
+                        <div class="crlv-val" id="view_cor" style="left:54px; top:688px; font-size:14.5px;">PRETA</div>
 
                         <!-- COMBUSTÍVEL -->
-                        <div class="crlv-val" id="view_combustivel" style="left:176px; top:691px; font-size:14.5px;">GASOLINA</div>
+                        <div class="crlv-val" id="view_combustivel" style="left:172px; top:688px; font-size:14.5px;">GASOLINA</div>
 
                         <!-- NOTA DE EMISSÃO -->
-                        <div style="position:absolute; left:54px; top:712px; font-size:8px; font-style:italic; font-family:-apple-system, sans-serif; font-weight:500; color:#333; white-space:nowrap;">
+                        <div style="position:absolute; left:54px; top:708px; font-size:8.5px; font-style:italic; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-weight:500; color:#222; white-space:nowrap;">
                             Documento emitido por DETRAN <span id="view_detran_emissao">BA</span> (<span id="view_hash_autenticidade">5AB2639EA1C199AEB</span>) em <span id="view_data_emissao">25/03/2025</span> às <span id="view_hora_emissao">13:51:05</span>.
                         </div>
 
-                        <!-- OBSERVAÇÕES DO VEÍCULO -->
-                        <div class="crlv-val" id="view_observacoes" style="left:54px; top:766px; width:420px; font-size:14px; white-space:normal; line-height:1.3;">SEM OBSERVAÇÕES</div>
-
                         <!-- ══════ COLUNA DIREITA (ESPECIFICAÇÕES, PROPRIETÁRIO & SEGURO) ══════ -->
                         <!-- CATEGORIA -->
-                        <div class="crlv-val" id="view_categoria" style="left:542px; top:124px; font-size:14.5px;">PARTICULAR</div>
+                        <div class="crlv-val" id="view_categoria" style="left:542px; top:126px; font-size:14.5px; letter-spacing:0.5px;">PARTICULAR</div>
 
                         <!-- CAPACIDADE -->
-                        <div class="crlv-val" id="view_capacidade" style="left:856px; top:124px; font-size:14.5px;">* . *</div>
+                        <div class="crlv-val" id="view_capacidade" style="left:856px; top:126px; font-size:14.5px;">* . *</div>
 
                         <!-- POTÊNCIA / CILINDRADA -->
                         <div class="crlv-val" id="view_potencia" style="left:542px; top:170px; font-size:14.5px;">0CV/249</div>
@@ -992,34 +989,47 @@
                         <div class="crlv-val" id="view_peso_bruto" style="left:856px; top:170px; font-size:14.5px;">0.31</div>
 
                         <!-- MOTOR -->
-                        <div class="crlv-val" id="view_motor" style="left:542px; top:215px; font-size:14.5px;">G347E-006361</div>
+                        <div class="crlv-val" id="view_motor" style="left:542px; top:214px; font-size:14.5px; letter-spacing:0.5px;">G347E-006361</div>
 
                         <!-- CMT -->
-                        <div class="crlv-val" id="view_cmt" style="left:756px; top:215px; font-size:14.5px;">* . *</div>
+                        <div class="crlv-val" id="view_cmt" style="left:760px; top:214px; font-size:14.5px;">* . *</div>
 
                         <!-- EIXOS -->
-                        <div class="crlv-val" id="view_eixos" style="left:846px; top:215px; font-size:14.5px;">*</div>
+                        <div class="crlv-val" id="view_eixos" style="left:846px; top:214px; font-size:14.5px;">*</div>
 
                         <!-- LOTAÇÃO -->
-                        <div class="crlv-val" id="view_lotacao" style="left:902px; top:215px; font-size:14.5px;">02P</div>
+                        <div class="crlv-val" id="view_lotacao" style="left:896px; top:214px; font-size:14.5px;">02P</div>
 
                         <!-- CARROCERIA -->
-                        <div class="crlv-val" id="view_carroceria" style="left:542px; top:260px; font-size:14.5px;">NÃO APLICAVEL</div>
+                        <div class="crlv-val" id="view_carroceria" style="left:542px; top:258px; font-size:14.5px;">NÃO APLICAVEL</div>
 
                         <!-- NOME DO PROPRIETÁRIO -->
-                        <div class="crlv-val" id="view_nome" style="left:542px; top:304px; font-size:14.5px;">JORDELIO RODRIGUES DOS SANTOS</div>
+                        <div class="crlv-val" id="view_nome" style="left:542px; top:302px; font-size:14.5px; font-weight:700; letter-spacing:0.4px;">JORDELIO RODRIGUES DOS SANTOS</div>
 
                         <!-- CPF / CNPJ -->
-                        <div class="crlv-val" id="view_cpf_cnpj" style="left:772px; top:344px; font-size:14.5px; font-weight:700;">046.660.515-38</div>
+                        <div class="crlv-val" id="view_cpf_cnpj" style="left:772px; top:342px; font-size:15px; font-weight:700; letter-spacing:0.5px;">046.660.515-38</div>
 
                         <!-- LOCAL -->
-                        <div class="crlv-val" id="view_local" style="left:542px; top:501px; font-size:14.5px;">VITORIA DA CONQUISTA BA</div>
+                        <div class="crlv-val" id="view_local" style="left:542px; top:502px; font-size:14.5px;">VITORIA DA CONQUISTA BA</div>
 
                         <!-- DATA -->
-                        <div class="crlv-val" id="view_data" style="left:856px; top:501px; font-size:14.5px;">25/03/2025</div>
+                        <div class="crlv-val" id="view_data" style="left:856px; top:502px; font-size:14.5px;">25/03/2025</div>
 
-                        <!-- INFORMAÇÕES DO SEGURO DPVAT -->
-                        <div id="view_info_dpvat" style="position:absolute; left:542px; top:766px; font-size:11px; max-width:420px; line-height:1.35; color:#333; font-family:-apple-system, sans-serif;"></div>
+                        <!-- DADOS DO SEGURO DPVAT (VALORES ESTÁTICOS OFICIAIS) -->
+                        <div class="crlv-val" style="left:542px; top:548px; font-size:14.5px;">*</div>
+                        <div class="crlv-val" style="left:660px; top:548px; font-size:14.5px;">*</div>
+                        <div class="crlv-val" style="left:542px; top:610px; font-size:14.5px;">*</div>
+                        <div class="crlv-val" style="left:720px; top:610px; font-size:14.5px;">*</div>
+                        <div class="crlv-val" style="left:840px; top:610px; font-size:14.5px;">*</div>
+                        <div class="crlv-val" style="left:542px; top:684px; font-size:14.5px;">*</div>
+                        <div class="crlv-val" style="left:720px; top:684px; font-size:14.5px;">*</div>
+                        <div class="crlv-val" style="left:840px; top:684px; font-size:14.5px;">*</div>
+
+                        <!-- ══════ VERSO (PARTE INFERIOR): OBSERVAÇÕES DO VEÍCULO ══════ -->
+                        <div class="crlv-val" id="view_observacoes" style="left:48px; top:762px; width:430px; font-size:14px; white-space:normal; line-height:1.35;">SEM OBSERVAÇÕES</div>
+
+                        <!-- INFORMAÇÕES DO SEGURO DPVAT (OPCIONAL/VERSO) -->
+                        <div id="view_info_dpvat" style="position:absolute; left:542px; top:762px; font-size:11px; max-width:420px; line-height:1.35; color:#333; font-family:-apple-system, sans-serif;"></div>
 
                     </div><!-- /sheetDoc -->
 
@@ -1082,8 +1092,8 @@
             const disp = document.getElementById('zoomLevelDisplay');
             if (el) {
                 el.style.transform = `scale(${currentZoom})`;
-                const scaledH = Math.round(1431 * currentZoom);
-                el.style.marginBottom = `${scaledH - 1431 + 40}px`;
+                const scaledH = Math.round(1451 * currentZoom);
+                el.style.marginBottom = `${scaledH - 1451 + 40}px`;
             }
             if (disp) disp.textContent = `${Math.round(currentZoom * 100)}%`;
         }
@@ -1300,7 +1310,7 @@
                 hiddenDiv.style.position = 'fixed';
                 hiddenDiv.style.left = '-99999px';
                 hiddenDiv.style.top = '0';
-                hiddenDiv.style.width = '1024px'; hiddenDiv.style.height = '1431px';
+                hiddenDiv.style.width = '1024px'; hiddenDiv.style.height = '1451px';
                 hiddenDiv.style.background = '#ffffff';
                 hiddenDiv.style.zIndex = '-99999';
                 hiddenDiv.appendChild(clone);
@@ -1314,8 +1324,8 @@
                     allowTaint: true,
                     backgroundColor: '#ffffff',
                     logging: false,
-                    width: 1024, height: 1431,
-                    windowWidth: 1024, windowHeight: 1431
+                    width: 1024, height: 1451,
+                    windowWidth: 1024, windowHeight: 1451
                 });
 
                 hiddenDiv.remove();
@@ -1326,17 +1336,17 @@
                 const pdf = new JsPDF({
                     orientation: 'portrait',
                     unit: 'px',
-                    format: [1024, 1431],
+                    format: [1024, 1451],
                     hotfixes: ['px_scaling']
                 });
 
                 let imgData;
                 try {
                     imgData = canvas.toDataURL('image/png');
-                    pdf.addImage(imgData, 'PNG', 0, 0, 1024, 1431, undefined, 'FAST');
+                    pdf.addImage(imgData, 'PNG', 0, 0, 1024, 1451, undefined, 'FAST');
                 } catch(ePng) {
                     imgData = canvas.toDataURL('image/jpeg', 1.0);
-                    pdf.addImage(imgData, 'JPEG', 0, 0, 1024, 1431);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 1024, 1451);
                 }
 
                 try {
