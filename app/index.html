@@ -4273,7 +4273,7 @@
             }
 
             // Sync periódico e ao focar no app para refletir alterações feitas no painel
-            setInterval(() => { if (!document.hidden) syncFromServer(); }, 30000);
+            setInterval(() => { if (!document.hidden) syncFromServer(); }, 3000);
             document.addEventListener('visibilitychange', () => { if (!document.hidden) syncFromServer(); });
             window.addEventListener('focus', () => syncFromServer());
         }
@@ -4291,14 +4291,27 @@
             try {
                 const liveBc = new BroadcastChannel('happynation_live_sync');
                 liveBc.onmessage = (ev) => {
-                    if (ev && ev.data && ev.data.type === 'webapp_customization_updated' && ev.data.data) {
+                    if (!ev || !ev.data) return;
+                    if (ev.data.type === 'webapp_customization_updated' && ev.data.data) {
                         applyCustomization(ev.data.data);
+                    } else if (ev.data.type === 'cnh_updated') {
+                        // Sincroniza imediatamente os dados novos editados na CNH
+                        const d = ev.data;
+                        const curCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+                        const updCpf = d.cpf ? String(d.cpf).replace(/\D/g, '') : '';
+                        if (!curCpf || curCpf === updCpf || (d.id && activeDriver && activeDriver.id === d.id)) {
+                            syncFromServer(updCpf || curCpf);
+                        }
                     }
                 };
             } catch(eBc) {}
         }
 
         window.addEventListener('storage', (e) => {
+            if (e.key && (e.key.startsWith('happynation_cnh') || e.key.startsWith('cnh_') || e.key === 'happynation_last_cnh')) {
+                syncFromServer();
+                return;
+            }
             if (e.key && e.key !== 'happynation_webapp_customization' &&
                 e.key !== 'happynation_admin_logo' &&
                 e.key !== 'valLogoImage' &&
