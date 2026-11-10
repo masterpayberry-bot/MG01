@@ -1600,15 +1600,6 @@
             <input type="date" class="filter-input" id="filterData" onchange="applyFilters()" style="width: 145px; color-scheme:dark;">
         </div>
 
-        <div class="filter-group">
-            <label class="filter-label">Status</label>
-            <div class="status-pills">
-                <button class="status-pill-btn active" id="btnStatusTodas" onclick="setStatusFilter('Todas', this)">Todas</button>
-                <button class="status-pill-btn" id="btnStatusAtivo" onclick="setStatusFilter('Ativo', this)">Ativos</button>
-                <button class="status-pill-btn" id="btnStatusPontos" onclick="setStatusFilter('Pontos', this)">Com Pontos</button>
-            </div>
-        </div>
-
         <button class="btn-clear-filters" onclick="clearFilters()">Limpar Filtros</button>
     </div>
 
@@ -1618,11 +1609,9 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" style="accent-color:var(--primary); cursor:pointer;"></th>
                         <th>ID</th>
                         <th>Nome</th>
                         <th>CPF</th>
-                        <th>Prontuário DETRAN Status</th>
                         <th>Data e Hora da Geração</th>
                         <th>Ações</th>
                     </tr>
@@ -1912,7 +1901,7 @@ function renderTable() {
     }
 
     if (pageItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:36px; color:var(--text-muted);">Nenhum prontuário encontrado com os filtros selecionados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:36px; color:var(--text-muted);">Nenhum prontuário encontrado com os filtros selecionados.</td></tr>`;
         return;
     }
 
@@ -1920,17 +1909,12 @@ function renderTable() {
     pageItems.forEach(c => {
         const d = c.created_at ? new Date(c.created_at) : new Date();
         const dateFormatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-        const hasPontos = (c.status === 'Pontos') || (c.pontos && parseInt(c.pontos, 10) > 0);
-        const badgeColor = hasPontos ? '#f59e0b' : '#00dc82';
-        const badgeText = hasPontos ? `Com Pontos (${c.pontos || 0})` : 'Regular (0 Pontos)';
 
         html += `
             <tr>
-                <td><input type="checkbox" style="accent-color:var(--primary); cursor:pointer;"></td>
                 <td class="id-cell">${c.id}</td>
                 <td class="name-cell" style="cursor:pointer;" onclick="verProntuario('${c.id}')">${c.nome}</td>
                 <td class="cpf-cell">${c.cpf}</td>
-                <td class="status-cell" style="color:${badgeColor} !important;">${badgeText}</td>
                 <td class="date-cell">${dateFormatted}</td>
                 <td>
                     <div class="actions-cell">
@@ -2025,7 +2009,8 @@ function clearFilters() {
     document.getElementById('filterNome').value = '';
     document.getElementById('filterCpf').value = '';
     document.getElementById('filterData').value = '';
-    setStatusFilter('Todas', document.getElementById('btnStatusTodas'));
+    currentFilterStatus = 'Todas';
+    applyFilters();
 }
 
 function toggleSelectAll(master) {
