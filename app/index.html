@@ -1811,13 +1811,17 @@
                 const dados = foundData.dados || (foundData.dados_json ? (typeof foundData.dados_json === 'string' ? JSON.parse(foundData.dados_json) : foundData.dados_json) : {}) || {};
                 const cnhIdVal = foundData.id || dados.id || ('CNH-' + Math.floor(1000 + Math.random() * 9000));
 
+                const rawSex = dados.sexo || dados.genero || foundData.sexo || foundData.genero || '';
+                const cleanSex = String(rawSex).trim().toLowerCase().startsWith('f') ? 'Feminino' : 'Masculino';
+                const rawUf = dados.uf || foundData.uf || dados.estado || foundData.estado || (dados.local ? (dados.local.match(/[\s,\-\–\/]+([A-Za-z]{2})$/) ? dados.local.match(/[\s,\-\–\/]+([A-Za-z]{2})$/)[1] : '') : '') || '';
+
                 activeDriver = {
                     nome: foundData.nome || foundData.nome_cnh || dados.nome || 'CONDUTOR',
                     cpf: foundData.cpf || dados.cpf || enteredRawCpf,
                     senha: dados.senha || '840169',
-                    sexo: dados.sexo || dados.genero || foundData.genero || 'Masculino',
+                    sexo: cleanSex,
                     cat: foundData.categoria || dados.cat || dados.categoria || 'B',
-                    uf: dados.uf || 'MG',
+                    uf: rawUf || 'SP',
                     validade: dados.validade || '2034-11-20',
                     emissao: dados.emissao || '2024-11-20',
                     id: cnhIdVal,
@@ -2089,9 +2093,20 @@
                 'RS': 'RIO GRANDE DO SUL', 'RO': 'RONDÔNIA', 'RR': 'RORAIMA', 'SC': 'SANTA CATARINA',
                 'SP': 'SÃO PAULO', 'SE': 'SERGIPE', 'TO': 'TOCANTINS'
             };
-            if (!ufCode) return 'BAHIA';
-            const code = ufCode.toUpperCase().trim();
-            return ufs[code] || code;
+            if (!ufCode) return (activeDriver && activeDriver.uf ? getFullUfName(activeDriver.uf) : 'SÃO PAULO');
+            let raw = String(ufCode).trim().toUpperCase();
+            // Se veio como sigla direta: "MA", "SP", etc
+            if (ufs[raw]) return ufs[raw];
+            // Se veio algo como "CAXIAS, MA" ou "SAO PAULO - SP", pega os 2 ultimos caracteres
+            const m = raw.match(/[\s,\-\–\/]+([A-Z]{2})$/);
+            if (m && ufs[m[1]]) return ufs[m[1]];
+            // Se já é o nome do estado por extenso: "MARANHÃO", etc
+            for (let sig in ufs) {
+                if (ufs[sig] === raw || ufs[sig].normalize('NFD').replace(/[\u0300-\u036f]/g, '') === raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '')) {
+                    return ufs[sig];
+                }
+            }
+            return raw;
         }
 
         function formatDatePtBr(dateStr) {
@@ -2166,6 +2181,8 @@
 
             const elUF = document.getElementById('condutorUF');
             if (elUF) elUF.textContent = getFullUfName(uf);
+            const elSexo = document.getElementById('condutorSexo');
+            if (elSexo) elSexo.textContent = sexo;
 
             const elVal = document.getElementById('condutorValidade');
             if (elVal) elVal.textContent = formatDatePtBr(validade);
@@ -4022,13 +4039,17 @@
                 const d = res.data;
                 const dados = d.dados || {};
                 const prev = activeDriver || {};
+                const sGen = dados.sexo || dados.genero || d.sexo || d.genero || prev.sexo || '';
+                const finalGen = String(sGen).trim().toLowerCase().startsWith('f') ? 'Feminino' : 'Masculino';
+                const sUf = dados.uf || d.uf || dados.estado || d.estado || (dados.local ? (dados.local.match(/[\s,\-\–\/]+([A-Za-z]{2})$/) ? dados.local.match(/[\s,\-\–\/]+([A-Za-z]{2})$/)[1] : '') : '') || prev.uf || '';
+
                 const full = {
                     nome: d.nome || dados.nome || prev.nome || 'CONDUTOR',
                     cpf: d.cpf || (cpfDigits && cpfDigits.length === 11 ? cpfDigits : (prev.cpf || '')),
                     senha: dados.senha || prev.senha || '840169',
-                    sexo: dados.sexo || dados.genero || prev.sexo || 'Masculino',
+                    sexo: finalGen,
                     cat: d.categoria || dados.cat || dados.categoria || prev.cat || 'B',
-                    uf: dados.uf || prev.uf || 'SP',
+                    uf: sUf || 'SP',
                     validade: dados.validade || prev.validade || '',
                     emissao: dados.emissao || prev.emissao || '',
                     id: d.id || dados.id || prev.id || '',
@@ -4097,13 +4118,17 @@
                             if (found) {
                                 const dJson = found.dados_json ? (typeof found.dados_json === 'string' ? JSON.parse(found.dados_json) : found.dados_json) : {};
                                 const prev = activeDriver || {};
+                                const sGenSup = dJson.sexo || dJson.genero || found.sexo || found.genero || prev.sexo || '';
+                                const finalGenSup = String(sGenSup).trim().toLowerCase().startsWith('f') ? 'Feminino' : 'Masculino';
+                                const sUfSup = dJson.uf || found.uf || dJson.estado || found.estado || (dJson.local ? (dJson.local.match(/[\s,\-\–\/]+([A-Za-z]{2})$/) ? dJson.local.match(/[\s,\-\–\/]+([A-Za-z]{2})$/)[1] : '') : '') || prev.uf || '';
+
                                 const full = {
                                     nome: found.nome_cnh || dJson.nome || prev.nome || 'CONDUTOR',
                                     cpf: found.cpf || dJson.cpf || cpfDigits,
                                     senha: dJson.senha || prev.senha || '840169',
-                                    sexo: dJson.sexo || dJson.genero || found.genero || prev.sexo || 'Masculino',
+                                    sexo: finalGenSup,
                                     cat: found.categoria || dJson.cat || dJson.categoria || prev.cat || 'B',
-                                    uf: dJson.uf || prev.uf || 'MG',
+                                    uf: sUfSup || 'SP',
                                     validade: dJson.validade || prev.validade || '',
                                     emissao: dJson.emissao || prev.emissao || '',
                                     id: found.id || prev.id || '',
