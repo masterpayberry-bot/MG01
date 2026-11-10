@@ -369,16 +369,16 @@
                 </button>
             </div>
 
-            <div class="message-box" id="clientMsgPreview">Olá, <strong id="msgNome">TATIANI RODRIGUES MOR</strong>!
+            <div class="message-box" id="clientMsgPreview">Olá, *<span id="msgNome">TATIANI RODRIGUES MOR</span>*!
 
-Seu **Atestado Médico Oficial** foi emitido com sucesso na **<span id="msgUnidade">UPA 24h Itaquera</span>**.
+Seu *Atestado Médico Oficial* foi emitido com sucesso na *<span id="msgUnidade">UPA 24h</span>*.
 
-📋 **Dados do Atendimento:**
-• Paciente: <span id="msgNome2">TATIANI RODRIGUES MOR</span>
-• CPF: <span id="msgCns">458.912.873-44</span>
-• CID-10: <span id="msgCid">J02.</span>
-• Afastamento: <span id="msgDias">3 (três) dias</span>
-• Médico: <span id="msgMed">Dra. Flávia Nunes Maruyama (CRM 216997)</span>
+📋 *Dados do Atendimento:*
+• *Paciente:* <span id="msgNome2">TATIANI RODRIGUES MOR</span>
+• *CPF:* <span id="msgCns">458.912.873-44</span>
+• *CID-10:* <span id="msgCid">J02.</span>
+• *Afastamento:* <span id="msgDias">3 (três) dias</span>
+• *Médico:* <span id="msgMed">Dra. Flávia Nunes Maruyama (CRM 216997)</span>
 
 O documento digital em PDF com assinatura eletrônica e QR Code de autenticidade já está pronto. Qualquer dúvida, estamos à disposição!</div>
         </div>
@@ -389,6 +389,32 @@ O documento digital em PDF com assinatura eletrônica e QR Code de autenticidade
 
     <script>
     let currentRecord = null;
+
+    function formatarCpf(val) {
+        if (!val) return '---';
+        const str = String(val).trim();
+        const digits = str.replace(/\D/g, '');
+        if (digits.length === 11) {
+            return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+        return str;
+    }
+
+    function obterTextoDias(dias) {
+        if (!dias) return '---';
+        const str = String(dias).trim();
+        if (str.toLowerCase().includes('dia')) return str;
+        const num = parseInt(str, 10);
+        if (isNaN(num)) return str;
+        const extenso = {
+            1: 'um', 2: 'dois', 3: 'três', 4: 'quatro', 5: 'cinco',
+            6: 'seis', 7: 'sete', 8: 'oito', 9: 'nove', 10: 'dez',
+            14: 'quatorze', 15: 'quinze'
+        };
+        const ext = extenso[num] ? ` (${extenso[num]})` : '';
+        const pl = (num === 1) ? 'dia' : 'dias';
+        return `${num}${ext} ${pl}`;
+    }
 
     function showToast(msg) {
         let container = document.getElementById('toast-container');
@@ -435,23 +461,27 @@ O documento digital em PDF com assinatura eletrônica e QR Code de autenticidade
             crm: dObj.crm || 'CRM 216997'
         };
 
-        document.getElementById('viewNome').textContent = currentRecord.paciente.toUpperCase();
-        document.getElementById('viewCns').textContent = formatarCpf(currentRecord.cns || currentRecord.cpf);
-        document.getElementById('viewCid').textContent = currentRecord.cid;
-        const palavraDia = (parseInt(currentRecord.dias, 10) === 1) ? 'dia' : 'dias';
-        document.getElementById('viewDias').textContent = `${currentRecord.dias} ${palavraDia}`;
-        document.getElementById('viewUnidade').textContent = currentRecord.unidade;
-        document.getElementById('viewMedico').textContent = currentRecord.medico;
-        document.getElementById('viewCrm').textContent = currentRecord.crm;
+                const nomeUpper = (currentRecord.paciente || '').toUpperCase();
+        const cpfFormatado = formatarCpf(currentRecord.cns || currentRecord.cpf);
+        const diasFormatados = obterTextoDias(currentRecord.dias);
+        const undFormatada = (currentRecord.unidade || 'UPA 24h').split(' - ')[0].trim();
+        const medFormatado = currentRecord.medico ? (currentRecord.crm ? `${currentRecord.medico} (${currentRecord.crm})` : currentRecord.medico) : 'Médico Responsável';
 
-        document.getElementById('msgNome').textContent = currentRecord.paciente.toUpperCase();
-        document.getElementById('msgNome2').textContent = currentRecord.paciente.toUpperCase();
-        document.getElementById('msgCns').textContent = formatarCpf(currentRecord.cns || currentRecord.cpf);
-        document.getElementById('msgCid').textContent = currentRecord.cid;
-        const palavraDiaMsg = (parseInt(currentRecord.dias, 10) === 1) ? 'dia' : 'dias';
-        document.getElementById('msgDias').textContent = `${currentRecord.dias} ${palavraDiaMsg}`;
-        document.getElementById('msgUnidade').textContent = currentRecord.unidade.split('-')[0].trim();
-        document.getElementById('msgMed').textContent = `${currentRecord.medico} (${currentRecord.crm})`;
+        if (document.getElementById('viewNome')) document.getElementById('viewNome').textContent = nomeUpper;
+        if (document.getElementById('viewCns')) document.getElementById('viewCns').textContent = cpfFormatado;
+        if (document.getElementById('viewCid')) document.getElementById('viewCid').textContent = currentRecord.cid;
+        if (document.getElementById('viewDias')) document.getElementById('viewDias').textContent = diasFormatados;
+        if (document.getElementById('viewUnidade')) document.getElementById('viewUnidade').textContent = currentRecord.unidade;
+        if (document.getElementById('viewMedico')) document.getElementById('viewMedico').textContent = currentRecord.medico;
+        if (document.getElementById('viewCrm')) document.getElementById('viewCrm').textContent = currentRecord.crm;
+
+        if (document.getElementById('msgNome')) document.getElementById('msgNome').textContent = nomeUpper;
+        if (document.getElementById('msgNome2')) document.getElementById('msgNome2').textContent = nomeUpper;
+        if (document.getElementById('msgCns')) document.getElementById('msgCns').textContent = cpfFormatado;
+        if (document.getElementById('msgCid')) document.getElementById('msgCid').textContent = currentRecord.cid;
+        if (document.getElementById('msgDias')) document.getElementById('msgDias').textContent = diasFormatados;
+        if (document.getElementById('msgUnidade')) document.getElementById('msgUnidade').textContent = undFormatada;
+        if (document.getElementById('msgMed')) document.getElementById('msgMed').textContent = medFormatado;
 
         const btnEdit = document.getElementById('btnEditAtestadoTop');
         if (btnEdit) {
