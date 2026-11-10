@@ -1604,7 +1604,7 @@
             <div class="status-pills">
                 <button class="status-pill-btn active" id="btnStatusTodas" onclick="setStatusFilter('Todas', this)">Todas</button>
                 <button class="status-pill-btn" id="btnStatusAtivo" onclick="setStatusFilter('Ativo', this)">Ativos</button>
-                <button class="status-pill-btn" id="btnStatusRepouso" onclick="setStatusFilter('Repouso', this)">Com Repouso</button>
+                <button class="status-pill-btn" id="btnStatusPontos" onclick="setStatusFilter('Pontos', this)">Com Pontos</button>
             </div>
         </div>
 
@@ -1899,9 +1899,9 @@ function renderTable() {
     const pagInfo = document.getElementById('paginationInfo');
     if (pagInfo) {
         if (filtered.length === 0) {
-            pagInfo.textContent = 'Mostrando 0 de 0 Exames';
+            pagInfo.textContent = 'Mostrando 0 de 0 Prontuários';
         } else {
-            pagInfo.textContent = `Mostrando ${startIdx + 1}-${Math.min(endIdx, filtered.length)} de ${filtered.length} Exames`;
+            pagInfo.textContent = `Mostrando ${startIdx + 1}-${Math.min(endIdx, filtered.length)} de ${filtered.length} Prontuários`;
         }
     }
 
@@ -1911,7 +1911,7 @@ function renderTable() {
     }
 
     if (pageItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:36px; color:var(--text-muted);">Nenhum rg encontrado com os filtros selecionados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:36px; color:var(--text-muted);">Nenhum prontuário encontrado com os filtros selecionados.</td></tr>`;
         return;
     }
 
@@ -1919,9 +1919,9 @@ function renderTable() {
     pageItems.forEach(c => {
         const d = c.created_at ? new Date(c.created_at) : new Date();
         const dateFormatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-        const isNeg = (c.status === 'Negativo');
-        const badgeColor = isNeg ? '#00dc82' : '#ef4444';
-        const badgeText = isNeg ? 'Negativo (Aprovado)' : 'Positivo';
+        const hasPontos = (c.status === 'Pontos') || (c.pontos && parseInt(c.pontos, 10) > 0);
+        const badgeColor = hasPontos ? '#f59e0b' : '#00dc82';
+        const badgeText = hasPontos ? `Com Pontos (${c.pontos || 0})` : 'Regular (0 Pontos)';
 
         html += `
             <tr>
