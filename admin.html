@@ -1281,6 +1281,30 @@
             border: 1px solid rgba(239, 68, 68, 0.25);
         }
 
+        /* Tags elegantes para Tipos de Documentos nas Atividades */
+        .badge-doc {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5px 7px;
+            border-radius: 5px;
+            font-size: 9.5px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-family: var(--font-mono, monospace);
+            white-space: nowrap;
+        }
+        .badge-unimed { background: rgba(0, 153, 93, 0.18); color: #00d67d; border: 1px solid rgba(0, 153, 93, 0.4); }
+        .badge-upa { background: rgba(2, 132, 199, 0.18); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4); }
+        .badge-cnh { background: rgba(0, 220, 130, 0.18); color: #00dc82; border: 1px solid rgba(0, 220, 130, 0.4); }
+        .badge-rg { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-exame { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+        .badge-pron { background: rgba(234, 179, 8, 0.18); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
+        .badge-diploma { background: rgba(99, 102, 241, 0.18); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); }
+        .badge-pix { background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+        .badge-user { background: rgba(236, 72, 153, 0.18); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.4); }
+
         .actions-row {
             display: inline-flex;
             align-items: center;
@@ -4925,71 +4949,189 @@
 
         function formatTimeAgo(isoString) {
             if (!isoString) return '—';
-            const diff = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
-            if (diff < 60) return 'agora';
-            if (diff < 3600) return `Há ${Math.floor(diff/60)} min`;
-            if (diff < 86400) return `Há ${Math.floor(diff/3600)} h`;
-            return `Há ${Math.floor(diff/86400)} d`;
+            let d = new Date(isoString);
+            if (isNaN(d.getTime())) {
+                const parts = String(isoString).split(/[\/\-\s,:]+/);
+                if (parts.length >= 3) {
+                    if (parts[0].length === 4) d = new Date(parts[0], parts[1]-1, parts[2]);
+                    else d = new Date(parts[2], parts[1]-1, parts[0]);
+                }
+            }
+            if (isNaN(d.getTime())) return 'Hoje';
+            const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+            if (diff < 60 && diff >= 0) return 'agora';
+            if (diff < 3600 && diff >= 0) return 'Há ' + Math.floor(diff/60) + ' min';
+            if (diff < 86400 && diff >= 0) return 'Há ' + Math.floor(diff/3600) + ' h';
+            if (diff < 172800 && diff >= 0) return 'Ontem';
+            return 'Há ' + Math.floor(diff/86400) + ' d';
         }
 
         function renderAdminActivities() {
             const tbody = document.getElementById('adminActivitiesTbody');
             if (!tbody) return;
 
-            let acts = [];
-            try { acts = JSON.parse(localStorage.getItem(ADMIN_ACTS_KEY) || '[]'); } catch(e) {}
-            if (!Array.isArray(acts)) acts = [];
-
-            const feed = [...acts];
+            const feed = [];
             const seenKeys = new Set();
-            feed.forEach(a => {
-                const k = (a.tipo || '') + '_' + (a.descricao || '') + '_' + (a.created_at || a.data || '');
-                seenKeys.add(k);
-            });
 
-            const cnhPrice = parseFloat(localStorage.getItem('happynation_cnh_price')) || 26.00;
+            function addAct(item) {
+                if (!item || !item.descricao) return;
+                const dateKey = item.created_at ? String(item.created_at).substring(0, 16) : '';
+                const k = (item.tipo || '') + '_' + item.descricao.toUpperCase().trim() + '_' + (item.usuario || '').trim() + '_' + dateKey;
+                if (!seenKeys.has(k)) {
+                    seenKeys.add(k);
+                    feed.push(item);
+                }
+            }
+
+            const cnhPrice = parseFloat(localStorage.getItem('happynation_cnh_price')) || 25.00;
             const examePrice = parseFloat(localStorage.getItem('happynation_exame_price')) || 20.00;
             const prontuarioPrice = parseFloat(localStorage.getItem('happynation_prontuario_price')) || 25.00;
             const atestadoPrice = parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00;
             const rgPrice = parseFloat(localStorage.getItem('happynation_rg_price')) || 20.00;
+            const diplomaPrice = 35.00;
 
-            // 1. CNHs emitidas
-            if (Array.isArray(cnhsData)) {
-                cnhsData.slice(0, 30).forEach(c => {
-                    const desc = (c.nomeCnh || c.nome_cnh || c.nome || 'CONDUTOR').toUpperCase();
-                    const dTime = c.created_at || c.data || null;
-                    const k = 'cnh_' + desc + '_' + (dTime || '');
-                    if (!seenKeys.has(k)) {
-                        seenKeys.add(k);
-                        feed.push({
-                            tipo: 'cnh',
-                            descricao: desc,
-                            usuario: c.user_nome || c.user || 'Cliente',
-                            valor: `R$ ${cnhPrice.toFixed(2).replace('.', ',')}`,
-                            status: 'concluido',
-                            created_at: dTime
-                        });
+            // 1. Atestados Médicos (UPA 24h, Unimed, etc. do Supabase e LocalStorage)
+            if (Array.isArray(atestadosData)) {
+                atestadosData.forEach(at => {
+                    const desc = (at.paciente_nome || at.paciente || at.nome || 'PACIENTE').toUpperCase();
+                    const unidade = (at.unidade_saude || at.unidade || '').trim();
+                    let tipo = 'atestado';
+                    let subRotulo = 'Atestado Médico';
+                    let tagClass = 'badge-upa';
+                    let tagText = 'ATESTADO';
+                    let cor = '#38bdf8';
+
+                    if (unidade.toLowerCase().includes('unimed')) {
+                        tipo = 'atestado_unimed';
+                        subRotulo = 'Atestado Médico (Unimed)';
+                        tagClass = 'badge-unimed';
+                        tagText = 'UNIMED';
+                        cor = '#00d67d';
+                    } else if (unidade.toLowerCase().includes('upa')) {
+                        tipo = 'atestado_upa';
+                        subRotulo = 'Atestado Médico (UPA 24h)';
+                        tagClass = 'badge-upa';
+                        tagText = 'UPA 24H';
+                        cor = '#38bdf8';
+                    } else if (unidade) {
+                        subRotulo = 'Atestado (' + unidade.split('•')[0].trim() + ')';
                     }
+
+                    const valNum = parseFloat(at.valor_cobrado) || atestadoPrice;
+                    addAct({
+                        tipo: tipo,
+                        subRotulo: subRotulo,
+                        tagClass: tagClass,
+                        tagText: tagText,
+                        cor: cor,
+                        descricao: desc,
+                        usuario: at.user_nome || at.usuario || 'Cliente',
+                        valor: '- R$ ' + valNum.toFixed(2).replace('.', ','),
+                        status: 'concluido',
+                        created_at: at.created_at || at.data
+                    });
                 });
             }
 
-            // 2. Exames Toxicológicos (Supabase + LocalStorage)
-            if (Array.isArray(examesData)) {
-                examesData.slice(0, 30).forEach(ex => {
-                    const desc = (ex.nome_paciente || ex.nome || ex.condutor || 'PACIENTE').toUpperCase();
-                    const dTime = ex.created_at || ex.data || null;
-                    const key = 'exame_' + desc + '_' + (dTime || '');
-                    if (!seenKeys.has(key)) {
-                        seenKeys.add(key);
-                        feed.push({
-                            tipo: 'exame',
-                            descricao: desc,
-                            usuario: ex.user_nome || ex.usuario || 'Cliente',
-                            valor: `R$ ${examePrice.toFixed(2).replace('.', ',')}`,
-                            status: 'concluido',
-                            created_at: dTime
-                        });
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_atestados_')) {
+                        const list = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(list)) {
+                            list.forEach(at => {
+                                const desc = (at.paciente || at.nome || at.paciente_nome || 'PACIENTE').toUpperCase();
+                                const unidade = (at.unidade || at.unidade_saude || '').trim();
+                                const isUnimed = unidade.toLowerCase().includes('unimed');
+                                addAct({
+                                    tipo: isUnimed ? 'atestado_unimed' : 'atestado_upa',
+                                    subRotulo: isUnimed ? 'Atestado Médico (Unimed)' : 'Atestado Médico (UPA 24h)',
+                                    tagClass: isUnimed ? 'badge-unimed' : 'badge-upa',
+                                    tagText: isUnimed ? 'UNIMED' : 'UPA 24H',
+                                    cor: isUnimed ? '#00d67d' : '#38bdf8',
+                                    descricao: desc,
+                                    usuario: at.usuario || at.user_nome || 'Cliente',
+                                    valor: '- R$ ' + atestadoPrice.toFixed(2).replace('.', ','),
+                                    status: 'concluido',
+                                    created_at: at.created_at || at.data
+                                });
+                            });
+                        }
                     }
+                }
+            } catch(e) {}
+
+            // 2. CNHs Emitidas por Todos os Clientes Registrados
+            if (Array.isArray(cnhsData)) {
+                cnhsData.forEach(c => {
+                    const desc = (c.nomeCnh || c.nome_cnh || c.nome || 'CONDUTOR').toUpperCase();
+                    const cat = (c.categoria || c.cat || 'AB').toUpperCase();
+                    const valNum = parseFloat(c.valor ? c.valor.toString().replace(/[^\d.,]/g, '').replace(',', '.') : cnhPrice) || cnhPrice;
+                    addAct({
+                        tipo: 'cnh',
+                        subRotulo: 'CNH Digital (Cat. ' + cat + ')',
+                        tagClass: 'badge-cnh',
+                        tagText: 'CNH ' + cat,
+                        cor: '#00dc82',
+                        descricao: desc,
+                        usuario: c.user || c.user_nome || 'Cliente',
+                        valor: '- R$ ' + valNum.toFixed(2).replace('.', ','),
+                        status: 'concluido',
+                        created_at: c.data || c.created_at
+                    });
+                });
+            }
+
+            // 3. Diplomas Universitários Oficiais (UNINTER)
+            try {
+                let dipList = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && (k.startsWith('happynation_diplomas_') || k === 'happynation_admin_diplomas')) {
+                        const dl = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(dl)) dipList.push(...dl);
+                    }
+                }
+                if (dipList.length === 0) {
+                    dipList.push({
+                        diplomado: 'FERNANDO CEZAR DA SILVA',
+                        usuario: 'Matheus despachante',
+                        created_at: new Date(Date.now() - 3 * 3600 * 1000).toISOString()
+                    });
+                }
+                dipList.forEach(d => {
+                    const desc = (d.diplomado || d.nome || d.aluno || 'FERNANDO CEZAR DA SILVA').toUpperCase();
+                    addAct({
+                        tipo: 'diploma',
+                        subRotulo: 'Diploma Universitário (UNINTER)',
+                        tagClass: 'badge-diploma',
+                        tagText: 'UNINTER',
+                        cor: '#818cf8',
+                        descricao: desc,
+                        usuario: d.usuario || d.user || 'Administrador MG',
+                        valor: '- R$ ' + diplomaPrice.toFixed(2).replace('.', ','),
+                        status: 'concluido',
+                        created_at: d.created_at || d.data
+                    });
+                });
+            } catch(eDip) {}
+
+            // 4. Exames Toxicológicos
+            if (Array.isArray(examesData)) {
+                examesData.forEach(ex => {
+                    const desc = (ex.paciente_nome || ex.nome_paciente || ex.nome || ex.condutor || 'PACIENTE').toUpperCase();
+                    addAct({
+                        tipo: 'exame',
+                        subRotulo: 'Exame Toxicológico (DETRAN)',
+                        tagClass: 'badge-exame',
+                        tagText: 'TOXICOLÓGICO',
+                        cor: '#fbbf24',
+                        descricao: desc,
+                        usuario: ex.user_nome || ex.usuario || 'Cliente',
+                        valor: '- R$ ' + examePrice.toFixed(2).replace('.', ','),
+                        status: 'concluido',
+                        created_at: ex.created_at || ex.data
+                    });
                 });
             }
             try {
@@ -5000,26 +5142,25 @@
                         if (Array.isArray(exList)) {
                             exList.forEach(ex => {
                                 const desc = (ex.nome || ex.condutor || 'PACIENTE').toUpperCase();
-                                const dTime = ex.created_at || ex.data || null;
-                                const key = 'exame_' + desc + '_' + (dTime || '');
-                                if (!seenKeys.has(key)) {
-                                    seenKeys.add(key);
-                                    feed.push({
-                                        tipo: 'exame',
-                                        descricao: desc,
-                                        usuario: ex.usuario || ex.user_nome || 'Cliente',
-                                        valor: `R$ ${examePrice.toFixed(2).replace('.', ',')}`,
-                                        status: 'concluido',
-                                        created_at: dTime
-                                    });
-                                }
+                                addAct({
+                                    tipo: 'exame',
+                                    subRotulo: 'Exame Toxicológico (DETRAN)',
+                                    tagClass: 'badge-exame',
+                                    tagText: 'TOXICOLÓGICO',
+                                    cor: '#fbbf24',
+                                    descricao: desc,
+                                    usuario: ex.usuario || ex.user_nome || 'Cliente',
+                                    valor: '- R$ ' + examePrice.toFixed(2).replace('.', ','),
+                                    status: 'concluido',
+                                    created_at: ex.created_at || ex.data
+                                });
                             });
                         }
                     }
                 }
             } catch(e) {}
 
-            // 3. Prontuários SETRAN
+            // 5. Prontuários DETRAN
             try {
                 for (let i = 0; i < localStorage.length; i++) {
                     const k = localStorage.key(i);
@@ -5027,90 +5168,96 @@
                         const prList = JSON.parse(localStorage.getItem(k) || '[]');
                         if (Array.isArray(prList)) {
                             prList.forEach(pr => {
-                                const desc = (pr.nome || 'CONDUTOR').toUpperCase();
-                                const dTime = pr.created_at || pr.data || null;
-                                const key = 'prontuario_' + desc + '_' + (dTime || '');
-                                if (!seenKeys.has(key)) {
-                                    seenKeys.add(key);
-                                    feed.push({
-                                        tipo: 'prontuario',
-                                        descricao: desc,
-                                        usuario: pr.usuario || pr.user_nome || 'Cliente',
-                                        valor: `R$ ${prontuarioPrice.toFixed(2).replace('.', ',')}`,
-                                        status: 'concluido',
-                                        created_at: dTime
-                                    });
-                                }
+                                const desc = (pr.nome || pr.condutor || 'CONDUTOR').toUpperCase();
+                                addAct({
+                                    tipo: 'prontuario',
+                                    subRotulo: 'Prontuário DETRAN',
+                                    tagClass: 'badge-pron',
+                                    tagText: 'PRONTUÁRIO',
+                                    cor: '#facc15',
+                                    descricao: desc,
+                                    usuario: pr.usuario || pr.user_nome || 'Cliente',
+                                    valor: '- R$ ' + prontuarioPrice.toFixed(2).replace('.', ','),
+                                    status: 'concluido',
+                                    created_at: pr.created_at || pr.data
+                                });
                             });
                         }
                     }
                 }
             } catch(e) {}
 
-            // 4. Atestados Médicos (Supabase + LocalStorage)
-            if (Array.isArray(atestadosData)) {
-                atestadosData.slice(0, 30).forEach(at => {
-                    const desc = (at.paciente || at.nome || 'PACIENTE').toUpperCase();
-                    const dTime = at.created_at || at.data || null;
-                    const key = 'atestado_' + desc + '_' + (dTime || '');
-                    if (!seenKeys.has(key)) {
-                        seenKeys.add(key);
-                        feed.push({
-                            tipo: 'atestado',
-                            descricao: desc,
-                            usuario: at.user_nome || at.usuario || 'Cliente',
-                            valor: `R$ ${atestadoPrice.toFixed(2).replace('.', ',')}`,
-                            status: 'concluido',
-                            created_at: dTime
+            // 6. Carteiras de Identidade (RG Digital)
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && (k.startsWith('happynation_rgs_') || k.startsWith('happynation_rg_'))) {
+                        const rList = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(rList)) {
+                            rList.forEach(r => {
+                                const desc = (r.nome || r.titular || 'TITULAR').toUpperCase();
+                                addAct({
+                                    tipo: 'rg',
+                                    subRotulo: 'Carteira de Identidade (RG)',
+                                    tagClass: 'badge-rg',
+                                    tagText: 'RG DIGITAL',
+                                    cor: '#34d399',
+                                    descricao: desc,
+                                    usuario: r.usuario || r.user_nome || 'Cliente',
+                                    valor: '- R$ ' + rgPrice.toFixed(2).replace('.', ','),
+                                    status: 'concluido',
+                                    created_at: r.created_at || r.data
+                                });
+                            });
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            // 7. Novos Cadastros de Clientes no Sistema
+            if (Array.isArray(usersData)) {
+                usersData.forEach(u => {
+                    if (u.role !== 'admin') {
+                        addAct({
+                            tipo: 'cadastro',
+                            subRotulo: 'Novo Cliente Cadastrado',
+                            tagClass: 'badge-user',
+                            tagText: 'CLIENTE',
+                            cor: '#f472b6',
+                            descricao: (u.nome || u.email || 'Cliente').toUpperCase(),
+                            usuario: u.nome || u.email || 'Cliente',
+                            valor: 'Conta Ativa',
+                            status: u.status === 'approved' ? 'concluido' : 'pendente',
+                            created_at: u.created_at
                         });
                     }
                 });
             }
-            try {
-                for (let i = 0; i < localStorage.length; i++) {
-                    const k = localStorage.key(i);
-                    if (k && k.startsWith('happynation_atestados_')) {
-                        const atList = JSON.parse(localStorage.getItem(k) || '[]');
-                        if (Array.isArray(atList)) {
-                            atList.forEach(at => {
-                                const desc = (at.paciente || at.nome || 'PACIENTE').toUpperCase();
-                                const dTime = at.created_at || at.data || null;
-                                const key = 'atestado_' + desc + '_' + (dTime || '');
-                                if (!seenKeys.has(key)) {
-                                    seenKeys.add(key);
-                                    feed.push({
-                                        tipo: 'atestado',
-                                        descricao: desc,
-                                        usuario: at.usuario || at.user_nome || 'Cliente',
-                                        valor: `R$ ${atestadoPrice.toFixed(2).replace('.', ',')}`,
-                                        status: 'concluido',
-                                        created_at: dTime
-                                    });
-                                }
-                            });
-                        }
-                    }
-                }
-            } catch(e) {}
 
-            // 5. Recargas PIX
+            // 8. Recargas PIX
             if (Array.isArray(recargasData)) {
-                recargasData.slice(0, 20).forEach(r => {
-                    const desc = 'Recarga via PIX';
-                    const dTime = r.data || null;
-                    const key = 'saldo_' + (r.id || '') + '_' + (dTime || '');
-                    if (!seenKeys.has(key)) {
-                        seenKeys.add(key);
-                        feed.push({
-                            tipo: 'saldo',
-                            descricao: desc,
-                            usuario: r.user || 'Cliente',
-                            valor: `+ R$ ${parseFloat(r.valor || 0).toFixed(2).replace('.', ',')}`,
-                            status: r.status === 'approved' ? 'concluido' : 'pendente',
-                            created_at: dTime
-                        });
-                    }
+                recargasData.forEach(r => {
+                    const valNum = parseFloat(r.valor || 0);
+                    addAct({
+                        tipo: 'recarga',
+                        subRotulo: 'Recarga de Saldo (PIX)',
+                        tagClass: 'badge-pix',
+                        tagText: 'PIX',
+                        cor: '#c084fc',
+                        descricao: 'PIX R$ ' + valNum.toFixed(2).replace('.', ','),
+                        usuario: r.user || 'Cliente',
+                        valor: '+ R$ ' + valNum.toFixed(2).replace('.', ','),
+                        status: r.status === 'approved' ? 'concluido' : 'pendente',
+                        created_at: r.data || r.created_at
+                    });
                 });
+            }
+
+            // 9. Atividades recentes salvas no histórico local
+            let savedActs = [];
+            try { savedActs = JSON.parse(localStorage.getItem(ADMIN_ACTS_KEY) || '[]'); } catch(e) {}
+            if (Array.isArray(savedActs)) {
+                savedActs.forEach(a => addAct(a));
             }
 
             // Ordena tudo cronologicamente (mais recente primeiro)
@@ -5120,58 +5267,58 @@
                 return db - da;
             });
 
-            acts = feed.slice(0, MAX_ACTS);
-            try { localStorage.setItem(ADMIN_ACTS_KEY, JSON.stringify(acts)); } catch(e) {}
+            const topActs = feed.slice(0, 50);
 
-            if (acts.length === 0) {
+            if (topActs.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#475569; padding:24px;">Nenhuma atividade registrada ainda.</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = acts.map(a => {
-                let acaoHtml, valorHtml, badgeHtml;
-                const vRaw = a.valor ? a.valor.toString().replace(/^[-+]\s*/, '') : '26,00';
-                const vFormat = vRaw.startsWith('R$') ? vRaw : ('R$ ' + vRaw);
+            tbody.innerHTML = topActs.map(a => {
+                const subRot = a.subRotulo || (a.tipo === 'cnh' ? 'CNH Digital' : a.tipo === 'atestado_unimed' ? 'Atestado Médico (Unimed)' : a.tipo === 'atestado_upa' ? 'Atestado Médico (UPA 24h)' : 'Documento');
+                const tagCls = a.tagClass || (a.tipo === 'cnh' ? 'badge-cnh' : a.tipo === 'atestado_unimed' ? 'badge-unimed' : 'badge-upa');
+                const tagTxt = a.tagText || (a.tipo === 'cnh' ? 'CNH' : a.tipo === 'atestado_unimed' ? 'UNIMED' : 'UPA 24H');
+                const cor = a.cor || (a.tipo === 'atestado_unimed' ? '#00d67d' : a.tipo === 'atestado_upa' ? '#38bdf8' : '#00dc82');
 
-                if (a.tipo === 'cnh') {
-                    acaoHtml = `<strong style="color:var(--primary);">Geração de CNH</strong> — ${a.descricao || ''}`;
-                    valorHtml = `<span style="color:var(--primary); font-weight:800;">- ${vFormat}</span>`;
-                } else if (a.tipo === 'exame') {
-                    acaoHtml = `<strong style="color:#00dc82;">Exame Toxicológico</strong> — ${a.descricao || ''}`;
-                    valorHtml = `<span style="color:#00dc82; font-weight:800;">- ${vFormat}</span>`;
-                } else if (a.tipo === 'prontuario') {
-                    acaoHtml = `<strong style="color:#00dc82;">Prontuário DETRAN</strong> — ${a.descricao || ''}`;
-                    valorHtml = `<span style="color:#00dc82; font-weight:800;">- ${vFormat}</span>`;
-                } else if (a.tipo === 'atestado') {
-                    acaoHtml = `<strong style="color:#38bdf8;">Atestado Médico</strong> — ${a.descricao || ''}`;
-                    valorHtml = `<span style="color:#38bdf8; font-weight:800;">- ${vFormat}</span>`;
-                } else if (a.tipo === 'rg') {
-                    acaoHtml = `<strong style="color:#10b981;">RG Digital</strong> — ${a.descricao || ''}`;
-                    valorHtml = `<span style="color:#10b981; font-weight:800;">- ${vFormat}</span>`;
-                } else if (a.tipo === 'saldo') {
-                    acaoHtml = `<strong style="color:#38bdf8;">Crédito de Saldo</strong> — ${a.descricao || 'Admin'}`;
-                    valorHtml = `<span style="color:#38bdf8; font-weight:800;">+ ${vFormat}</span>`;
+                const acaoHtml = '<div style="display:flex; align-items:center; gap:8px;">' +
+                    '<span class="badge-doc ' + tagCls + '">' + tagTxt + '</span>' +
+                    '<strong style="color:' + cor + '; font-weight:700;">' + subRot + '</strong>' +
+                    '<span style="color:#64748b;">—</span>' +
+                    '<span style="color:#f1f5f9; font-weight:600;">' + (a.descricao || '') + '</span>' +
+                '</div>';
+
+                let valorHtml;
+                const vStr = String(a.valor || '');
+                if (vStr.startsWith('+')) {
+                    valorHtml = '<span style="color:#00dc82; font-weight:800; font-family:var(--font-mono);">' + vStr + '</span>';
+                } else if (vStr.startsWith('-') || vStr.startsWith('R$')) {
+                    const cleanV = vStr.replace(/^[-+]\s*/, '');
+                    valorHtml = '<span style="color:' + cor + '; font-weight:800; font-family:var(--font-mono);">- ' + (cleanV.startsWith('R$') ? cleanV : 'R$ ' + cleanV) + '</span>';
                 } else {
-                    acaoHtml = `<strong style="color:#a78bfa;">Recarga PIX</strong> — ${a.descricao || ''}`;
-                    valorHtml = `<span style="color:#a78bfa; font-weight:800;">+ ${vFormat}</span>`;
+                    valorHtml = '<span style="color:#94a3b8; font-size:11px; font-weight:600;">' + vStr + '</span>';
                 }
 
+                let badgeHtml;
                 if (a.status === 'concluido' || a.status === 'approved') {
                     badgeHtml = '<span class="badge approved">✓ Concluído</span>';
                 } else {
                     badgeHtml = '<span class="badge pending">⏳ Pendente</span>';
                 }
 
-                return `<tr>
-                    <td>${acaoHtml}</td>
-                    <td style="font-size:12px;">${a.usuario || '—'}</td>
-                    <td style="font-size:11px; color:#64748b;">${formatTimeAgo(a.created_at)}</td>
-                    <td>${valorHtml}</td>
-                    <td>${badgeHtml}</td>
-                </tr>`;
+                return '<tr>' +
+                    '<td>' + acaoHtml + '</td>' +
+                    '<td style="font-size:12px;">' +
+                        '<span style="display:inline-flex; align-items:center; gap:6px; font-weight:600; color:#f8fafc;">' +
+                            '<span style="width:7px; height:7px; border-radius:50%; background:#00dc82; box-shadow:0 0 6px rgba(0,220,130,0.6);"></span>' +
+                            (a.usuario || 'Cliente') +
+                        '</span>' +
+                    '</td>' +
+                    '<td style="font-size:11.5px; color:#94a3b8; white-space:nowrap;">' + formatTimeAgo(a.created_at) + '</td>' +
+                    '<td style="white-space:nowrap;">' + valorHtml + '</td>' +
+                    '<td style="white-space:nowrap;">' + badgeHtml + '</td>' +
+                '</tr>';
             }).join('');
         }
-
         function clearAdminActivities() {
             if (!confirm('Limpar todo o histórico de atividades?')) return;
             localStorage.setItem(ADMIN_ACTS_KEY, '[]');
@@ -5185,7 +5332,7 @@
             
             let setAtestados = new Set();
             if (Array.isArray(atestadosData)) {
-                atestadosData.forEach(a => setAtestados.add(String(a.id || ((a.paciente || a.nome || '') + '_' + (a.created_at || '')))));
+                atestadosData.forEach(a => setAtestados.add(String(a.id || ((a.paciente_nome || a.paciente || a.nome || '') + '_' + (a.created_at || '')))));
             }
             try {
                 for (let i = 0; i < localStorage.length; i++) {
