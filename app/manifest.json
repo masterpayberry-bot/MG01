@@ -1,6 +1,6 @@
 {
-  "name": "CNH Digital - WebApp",
-  "short_name": "CNH Digital",
+  "name": "Carteira Digital de Trânsito - CNH do Brasil",
+  "short_name": "CNH do Brasil",
   "description": "Carteira Digital de Trânsito - CNH Digital Oficial",
   "id": "/app/",
   "start_url": "./index.html?mode=standalone",
@@ -35,7 +35,10 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["utilities", "government"],
+  "categories": [
+    "utilities",
+    "government"
+  ],
   "shortcuts": [
     {
       "name": "Abrir CNH Digital",

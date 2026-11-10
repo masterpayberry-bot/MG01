@@ -1536,23 +1536,32 @@
         });
 
         function triggerPwaInstall() {
-            openAppInstallDialog();
+            // Se o navegador tem o prompt nativo oficial (Chrome / Edge / Android / Windows), dispara direto sem modal duplicado!
+            if (deferredPrompt) {
+                try {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult && choiceResult.outcome === "accepted") {
+                            localStorage.setItem("happynation_is_installed", "true");
+                            showInstallingCapsule();
+                        }
+                        deferredPrompt = null;
+                        closePwaBanner();
+                    });
+                    return;
+                } catch(e) {
+                    console.warn('[PWA] Erro no prompt nativo:', e);
+                }
+            }
+
+            // Se o navegador não suportar ou já tiver disparado, instala o atalho direto na Área de Trabalho
+            showInstallingCapsule();
+            closePwaBanner();
+            executeAppShortcutDownload();
         }
 
         function openAppInstallDialog() {
-            const modal = document.getElementById("appInstallModal");
-            if (!modal) return executeAppShortcutDownload();
-
-            // Sincroniza o host/domínio exibido no card oficial exatamente como no print do usuário
-            const hostEl = document.getElementById("appInstallModalHost");
-            if (hostEl) {
-                const curHost = (window.location && window.location.host && !window.location.host.includes("127.0.0.1") && !window.location.host.includes("localhost"))
-                    ? window.location.host
-                    : "cnh-digital-web-app.vercel.app";
-                hostEl.textContent = curHost;
-            }
-
-            modal.style.display = "flex";
+            triggerPwaInstall();
         }
 
         function closeAppInstallDialog() {
@@ -1629,12 +1638,12 @@
                     : "https://cnh-digital-web-app.vercel.app/app/";
                 const iconUrl = appUrl.replace(/\/$/, "") + "/icon-512.png";
 
-                let filename = "CNH Digital - WebApp.url";
+                let filename = "Carteira Digital de Trânsito - CNH do Brasil.url";
                 let mimeType = "application/internet-shortcut";
                 let content = "[InternetShortcut]\r\nURL=" + launchUrl + "\r\nIconIndex=0\r\nIconFile=" + iconUrl + "\r\nHotKey=0\r\n";
 
                 if (isMobile) {
-                    filename = "CNH Digital - WebApp.html";
+                    filename = "Carteira Digital de Trânsito - CNH do Brasil.html";
                     mimeType = "text/html";
                     content = "<!DOCTYPE html>\n" +
                         "<html lang=\"pt-BR\">\n" +
@@ -1645,7 +1654,7 @@
                         "<meta name=\"mobile-web-app-capable\" content=\"yes\">\n" +
                         "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n" +
                         "<meta name=\"apple-mobile-web-app-title\" content=\"CNH Digital\">\n" +
-                        "<title>CNH Digital - WebApp</title>\n" +
+                        "<title>Carteira Digital de Trânsito - CNH do Brasil</title>\n" +
                         "<link rel=\"icon\" href=\"" + iconUrl + "\">\n" +
                         "<link rel=\"apple-touch-icon\" href=\"" + iconUrl + "\">\n" +
                         "<meta http-equiv=\"refresh\" content=\"0;url=" + launchUrl + "\">\n" +
