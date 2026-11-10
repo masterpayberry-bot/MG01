@@ -868,9 +868,9 @@
         }
 
         .upa-official-logo-img {
-            height: 92px;
+            height: 112px;
             width: auto;
-            max-width: 260px;
+            max-width: 320px;
             object-fit: contain;
             display: block;
         }
@@ -891,8 +891,8 @@
         }
 
         .atestado-header-qr {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1039,9 +1039,9 @@
         }
 
         .footer-upa-logo img {
-            height: 68px;
+            height: 92px;
             width: auto;
-            max-width: 195px;
+            max-width: 260px;
             object-fit: contain;
             display: block;
         }
@@ -1058,8 +1058,8 @@
         }
 
         .footer-center-qr {
-            width: 78px;
-            height: 78px;
+            width: 105px;
+            height: 105px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1723,8 +1723,8 @@
                             </div>
 
                             <div class="atestado-header-qr" id="headerQrBox" title="QR Code de validação" style="position:relative;">
-                                <div class="qr-render-container" id="headerQrInner" style="width:100px; height:100px; display:flex; align-items:center; justify-content:center; filter:blur(3.5px); opacity:0.38;">
-                                    <svg viewBox="0 0 100 100" width="100" height="100" style="background:#fff;"><rect x="5" y="5" width="25" height="25" fill="#000"/><rect x="70" y="5" width="25" height="25" fill="#000"/><rect x="5" y="70" width="25" height="25" fill="#000"/><rect x="10" y="10" width="15" height="15" fill="#fff"/><rect x="75" y="10" width="15" height="15" fill="#fff"/><rect x="10" y="75" width="15" height="15" fill="#fff"/><rect x="14" y="14" width="7" height="7" fill="#000"/><rect x="79" y="14" width="7" height="7" fill="#000"/><rect x="14" y="79" width="7" height="7" fill="#000"/><rect x="36" y="15" width="12" height="12" fill="#000"/><rect x="52" y="28" width="10" height="10" fill="#000"/><rect x="38" y="42" width="20" height="10" fill="#000"/><rect x="65" y="50" width="15" height="15" fill="#000"/><rect x="40" y="70" width="18" height="18" fill="#000"/></svg>
+                                <div class="qr-render-container" id="headerQrInner" style="width:130px; height:130px; display:flex; align-items:center; justify-content:center; filter:blur(3.5px); opacity:0.38;">
+                                    <svg viewBox="0 0 100 100" width="130" height="130" style="background:#fff;"><rect x="5" y="5" width="25" height="25" fill="#000"/><rect x="70" y="5" width="25" height="25" fill="#000"/><rect x="5" y="70" width="25" height="25" fill="#000"/><rect x="10" y="10" width="15" height="15" fill="#fff"/><rect x="75" y="10" width="15" height="15" fill="#fff"/><rect x="10" y="75" width="15" height="15" fill="#fff"/><rect x="14" y="14" width="7" height="7" fill="#000"/><rect x="79" y="14" width="7" height="7" fill="#000"/><rect x="14" y="79" width="7" height="7" fill="#000"/><rect x="36" y="15" width="12" height="12" fill="#000"/><rect x="52" y="28" width="10" height="10" fill="#000"/><rect x="38" y="42" width="20" height="10" fill="#000"/><rect x="65" y="50" width="15" height="15" fill="#000"/><rect x="40" y="70" width="18" height="18" fill="#000"/></svg>
                                 </div>
                                 <div class="qr-lock-overlay" id="headerQrWatermark" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,0.45); pointer-events:none; z-index:10;">
                                     <div style="background:#ffffff; border:1.5px solid #ef4444; border-radius:10px; padding:6px 8px; box-shadow:0 4px 14px rgba(239,68,68,0.22); display:flex; flex-direction:column; align-items:center; gap:2px; text-align:center;">
@@ -2051,16 +2051,16 @@
 
             const qrContainer = document.createElement('div');
             qrContainer.className = 'qr-render-container';
-            qrContainer.style.width = '100px';
-            qrContainer.style.height = '100px';
+            qrContainer.style.width = '130px';
+            qrContainer.style.height = '130px';
             qrContainer.style.display = 'flex';
             qrContainer.style.alignItems = 'center';
             qrContainer.style.justifyContent = 'center';
 
             const qrImgLive = document.createElement('img');
             qrImgLive.src = await generateHighResQrDataUrl(qrUrl, 260);
-            qrImgLive.style.width = '100px';
-            qrImgLive.style.height = '100px';
+            qrImgLive.style.width = '130px';
+            qrImgLive.style.height = '130px';
             qrImgLive.style.display = 'block';
             qrImgLive.style.imageRendering = '-webkit-optimize-contrast';
             qrContainer.appendChild(qrImgLive);
@@ -2106,16 +2106,16 @@
 
             const qrContainerF = document.createElement('div');
             qrContainerF.className = 'qr-render-container';
-            qrContainerF.style.width = '70px';
-            qrContainerF.style.height = '70px';
+            qrContainerF.style.width = '95px';
+            qrContainerF.style.height = '95px';
             qrContainerF.style.display = 'flex';
             qrContainerF.style.alignItems = 'center';
             qrContainerF.style.justifyContent = 'center';
 
             const qrImgLiveF = document.createElement('img');
             qrImgLiveF.src = await generateHighResQrDataUrl(qrUrl, 220);
-            qrImgLiveF.style.width = '70px';
-            qrImgLiveF.style.height = '70px';
+            qrImgLiveF.style.width = '95px';
+            qrImgLiveF.style.height = '95px';
             qrImgLiveF.style.display = 'block';
             qrImgLiveF.style.imageRendering = '-webkit-optimize-contrast';
             qrContainerF.appendChild(qrImgLiveF);
@@ -2628,8 +2628,8 @@
             const imgH = document.createElement('img');
             imgH.src = qrHighResPng;
             imgH.alt = 'QR Code de Validação';
-            imgH.style.width = '105px';
-            imgH.style.height = '105px';
+            imgH.style.width = '130px';
+            imgH.style.height = '130px';
             imgH.style.display = 'block';
             imgH.style.margin = 'auto';
             imgH.style.imageRendering = '-webkit-optimize-contrast';
