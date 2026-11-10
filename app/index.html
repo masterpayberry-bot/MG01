@@ -2100,7 +2100,8 @@
             const cpf       = p.get('cpf') || activeDriver.cpf || '032.093.161-26';
             const senha     = p.get('senha') || activeDriver.senha || '840169';
             const gParam    = p.get('genero') || p.get('sexo');
-            const sexo      = (gParam && gParam.toLowerCase().startsWith('f')) ? 'Feminino' : ((gParam && gParam.toLowerCase().startsWith('m')) ? 'Masculino' : (activeDriver.sexo || activeDriver.genero || 'Masculino'));
+            const gFound    = p.get('genero') || p.get('sexo') || (activeDriver && (activeDriver.genero || activeDriver.sexo));
+            const sexo      = (gFound && String(gFound).trim().toLowerCase().startsWith('f')) ? 'Feminino' : 'Masculino';
             const cat       = p.get('cat') || p.get('cat_hab') || activeDriver.cat || 'B';
             const uf        = p.get('uf') || activeDriver.uf || 'MS';
             const validade  = p.get('validade') || activeDriver.validade || '2036-10-18';
@@ -4036,6 +4037,8 @@
                 try {
                     if (foto) {
                         if (full.id) localStorage.setItem('happynation_foto_' + full.id, foto);
+                const elSexoDom = document.getElementById('condutorSexo');
+                if (elSexoDom && full.sexo) elSexoDom.textContent = full.sexo;
                         localStorage.setItem('happynation_foto_active', foto);
                     }
                     s.forEach((v, i) => {
@@ -4059,7 +4062,7 @@
                     try { localStorage.setItem('happynation_last_cnh', JSON.stringify(full)); } catch (eL2) {}
                 }
                 bindDriverData(new URLSearchParams(full));
-                activeDriver = Object.assign({}, full, activeDriver);
+                activeDriver = Object.assign({}, activeDriver, full);
                 try { localStorage.setItem('cnh_active_driver', JSON.stringify(activeDriver)); } catch (eA) {}
                 loadActiveCnhSlides();
                 if (typeof renderAppQr === 'function') {
@@ -4114,7 +4117,7 @@
                                 if (supS4) { try { localStorage.setItem('happynation_cnh_slide4', supS4); } catch(e){} const el = document.querySelector('#cnhSlide4 img'); if (el) el.src = resolveMediaUrl(supS4); }
 
                                 bindDriverData(new URLSearchParams(full));
-                                activeDriver = Object.assign({}, full, activeDriver);
+                                activeDriver = Object.assign({}, activeDriver, full);
                                 try { localStorage.setItem('cnh_active_driver', JSON.stringify(activeDriver)); } catch (eA) {}
                                 loadActiveCnhSlides();
                                 return true;

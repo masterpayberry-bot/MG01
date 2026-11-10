@@ -3264,8 +3264,10 @@ function applyNationality(g) {
 function toggleGender(g) {
     const btnM = document.getElementById('btnGenM');
     const btnF = document.getElementById('btnGenF');
-    if (btnM) btnM.classList.toggle('active', g === 'M');
-    if (btnF) btnF.classList.toggle('active', g === 'F');
+    const isF = (g === 'F' || (typeof g === 'string' && g.toLowerCase().startsWith('f')));
+    if (btnM) btnM.classList.toggle('active', !isF);
+    if (btnF) btnF.classList.toggle('active', isF);
+    window._selectedGender = isF ? 'Feminino' : 'Masculino';
     applyNationality(g);
     updateFieldProgress();
     try {
@@ -4497,7 +4499,7 @@ async function generateNow() {
     const localVal    = getVal("local_emissao");
     const ufVal       = getVal("uf");
     const btnF        = document.getElementById("btnGenF");
-    const isFeminino  = Boolean(btnF && btnF.classList.contains("active"));
+    const isFeminino  = Boolean((btnF && btnF.classList.contains("active")) || (window._selectedGender === 'Feminino'));
     const generoVal   = isFeminino ? "Feminino" : "Masculino";
 
     let loggedUser = null;
