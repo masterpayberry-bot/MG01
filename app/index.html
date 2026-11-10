@@ -1584,20 +1584,16 @@
                 cap.style.transform = "translateX(-50%) translateY(0)";
             });
 
+            // Some suavemente após 2.5s sem mostrar aviso de conclusão
             setTimeout(() => {
                 if (cap) {
-                    cap.textContent = "✓ CNH Do Brasil instalada na Área de Trabalho!";
+                    cap.style.opacity = "0";
+                    cap.style.transform = "translateX(-50%) translateY(10px)";
+                    setTimeout(() => {
+                        cap.style.display = "none";
+                    }, 350);
                 }
-                setTimeout(() => {
-                    if (cap) {
-                        cap.style.opacity = "0";
-                        cap.style.transform = "translateX(-50%) translateY(10px)";
-                        setTimeout(() => {
-                            cap.style.display = "none";
-                        }, 350);
-                    }
-                }, 2200);
-            }, 2200);
+            }, 2500);
         }
 
         function confirmAppInstallDownload() {
