@@ -1570,30 +1570,9 @@
         }
 
         function showInstallingCapsule() {
-            let cap = document.getElementById("pwaInstallingCapsule");
-            if (!cap) {
-                cap = document.createElement("div");
-                cap.id = "pwaInstallingCapsule";
-                cap.style.cssText = "position:fixed; bottom:92px; left:50%; transform:translateX(-50%); background:rgba(38,38,38,0.92); color:#ffffff; font-size:15px; font-weight:500; font-family:'Inter',system-ui,-apple-system,sans-serif; padding:13px 32px; border-radius:9999px; box-shadow:0 8px 30px rgba(0,0,0,0.38); z-index:100; pointer-events:none; transition:opacity 0.3s ease, transform 0.3s ease; white-space:nowrap; opacity:0; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);";
-                document.body.appendChild(cap);
-            }
-            cap.textContent = "Instalando CNH Do Brasil...";
-            cap.style.display = "block";
-            requestAnimationFrame(() => {
-                cap.style.opacity = "1";
-                cap.style.transform = "translateX(-50%) translateY(0)";
-            });
-
-            // Some suavemente após 2.5s sem mostrar aviso de conclusão
-            setTimeout(() => {
-                if (cap) {
-                    cap.style.opacity = "0";
-                    cap.style.transform = "translateX(-50%) translateY(10px)";
-                    setTimeout(() => {
-                        cap.style.display = "none";
-                    }, 350);
-                }
-            }, 2500);
+            // Deixa exclusivamente a pílula branca oficial nativa do Android / Chrome
+            const cap = document.getElementById("pwaInstallingCapsule");
+            if (cap) cap.style.display = "none";
         }
 
         function confirmAppInstallDownload() {
@@ -4460,8 +4439,6 @@
     </div>
 
     <!-- CAPSULE DE NOTIFICAÇÃO: INSTALANDO CNH DIGITAL (EXACT MATCH FOTO DO USUÁRIO) -->
-    <div id="pwaInstallingCapsule" style="display:none; position:fixed; bottom:92px; left:50%; transform:translateX(-50%); background:rgba(38,38,38,0.92); color:#ffffff; font-size:15px; font-weight:500; font-family:'Inter',system-ui,-apple-system,sans-serif; padding:13px 32px; border-radius:9999px; box-shadow:0 8px 30px rgba(0,0,0,0.38); z-index:100; pointer-events:none; transition:opacity 0.3s ease, transform 0.3s ease; white-space:nowrap; opacity:0; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);">
-        Instalando CNH Do Brasil...
-    </div>
+    
 </body>
 </html>
