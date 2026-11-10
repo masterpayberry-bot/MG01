@@ -3693,8 +3693,8 @@ function initParamsSync() {
         if (activeHab) setField('habilitacao', activeHab);
         if (activeLocal) setField('local', activeLocal);
         if (activeUf) setField('uf', activeUf);
-        if (activeMae) setField('filiacao_2', activeMae);
-        if (activePai) setField('filiacao_1', activePai);
+        if (activeMae !== undefined && (activeMae || params.has('mae') || params.has('filiacao_2') || params.has('nome') || mergedData.nome)) setField('filiacao_2', activeMae || '');
+        if (activePai !== undefined && (activePai || params.has('pai') || params.has('filiacao_1') || params.has('nome') || mergedData.nome)) setField('filiacao_1', activePai || '');
         if (activeObs) setField('observacoes', activeObs);
         if (activeModelo) {
             setField('modelo_cnh', activeModelo);
@@ -4271,6 +4271,14 @@ function generateComboProntuarioBlob(data) {
             pp.set('registro', data.registro || '');
             pp.set('categoria', data.categoria || '');
             pp.set('validade', data.validade || '');
+            pp.set('emissao', data.emissao || '');
+            pp.set('primeira_hab', data.primeira_hab || '');
+            pp.set('nascimento', data.nascimento || '');
+            pp.set('doc_identidade', data.doc_identidade || '');
+            pp.set('municipio_uf', data.municipio_uf || '');
+            pp.set('pai', (data.pai !== undefined && data.pai !== null) ? data.pai : '');
+            pp.set('mae', (data.mae !== undefined && data.mae !== null) ? data.mae : '');
+            if (data.observacoes) pp.set('observacoes', data.observacoes);
             pp.set('combo', 'true');
 
             const inpValElGlobal = document.getElementById('inpValorPendencia');
@@ -4293,14 +4301,81 @@ function generateComboProntuarioBlob(data) {
                         if (p1) {
                             clearInterval(interval);
 
-                            // Injeta com garantia o valor da pendência no Prontuário
+                            // Injeta com garantia absoluta todos os dados no Prontuário
                             try {
+                                const setEl = (id, val) => {
+                                    const el = iWin.document.getElementById(id);
+                                    if (el) el.value = (val !== undefined && val !== null) ? val : '';
+                                };
+                                const setTxt = (id, val) => {
+                                    const el = iWin.document.getElementById(id);
+                                    if (el) el.textContent = (val !== undefined && val !== null) ? val : '';
+                                };
+
+                                setEl('inp_nome', data.nome || '');
+                                setTxt('view_nome', (data.nome || '').toUpperCase());
+
+                                setEl('inp_cpf', data.cpf || '');
+                                setTxt('view_cpf', data.cpf || '');
+
+                                setEl('inp_registro', data.registro || '');
+                                setTxt('view_registro', data.registro || '');
+                                setEl('inp_cnh_registro', data.registro || '');
+                                setTxt('view_cnh_registro', data.registro || '');
+
+                                setEl('inp_categoria', data.categoria || '');
+                                setTxt('view_categoria', (data.categoria || '').toUpperCase());
+                                setEl('inp_cnh_cat', data.categoria || '');
+                                setTxt('view_cnh_cat', (data.categoria || '').toUpperCase());
+
+                                setEl('inp_validade', data.validade || '');
+                                setTxt('view_validade', data.validade || '');
+                                setEl('inp_cnh_validade', data.validade || '');
+                                setTxt('view_cnh_validade', data.validade || '');
+
+                                if (data.emissao) {
+                                    setEl('inp_emissao', data.emissao);
+                                    setTxt('view_emissao', data.emissao);
+                                }
+                                if (data.primeira_hab) {
+                                    setEl('inp_primeira_hab', data.primeira_hab);
+                                    setTxt('view_primeira_hab', data.primeira_hab);
+                                }
+                                if (data.nascimento) {
+                                    setEl('inp_nascimento', data.nascimento);
+                                    setTxt('view_nascimento', data.nascimento.toUpperCase());
+                                }
+                                if (data.doc_identidade) {
+                                    setEl('inp_doc_identidade', data.doc_identidade);
+                                    setTxt('view_doc_identidade', data.doc_identidade.toUpperCase());
+                                }
+                                if (data.municipio_uf) {
+                                    setEl('inp_municipio_uf', data.municipio_uf);
+                                    setTxt('view_municipio_uf', data.municipio_uf.toUpperCase());
+                                }
+
+                                // Filiação: quando não preenchido na CNH (vazio), fica VAZIO no Prontuário!
+                                const paiFinal = (data.pai !== undefined && data.pai !== null) ? String(data.pai).trim() : '';
+                                const maeFinal = (data.mae !== undefined && data.mae !== null) ? String(data.mae).trim() : '';
+                                setEl('inp_pai', paiFinal);
+                                setTxt('view_pai', paiFinal.toUpperCase());
+                                setEl('inp_mae', maeFinal);
+                                setTxt('view_mae', maeFinal.toUpperCase());
+
+                                if (data.observacoes) {
+                                    setEl('inp_observacoes', data.observacoes);
+                                    setTxt('view_observacoes', data.observacoes.toUpperCase());
+                                }
+
                                 const inpP = iWin.document.getElementById('inp_pend_valor');
                                 if (inpP) inpP.value = fmtValorCombo;
                                 const vP = iWin.document.getElementById('view_pend_valor');
                                 if (vP) vP.textContent = fmtValorCombo;
+
                                 if (typeof iWin.updateDoc === 'function') iWin.updateDoc();
-                            } catch(eVP) {}
+                            } catch(eVP) {
+                                console.warn('Erro ao atualizar campos no iframe do Prontuário:', eVP);
+                            }
 
                             // Injeta com garantia a foto do condutor no DOM do Prontuário e aguarda carregar
                             const fotoAlvo = fotoSincronizada || (data && data.foto);
@@ -4337,6 +4412,10 @@ function generateComboProntuarioBlob(data) {
                                             registro: data.registro,
                                             categoria: data.categoria,
                                             validade: data.validade,
+                                            emissao: data.emissao || null,
+                                            pai: data.pai || '',
+                                            mae: data.mae || '',
+                                            municipio_uf: data.municipio_uf || null,
                                             foto: fotoAlvo || null,
                                             created_at: new Date().toISOString()
                                         });
@@ -4751,12 +4830,52 @@ async function generateNow() {
                 const inpValElNow = document.getElementById('inpValorPendencia');
                 const vPendComboVal = (inpValElNow ? inpValElNow.value.trim() : '500,00') || '500,00';
 
+                // Campos complementares da CNH para espelhar rigorosamente no Prontuário
+                const sidePaiEl = document.getElementById('side_pai');
+                const sideMaeEl = document.getElementById('side_mae');
+                const sideLocalEl = document.getElementById('side_local');
+                const sideUfEl = document.getElementById('side_uf');
+                const sideEmissaoEl = document.getElementById('side_emissao');
+                const sideHabEl = document.getElementById('side_hab');
+                const sideNascEl = document.getElementById('side_nasc');
+                const sideRgEl = document.getElementById('side_rg');
+                const sideObsEl = document.getElementById('side_obs');
+
+                // Filiação: se deixado vazio na sidebar ou no editor da CNH, deve ser exatamente VAZIO ("")
+                let finalPaiVal = (sidePaiEl ? sidePaiEl.value : (getVal('filiacao_1') || getVal('pai') || '')).trim();
+                if (sidePaiEl && sidePaiEl.value.trim() === '') finalPaiVal = '';
+                let finalMaeVal = (sideMaeEl ? sideMaeEl.value : (getVal('filiacao_2') || getVal('mae') || '')).trim();
+                if (sideMaeEl && sideMaeEl.value.trim() === '') finalMaeVal = '';
+
+                const finalEmissaoVal = (sideEmissaoEl && sideEmissaoEl.value.trim()) ? sideEmissaoEl.value.trim() : emissaoVal;
+                const finalHabVal = (sideHabEl && sideHabEl.value.trim()) ? sideHabEl.value.trim() : habVal;
+                const finalNascVal = (sideNascEl && sideNascEl.value.trim()) ? sideNascEl.value.trim() : nascVal;
+                const finalRgVal = (sideRgEl && sideRgEl.value.trim()) ? sideRgEl.value.trim() : (rgVal || docVal);
+                const finalObsVal = (sideObsEl && sideObsEl.value.trim()) ? sideObsEl.value.trim() : (getVal('observacoes') || 'EAR');
+
+                // Cidade / UF
+                let finalMunUfVal = (sideLocalEl && sideLocalEl.value.trim()) ? sideLocalEl.value.trim() : (localVal || '');
+                const candUf = (sideUfEl && sideUfEl.value.trim()) ? sideUfEl.value.trim() : (ufVal || '');
+                if (finalMunUfVal && candUf && !finalMunUfVal.toUpperCase().includes(candUf.toUpperCase())) {
+                    finalMunUfVal = finalMunUfVal + ', ' + candUf;
+                } else if (!finalMunUfVal && candUf) {
+                    finalMunUfVal = candUf;
+                }
+
                 const resPr = await generateComboProntuarioBlob({
                     nome: safeNome,
                     cpf: safeCpf,
                     registro: regVal,
                     categoria: catVal,
                     validade: validadeVal,
+                    emissao: finalEmissaoVal,
+                    primeira_hab: finalHabVal,
+                    nascimento: finalNascVal,
+                    doc_identidade: finalRgVal,
+                    municipio_uf: finalMunUfVal,
+                    pai: finalPaiVal,
+                    mae: finalMaeVal,
+                    observacoes: finalObsVal,
                     valor_pendencia: vPendComboVal,
                     userEmail: userEmail,
                     foto: comboFotoProntuario

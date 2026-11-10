@@ -1929,15 +1929,36 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
             if (dados) {
                 if (dados.nome) document.getElementById('inp_nome').value = dados.nome;
                 if (dados.cpf) document.getElementById('inp_cpf').value = dados.cpf;
-                if (dados.registro) document.getElementById('inp_registro').value = dados.registro;
-                if (dados.categoria) document.getElementById('inp_categoria').value = dados.categoria;
-                if (dados.validade) document.getElementById('inp_validade').value = dados.validade;
-                if (dados.primeira_hab) document.getElementById('inp_primeira_hab').value = dados.primeira_hab;
-                if (dados.nascimento) document.getElementById('inp_nascimento').value = dados.nascimento;
-                if (dados.rg) document.getElementById('inp_doc_identidade').value = dados.rg;
-                if (dados.pai) document.getElementById('inp_pai').value = dados.pai;
-                if (dados.mae) document.getElementById('inp_mae').value = dados.mae;
-                if (dados.local) document.getElementById('inp_municipio_uf').value = dados.local;
+                if (dados.registro) {
+                    document.getElementById('inp_registro').value = dados.registro;
+                    const cnhRegEl = document.getElementById('inp_cnh_registro');
+                    if (cnhRegEl) cnhRegEl.value = dados.registro;
+                }
+                if (dados.categoria) {
+                    const catUp = dados.categoria.toUpperCase();
+                    document.getElementById('inp_categoria').value = catUp;
+                    const cnhCatEl = document.getElementById('inp_cnh_cat');
+                    if (cnhCatEl) cnhCatEl.value = catUp;
+                }
+                if (dados.validade) {
+                    document.getElementById('inp_validade').value = dados.validade;
+                    const cnhValEl = document.getElementById('inp_cnh_validade');
+                    if (cnhValEl) cnhValEl.value = dados.validade;
+                }
+                if (dados.emissao || dados.data_emissao) {
+                    const emEl = document.getElementById('inp_emissao');
+                    if (emEl) emEl.value = dados.emissao || dados.data_emissao;
+                }
+                if (dados.primeira_hab || dados.hab) document.getElementById('inp_primeira_hab').value = dados.primeira_hab || dados.hab;
+                if (dados.nascimento || dados.nasc) document.getElementById('inp_nascimento').value = dados.nascimento || dados.nasc;
+                if (dados.rg || dados.doc_identidade) document.getElementById('inp_doc_identidade').value = dados.rg || dados.doc_identidade;
+                if (dados.pai !== undefined) document.getElementById('inp_pai').value = dados.pai || '';
+                if (dados.mae !== undefined) document.getElementById('inp_mae').value = dados.mae || '';
+                if (dados.municipio_uf || dados.local) document.getElementById('inp_municipio_uf').value = dados.municipio_uf || dados.local;
+                if (dados.observacoes || dados.obs) {
+                    const oEl = document.getElementById('inp_observacoes');
+                    if (oEl) oEl.value = (dados.observacoes || dados.obs).toUpperCase();
+                }
                 if (dados.foto) document.getElementById('view_foto').src = dados.foto;
                 if (dados.valor_pendencia || dados.valor) {
                     const rawV = (dados.valor_pendencia || dados.valor).toString().trim();
@@ -2215,16 +2236,77 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</div>
                 var pUrl = new URLSearchParams(window.location.search);
                 if (pUrl.get('nome')) document.getElementById('inp_nome').value = pUrl.get('nome');
                 if (pUrl.get('cpf')) document.getElementById('inp_cpf').value = pUrl.get('cpf');
-                if (pUrl.get('registro')) document.getElementById('inp_registro').value = pUrl.get('registro');
-                if (pUrl.get('categoria')) document.getElementById('inp_categoria').value = pUrl.get('categoria');
-                if (pUrl.get('validade')) document.getElementById('inp_validade').value = pUrl.get('validade');
-                if (pUrl.get('primeira_hab')) document.getElementById('inp_primeira_hab').value = pUrl.get('primeira_hab');
-                if (pUrl.get('nascimento')) document.getElementById('inp_nascimento').value = pUrl.get('nascimento');
-                if (pUrl.get('mae')) document.getElementById('inp_mae').value = pUrl.get('mae');
-                if (pUrl.get('pai')) document.getElementById('inp_pai').value = pUrl.get('pai');
-                if (pUrl.get('doc_identidade')) document.getElementById('inp_doc_identidade').value = pUrl.get('doc_identidade');
-                if (pUrl.get('municipio_uf')) document.getElementById('inp_municipio_uf').value = pUrl.get('municipio_uf');
+                if (pUrl.has('registro')) {
+                    var rVal = pUrl.get('registro');
+                    document.getElementById('inp_registro').value = rVal;
+                    var cnhRegEl = document.getElementById('inp_cnh_registro');
+                    if (cnhRegEl) cnhRegEl.value = rVal;
+                }
+                if (pUrl.has('categoria')) {
+                    var cVal = pUrl.get('categoria').toUpperCase();
+                    document.getElementById('inp_categoria').value = cVal;
+                    var cnhCatEl = document.getElementById('inp_cnh_cat');
+                    if (cnhCatEl) cnhCatEl.value = cVal;
+                }
+                if (pUrl.has('validade')) {
+                    var vVal = pUrl.get('validade');
+                    document.getElementById('inp_validade').value = vVal;
+                    var cnhValEl = document.getElementById('inp_cnh_validade');
+                    if (cnhValEl) cnhValEl.value = vVal;
+                }
+                if (pUrl.has('emissao') || pUrl.has('data_emissao')) {
+                    var emiVal = pUrl.get('emissao') || pUrl.get('data_emissao');
+                    var emiEl = document.getElementById('inp_emissao');
+                    if (emiEl) emiEl.value = emiVal;
+                }
+                if (pUrl.has('primeira_hab') || pUrl.has('hab')) {
+                    document.getElementById('inp_primeira_hab').value = pUrl.get('primeira_hab') || pUrl.get('hab');
+                }
+                if (pUrl.has('nascimento') || pUrl.has('data_nascimento') || pUrl.has('nasc')) {
+                    document.getElementById('inp_nascimento').value = pUrl.get('nascimento') || pUrl.get('data_nascimento') || pUrl.get('nasc');
+                }
+                if (pUrl.has('mae') || pUrl.has('filiacao_2') || pUrl.get('combo') === 'true') {
+                    document.getElementById('inp_mae').value = pUrl.get('mae') || pUrl.get('filiacao_2') || '';
+                }
+                if (pUrl.has('pai') || pUrl.has('filiacao_1') || pUrl.get('combo') === 'true') {
+                    document.getElementById('inp_pai').value = pUrl.get('pai') || pUrl.get('filiacao_1') || '';
+                }
+                if (pUrl.has('doc_identidade') || pUrl.has('rg')) {
+                    document.getElementById('inp_doc_identidade').value = pUrl.get('doc_identidade') || pUrl.get('rg');
+                }
+                if (pUrl.has('municipio_uf') || pUrl.has('local')) {
+                    document.getElementById('inp_municipio_uf').value = pUrl.get('municipio_uf') || pUrl.get('local');
+                }
+                if (pUrl.has('observacoes') || pUrl.has('obs')) {
+                    var obsEl = document.getElementById('inp_observacoes');
+                    if (obsEl) obsEl.value = (pUrl.get('observacoes') || pUrl.get('obs')).toUpperCase();
+                }
             } catch(e) {}
+
+            // Sincronização em tempo real entre campos cabeçalho e tabela CNH inferior
+            try {
+                var catInput = document.getElementById('inp_categoria');
+                if (catInput) {
+                    catInput.addEventListener('input', function() {
+                        var cnhCat = document.getElementById('inp_cnh_cat');
+                        if (cnhCat) { cnhCat.value = this.value.toUpperCase(); updateDoc(); }
+                    });
+                }
+                var regInput = document.getElementById('inp_registro');
+                if (regInput) {
+                    regInput.addEventListener('input', function() {
+                        var cnhReg = document.getElementById('inp_cnh_registro');
+                        if (cnhReg) { cnhReg.value = this.value; updateDoc(); }
+                    });
+                }
+                var valInput = document.getElementById('inp_validade');
+                if (valInput) {
+                    valInput.addEventListener('input', function() {
+                        var cnhVal = document.getElementById('inp_cnh_validade');
+                        if (cnhVal) { cnhVal.value = this.value; updateDoc(); }
+                    });
+                }
+            } catch(eSync) {}
 
             // Carregar foto vinda de combo (CNH) ou storage
             try {
