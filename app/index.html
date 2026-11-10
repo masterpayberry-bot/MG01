@@ -948,7 +948,7 @@
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                     </button>
                     <!-- Driver First Name -->
-                    <span id="homeDriverFirstName" style="font-weight:700; font-size:17px; letter-spacing:0.5px; text-transform:uppercase; font-family:'Inter',sans-serif;">MARIA</span>
+                    <span id="homeDriverFirstName" style="font-weight:700; font-size:17px; letter-spacing:0.5px; font-family:'Inter',sans-serif;">CNH Do Brasil</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:16px;">
                     <!-- Bell Notification Icon -->
@@ -2204,10 +2204,10 @@
             const elAppCat = document.getElementById('appDriverCat');
             if (elAppCat) elAppCat.textContent = cat;
 
-            // 3.1. Tela Home / Dashboard (Primeiro Nome e Avatar)
+            // 3.1. Tela Home / Dashboard (Cabeçalho fixo CNH Do Brasil e Avatar com inicial)
             const firstName = (nome.trim().split(/\s+/)[0] || 'ADRIANO').toUpperCase();
             const elHomeName = document.getElementById('homeDriverFirstName');
-            if (elHomeName) elHomeName.textContent = firstName;
+            if (elHomeName) elHomeName.textContent = 'CNH Do Brasil';
 
             const elHomeAvatar = document.getElementById('homeUserAvatar');
             if (elHomeAvatar) elHomeAvatar.textContent = firstName.charAt(0);
