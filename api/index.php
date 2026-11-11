@@ -1271,9 +1271,83 @@ switch ($action) {
         break;
 
     case 'delete_cnh':
-        $cnhId = trim($inputData['id'] ?? '');
-        $rawCpf = trim($inputData['cpf'] ?? '');
-        $cleanCpf = preg_replace('/\D/', '', $rawCpf);
+        $cnhIds = [];
+        if (!empty($inputData['ids']) && is_array($inputData['ids'])) {
+            $cnhIds = array_map('trim', $inputData['ids']);
+        } elseif (!empty($inputData['id'])) {
+            $cnhIds = [trim($inputData['id'])];
+        }
+
+        $rawCpfs = [];
+        if (!empty($inputData['cpfs']) && is_array($inputData['cpfs'])) {
+            $rawCpfs = $inputData['cpfs'];
+        } elseif (!empty($inputData['cpf'])) {
+            $rawCpfs = [$inputData['cpf']];
+        }
+
+        $cleanCpfs = [];
+        foreach ($rawCpfs as $rc) {
+            $cl = preg_replace('/\D/', '', $rc);
+            if (!empty($cl) && !in_array($cl, $cleanCpfs)) $cleanCpfs[] = $cl;
+        }
+
+        $cnhId = !empty($cnhIds) ? $cnhIds[0] : '';
+        $rawCpf = !empty($rawCpfs) ? $rawCpfs[0] : '';
+        $cleanCpf = !empty($cleanCpfs) ? $cleanCpfs[0] : '';
+
+        if (empty($cnhIds) && empty($cleanCpfs)) {
+            jsonResponse('error', null, 'Informe o ID ou o CPF da CNH a ser excluída.');
+        }
+
+        // 1. Remove do MySQL
+        if ($pdo) {
+            try {
+                if (!empty($cnhIds)) {
+                    $inIds = implode(',', array_fill(0, count($cnhIds), '?'));
+                    $stmt = $pdo->prepare("DELETE FROM cnhs WHERE id IN ($inIds)");
+                    $stmt->execute($cnhIds);
+                }
+                foreach ($cleanCpfs as $clCpf) {
+                    $stmt2 = $pdo->prepare("DELETE FROM cnhs WHERE REPLACE(REPLACE(REPLACE(cpf, '.', ''), '-', ''), ' ', '') = ?");
+                    $stmt2->execute([$clCpf]);
+                }
+            } catch(Exception $e) {}
+        }
+
+        // 2. Remove do app/db.json
+        $db = readDbJson();
+        $db['cnhs'] = array_values(array_filter($db['cnhs'] ?? [], function($c) use ($cnhIds, $cleanCpfs) {
+            $idStr = (string)($c['id'] ?? '');
+            if (!empty($cnhIds) && in_array($idStr, $cnhIds)) return false;
+            $cCpf = preg_replace('/\D/', '', $c['cpf'] ?? '');
+            if (!empty($cleanCpfs) && in_array($cCpf, $cleanCpfs)) return false;
+            return true;
+        }));
+        writeDbJson($db);
+
+        // 3. Registra CPFs na lista de cancelados e bloqueados
+        if (!empty($cleanCpfs)) {
+            $cfg = readConfigJson();
+            if (!isset($cfg['canceled_cpfs']) || !is_array($cfg['canceled_cpfs'])) {
+                $cfg['canceled_cpfs'] = [];
+            }
+            if (!isset($cfg['blocked_cpfs']) || !is_array($cfg['blocked_cpfs'])) {
+                $cfg['blocked_cpfs'] = [];
+            }
+            $vPendReq = trim($inputData['valor_pendencia'] ?? '500,00');
+            foreach ($cleanCpfs as $clCpf) {
+                if (!in_array($clCpf, $cfg['canceled_cpfs'])) {
+                    $cfg['canceled_cpfs'][] = $clCpf;
+                }
+                $cfg['blocked_cpfs'][$clCpf] = ['valor_pendencia' => $vPendReq];
+            }
+            writeConfigJson($cfg);
+        }
+
+        jsonResponse('success', null, 'CNH(s) excluída(s) com sucesso.');
+        break;
+
+    case '_orig_delete_cnh_replaced':
 
         if (empty($cnhId) && empty($cleanCpf)) {
             jsonResponse('error', null, 'Informe o ID ou o CPF da CNH a ser excluída.');

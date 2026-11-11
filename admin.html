@@ -2681,6 +2681,10 @@
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                 <span>+ Cadastrar CNH / CPF</span>
                             </button>
+                            <button id="btnAdminBulkDeleteCnh" onclick="deleteSelectedCnhsAdmin()" style="display:none; align-items:center; gap:6px; background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; padding:7px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                <span>Excluir Selecionadas (<span id="adminBulkCnhCount">0</span>)</span>
+                            </button>
                             <div class="search-box-wrap">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                 <input type="text" class="search-inp" id="searchCnhInp" placeholder="Buscar CPF ou Nome do Condutor..." onkeyup="filterCnhsTable()">
@@ -2691,6 +2695,7 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
+                                    <th style="width: 36px;"><input type="checkbox" id="selectAllCnhAdmin" onchange="toggleSelectAllCnhAdmin(this)" style="accent-color:var(--primary); cursor:pointer;"></th>
                                     <th>Código Doc</th>
                                     <th>Cliente Solicitante</th>
                                     <th>Nome Condutor CNH</th>
@@ -5658,6 +5663,7 @@ function updateDashboardMetrics() {
 
             document.getElementById('badgePendingUsers').textContent = pendingCount;
             updateDashboardMetrics();
+            updateAdminCnhSelectCount();
         }
 
         let currentRecargaFilter = 'all';
@@ -5694,7 +5700,7 @@ function updateDashboardMetrics() {
             });
 
             if (!filteredRecargas || filteredRecargas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">${q || currentRecargaFilter !== 'all' ? 'Nenhuma recarga encontrada para o filtro selecionado.' : 'Nenhuma solicitação de recarga registrada.'}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:32px; color:var(--text-muted);">${q || currentRecargaFilter !== 'all' ? 'Nenhuma recarga encontrada para o filtro selecionado.' : 'Nenhuma solicitação de recarga registrada.'}</td></tr>`;
                 updateDashboardMetrics();
                 return;
             }
@@ -5743,6 +5749,7 @@ function updateDashboardMetrics() {
             data.forEach(c => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
+                    <td><input type="checkbox" class="admin-cnh-cb" value="${c.id}" data-cpf="${c.cpf || ''}" onchange="updateAdminCnhSelectCount()" style="accent-color:var(--primary); cursor:pointer;"></td>
                     <td><strong style="color:var(--primary); font-family:var(--font-mono);">${c.id}</strong></td>
                     <td>${c.user}</td>
                     <td><strong>${c.nomeCnh}</strong></td>
@@ -5760,6 +5767,131 @@ function updateDashboardMetrics() {
             });
 
             updateDashboardMetrics();
+        }
+
+        function toggleSelectAllCnhAdmin(master) {
+            document.querySelectorAll('#cnhsTableBody input.admin-cnh-cb').forEach(cb => {
+                cb.checked = master.checked;
+            });
+            updateAdminCnhSelectCount();
+        }
+
+        function updateAdminCnhSelectCount() {
+            const selected = document.querySelectorAll('#cnhsTableBody input.admin-cnh-cb:checked');
+            const total = document.querySelectorAll('#cnhsTableBody input.admin-cnh-cb');
+            const master = document.getElementById('selectAllCnhAdmin');
+            if (master) {
+                master.checked = total.length > 0 && selected.length === total.length;
+                master.indeterminate = selected.length > 0 && selected.length < total.length;
+            }
+            const btn = document.getElementById('btnAdminBulkDeleteCnh');
+            const countEl = document.getElementById('adminBulkCnhCount');
+            if (btn) {
+                if (selected.length > 0) {
+                    btn.style.display = 'inline-flex';
+                    if (countEl) countEl.textContent = selected.length;
+                } else {
+                    btn.style.display = 'none';
+                }
+            }
+        }
+
+        async function deleteSelectedCnhsAdmin() {
+            const selectedBoxes = Array.from(document.querySelectorAll('#cnhsTableBody input.admin-cnh-cb:checked'));
+            const ids = selectedBoxes.map(cb => cb.value).filter(Boolean);
+            if (!ids.length) {
+                showToast('Nenhuma CNH selecionada.');
+                return;
+            }
+
+            if (!confirm(`Deseja realmente excluir ${ids.length} CNH(s) selecionada(s)? Os prontuários desses CPFs serão cancelados no sistema.`)) return;
+
+            const cleanCpfs = selectedBoxes.map(cb => (cb.getAttribute('data-cpf') || '').replace(/\D/g, '')).filter(Boolean);
+
+            // 1. Remove da memória admin
+            cnhsData = cnhsData.filter(c => !ids.includes(String(c.id)));
+            saveStorage();
+            renderCnhsTable();
+
+            // 2. Limpa localStorage
+            try {
+                let delIds = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                let canceled = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+
+                ids.forEach(id => {
+                    if (!delIds.includes(String(id))) delIds.push(String(id));
+                    localStorage.removeItem('happynation_foto_' + id);
+                    localStorage.removeItem('happynation_ass_' + id);
+                });
+
+                cleanCpfs.forEach(cpf => {
+                    if (!delIds.includes(cpf)) delIds.push(cpf);
+                    if (!canceled.includes(cpf)) canceled.push(cpf);
+                    try {
+                        localStorage.setItem('happynation_blocked_cnh_' + cpf, JSON.stringify({ valor_pendencia: '500,00' }));
+                    } catch(eB) {}
+                });
+
+                localStorage.setItem('happynation_deleted_cnhs', JSON.stringify(delIds));
+                localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceled));
+
+                // Limpa happynation_cnhs_*
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('happynation_cnhs_')) {
+                        try {
+                            const list = JSON.parse(localStorage.getItem(key) || '[]');
+                            const filtered = list.filter(c => !ids.includes(String(c.id)) && (!c.cpf || !cleanCpfs.includes(c.cpf.replace(/\D/g, ''))));
+                            localStorage.setItem(key, JSON.stringify(filtered));
+                        } catch(eKey) {}
+                    }
+                }
+
+                // Limpa last_cnh se for uma delas
+                try {
+                    const lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || 'null');
+                    if (lastCnh && (ids.includes(String(lastCnh.id)) || (lastCnh.cpf && cleanCpfs.includes(lastCnh.cpf.replace(/\D/g, ''))))) {
+                        localStorage.removeItem('happynation_last_cnh');
+                        localStorage.removeItem('cnh_active_driver');
+                        localStorage.removeItem('cnh_logged_in');
+                    }
+                } catch(eLast) {}
+
+                // Broadcast
+                try {
+                    const bc = new BroadcastChannel('happynation_live_sync');
+                    cleanCpfs.forEach(cpf => {
+                        bc.postMessage({ type: 'cnh_deleted', cpf: cpf, valor_pendencia: '500,00' });
+                    });
+                    bc.close();
+                } catch(eBc) {}
+            } catch(e) {}
+
+            // 3. Supabase REST nativo
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+            ids.forEach(cnhId => {
+                fetch(SUP_URL + '/rest/v1/cnhs?id=eq.' + encodeURIComponent(cnhId), {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                }).catch(() => {});
+            });
+            cleanCpfs.forEach(cpf => {
+                fetch(SUP_URL + '/rest/v1/cnhs?cpf=eq.' + encodeURIComponent(cpf), {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                }).catch(() => {});
+            });
+
+            // 4. API PHP
+            fetch('api/index.php?action=delete_cnh', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids: ids, cpfs: cleanCpfs, valor_pendencia: '500,00' })
+            }).catch(() => {});
+
+            updateAdminCnhSelectCount();
+            showToast(`${ids.length} CNH(s) excluída(s) com sucesso!`);
         }
 
         function deleteCnhAdmin(cnhId, cpf) {

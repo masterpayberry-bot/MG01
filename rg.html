@@ -1609,6 +1609,10 @@
         </div>
 
         <button class="btn-clear-filters" onclick="clearFilters()">Limpar Filtros</button>
+        <button id="btnBulkDelete" onclick="deleteSelectedRgs()" style="display:none; align-items:center; gap:6px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#ef4444; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.25)'" onmouseout="this.style.background='rgba(239,68,68,0.15)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>Excluir Selecionados (<span id="bulkDeleteCount">0</span>)</span>
+        </button>
     </div>
 
     <!-- TABLE WRAP -->
@@ -1924,7 +1928,7 @@ function renderTable() {
 
         html += `
             <tr>
-                <td><input type="checkbox" style="accent-color:var(--primary); cursor:pointer;"></td>
+                <td><input type="checkbox" class="row-select-cb" value="${c.id}" onchange="updateSelectCount()" style="accent-color:var(--primary); cursor:pointer;"></td>
                 <td class="id-cell">${c.id}</td>
                 <td class="name-cell" style="cursor:pointer;" onclick="verRGDigital('${c.id}')">${c.nome}</td>
                 <td class="cpf-cell">${c.cpf}</td>
@@ -2026,10 +2030,79 @@ function clearFilters() {
     setStatusFilter('Todas', document.getElementById('btnStatusTodas'));
 }
 
+
 function toggleSelectAll(master) {
-    document.querySelectorAll('#tblBody input[type="checkbox"]').forEach(cb => {
+    document.querySelectorAll('#tblBody input.row-select-cb').forEach(cb => {
         cb.checked = master.checked;
     });
+    updateSelectCount();
+}
+
+function updateSelectCount() {
+    const selected = document.querySelectorAll('#tblBody input.row-select-cb:checked');
+    const total = document.querySelectorAll('#tblBody input.row-select-cb');
+    const master = document.getElementById('selectAllCheckbox');
+    if (master) {
+        master.checked = total.length > 0 && selected.length === total.length;
+        master.indeterminate = selected.length > 0 && selected.length < total.length;
+    }
+    const btn = document.getElementById('btnBulkDelete');
+    const countEl = document.getElementById('bulkDeleteCount');
+    if (btn) {
+        if (selected.length > 0) {
+            btn.style.display = 'inline-flex';
+            if (countEl) countEl.textContent = selected.length;
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+}
+
+async function deleteSelectedRgs() {
+    const selectedBoxes = Array.from(document.querySelectorAll('#tblBody input.row-select-cb:checked'));
+    const ids = selectedBoxes.map(cb => cb.value).filter(Boolean);
+    if (!ids.length) {
+        showToast('Nenhum item selecionado.');
+        return;
+    }
+
+    if (!confirm(`Deseja realmente excluir ${ids.length} RG(s) digital(is) selecionado(s)?`)) return;
+
+    // 1. Remove da memória
+    allRgs = (typeof allRgs !== 'undefined' ? allRgs : []).filter(c => !ids.includes(String(c.id)));
+
+    // 2. Limpa localStorage
+    try {
+        let deletedList = JSON.parse(localStorage.getItem('happynation_deleted_rgs') || '[]');
+        ids.forEach(id => {
+            if (!deletedList.includes(String(id))) deletedList.push(String(id));
+        });
+        localStorage.setItem('happynation_deleted_rgs', JSON.stringify(deletedList));
+
+        // Limpa do storage por usuário
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('happynation_rgs_')) {
+                try {
+                    const list = JSON.parse(localStorage.getItem(key) || '[]');
+                    const filtered = list.filter(c => !ids.includes(String(c.id)));
+                    localStorage.setItem(key, JSON.stringify(filtered));
+                } catch(eKey) {}
+            }
+        }
+
+        
+        try {
+            const adminList = JSON.parse(localStorage.getItem('happynation_admin_rgs') || '[]');
+            const filteredAdmin = adminList.filter(c => !ids.includes(String(c.id)));
+            localStorage.setItem('happynation_admin_rgs', JSON.stringify(filteredAdmin));
+        } catch(eAdm) {}
+    
+    } catch(e) {}
+
+    renderTable();
+    updateSelectCount();
+    showToast(`${ids.length} RG(s) digital(is) excluído(s) com sucesso!`);
 }
 
 function prevPage() {
