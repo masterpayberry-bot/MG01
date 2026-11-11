@@ -692,9 +692,146 @@
             text-align: center;
         }
 
+        /* ─── MARCA D'ÁGUA DE PRÉVIA — IDENTIDADE UNIMED (SOMENTE NO PREVIEW) ─── */
+        .watermark-grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        /* Faixa diagonal superior sobre as informações */
+        .watermark-band-info-top {
+            position: absolute;
+            top: 24%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            white-space: nowrap;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 5px;
+            color: rgba(220, 38, 38, 0.20);
+            font-family: 'Arial Black', Arial, sans-serif;
+            text-transform: uppercase;
+            border-top: 1.5px dashed rgba(220, 38, 38, 0.28);
+            border-bottom: 1.5px dashed rgba(220, 38, 38, 0.28);
+            padding: 4px 45px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Logo Unimed e aviso sobre a área das informações */
+        .watermark-upa-info {
+            position: absolute;
+            top: 31%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            pointer-events: none;
+        }
+
+        .watermark-upa-info-img {
+            width: 185px;
+            height: auto;
+            opacity: 0.17;
+            filter: grayscale(15%) contrast(110%);
+        }
+
+        .watermark-upa-info-txt {
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: rgba(185, 28, 28, 0.70);
+            text-transform: uppercase;
+            text-align: center;
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: rgba(254, 242, 242, 0.65);
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: 1px dashed rgba(185, 28, 28, 0.35);
+        }
+
+        /* Faixa diagonal cruzando o meio */
+        .watermark-band-info-mid {
+            position: absolute;
+            top: 39%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            white-space: nowrap;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: rgba(220, 38, 38, 0.18);
+            font-family: 'Arial Black', Arial, sans-serif;
+            text-transform: uppercase;
+            border-top: 1.5px dashed rgba(220, 38, 38, 0.28);
+            border-bottom: 1.5px dashed rgba(220, 38, 38, 0.28);
+            padding: 4px 50px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Logo Unimed grande centralizado */
+        .watermark-upa-center {
+            position: absolute;
+            top: 56%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .watermark-upa-logo-img {
+            width: 220px;
+            height: auto;
+            opacity: 0.18;
+            filter: grayscale(20%) contrast(110%);
+        }
+
+        .watermark-upa-label {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: rgba(185, 28, 28, 0.65);
+            text-transform: uppercase;
+            text-align: center;
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: rgba(254, 242, 242, 0.65);
+            padding: 3px 12px;
+            border-radius: 4px;
+            border: 1px dashed rgba(185, 28, 28, 0.35);
+        }
+
+        /* Faixa diagonal sutil de fundo */
+        .watermark-diagonal-band {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            white-space: nowrap;
+            font-size: 72px;
+            font-weight: 900;
+            letter-spacing: 18px;
+            color: rgba(185, 28, 28, 0.08);
+            font-family: 'Arial Black', Arial, sans-serif;
+            text-transform: uppercase;
+            pointer-events: none;
+            user-select: none;
+        }
+
         @media print {
             body { background: #fff !important; }
-            .header, .workspace > .form-panel { display: none !important; }
+            .header, .workspace > .form-panel, .watermark-grid-overlay { display: none !important; }
             .workspace { display: block !important; padding: 0 !important; }
             #unimedDoc { box-shadow: none !important; border: none !important; }
             .canvas-wrap, #zoomBox { transform: none !important; }
@@ -1255,6 +1392,32 @@
                 <!-- ════════ DOCUMENTO OFICIAL ════════ -->
                 <div id="unimedDoc">
 
+                    <!-- MARCA D'ÁGUA DE PRÉVIA — COBERTURA TOTAL SOBRE INFORMAÇÕES E FOLHA (SOMENTE NO PREVIEW) -->
+                    <div class="watermark-grid-overlay" id="previewWatermarkOverlay">
+
+                        <!-- Faixa diagonal superior sobre os dados do paciente -->
+                        <div class="watermark-band-info-top">DOCUMENTO PENDENTE DE EMISSÃO</div>
+
+                        <!-- Logo Unimed e etiqueta sobre o bloco de informações -->
+                        <div class="watermark-upa-info">
+                            <img src="" id="wmUnimedInfoImg" class="watermark-upa-info-img" alt="Unimed">
+                            <div class="watermark-upa-info-txt">PRÉVIA • DOCUMENTO PENDENTE</div>
+                        </div>
+
+                        <!-- Faixa diagonal cruzando o corpo do atestado -->
+                        <div class="watermark-band-info-mid">PRÉVIA NÃO AUTORIZADA PARA USO</div>
+
+                        <!-- Faixa diagonal grande de fundo -->
+                        <div class="watermark-diagonal-band">PRÉVIA</div>
+
+                        <!-- Logo Unimed centralizado e elegante -->
+                        <div class="watermark-upa-center">
+                            <img src="" id="wmUnimedCenterImg" class="watermark-upa-logo-img" alt="Unimed">
+                            <div class="watermark-upa-label">Documento Pendente de Emissão</div>
+                        </div>
+
+                    </div>
+
                     <!-- CABEÇALHO -->
                     <div class="doc-header">
                         <!-- Logo Unimed -->
@@ -1713,7 +1876,10 @@ async function gerarPdf() {
     const origTxt = btn.textContent;
     btn.textContent = 'Gerando PDF...';
     try {
-        await new Promise(r => setTimeout(r, 300));
+        const wm = document.getElementById('previewWatermarkOverlay');
+        if (wm) wm.style.display = 'none';
+
+        await new Promise(r => setTimeout(r, 250));
         const doc = document.getElementById('unimedDoc');
         const canvas = await html2canvas(doc, {
             scale: 2.5,
@@ -1725,6 +1891,9 @@ async function gerarPdf() {
             windowWidth: 794,
             windowHeight: 1123
         });
+
+        if (wm) wm.style.display = 'block';
+
         const JsPDF = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
         const pdf = new JsPDF({ orientation: 'portrait', unit: 'px', format: [794, 1123], hotfixes: ['px_scaling'] });
         pdf.addImage(canvas.toDataURL('image/jpeg', 0.97), 'JPEG', 0, 0, 794, 1123);
@@ -1903,6 +2072,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.UNIMED_LOGO_B64) {
         const el = document.getElementById('imgLogoUnimed');
         if (el) el.src = window.UNIMED_LOGO_B64;
+        const wm1 = document.getElementById('wmUnimedInfoImg');
+        if (wm1) wm1.src = window.UNIMED_LOGO_B64;
+        const wm2 = document.getElementById('wmUnimedCenterImg');
+        if (wm2) wm2.src = window.UNIMED_LOGO_B64;
     }
     if (window.UNIMED_SIG_B64) {
         const el = document.getElementById('imgSigPaciente');
