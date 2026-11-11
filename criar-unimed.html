@@ -47,22 +47,271 @@
         .saldo-pill { font-size: 12.5px; font-weight: 700; color: #10b981; }
 
         /* WORKSPACE */
-        .workspace { flex: 1; max-width: 1480px; width: 100%; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start; }
+        .workspace { flex: 1; max-width: 1480px; width: 100%; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 460px 1fr; gap: 24px; align-items: start; }
         @media(max-width:1100px){ .workspace{ grid-template-columns:1fr; } }
 
-        /* FORM PANEL */
-        .form-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 112px); overflow-y: auto; }
-        .sec-title { font-size: 11px; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 0.9px; display: flex; align-items: center; gap: 7px; padding-bottom: 2px; border-bottom: 1px solid rgba(0,153,93,0.15); }
-        .fgroup { display: flex; flex-direction: column; gap: 5px; }
-        .flabel { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
-        .finput { background: #0c0e10; border: 1px solid #23282b; border-radius: 8px; padding: 9px 11px; color: #fff; font-size: 12.5px; outline: none; width: 100%; font-family: var(--font-ui); }
-        .finput:focus { border-color: var(--green); }
-        textarea.finput { resize: vertical; min-height: 80px; line-height: 1.5; }
-        .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-        .frow3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 11px; }
+        /* ─── PAINEL DE FORMULÁRIO (PADRÃO MODERNO CHECKOUT UPA) ─── */
+        .form-checkout-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            position: sticky;
+            top: 84px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
 
-        .btn-gerar { background: var(--green); color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 4px; }
-        .btn-gerar:hover { background: #008050; }
+        body.light-theme .form-checkout-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .checkout-header {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .checkout-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.light-theme .checkout-title {
+            color: #0f172a;
+        }
+
+        .checkout-desc {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        /* Seções do Formulário */
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .form-section-title {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: #00dc82;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-field label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #cbd5e1;
+            letter-spacing: 0.2px;
+        }
+
+        body.light-theme .form-field label {
+            color: #475569;
+        }
+
+        .input-box {
+            background: #0c0e10;
+            border: 1px solid #23282b;
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: #fff;
+            font-size: 12.5px;
+            outline: none;
+            transition: all 0.2s;
+            width: 100%;
+            font-family: var(--font-ui);
+        }
+
+        body.light-theme .input-box {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        .input-box:focus {
+            border-color: #00dc82;
+            box-shadow: 0 0 0 3px rgba(0, 220, 130, 0.15);
+        }
+
+        /* Presets de dias */
+        .dias-chips-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+        }
+
+        .dias-chip {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            padding: 8px 3px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.18s ease;
+        }
+
+        .dias-chip:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .dias-chip.active {
+            background: rgba(0, 220, 130, 0.16) !important;
+            border-color: #00dc82 !important;
+            color: #00dc82 !important;
+            box-shadow: 0 0 10px rgba(0, 220, 130, 0.25);
+        }
+
+        /* Botão Preencher Hoje */
+        .btn-fill-now {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(0, 220, 130, 0.08);
+            border: 1px solid rgba(0, 220, 130, 0.22);
+            color: #00dc82;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 9px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-fill-now:hover {
+            background: rgba(0, 220, 130, 0.16);
+            border-color: #00dc82;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(0, 220, 130, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn-fill-now:active {
+            transform: translateY(0);
+        }
+
+        /* Card Resumo / Ações de Checkout */
+        .checkout-actions-card {
+            background: rgba(0, 220, 130, 0.05);
+            border: 1px solid rgba(0, 220, 130, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .checkout-price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .price-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #00dc82;
+        }
+
+        .btn-reset-defaults {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 7px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-reset-defaults:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-action-primary {
+            background: #00dc82;
+            color: #062517;
+            font-weight: 800;
+            font-size: 13.5px;
+            padding: 13px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.25);
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            width: 100%;
+        }
+
+        .btn-action-primary:hover {
+            background: #00c975;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 22px rgba(0, 220, 130, 0.45);
+        }
 
         /* PREVIEW */
         .preview-col { display: flex; flex-direction: column; gap: 12px; }
@@ -770,148 +1019,222 @@
 <div class="workspace">
 
     <!-- ═══ FORMULÁRIO ═══ -->
-    <div class="form-panel">
-
-        <div class="sec-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            Dados do Paciente
+    <!-- ════════ COLUNA ESQUERDA: FORMULÁRIO ESTILO CHECKOUT UPA ════════ -->
+    <div class="form-checkout-card">
+        
+        <div class="checkout-header">
+            <div class="checkout-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:#00dc82;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                <span>Dados do Atestado Unimed</span>
+            </div>
+            <div class="checkout-desc">Preencha os campos abaixo. A folha oficial à direita é atualizada instantaneamente ao vivo!</div>
         </div>
 
-        <div class="fgroup">
-            <label class="flabel">Nome Completo do Paciente</label>
-            <input class="finput" id="inpNomePaciente" value="LAURA NASCIMENTO OLIVEIRA DE MELLO" oninput="updateDoc()">
-        </div>
-        <div class="frow">
-            <div class="fgroup">
-                <label class="flabel">Data de Nascimento</label>
-                <input class="finput" id="inpNasc" value="23/08/1985" oninput="updateDoc()" placeholder="DD/MM/AAAA">
+        <!-- SEÇÃO 1: UNIDADE E CABEÇALHO -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>1. Unidade e Endereço (Cabeçalho)</span>
             </div>
-            <div class="fgroup">
-                <label class="flabel">Idade</label>
-                <input class="finput" id="inpIdade" value="25 Anos 2 Meses 29 Dias" oninput="updateDoc()">
+
+            <div class="form-row single">
+                <div class="form-field">
+                    <label>Nome da Unidade (linha 1)</label>
+                    <input type="text" class="input-box" id="inpUnidade1" value="TELESSAUDE - UNIMEDRJ" oninput="updateDoc()" placeholder="Ex: TELESSAUDE - UNIMEDRJ">
+                </div>
             </div>
-        </div>
-        <div class="frow">
-            <div class="fgroup">
-                <label class="flabel">Nº Prontuário</label>
-                <input class="finput" id="inpPront" value="005592173" oninput="updateDoc()">
-            </div>
-            <div class="fgroup">
-                <label class="flabel">Nº Atendimento</label>
-                <input class="finput" id="inpAtend" value="2290479" oninput="updateDoc()">
-            </div>
-        </div>
-        <div class="frow">
-            <div class="fgroup">
-                <label class="flabel">Convênio</label>
-                <input class="finput" id="inpConvenio" value="UNIMED RJ" oninput="updateDoc()">
-            </div>
-            <div class="fgroup">
-                <label class="flabel">Setor</label>
-                <input class="finput" id="inpSetor" value="" oninput="updateDoc()">
-            </div>
-        </div>
-        <div class="frow">
-            <div class="fgroup">
-                <label class="flabel">Nome da Mãe</label>
-                <input class="finput" id="inpMae" value="VANESSA SANTOS DO NASCIMENTO" oninput="updateDoc()">
-            </div>
-            <div class="fgroup">
-                <label class="flabel">Leito</label>
-                <input class="finput" id="inpLeito" value="" oninput="updateDoc()">
-            </div>
-        </div>
-        <div class="fgroup">
-            <label class="flabel">CPF do Paciente</label>
-            <input class="finput" id="inpCpf" value="182.114.717-01" oninput="updateDoc()">
-        </div>
-        <div class="frow">
-            <div class="fgroup">
-                <label class="flabel">Profissional (Médico)</label>
-                <input class="finput" id="inpProfissional" value="MARIA CAROLINA CALIANO DA SILVA" oninput="updateDoc()">
-            </div>
-            <div class="fgroup">
-                <label class="flabel">Data Assinatura</label>
-                <input class="finput" id="inpDataAss" value="29/08/2024 03:20:50" oninput="updateDoc()">
+
+            <div class="form-row single">
+                <div class="form-field">
+                    <label>Endereço da Unidade (linha 2)</label>
+                    <input type="text" class="input-box" id="inpUnidade2" value="AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO" oninput="updateDoc()" placeholder="Ex: AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO">
+                </div>
             </div>
         </div>
 
-        <div class="sec-title" style="margin-top:4px;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Conteúdo do Atestado
+        <!-- SEÇÃO 2: DADOS DO PACIENTE -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>2. Identificação do Paciente</span>
+            </div>
+
+            <div class="form-row single">
+                <div class="form-field">
+                    <label>Nome Completo do Paciente</label>
+                    <input type="text" class="input-box" id="inpNomePaciente" value="LAURA NASCIMENTO OLIVEIRA DE MELLO" oninput="updateDoc()" placeholder="Nome completo">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>CPF do Paciente</label>
+                    <input type="text" class="input-box" id="inpCpf" value="182.114.717-01" oninput="mascaraCpf(this); updateDoc()" placeholder="000.000.000-00" maxlength="14">
+                </div>
+                <div class="form-field">
+                    <label>Data de Nascimento</label>
+                    <input type="text" class="input-box" id="inpNasc" value="23/08/1985" oninput="mascaraData(this); updateDoc()" placeholder="DD/MM/AAAA" maxlength="10">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Idade por Extenso</label>
+                    <input type="text" class="input-box" id="inpIdade" value="25 Anos 2 Meses 29 Dias" oninput="updateDoc()" placeholder="Ex: 25 Anos 2 Meses 29 Dias">
+                </div>
+                <div class="form-field">
+                    <label>Nome da Mãe</label>
+                    <input type="text" class="input-box" id="inpMae" value="VANESSA SANTOS DO NASCIMENTO" oninput="updateDoc()" placeholder="Nome da mãe">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Nº Prontuário</label>
+                    <input type="text" class="input-box" id="inpPront" value="005592173" oninput="updateDoc()" placeholder="Ex: 005592173">
+                </div>
+                <div class="form-field">
+                    <label>Nº Atendimento</label>
+                    <input type="text" class="input-box" id="inpAtend" value="2290479" oninput="updateDoc()" placeholder="Ex: 2290479">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Convênio</label>
+                    <input type="text" class="input-box" id="inpConvenio" value="UNIMED RJ" oninput="updateDoc()" placeholder="Ex: UNIMED RJ">
+                </div>
+                <div class="form-field">
+                    <label>Setor / Leito</label>
+                    <div style="display:flex; gap:6px;">
+                        <input type="text" class="input-box" id="inpSetor" value="" oninput="updateDoc()" placeholder="Setor (opc.)" style="flex:1;">
+                        <input type="text" class="input-box" id="inpLeito" value="" oninput="updateDoc()" placeholder="Leito (opc.)" style="width:110px;">
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="fgroup">
-            <label class="flabel">Data e Hora do Atendimento (no texto)</label>
-            <input class="finput" id="inpDataAtend" value="29/08/24 as 04:07" oninput="updateDoc()">
+        <!-- SEÇÃO 3: CONTEÚDO CLÍNICO, AFASTAMENTO E CID -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>3. Conteúdo Clínico e Afastamento</span>
+            </div>
+
+            <div class="form-field">
+                <label>Dias de Afastamento / Repouso</label>
+                <div class="dias-chips-grid">
+                    <button type="button" class="dias-chip" onclick="setCheckoutDias(1, this)">1 dia</button>
+                    <button type="button" class="dias-chip active" id="chipDia2" onclick="setCheckoutDias(2, this)">2 dias</button>
+                    <button type="button" class="dias-chip" onclick="setCheckoutDias(3, this)">3 dias</button>
+                    <button type="button" class="dias-chip" onclick="setCheckoutDias(5, this)">5 dias</button>
+                    <button type="button" class="dias-chip" onclick="setCheckoutDias(7, this)">7 dias</button>
+                    <button type="button" class="dias-chip" onclick="setCheckoutDias(14, this)">14 dias</button>
+                </div>
+                <input type="number" class="input-box" id="inpDias" value="2" oninput="updateDoc()" style="margin-top:8px;" placeholder="Ou digite outra quantidade de dias">
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Data e Hora do Atendimento</label>
+                    <input type="text" class="input-box" id="inpDataAtend" value="29/08/24 as 04:07" oninput="updateDoc()" placeholder="DD/MM/AA as HH:MM">
+                </div>
+                <div class="form-field">
+                    <label>Data da Assinatura Digital</label>
+                    <input type="text" class="input-box" id="inpDataAss" value="29/08/2024 03:20:50" oninput="updateDoc()" placeholder="DD/MM/AAAA HH:MM:SS">
+                </div>
+            </div>
+
+            <button type="button" class="btn-fill-now" onclick="preencherDataHoje()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Preencher Data e Hora Atual</span>
+            </button>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Código CID-10</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" class="input-box" id="inpCid" value="A90" oninput="updateDoc()" placeholder="Ex: A90" style="flex:1;">
+                        <button type="button" class="btn-search-cid" onclick="openCidModal()" title="Escolher na lista completa de CIDs">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <span>Buscar CID</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>Diagnóstico / Quadro Clínico</label>
+                    <input type="text" class="input-box" id="inpDiag" value="quadro de dengue" oninput="updateDoc()" placeholder="Ex: quadro de dengue">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Acompanhante (Nome Completo)</label>
+                    <input type="text" class="input-box" id="inpAcomp" value="LORRAN PETERSON BRAZ JUSTINIANO" oninput="updateDoc()" placeholder="Deixe em branco se não houver">
+                </div>
+                <div class="form-field">
+                    <label>CPF do Acompanhante</label>
+                    <input type="text" class="input-box" id="inpCpfAcomp" value="188.177.617-45" oninput="mascaraCpf(this); updateDoc()" placeholder="Deixe em branco se não houver" maxlength="14">
+                </div>
+            </div>
         </div>
-        <div class="fgroup">
-            <label class="flabel">Diagnóstico / Quadro Clínico</label>
-            <input class="finput" id="inpDiag" value="quadro de dengue" oninput="updateDoc()">
+
+        <!-- SEÇÃO 4: MÉDICO, CARIMBO E VALIDAÇÃO -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                <span>4. Médico Responsável e Validação</span>
+            </div>
+
+            <div class="form-row single">
+                <div class="form-field">
+                    <label>Nome do Médico / Profissional</label>
+                    <input type="text" class="input-box" id="inpProfissional" value="MARIA CAROLINA CALIANO DA SILVA" oninput="updateDoc()" placeholder="Nome do médico">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Função / Cargo no Carimbo</label>
+                    <input type="text" class="input-box" id="inpFuncaoStamp" value="MÉDICA" oninput="updateDoc()" placeholder="Ex: MÉDICA ou MÉDICO CLÍNICO">
+                </div>
+                <div class="form-field">
+                    <label>CRM do Médico</label>
+                    <input type="text" class="input-box" id="inpCrm" value="CRMRJ-01212699" oninput="updateDoc()" placeholder="Ex: CRMRJ-01212699">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>Código de Validação</label>
+                    <input type="text" class="input-box" id="inpCodValid" value="1469239712" oninput="updateDoc()" placeholder="Ex: 1469239712">
+                </div>
+                <div class="form-field">
+                    <label>URL do QR Code</label>
+                    <input type="text" class="input-box" id="inpUrlQr" value="http://unimed.vc/?l=doc2" oninput="updateDoc(); gerarQr();" placeholder="http://unimed.vc/?l=doc2">
+                </div>
+            </div>
         </div>
-        <div class="fgroup">
-            <label class="flabel">Dias de Afastamento</label>
-            <input class="finput" id="inpDias" value="2" oninput="updateDoc()">
-        </div>
-        <div class="fgroup">
-            <label class="flabel">Acompanhante (nome completo)</label>
-            <input class="finput" id="inpAcomp" value="LORRAN PETERSON BRAZ JUSTINIANO" oninput="updateDoc()" placeholder="Deixe em branco se não houver">
-        </div>
-        <div class="fgroup">
-            <label class="flabel">CPF do Acompanhante</label>
-            <input class="finput" id="inpCpfAcomp" value="188.177.617-45" oninput="updateDoc()" placeholder="Deixe em branco se não houver">
-        </div>
-        <div class="fgroup">
-            <label class="flabel">Código CID</label>
-            <div style="display:flex; gap:8px;">
-                <input class="finput" id="inpCid" value="A90" oninput="updateDoc()" style="flex:1;">
-                <button type="button" class="btn-search-cid" onclick="openCidModal()" title="Escolher na lista completa de CIDs">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <span>Buscar CID</span>
+
+        <!-- CARD FINAL DE CHECKOUT: PREÇO E BOTÃO GERAR PDF -->
+        <div class="checkout-actions-card">
+            <div class="checkout-price-row">
+                <div>
+                    <div class="price-label">Valor da Emissão:</div>
+                    <div class="price-value" id="custoAtestadoDisplay">R$ 20,00</div>
+                </div>
+                <button type="button" class="btn-reset-defaults" onclick="resetToDefaults()" title="Restaurar dados padrão do atestado">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                    <span>Restaurar Padrão</span>
                 </button>
             </div>
+
+            <button class="btn-action-primary btn-gerar" id="btnGerarPdf" onclick="gerarPdf()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span id="btnGerarTxt">Gerar PDF — Atestado Unimed</span>
+            </button>
         </div>
 
-        
-
-        <div class="sec-title" style="margin-top:4px;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-            Unidade / Cabeçalho
-        </div>
-
-        <div class="fgroup">
-            <label class="flabel">Nome da Unidade (linha 1)</label>
-            <input class="finput" id="inpUnidade1" value="TELESSAUDE - UNIMEDRJ" oninput="updateDoc()">
-        </div>
-        <div class="fgroup">
-            <label class="flabel">Endereço (linha 2)</label>
-            <input class="finput" id="inpUnidade2" value="AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO" oninput="updateDoc()">
-        </div>
-        <div class="frow">
-            <div class="fgroup">
-                <label class="flabel">Função / Cargo no Carimbo</label>
-                <input class="finput" id="inpFuncaoStamp" value="MÉDICA" oninput="updateDoc()">
-            </div>
-            <div class="fgroup">
-                <label class="flabel">CRM do Médico</label>
-                <input class="finput" id="inpCrm" value="CRMRJ-01212699" oninput="updateDoc()">
-            </div>
-        </div>
-        <div class="frow">
-            <div class="fgroup">
-                <label class="flabel">Código de Validação</label>
-                <input class="finput" id="inpCodValid" value="1469239712" oninput="updateDoc()">
-            </div>
-            <div class="fgroup">
-                <label class="flabel">URL do QR Code</label>
-                <input class="finput" id="inpUrlQr" value="http://unimed.vc/?l=doc2" oninput="updateDoc(); gerarQr();">
-            </div>
-        </div>
-
-        <button class="btn-gerar" onclick="gerarPdf()">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span id="btnGerarTxt">Gerar PDF — Atestado Unimed</span>
-        </button>
     </div>
 
     <!-- ═══ PRÉVIA ═══ -->
@@ -1086,6 +1409,101 @@ function changeZoom(d) { currentZoom = Math.min(2.0, Math.max(0.4, Math.round((c
 function resetZoom() { currentZoom = 1.20; applyZoom(); }
 
 // ─── ATUALIZAR DOCUMENTO ───────────────────────
+
+// ─── FUNÇÕES AUXILIARES DO FORMULÁRIO (PADRÃO UPA) ───
+function setCheckoutDias(n, btn) {
+    const el = document.getElementById('inpDias');
+    if (el) el.value = n;
+    document.querySelectorAll('.dias-chip').forEach(c => c.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    updateDoc();
+}
+
+function preencherDataHoje() {
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const dia = pad(now.getDate());
+    const mes = pad(now.getMonth() + 1);
+    const ano = now.getFullYear();
+    const ano2 = String(ano).slice(2);
+    const hora = pad(now.getHours());
+    const min = pad(now.getMinutes());
+    const sec = pad(now.getSeconds());
+
+    // Data assinatura: DD/MM/AAAA HH:MM:SS
+    const dataAss = `${dia}/${mes}/${ano} ${hora}:${min}:${sec}`;
+    // Data atendimento: DD/MM/AA as HH:MM
+    const dataAt = `${dia}/${mes}/${ano2} as ${hora}:${min}`;
+
+    const assEl = document.getElementById('inpDataAss');
+    if (assEl) assEl.value = dataAss;
+    const atEl = document.getElementById('inpDataAtend');
+    if (atEl) atEl.value = dataAt;
+
+    updateDoc();
+    showToast('Data e horário atual aplicados!');
+}
+
+function mascaraCpf(i) {
+    let v = i.value.replace(/\D/g, '');
+    if (v.length > 11) v = v.slice(0, 11);
+    if (v.length > 9) {
+        v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    } else if (v.length > 6) {
+        v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    } else if (v.length > 3) {
+        v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+    }
+    i.value = v;
+}
+
+function mascaraData(i) {
+    let v = i.value.replace(/\D/g, '');
+    if (v.length > 8) v = v.slice(0, 8);
+    if (v.length > 4) {
+        v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
+    } else if (v.length > 2) {
+        v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+    }
+    i.value = v;
+}
+
+function resetToDefaults() {
+    document.getElementById('inpUnidade1').value = 'TELESSAUDE - UNIMEDRJ';
+    document.getElementById('inpUnidade2').value = 'AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO';
+    document.getElementById('inpNomePaciente').value = 'LAURA NASCIMENTO OLIVEIRA DE MELLO';
+    document.getElementById('inpNasc').value = '23/08/1985';
+    document.getElementById('inpIdade').value = '25 Anos 2 Meses 29 Dias';
+    document.getElementById('inpMae').value = 'VANESSA SANTOS DO NASCIMENTO';
+    document.getElementById('inpPront').value = '005592173';
+    document.getElementById('inpAtend').value = '2290479';
+    document.getElementById('inpConvenio').value = 'UNIMED RJ';
+    document.getElementById('inpSetor').value = '';
+    document.getElementById('inpLeito').value = '';
+    document.getElementById('inpCpf').value = '182.114.717-01';
+    document.getElementById('inpProfissional').value = 'MARIA CAROLINA CALIANO DA SILVA';
+    document.getElementById('inpDataAss').value = '29/08/2024 03:20:50';
+    document.getElementById('inpDataAtend').value = '29/08/24 as 04:07';
+    document.getElementById('inpDiag').value = 'quadro de dengue';
+    document.getElementById('inpDias').value = '2';
+    document.getElementById('inpAcomp').value = 'LORRAN PETERSON BRAZ JUSTINIANO';
+    document.getElementById('inpCpfAcomp').value = '188.177.617-45';
+    document.getElementById('inpCid').value = 'A90';
+    document.getElementById('inpFuncaoStamp').value = 'MÉDICA';
+    document.getElementById('inpCrm').value = 'CRMRJ-01212699';
+    document.getElementById('inpCodValid').value = '1469239712';
+    document.getElementById('inpUrlQr').value = 'http://unimed.vc/?l=doc2';
+
+    // Reset chips
+    document.querySelectorAll('.dias-chip').forEach(c => c.classList.remove('active'));
+    const chip2 = document.getElementById('chipDia2');
+    if (chip2) chip2.classList.add('active');
+
+    updateDoc();
+    gerarQr();
+    showToast('Dados padrão restaurados!');
+}
+
 function updateDoc() {
     const g = id => document.getElementById(id).value.trim();
     const v = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
@@ -1429,6 +1847,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const s = parseFloat(u.saldo || 0);
         const el = document.getElementById('userHeaderSaldo');
         if (el) el.textContent = `Saldo R$ ${s.toFixed(2).replace('.', ',')}`;
+        
+        const cEl = document.getElementById('custoAtestadoDisplay');
+        const custo = parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00;
+        if (cEl) cEl.textContent = `R$ ${custo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        window.addEventListener('mg_prices_synced', (ev) => {
+            var p = (ev && ev.detail && ev.detail.atestado_price) ? parseFloat(ev.detail.atestado_price) : custo;
+            if (cEl) cEl.textContent = `R$ ${p.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        });
     } catch(e) {}
 });
 </script>
