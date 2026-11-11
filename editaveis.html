@@ -1345,6 +1345,69 @@
                 </div>
             </article>
 
+            <!-- 6. ATESTADO MÉDICO (UNIMED) — ATIVO -->
+            <article class="doc-card" data-category="saude" data-name="atestado unimed medico plano saude cid afastamento consulta repouso" onclick="window.location.href='criar-unimed.html'" style="cursor:pointer; --card-accent:#00995D; --card-glow:rgba(0,153,93,0.25); --card-icon-bg:rgba(0,153,93,0.1); --card-icon-border:rgba(0,153,93,0.3); --card-pill-bg:rgba(0,153,93,0.12); --card-pill-border:rgba(0,153,93,0.3); --card-btn-bg:#00995D; --card-btn-glow:rgba(0,153,93,0.35); --card-border-hover:rgba(0,153,93,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box" style="color:#00995D; background:rgba(0,153,93,0.1); border-color:rgba(0,153,93,0.25);">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 9v4"/><path d="M10 11h4"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#34d399; border-color:rgba(0,153,93,0.4); background:rgba(0,153,93,0.12);">⚡ Imediato &lt; 20s</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">SAÚDE PRIVADA • UNIMED NACIONAL</div>
+                        <h2 class="card-title">Atestado Médico (Unimed)</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Atestado médico oficial timbrado da rede Unimed Nacional com validação por QR Code e link ativo, CRM do médico especialista credenciado, CID-10 e dias de repouso.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Validação por QR Code e link de verificação médica oficial</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Timbre oficial Unimed com carimbo, CRM ativo e assinatura</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>CID-10 oficial, período de afastamento e dados do paciente</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Formato aceito em empresas, RH e perícias trabalhistas</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub">Valor Unitário</span>
+                            <div class="price-main"><span class="price-currency" style="color:#00995D;">R$</span><span id="priceUnimed">20,00</span></div>
+                        </div>
+                        <div class="delivery-pill" style="color:#34d399; background:rgba(0,153,93,0.08); border-color:rgba(0,153,93,0.2);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 20s</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-unimed.html" class="btn-card-emitir" onclick="event.stopPropagation()" style="background:#00995D; color:#fff; box-shadow:0 4px 14px -2px rgba(0,153,93,0.35);">
+                            <span>Editar Atestado Unimed</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='criar-unimed.html';" title="Editar Atestado Unimed">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
             <!-- 6. CRLV DIGITAL / LICENCIAMENTO (EM DESENVOLVIMENTO) -->
             <article class="doc-card card-crlv-em-desenvolvimento" data-category="transito" data-name="crlv digital licenciamento veiculo renavam senatran detran placa chassi documento" onclick="handleCrlvEmBreve(event)" style="--card-accent:#10b981; --card-glow:rgba(16,185,129,0.15);">
                 <div>
@@ -1473,70 +1536,7 @@
 
             
 
-            <!-- 8. ATESTADO MÉDICO UNIMED (EM DESENVOLVIMENTO) -->
-            <article class="doc-card card-crlv-em-desenvolvimento" data-category="saude" data-name="atestado unimed medico plano saude cid afastamento consulta repouso" onclick="handleUnimedEmBreve(event)" style="--card-accent:#00995D; --card-glow:rgba(0,153,93,0.2); --card-icon-bg:rgba(0,153,93,0.1); --card-icon-border:rgba(0,153,93,0.3); --card-pill-bg:rgba(0,153,93,0.12); --card-pill-border:rgba(0,153,93,0.3); --card-btn-bg:#00995D; --card-btn-glow:rgba(0,153,93,0.35); --card-border-hover:rgba(0,153,93,0.4);">
-                <div>
-                    <div class="card-top">
-                        <div class="card-icon-box" style="color:#00995D; background:rgba(0,153,93,0.1); border-color:rgba(0,153,93,0.25);">
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 9v4"/><path d="M10 11h4"/></svg>
-                        </div>
-                        <span class="card-badge-pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.1);">🔧 EM DESENVOLVIMENTO</span>
-                    </div>
-
-                    <div class="card-title-group">
-                        <div class="card-category-lbl">SAÚDE PRIVADA • UNIMED NACIONAL</div>
-                        <h2 class="card-title">Atestado Médico (Unimed)</h2>
-                    </div>
-
-                    <p class="card-desc">
-                        Atestado médico oficial timbrado da rede Unimed Nacional com validação por QR Code e link ativo, CRM do médico especialista credenciado, CID-10 e dias de repouso.
-                    </p>
-
-                    <ul class="card-features">
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Validação por QR Code e link de verificação médica oficial</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Timbre oficial Unimed com carimbo, CRM ativo e assinatura</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>CID-10 oficial, período de afastamento e dados do paciente</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Formato aceito em empresas, RH e perícias trabalhistas</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card-footer">
-                    <div class="price-row">
-                        <div class="price-info">
-                            <span class="price-sub">Valor Unitário</span>
-                            <div class="price-main"><span class="price-currency" style="color:#00995D;">R$</span><span id="priceUnimed">25,00</span></div>
-                        </div>
-                        <div class="delivery-pill" style="color:#f59e0b; background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.25);">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                            <span>Em breve</span>
-                        </div>
-                    </div>
-
-                    <div class="card-actions-group">
-                        <a href="javascript:void(0)" onclick="handleUnimedEmBreve(event)" class="btn-card-emitir" style="background:#222629; color:#8d989e; border:1px solid #333a3d; box-shadow:none; cursor:pointer;">
-                            <span>Em desenvolvimento</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('unimed')" title="Ver detalhes do Atestado Unimed">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
-            <!-- 9. DUT / ATPV-E (AUTORIZAÇÃO DE TRANSFERÊNCIA) (EM DESENVOLVIMENTO) -->
+            <!-- 7. CRLV DIGITAL / LICENCIAMENTO (EM DESENVOLVIMENTO) -->
             <article class="doc-card card-crlv-em-desenvolvimento" data-category="transito" data-name="dut atpv atpve autorizacao transferencia propriedade veiculo senatran detran renavam compra venda" onclick="handleDutEmBreve(event)" style="--card-accent:#f97316; --card-glow:rgba(249,115,22,0.2); --card-icon-bg:rgba(249,115,22,0.1); --card-icon-border:rgba(249,115,22,0.3); --card-pill-bg:rgba(249,115,22,0.12); --card-pill-border:rgba(249,115,22,0.3); --card-btn-bg:#f97316; --card-btn-glow:rgba(249,115,22,0.35); --card-border-hover:rgba(249,115,22,0.4);">
                 <div>
                     <div class="card-top">
