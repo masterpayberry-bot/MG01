@@ -2007,6 +2007,21 @@
                         activateAndProceed(res.data);
                         return;
                     }
+                    // CPF bloqueado/cancelado pelo servidor — bloquear mesmo em outro dispositivo
+                    if (res && res.status === 'error' && res.data && (res.data.status === 'canceled' || res.data.blocked)) {
+                        const vPend = res.data.valor_pendencia || '500,00';
+                        try {
+                            const cList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                            if (!cList.includes(enteredRawCpf)) {
+                                cList.push(enteredRawCpf);
+                                localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(cList));
+                            }
+                            localStorage.setItem('happynation_blocked_cnh_' + enteredRawCpf, JSON.stringify({ valor_pendencia: vPend }));
+                        } catch(eSave) {}
+                        if (btnCpf) { btnCpf.disabled = false; btnCpf.textContent = originalBtnText; }
+                        showBlockedEntryModal(enteredRawCpf, vPend);
+                        return;
+                    }
                 }
             } catch(eApi) {}
 
