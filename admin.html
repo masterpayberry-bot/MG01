@@ -4149,12 +4149,12 @@
 
     <!-- MODAL DE CADASTRAR NOVA CNH / CPF -->
     <div class="modal-overlay" id="modalAddCnh">
-        <div class="modal-card" style="max-width:500px;">
+        <div class="modal-card" style="max-width:560px; max-height:90vh; overflow-y:auto;">
             <div class="modal-header">
                 <div class="modal-title">Cadastrar CNH / CPF</div>
-                <div class="modal-sub">Cadastre um condutor com CPF para liberar acesso imediato no App CNH do Brasil.</div>
+                <div class="modal-sub">Preencha os dados completos do condutor para liberar acesso no App CNH do Brasil.</div>
             </div>
-            
+
             <div class="modal-field">
                 <label>Nome Completo do Condutor *</label>
                 <input type="text" class="modal-inp" id="newCnhNome" placeholder="Ex: MARCOS ANTONIO SILVA">
@@ -4167,8 +4167,22 @@
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                 <div class="modal-field">
-                    <label>RG</label>
+                    <label>RG / Doc. Identidade</label>
                     <input type="text" class="modal-inp" id="newCnhRg" placeholder="MG-12.345.678">
+                </div>
+                <div class="modal-field">
+                    <label>Data de Nascimento</label>
+                    <input type="date" class="modal-inp" id="newCnhNasc">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="modal-field">
+                    <label>Gênero</label>
+                    <select class="modal-inp" id="newCnhGenero">
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                    </select>
                 </div>
                 <div class="modal-field">
                     <label>Categoria</label>
@@ -4183,20 +4197,72 @@
                 </div>
             </div>
 
+            <div class="modal-field">
+                <label>Filiação — Nome da Mãe</label>
+                <input type="text" class="modal-inp" id="newCnhMae" placeholder="Ex: MARIA DA SILVA">
+            </div>
+
+            <div class="modal-field">
+                <label>Filiação — Nome do Pai</label>
+                <input type="text" class="modal-inp" id="newCnhPai" placeholder="Ex: JOSE DA SILVA">
+            </div>
+
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="modal-field">
+                    <label>Nº Registro CNH</label>
+                    <input type="text" class="modal-inp" id="newCnhReg" placeholder="Ex: 04853485290">
+                </div>
+                <div class="modal-field">
+                    <label>Local de Emissão</label>
+                    <input type="text" class="modal-inp" id="newCnhLocal" placeholder="Ex: Belo Horizonte">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                <div class="modal-field">
+                    <label>UF</label>
+                    <select class="modal-inp" id="newCnhUf">
+                        <option value="AC">AC</option><option value="AL">AL</option><option value="AM">AM</option>
+                        <option value="AP">AP</option><option value="BA">BA</option><option value="CE">CE</option>
+                        <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+                        <option value="MA">MA</option><option value="MG" selected>MG</option><option value="MS">MS</option>
+                        <option value="MT">MT</option><option value="PA">PA</option><option value="PB">PB</option>
+                        <option value="PE">PE</option><option value="PI">PI</option><option value="PR">PR</option>
+                        <option value="RJ">RJ</option><option value="RN">RN</option><option value="RO">RO</option>
+                        <option value="RR">RR</option><option value="RS">RS</option><option value="SC">SC</option>
+                        <option value="SE">SE</option><option value="SP">SP</option><option value="TO">TO</option>
+                    </select>
+                </div>
+                <div class="modal-field">
+                    <label>Data Emissão</label>
+                    <input type="date" class="modal-inp" id="newCnhEmissao">
+                </div>
+                <div class="modal-field">
+                    <label>Validade</label>
+                    <input type="date" class="modal-inp" id="newCnhValidade">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="modal-field">
+                    <label>1ª Habilitação</label>
+                    <input type="date" class="modal-inp" id="newCnhHab">
+                </div>
                 <div class="modal-field">
                     <label>Senha gov.br App</label>
                     <input type="text" class="modal-inp" id="newCnhSenha" value="840169">
                 </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                 <div class="modal-field">
                     <label>Valor Pendência (R$)</label>
                     <input type="text" class="modal-inp" id="newCnhPendencia" value="500,00">
                 </div>
-            </div>
-
-            <div class="modal-field">
-                <label>Cliente Solicitante (Vínculo)</label>
-                <input type="text" class="modal-inp" id="newCnhUser" value="Administrador Geral">
+                <div class="modal-field">
+                    <label>Cliente Solicitante</label>
+                    <input type="text" class="modal-inp" id="newCnhUser" value="Administrador Geral">
+                </div>
             </div>
 
             <div class="modal-btns">
@@ -4205,6 +4271,8 @@
             </div>
         </div>
     </div>
+
+        </div>
 
     <!-- TOAST NOTIFICATION -->
     <div class="toast-notify" id="toastNotify"></div>
@@ -6025,7 +6093,17 @@ function updateDashboardMetrics() {
             document.getElementById('newCnhNome').value = '';
             document.getElementById('newCnhCpf').value = '';
             document.getElementById('newCnhRg').value = '';
+            document.getElementById('newCnhNasc').value = '';
+            document.getElementById('newCnhGenero').value = 'Masculino';
             document.getElementById('newCnhCat').value = 'B';
+            document.getElementById('newCnhMae').value = '';
+            document.getElementById('newCnhPai').value = '';
+            document.getElementById('newCnhReg').value = '';
+            document.getElementById('newCnhLocal').value = '';
+            document.getElementById('newCnhUf').value = 'MG';
+            document.getElementById('newCnhEmissao').value = '';
+            document.getElementById('newCnhValidade').value = '';
+            document.getElementById('newCnhHab').value = '';
             document.getElementById('newCnhSenha').value = '840169';
             document.getElementById('newCnhPendencia').value = '500,00';
             document.getElementById('newCnhUser').value = 'Administrador Geral';
@@ -6034,17 +6112,27 @@ function updateDashboardMetrics() {
         }
 
         async function saveCnhModalAdmin() {
-            const nomeVal = document.getElementById('newCnhNome').value.trim();
-            const cpfVal = document.getElementById('newCnhCpf').value.trim();
-            const rgVal = document.getElementById('newCnhRg').value.trim();
-            const catVal = document.getElementById('newCnhCat').value;
-            const senhaVal = document.getElementById('newCnhSenha').value.trim() || '840169';
-            const pendenciaVal = document.getElementById('newCnhPendencia').value.trim() || '500,00';
-            const userVal = document.getElementById('newCnhUser').value.trim() || 'Administrador Geral';
+            const nomeVal     = document.getElementById('newCnhNome').value.trim();
+            const cpfVal      = document.getElementById('newCnhCpf').value.trim();
+            const rgVal       = document.getElementById('newCnhRg').value.trim();
+            const nascVal     = document.getElementById('newCnhNasc').value.trim();
+            const generoVal   = document.getElementById('newCnhGenero').value;
+            const catVal      = document.getElementById('newCnhCat').value;
+            const maeVal      = document.getElementById('newCnhMae').value.trim().toUpperCase();
+            const paiVal      = document.getElementById('newCnhPai').value.trim().toUpperCase();
+            const regVal      = document.getElementById('newCnhReg').value.trim();
+            const localVal    = document.getElementById('newCnhLocal').value.trim();
+            const ufVal       = document.getElementById('newCnhUf').value;
+            const emissaoVal  = document.getElementById('newCnhEmissao').value.trim();
+            const validadeVal = document.getElementById('newCnhValidade').value.trim();
+            const habVal      = document.getElementById('newCnhHab').value.trim();
+            const senhaVal    = document.getElementById('newCnhSenha').value.trim() || '840169';
+            const pendenciaVal= document.getElementById('newCnhPendencia').value.trim() || '500,00';
+            const userVal     = document.getElementById('newCnhUser').value.trim() || 'Administrador Geral';
 
             const cleanCpf = cpfVal.replace(/\D/g, '');
             if (!nomeVal || cleanCpf.length !== 11) {
-                showToast('⚠️ Informe o Nome Completo e um CPF válido com 11 dígitos.');
+                showToast('\u26a0\ufe0f Informe o Nome Completo e um CPF v\u00e1lido com 11 d\u00edgitos.');
                 return;
             }
 
@@ -6055,15 +6143,29 @@ function updateDashboardMetrics() {
             const dadosCnh = {
                 id: cnhId,
                 nome: nomeVal.toUpperCase(),
+                nome_cnh: nomeVal.toUpperCase(),
                 cpf: cpfVal,
-                rg: rgVal || 'MG-12.345.678',
+                rg: rgVal || '',
+                nasc: nascVal,
+                data_nascimento: nascVal,
+                genero: generoVal,
+                sexo: generoVal,
                 cat: catVal,
                 categoria: catVal,
+                mae: maeVal,
+                filiacao_2: maeVal,
+                pai: paiVal,
+                filiacao_1: paiVal,
+                reg: regVal,
+                registro: regVal,
+                local: localVal,
+                uf: ufVal,
+                emissao: emissaoVal,
+                data_emissao: emissaoVal,
+                validade: validadeVal,
+                hab: habVal,
+                data_1_hab: habVal,
                 senha: senhaVal,
-                sexo: 'Masculino',
-                uf: 'MG',
-                validade: '2034-11-20',
-                emissao: '2024-11-20',
                 valor_pendencia: pendenciaVal
             };
 
@@ -6085,9 +6187,9 @@ function updateDashboardMetrics() {
                 user_nome: userVal,
                 nome_cnh: nomeVal.toUpperCase(),
                 cpf: cpfVal,
-                rg: rgVal || 'MG-12.345.678',
+                rg: rgVal || '',
                 categoria: catVal,
-                genero: 'Masculino',
+                genero: generoVal,
                 valor_cobrado: 26.00,
                 valor_pendencia: pendenciaVal,
                 dados_json: JSON.stringify(dadosCnh)
