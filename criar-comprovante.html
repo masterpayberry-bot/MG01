@@ -47,10 +47,10 @@
         ::-webkit-scrollbar-track { background: #0b0d0e; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 999px; }
 
-        /* HEADER */
+        /* HEADER PADRÃO MG EDITÁVEIS */
         .header { 
             height: 64px; 
-            background: rgba(20,23,24,0.96); 
+            background: rgba(20, 23, 24, 0.88); 
             backdrop-filter: blur(12px); 
             border-bottom: 1px solid var(--border); 
             position: sticky; 
@@ -58,7 +58,7 @@
             z-index: 50; 
         }
         .header-inner { 
-            max-width: 1520px; 
+            max-width: 1440px; 
             height: 100%; 
             margin: 0 auto; 
             display: flex; 
@@ -66,52 +66,84 @@
             justify-content: space-between; 
             padding: 0 24px; 
         }
-        .brand-link { 
-            display: flex; 
+        .header-brand { 
+            display: inline-flex; 
             align-items: center; 
             gap: 10px; 
             text-decoration: none; 
-            color: #fff; 
-            font-weight: 800; 
-            font-size: 17px; 
         }
-        .brand-icon { 
-            width: 34px; 
-            height: 34px; 
+        .brand-logo { 
+            width: 32px; 
+            height: 32px; 
+            background: var(--primary); 
             border-radius: 9px; 
-            background: rgba(0,158,227,0.15); 
-            border: 1px solid rgba(0,158,227,0.35); 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            color: var(--mp-blue); 
+            overflow: hidden; 
+            box-shadow: 0 0 14px rgba(0, 220, 130, 0.35); 
         }
-        .btn-back { 
-            display: inline-flex; 
+        .brand-icon-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        .brand-text { 
+            font-size: 18px; 
+            font-weight: 800; 
+            color: #ffffff; 
+            letter-spacing: -0.3px; 
+        }
+        .header-right { 
+            display: flex; 
             align-items: center; 
-            gap: 6px; 
-            padding: 7px 14px; 
-            border-radius: 9px; 
-            background: rgba(255,255,255,0.06); 
-            border: 1px solid var(--border); 
-            color: var(--muted); 
-            font-size: 12.5px; 
-            font-weight: 600; 
-            text-decoration: none; 
-            transition: all 0.2s;
-        }
-        .btn-back:hover { 
-            background: rgba(255,255,255,0.12); 
-            color: #fff; 
+            gap: 14px; 
         }
         .saldo-pill { 
-            font-size: 13px; 
+            background: rgba(0, 220, 130, 0.08); 
+            color: #00dc82; 
+            border: 1px solid #00dc82; 
             font-weight: 700; 
-            color: #10b981; 
-            background: rgba(16,185,129,0.1); 
+            font-size: 13px; 
             padding: 6px 14px; 
-            border-radius: 99px; 
-            border: 1px solid rgba(16,185,129,0.25); 
+            border-radius: 20px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 7px; 
+            text-decoration: none; 
+            transition: all 0.2s ease; 
+        }
+        .saldo-pill:hover { 
+            background: rgba(0, 220, 130, 0.16); 
+            transform: translateY(-1px); 
+        }
+        .btn-header-voltar { 
+            color: var(--muted); 
+            font-size: 13px; 
+            font-weight: 600; 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            padding: 6px 12px; 
+            border-radius: 8px; 
+            transition: all 0.2s; 
+        }
+        .btn-header-voltar:hover { 
+            color: #fff; 
+            background: rgba(255, 255, 255, 0.05); 
+        }
+        .avatar-circle { 
+            width: 34px; 
+            height: 34px; 
+            border-radius: 50%; 
+            background: var(--primary); 
+            color: #062517; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 800; 
+            font-size: 14px; 
         }
 
         /* WORKSPACE GRID */
@@ -547,24 +579,28 @@
 </head>
 <body>
 
-    <!-- CABEÇALHO -->
+    <!-- CABEÇALHO PADRÃO MG EDITÁVEIS -->
     <header class="header">
         <div class="header-inner">
-            <a href="index.html" class="brand-link">
-                <div class="brand-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-                        <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
-                    </svg>
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
                 </div>
-                <span>MG Editáveis <span style="color:var(--mp-blue); font-weight:600; font-size:14px;">• Mercado Pago</span></span>
+                <span class="brand-text">MG Editáveis</span>
             </a>
 
-            <div style="display:flex; align-items:center; gap:16px;">
-                <span class="saldo-pill" id="userHeaderSaldo">Saldo R$ 0,00</span>
-                <a href="index.html" class="btn-back">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-                    Painel Principal
+            <div class="header-right">
+                <a href="recargas.html" class="saldo-pill" title="Clique para recarregar saldo">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
                 </a>
+
+                <a href="editaveis.html" class="btn-header-voltar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+                    <span>Voltar</span>
+                </a>
+
+                <div class="avatar-circle" id="userHeaderAvatar">M</div>
             </div>
         </div>
     </header>
@@ -1230,10 +1266,14 @@
             applyZoom();
 
             try {
-                const u = JSON.parse(localStorage.getItem('happynation_user') || '{}');
-                const s = parseFloat(u.saldo || 0);
+                const u = JSON.parse(localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user') || '{}');
+                const saldo = (window.MGSaldo ? window.MGSaldo.get() : (u.saldo !== undefined ? parseFloat(u.saldo) : 0));
                 const el = document.getElementById('userHeaderSaldo');
-                if (el) el.textContent = `Saldo R$ ${s.toFixed(2).replace('.', ',')}`;
+                if (el) el.textContent = `Saldo R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                
+                const nome = u.nome || 'M';
+                const avEl = document.getElementById('userHeaderAvatar');
+                if (avEl) avEl.textContent = nome.trim()[0].toUpperCase();
             } catch(e) {}
         });
     </script>
