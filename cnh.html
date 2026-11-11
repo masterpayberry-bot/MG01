@@ -2163,13 +2163,16 @@ function toggleSelectAll(master) {
 function deleteCnhRow(cnhId) {
     if (!confirm('Deseja realmente excluir esta CNH permanentemente? O prontuário deste CPF será cancelado no sistema.')) return;
 
-    let cnhs = getCnhs();
-    const itemToDelete = cnhs.find(c => c.id === cnhId);
+    // Usa allCnhs (array em memória, já carregado do backend)
+    const itemToDelete = allCnhs.find(c => String(c.id) === String(cnhId));
     const cleanCpf = itemToDelete && itemToDelete.cpf ? itemToDelete.cpf.replace(/\D/g, '') : '';
-    const vPendVal = itemToDelete ? (itemToDelete.valor_pendencia || itemToDelete.valor || (itemToDelete.dados && itemToDelete.dados.valor_pendencia) || '500,00') : '500,00';
+    const dadosItem = itemToDelete && itemToDelete.dados_json
+        ? (typeof itemToDelete.dados_json === 'string' ? JSON.parse(itemToDelete.dados_json) : itemToDelete.dados_json)
+        : (itemToDelete && itemToDelete.dados ? itemToDelete.dados : {});
+    const vPendVal = (itemToDelete && (itemToDelete.valor_pendencia || dadosItem.valor_pendencia)) || '500,00';
 
-    cnhs = cnhs.filter(c => c.id !== cnhId);
-    saveCnhs(cnhs);
+    // Remove do array em memória
+    allCnhs = allCnhs.filter(c => String(c.id) !== String(cnhId));
 
     try {
         // Limpa das listas em localStorage de todos os usuários
@@ -2231,6 +2234,21 @@ function deleteCnhRow(cnhId) {
         } catch(eBc) {}
     } catch(e) {}
 
+    // Remove do happynation_admin_cnhs no localStorage
+    try {
+        const adminCnhs = JSON.parse(localStorage.getItem('happynation_admin_cnhs') || '[]');
+        const filteredAdmin = adminCnhs.filter(c => String(c.id) !== String(cnhId) && (cleanCpf ? (c.cpf || '').replace(/\D/g, '') !== cleanCpf : true));
+        localStorage.setItem('happynation_admin_cnhs', JSON.stringify(filteredAdmin));
+    } catch(eAdm) {}
+
+    // Remove da last_cnh se for a mesma
+    try {
+        const lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || 'null');
+        if (lastCnh && (String(lastCnh.id) === String(cnhId) || (cleanCpf && (lastCnh.cpf || '').replace(/\D/g, '') === cleanCpf))) {
+            localStorage.removeItem('happynation_last_cnh');
+        }
+    } catch(eLast) {}
+
     // Notifica servidor para excluir do banco MySQL e de app/db.json
     fetch('api/index.php?action=delete_cnh', {
         method: 'POST',
@@ -2238,6 +2256,20 @@ function deleteCnhRow(cnhId) {
         body: JSON.stringify({ id: cnhId, cpf: cleanCpf, valor_pendencia: vPendVal })
     }).catch(() => {});
     fetch('api/db/cnhs/' + encodeURIComponent(cnhId), { method: 'DELETE' }).catch(() => {});
+
+    // Remove do Supabase Cloud
+    const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+    const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+    fetch(SUP_URL + '/rest/v1/cnhs?id=eq.' + encodeURIComponent(cnhId), {
+        method: 'DELETE',
+        headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+    }).catch(() => {});
+    if (cleanCpf) {
+        fetch(SUP_URL + '/rest/v1/cnhs?cpf=eq.' + encodeURIComponent(cleanCpf), {
+            method: 'DELETE',
+            headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+        }).catch(() => {});
+    }
 
     renderTable();
     showToast('CNH excluída permanentemente! Prontuário cancelado.');
