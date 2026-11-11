@@ -908,9 +908,10 @@ function gerarQr() {
     }
 }
 
-// ─── GERAR PDF ────────────────────────────────────
+// ─── GERAR PDF & SALVAR NO HISTÓRICO ────────────────
 async function gerarPdf() {
     const btn = document.getElementById('btnGerarTxt');
+    const origTxt = btn.textContent;
     btn.textContent = 'Gerando PDF...';
     try {
         await new Promise(r => setTimeout(r, 300));
@@ -928,17 +929,177 @@ async function gerarPdf() {
         const JsPDF = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
         const pdf = new JsPDF({ orientation: 'portrait', unit: 'px', format: [794, 1123], hotfixes: ['px_scaling'] });
         pdf.addImage(canvas.toDataURL('image/jpeg', 0.97), 'JPEG', 0, 0, 794, 1123);
-        const nome = document.getElementById('inpNomePaciente').value.trim().replace(/\s+/g, '_') || 'Atestado';
-        pdf.save(`Atestado_Unimed_${nome}.pdf`);
+        
+        const g = id => (document.getElementById(id)?.value || '').trim();
+        const nomePac = g('inpNomePaciente') || 'PACIENTE';
+        const nomeFile = nomePac.replace(/\s+/g, '_') || 'Atestado';
+        pdf.save(`Atestado_Unimed_${nomeFile}.pdf`);
+
+        // ── REGISTRA NO HISTÓRICO DE ATESTADOS (atestados.html) ──
+        try {
+            const existingId = new URLSearchParams(window.location.search).get('id');
+            const atId = existingId || ('AT-' + Math.floor(10000 + Math.random() * 90000));
+            const cpfVal = g('inpCpf');
+            const profVal = g('inpProfissional') || 'Dr(a). Unimed';
+            const crmVal = g('inpCrm') || 'CRMRJ-01212699';
+            const cidVal = g('inpCid') || 'A90';
+            const diasVal = parseInt(g('inpDias') || '2', 10) || 2;
+            const nowIso = new Date().toISOString();
+
+            const atRecord = {
+                id: atId,
+                nome: nomePac.toUpperCase(),
+                paciente: nomePac.toUpperCase(),
+                cpf: cpfVal,
+                medico: profVal,
+                crm: crmVal,
+                cid: cidVal,
+                dias: diasVal,
+                unidade: g('inpUnidade1') || 'TELESSAUDE - UNIMEDRJ',
+                tipo: 'unimed',
+                status: 'Ativo',
+                created_at: nowIso,
+                dados: {
+                    nasc: g('inpNasc'),
+                    idade: g('inpIdade'),
+                    pront: g('inpPront'),
+                    atend: g('inpAtend'),
+                    convenio: g('inpConvenio'),
+                    setor: g('inpSetor'),
+                    mae: g('inpMae'),
+                    leito: g('inpLeito'),
+                    dataAss: g('inpDataAss'),
+                    dataAtend: g('inpDataAtend'),
+                    diag: g('inpDiag'),
+                    acomp: g('inpAcomp'),
+                    cpfAcomp: g('inpCpfAcomp'),
+                    unidade2: g('inpUnidade2'),
+                    codValid: g('inpCodValid'),
+                    urlQr: g('inpUrlQr')
+                }
+            };
+
+            // 1. Salva em happynation_atestados_{email} e nas chaves gerais
+            let loggedUser = null;
+            try { loggedUser = JSON.parse(localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user') || '{}'); } catch(e){}
+            const uEmail = (loggedUser && loggedUser.email) ? loggedUser.email.toLowerCase().trim() : 'cliente';
+            const userKey = 'happynation_atestados_' + uEmail;
+
+            let userList = JSON.parse(localStorage.getItem(userKey) || '[]');
+            const idx = userList.findIndex(x => x.id === atId);
+            if (idx >= 0) userList[idx] = Object.assign({}, userList[idx], atRecord);
+            else userList.unshift(atRecord);
+            localStorage.setItem(userKey, JSON.stringify(userList));
+
+            // Salva como last_atestado
+            localStorage.setItem('happynation_last_atestado', JSON.stringify(atRecord));
+
+            // Salva em happynation_admin_atestados
+            try {
+                let adminList = JSON.parse(localStorage.getItem('happynation_admin_atestados') || '[]');
+                const aIdx = adminList.findIndex(x => x.id === atId);
+                if (aIdx >= 0) adminList[aIdx] = Object.assign({}, adminList[aIdx], atRecord);
+                else adminList.unshift(atRecord);
+                localStorage.setItem('happynation_admin_atestados', JSON.stringify(adminList));
+            } catch(eAdm) {}
+
+            // Sincroniza com Supabase se disponível
+            if (window.MGSupabase && loggedUser && loggedUser.id) {
+                window.MGSupabase.saveAtestado({
+                    id: atId,
+                    user_id: loggedUser.id,
+                    user_nome: loggedUser.nome || 'Cliente',
+                    paciente_nome: nomePac,
+                    cpf: cpfVal,
+                    medico_nome: profVal,
+                    crm: crmVal,
+                    cid: cidVal,
+                    dias_repouso: diasVal,
+                    unidade_saude: 'UNIMED',
+                    valor_cobrado: 20.00,
+                    dados_json: atRecord
+                }).catch(() => {});
+            }
+
+            // Desconta saldo visual se disponível
+            if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
+                window.MGSaldo.deduct(20.00);
+            }
+        } catch(eHist) {
+            console.warn('Erro ao salvar no histórico:', eHist);
+        }
+
+        btn.textContent = 'Sucesso! Redirecionando...';
+        btn.style.background = '#059669';
+
+        // Redireciona imediatamente para a tela de atestados recentes
+        setTimeout(() => {
+            window.location.href = 'atestados.html';
+        }, 600);
+
     } catch(e) {
         alert('Erro ao gerar PDF: ' + e.message);
-    } finally {
-        btn.textContent = 'Gerar PDF — Atestado Unimed';
+        btn.textContent = origTxt;
+    }
+}
+
+// ─── CARREGAR DADOS SE FOR EDIÇÃO / VISUALIZAÇÃO ───
+function loadIfEditing() {
+    const p = new URLSearchParams(window.location.search);
+    const atId = p.get('id');
+    if (!atId) return;
+
+    let found = null;
+    try {
+        const last = JSON.parse(localStorage.getItem('happynation_last_atestado') || 'null');
+        if (last && String(last.id) === String(atId)) found = last;
+    } catch(e){}
+
+    if (!found) {
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith('happynation_atestados_')) {
+                try {
+                    const list = JSON.parse(localStorage.getItem(k) || '[]');
+                    const match = list.find(x => String(x.id) === String(atId));
+                    if (match) { found = match; break; }
+                } catch(e){}
+            }
+        }
+    }
+
+    if (found) {
+        const d = found.dados || {};
+        const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
+        setVal('inpNomePaciente', found.paciente || found.nome);
+        setVal('inpCpf', found.cpf);
+        setVal('inpProfissional', found.medico);
+        setVal('inpCrm', found.crm);
+        setVal('inpCid', found.cid);
+        setVal('inpDias', found.dias);
+        setVal('inpNasc', d.nasc);
+        setVal('inpIdade', d.idade);
+        setVal('inpPront', d.pront);
+        setVal('inpAtend', d.atend);
+        setVal('inpConvenio', d.convenio);
+        setVal('inpSetor', d.setor);
+        setVal('inpMae', d.mae);
+        setVal('inpLeito', d.leito);
+        setVal('inpDataAss', d.dataAss);
+        setVal('inpDataAtend', d.dataAtend);
+        setVal('inpDiag', d.diag);
+        setVal('inpAcomp', d.acomp);
+        setVal('inpCpfAcomp', d.cpfAcomp);
+        setVal('inpUnidade1', found.unidade || d.unidade);
+        setVal('inpUnidade2', d.unidade2);
+        setVal('inpCodValid', d.codValid);
+        setVal('inpUrlQr', d.urlQr);
     }
 }
 
 // ─── INIT ─────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    loadIfEditing();
     // Carregar imagens oficiais da Unimed a partir de Base64
     if (window.UNIMED_LOGO_B64) {
         const el = document.getElementById('imgLogoUnimed');

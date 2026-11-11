@@ -1793,8 +1793,11 @@ function loadUserAtestados(user) {
             medico: item.medico || item.medico_nome || 'Dr(a). MG Editáveis',
             crm: item.crm || 'CRM/SP 000000',
             cid: item.cid || 'Z00.0',
-            status: item.status || 'Emitido',
-            created_at: item.created_at || item.data || new Date().toISOString()
+            unidade: item.unidade || item.unidade_saude || '',
+            tipo: item.tipo || ((item.unidade && item.unidade.toLowerCase().includes('unimed')) ? 'unimed' : 'upa'),
+            status: item.status || 'Ativo',
+            created_at: item.created_at || item.data || new Date().toISOString(),
+            dados: item.dados || item
         });
     };
 
@@ -1959,12 +1962,21 @@ function renderTable() {
     tbody.innerHTML = html;
 }
 
-function verAtestado(atestId) {
-    window.location.href = 'ver-atestado.html?id=' + encodeURIComponent(atestId);
+function editarAtestado(atestId) {
+    const item = allAtestados.find(x => String(x.id) === String(atestId));
+    const isUnimed = item && (item.tipo === 'unimed' || (item.unidade && item.unidade.toLowerCase().includes('unimed')));
+    const targetPage = isUnimed ? 'criar-unimed.html' : 'criar-atestado.html';
+    window.location.href = targetPage + '?id=' + encodeURIComponent(atestId) + '&edit=true';
 }
 
-function editarAtestado(atestId) {
-    window.location.href = 'criar-atestado.html?id=' + encodeURIComponent(atestId) + '&edit=true';
+function verAtestado(atestId) {
+    const item = allAtestados.find(x => String(x.id) === String(atestId));
+    const isUnimed = item && (item.tipo === 'unimed' || (item.unidade && item.unidade.toLowerCase().includes('unimed')));
+    if (isUnimed) {
+        window.location.href = 'criar-unimed.html?id=' + encodeURIComponent(atestId);
+    } else {
+        window.location.href = 'ver-atestado.html?id=' + encodeURIComponent(atestId);
+    }
 }
 
 function deleteAtestadoRow(atestId) {
