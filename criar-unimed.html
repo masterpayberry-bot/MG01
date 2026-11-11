@@ -450,6 +450,304 @@
             #unimedDoc { box-shadow: none !important; border: none !important; }
             .canvas-wrap, #zoomBox { transform: none !important; }
         }
+    
+        /* ─── BOTÃO BUSCAR CID & MODAL DE CID ─── */
+        .btn-search-cid {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 220, 130, 0.1);
+            border: 1px solid rgba(0, 220, 130, 0.28);
+            color: #00dc82;
+            padding: 0 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .btn-search-cid:hover {
+            background: rgba(0, 220, 130, 0.2);
+            border-color: #00dc82;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(0, 220, 130, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-search-cid:active {
+            transform: translateY(0);
+        }
+
+        .cid-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .cid-modal-overlay.show {
+            display: flex;
+        }
+
+        .cid-modal-box {
+            background: #141718;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 620px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 220, 130, 0.15);
+            animation: zoomFadeModal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.light-theme .cid-modal-box {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes zoomFadeModal {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .cid-modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        body.light-theme .cid-modal-header {
+            border-bottom-color: #e2e8f0;
+        }
+
+        .cid-modal-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.light-theme .cid-modal-title {
+            color: #0f172a;
+        }
+
+        .cid-modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .cid-modal-close:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .cid-search-wrap {
+            padding: 12px 20px;
+            background: #191c1d;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.light-theme .cid-search-wrap {
+            background: #f8fafc;
+            border-bottom-color: #e2e8f0;
+        }
+
+        .cid-search-input {
+            width: 100%;
+            background: #101213;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 14px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        body.light-theme .cid-search-input {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        .cid-search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .cid-category-tabs {
+            display: flex;
+            gap: 6px;
+            padding: 10px 20px;
+            background: #141718;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        body.light-theme .cid-category-tabs {
+            background: #ffffff;
+            border-bottom-color: #e2e8f0;
+        }
+
+        .cid-tab-btn {
+            background: #191c1d;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        body.light-theme .cid-tab-btn {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+
+        .cid-tab-btn.active, .cid-tab-btn:hover {
+            background: rgba(0, 220, 130, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .cid-list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+            max-height: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cid-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .cid-item-row:hover {
+            background: #1a1e20;
+            border-color: #2b3236;
+        }
+
+        body.light-theme .cid-item-row:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .cid-code-badge {
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+            border: 1px solid rgba(0, 220, 130, 0.35);
+            font-size: 13px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            min-width: 60px;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .cid-desc-box {
+            flex: 1;
+            margin-left: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .cid-desc-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        body.light-theme .cid-desc-title {
+            color: #0f172a;
+        }
+
+        .cid-desc-cat {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .cid-item-action {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .cid-item-row:hover .cid-item-action {
+            color: var(--primary);
+        }
+
+        /* TOAST */
+        #toastContainer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-msg {
+            background: #191c1d;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #fff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            animation: slideIn 0.25s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
     </style>
     <script src="assets/unimed_elements_b64.js"></script>
 </head>
@@ -565,7 +863,13 @@
         </div>
         <div class="fgroup">
             <label class="flabel">Código CID</label>
-            <input class="finput" id="inpCid" value="A90" oninput="updateDoc()">
+            <div style="display:flex; gap:8px;">
+                <input class="finput" id="inpCid" value="A90" oninput="updateDoc()" style="flex:1;">
+                <button type="button" class="btn-search-cid" onclick="openCidModal()" title="Escolher na lista completa de CIDs">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <span>Buscar CID</span>
+                </button>
+            </div>
         </div>
 
         
@@ -1128,5 +1432,41 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch(e) {}
 });
 </script>
+
+    <!-- MODAL DE SELEÇÃO DE CID -->
+    <div class="cid-modal-overlay" id="cidModalOverlay" onclick="closeCidModalOnOverlay(event)">
+        <div class="cid-modal-box">
+            <div class="cid-modal-header">
+                <div class="cid-modal-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>Selecionar CID-10 (Classificação de Doenças)</span>
+                </div>
+                <button class="cid-modal-close" onclick="closeCidModal()">&times;</button>
+            </div>
+
+            <div class="cid-search-wrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" class="cid-search-input" id="cidSearchInput" placeholder="Pesquisar por código (ex: J02) ou diagnóstico (ex: gripe, dor, lombalgia, dengue...)" oninput="filterCidList()">
+            </div>
+
+            <div class="cid-category-tabs">
+                <button class="cid-tab-btn active" onclick="setCidTab('todos', this)">Todos Mais Usados</button>
+                <button class="cid-tab-btn" onclick="setCidTab('respiratorio', this)">Respiratório</button>
+                <button class="cid-tab-btn" onclick="setCidTab('digestivo', this)">Digestivo / Gastro</button>
+                <button class="cid-tab-btn" onclick="setCidTab('muscular', this)">Ortopédico / Dores</button>
+                <button class="cid-tab-btn" onclick="setCidTab('infeccioso', this)">Infecciosas / Dengue</button>
+                <button class="cid-tab-btn" onclick="setCidTab('odontologico', this)">Odonto / Dentes</button>
+                <button class="cid-tab-btn" onclick="setCidTab('emocional', this)">Estresse / Psico</button>
+            </div>
+
+            <div class="cid-list-container" id="cidListContainer">
+                <!-- Preenchido via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer"></div>
+
 </body>
 </html>
