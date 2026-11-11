@@ -83,20 +83,40 @@
             background: #ffffff;
             font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
             font-size: 11px;
-            color: #111;
+            color: #000;
             position: relative;
             box-shadow: 0 20px 60px rgba(0,0,0,0.6);
             overflow: hidden;
             box-sizing: border-box;
-            padding: 30px 32px 20px 32px;
+            padding: 24px 34px 24px 34px;
         }
 
         /* ── HEADER DO DOC ── */
         .doc-header {
             display: flex;
             align-items: center;
-            padding: 4px 0 12px 0;
-            border-bottom: 1.5px solid #ccc;
+            padding: 0 0 10px 0;
+            border-bottom: none;
+        }
+        .header-middle {
+            flex: 1;
+            text-align: center;
+            padding-right: 40px; /* balanceia visualmente a logo à esquerda */
+        }
+        .header-telessaude {
+            font-size: 12px;
+            font-weight: 700;
+            color: #111;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: Arial, sans-serif;
+        }
+        .header-address {
+            font-size: 9.5px;
+            color: #333;
+            margin-top: 3px;
+            letter-spacing: 0.2px;
+            font-family: Arial, sans-serif;
         }
         .logo-box {
             display: flex;
@@ -151,48 +171,49 @@
 
         /* ── TABELA DE DADOS DO PACIENTE ── */
         .patient-table {
-            margin: 0;
-            border: 1px solid #666;
-            font-size: 10px;
+            margin: 0 0 26px 0;
+            border: 1px solid #333;
+            font-size: 10.5px;
+            background: #fff;
         }
         .patient-row {
             display: flex;
-            border-bottom: 1px solid #aaa;
+            border-bottom: 1px solid #333;
+            min-height: 22px;
         }
         .patient-row:last-child {
             border-bottom: none;
         }
         .patient-cell {
-            padding: 4px 8px;
+            padding: 3px 8px;
             display: flex;
-            align-items: baseline;
-            gap: 4px;
+            align-items: center;
+            gap: 6px;
             flex: 1;
         }
         .patient-cell-label {
-            font-weight: 700;
-            color: #111;
+            font-weight: 400;
+            color: #000;
             white-space: nowrap;
-            font-size: 9.5px;
+            font-size: 10.5px;
+            font-family: Arial, sans-serif;
         }
         .patient-cell-val {
             font-weight: 400;
-            color: #111;
-            font-size: 10px;
+            color: #000;
+            font-size: 10.5px;
+            font-family: Arial, sans-serif;
         }
-        .patient-cell-val strong {
-            font-weight: 700;
-        }
-        .cell-sep { border-left: 1px solid #aaa; }
+        .cell-sep { border-left: 1px solid #333; }
 
         /* ── TÍTULO ATESTADO ── */
         .doc-title {
             text-align: center;
             font-size: 14px;
             font-weight: 700;
-            color: #111;
-            margin: 22px 0 16px 0;
-            letter-spacing: 0.5px;
+            color: #000;
+            margin: 18px 0 20px 0;
+            letter-spacing: 0.6px;
             font-family: Arial, sans-serif;
         }
 
@@ -200,10 +221,10 @@
         .doc-body {
             margin: 0;
             font-size: 11px;
-            line-height: 1.65;
-            color: #111;
+            line-height: 1.6;
+            color: #000;
             font-family: Arial, sans-serif;
-            text-align: justify;
+            text-align: left;
         }
 
         /* ── ASSINATURAS ── */
@@ -273,23 +294,45 @@
 
         /* ── VALIDAÇÃO / RODAPÉ ── */
         .doc-validation {
-            margin: 28px 0 0 0;
-            font-size: 10px;
-            color: #111;
+            margin: 50px 0 16px 0;
+            font-size: 11px;
+            color: #000;
             text-align: center;
-            line-height: 1.6;
+            line-height: 1.7;
+            font-family: Arial, sans-serif;
         }
         .doc-footer-box {
             position: absolute;
-            bottom: 30px;
-            left: 32px;
-            right: 32px;
-            border: 1px solid #777;
-            padding: 6px 12px;
+            bottom: 24px;
+            left: 34px;
+            right: 34px;
+            border: 1px solid #333;
+            padding: 7px 12px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             background: #ffffff;
+        }
+        .footer-text-small {
+            font-size: 6.5px;
+            color: #000;
+            line-height: 1.35;
+            flex: 1;
+            font-family: Arial, sans-serif;
+        }
+        .footer-qr-label {
+            font-size: 7.5px;
+            color: #000;
+            text-align: left;
+            line-height: 1.3;
+            font-family: Arial, sans-serif;
+        }
+        .footer-qr-code {
+            font-size: 10px;
+            font-weight: 400;
+            color: #000;
+            font-family: Arial, sans-serif;
+            margin-top: 4px;
         }
         .footer-text-small {
             font-size: 7.5px;
@@ -480,7 +523,7 @@
 
         <div class="fgroup">
             <label class="flabel">Nome da Unidade (linha 1)</label>
-            <input class="finput" id="inpUnidade1" value="TELESSAUDE - UNIMEDРJ" oninput="updateDoc()">
+            <input class="finput" id="inpUnidade1" value="TELESSAUDE - UNIMEDRJ" oninput="updateDoc()">
         </div>
         <div class="fgroup">
             <label class="flabel">Endereço (linha 2)</label>
@@ -529,16 +572,12 @@
                     <div class="doc-header">
                         <!-- Logo Unimed -->
                         <div class="logo-box">
-                            <img id="imgLogoUnimed" src="" alt="Unimed Rio" style="height:42px; object-fit:contain;">
+                            <img id="imgLogoUnimed" src="" alt="Unimed Rio" style="height:44px; object-fit:contain;">
                         </div>
 
                         <div class="header-middle">
-                            <div class="header-telessaude" id="viewUnidade1">TELESSAUDE - UNIMEDРJ</div>
+                            <div class="header-telessaude" id="viewUnidade1">TELESSAUDE - UNIMEDRJ</div>
                             <div class="header-address" id="viewUnidade2">AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO</div>
-                        </div>
-
-                        <div class="header-govbr">
-                            <span style="font-size:14px;font-weight:900;color:#1351b4;">gov</span><span style="font-size:14px;font-weight:900;color:#1351b4;">.br</span>
                         </div>
                     </div>
 
@@ -610,7 +649,7 @@
                     <div class="sig-area">
                         <!-- Assinatura do Paciente -->
                         <div class="sig-block">
-                            <div class="sig-line-wrap" style="width:340px; border-bottom:1px solid #111; min-height:48px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:2px; margin-bottom:4px;">
+                            <div class="sig-line-wrap" style="width:420px; border-bottom:1.5px solid #000; min-height:48px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:2px; margin-bottom:4px;">
                                 <img id="imgSigPaciente" src="" alt="Assinatura do Paciente" style="height:44px; object-fit:contain;">
                             </div>
                             <div class="sig-name" id="viewSigNomePaciente" style="font-size:10px; font-family:Arial,sans-serif; color:#111; text-align:center; letter-spacing:0.3px;">LAURA NASCIMENTO OLIVEIRA DE MELLO</div>
@@ -621,7 +660,7 @@
                             <div class="stamp-rotated-wrap" style="position:relative; width:340px; height:90px; display:flex; align-items:flex-end; justify-content:center;">
                                 <img id="imgStampMedico" src="" alt="Assinatura e Carimbo Médico" style="height:88px; object-fit:contain;">
                             </div>
-                            <div style="width:340px; border-bottom:1px solid #111; margin: 4px 0 3px 0;"></div>
+                            <div style="width:260px; border-bottom:1.5px solid #000; margin: 4px 0 3px 0;"></div>
                             <div class="sig-label" style="font-size:10.5px; color:#111; text-align:center;">Assinatura e Carimbo</div>
                         </div>
                     </div>
@@ -735,13 +774,15 @@ function updateDoc() {
     // Corpo do atestado
     const corpoEl = document.getElementById('viewCorpo');
     if (corpoEl) {
-        let texto = `Atesto para os devidos fins, a pedido que o(a) Sr(a). <strong>${nomePac}</strong>,<br>inscrito(a) no CPF sob o n ${cpf}, paciente sob meus cuidado, foi atendido(a) no dia ${dataAt} apresentando ${diag}`;
+        let texto = `Atesto para os devidos fins, a pedido que o(a) Sr(a). ${nomePac},<br>inscrito(a) no CPF sob o n ${cpf}, paciente sob meus cuidado, foi atendido(a) no dia ${dataAt} apresentando ${diag}`;
         if (acomp) {
             texto += `, tendo sido acompanhada pelo seu marido, Sr. ${acomp}`;
-            if (cpfAcomp) texto += `<br>inscrito(a) no CPF sob o n ${cpfAcomp}`;
+            if (cpfAcomp) {
+                texto += `<br>${acomp.split(' ').slice(2).join(' ')}, inscrito(a) no CPF sob o n ${cpfAcomp}`;
+            }
         }
         texto += `<br><br>(Este atestado é válido para as finalidades previstas nos artigos 71 e 72, parágrafo 1ª do Decreto 3048/99, e será expedido para justificar o afastamento do trabalho ${dias} dias).<br><br>`;
-        texto += `Eu, <strong>${nomePac}</strong>, autorizo a inclusão da &nbsp;CID ${cid} no atestado médico.`;
+        texto += `Eu, ${nomePac}, autorizo a inclusão da  CID ${cid} no atestado médico.`;
         corpoEl.innerHTML = texto;
     }
 }
