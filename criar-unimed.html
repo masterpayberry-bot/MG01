@@ -1211,7 +1211,7 @@
                 </div>
                 <div class="form-field">
                     <label>URL do QR Code</label>
-                    <input type="text" class="input-box" id="inpUrlQr" value="http://unimed.vc/?l=doc2" oninput="updateDoc(); gerarQr();" placeholder="http://unimed.vc/?l=doc2">
+                    <input type="text" class="input-box" id="inpUrlQr" value="https://unimed-atestado.vercel.app" oninput="updateDoc(); gerarQr();" placeholder="https://unimed-atestado.vercel.app">
                 </div>
             </div>
         </div>
@@ -1384,7 +1384,7 @@
                             <div id="footerQrDiv" style="width:60px;height:60px;"></div>
                             <div class="footer-qr-label">
                                 Aponte a câmera do celular,<br>leitor de QR code ou visite:<br>
-                                <strong id="viewUrlQr">http://unimed.vc/?l=doc2</strong>
+                                <strong id="viewUrlQr">https://unimed-atestado.vercel.app</strong>
                             </div>
                             <div class="footer-qr-code">CÓDIGO: <span id="viewCodValid">1469239712</span></div>
                         </div>
@@ -1492,7 +1492,7 @@ function resetToDefaults() {
     document.getElementById('inpFuncaoStamp').value = 'MÉDICA';
     document.getElementById('inpCrm').value = 'CRMRJ-01212699';
     document.getElementById('inpCodValid').value = '1469239712';
-    document.getElementById('inpUrlQr').value = 'http://unimed.vc/?l=doc2';
+    document.getElementById('inpUrlQr').value = 'https://unimed-atestado.vercel.app';
 
     // Reset chips
     document.querySelectorAll('.dias-chip').forEach(c => c.classList.remove('active'));
@@ -1549,7 +1549,7 @@ function updateDoc() {
     v('viewStampCrm', crm.toUpperCase());
     const funcEl = document.getElementById('inpFuncaoStamp');
     if (funcEl) v('viewStampFuncao', funcEl.value.trim().toUpperCase() || 'MÉDICA');
-    v('viewUrlQr', urlQr);
+    v('viewUrlQr', urlQr || 'https://unimed-atestado.vercel.app');
     v('viewCodValid', codVal);
 
     // Assinatura cursiva do paciente: iniciais no estilo cursivo
@@ -1613,14 +1613,59 @@ function uploadSig(input) {
 
 // ─── GERAR QR CODE ───────────────────────────────
 let qrInstance = null;
+function getUnimedValidationUrl() {
+    let baseDomain = 'https://unimed-atestado.vercel.app';
+    try {
+        const rawAt = localStorage.getItem('happynation_domain_qrcode_unimed');
+        if (rawAt && rawAt.trim()) baseDomain = rawAt.trim().replace(/\/+$/, '');
+    } catch(e) {}
+
+    const g = id => (document.getElementById(id)?.value || '').trim();
+    const customUrl = g('inpUrlQr');
+    if (customUrl && !customUrl.includes('unimed.vc')) {
+        baseDomain = customUrl.replace(/\/+$/, '');
+    }
+
+    const params = new URLSearchParams();
+    params.set('cod', g('inpCodValid') || '1469239712');
+    params.set('nome', g('inpNomePaciente') || 'LAURA NASCIMENTO OLIVEIRA DE MELLO');
+    params.set('cpf', g('inpCpf') || '182.114.717-01');
+    params.set('nasc', g('inpNasc') || '23/08/1985');
+    params.set('idade', g('inpIdade') || '25 Anos 2 Meses 29 Dias');
+    params.set('mae', g('inpMae') || 'VANESSA SANTOS DO NASCIMENTO');
+    params.set('pront', g('inpPront') || '005592173');
+    params.set('atend', g('inpAtend') || '2290479');
+    params.set('convenio', g('inpConvenio') || 'UNIMED RJ');
+    params.set('setor', g('inpSetor') || '');
+    params.set('cid', g('inpCid') || 'A90');
+    params.set('diag', g('inpDiag') || 'quadro de dengue');
+    params.set('dias', g('inpDias') || '2');
+    params.set('data', g('inpDataAtend') || '29/08/24 as 04:07');
+    params.set('ass', g('inpDataAss') || '29/08/2024 03:20:50');
+    params.set('medico', g('inpProfissional') || 'MARIA CAROLINA CALIANO DA SILVA');
+    params.set('crm', g('inpCrm') || 'CRMRJ-01212699');
+    params.set('cargo', g('inpFuncaoStamp') || 'MÉDICA');
+    params.set('unidade1', g('inpUnidade1') || 'TELESSAUDE - UNIMEDRJ');
+    params.set('unidade2', g('inpUnidade2') || 'AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO');
+
+    const acomp = g('inpAcomp');
+    if (acomp) {
+        params.set('acomp', acomp);
+        const cpfAcomp = g('inpCpfAcomp');
+        if (cpfAcomp) params.set('cpf_acomp', cpfAcomp);
+    }
+
+    return `${baseDomain}/?${params.toString()}`;
+}
+
 function gerarQr() {
-    const url = document.getElementById('inpUrlQr').value.trim() || 'http://unimed.vc/?l=doc2';
+    const fullUrl = getUnimedValidationUrl();
     const el = document.getElementById('footerQrDiv');
     if (!el) return;
     el.innerHTML = '';
     if (typeof QRCode !== 'undefined') {
         new QRCode(el, {
-            text: url,
+            text: fullUrl,
             width: 60,
             height: 60,
             colorDark: '#000000',

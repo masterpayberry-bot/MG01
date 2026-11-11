@@ -5,6 +5,17 @@
       "has": [
         {
           "type": "host",
+          "value": "unimed-atestado.vercel.app"
+        }
+      ],
+      "destination": "/validar-unimed.html",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "validar-atestado.vercel.app"
         }
       ],
@@ -46,6 +57,16 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "unimed-atestado.vercel.app"
+        }
+      ],
+      "destination": "/validar-unimed.html"
+    },
     {
       "source": "/",
       "has": [
@@ -117,6 +138,10 @@
     {
       "source": "/validar-diploma",
       "destination": "/validar-diploma.html"
+    },
+    {
+      "source": "/validar-unimed",
+      "destination": "/validar-unimed.html"
     }
   ]
 }
