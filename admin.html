@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -6064,14 +6064,36 @@ function updateDashboardMetrics() {
                 } catch(eBc) {}
             } catch(e) {}
 
-            // Remove do Supabase Cloud
-            fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?id=eq.' + encodeURIComponent(cnhId), {
-                method: 'DELETE',
-                headers: {
-                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
-                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
+            // Remove do Supabase Cloud (garante deleção por ID e por CPF limpo e formatado)
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+            if (cnhId) {
+                fetch(SUP_URL + '/rest/v1/cnhs?id=eq.' + encodeURIComponent(cnhId), {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                }).catch(() => {});
+            }
+            if (cleanCpf) {
+                const maskedCpf = cleanCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                fetch(SUP_URL + '/rest/v1/cnhs?cpf=eq.' + encodeURIComponent(cleanCpf), {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                }).catch(() => {});
+                fetch(SUP_URL + '/rest/v1/cnhs?cpf=eq.' + encodeURIComponent(maskedCpf), {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                }).catch(() => {});
+            }
+            try {
+                const client = window.supabaseInstance || window.supabaseClient;
+                if (client) {
+                    if (cnhId) client.from('cnhs').delete().eq('id', cnhId).then(() => {});
+                    if (cleanCpf) {
+                        const maskedCpf = cleanCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                        client.from('cnhs').delete().or(`cpf.eq.${cleanCpf},cpf.eq.${maskedCpf}`).then(() => {});
+                    }
                 }
-            }).catch(() => {});
+            } catch(eSupCli) {}
 
             fetch('api/index.php?action=delete_cnh', {
                 method: 'POST',

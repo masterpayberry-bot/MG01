@@ -1850,31 +1850,55 @@ function loadUserCnhs(user) {
     allCnhs = [...items];
     renderTable();
 
-    // 5. Buscar do backend (MySQL e JSON sincronizado)
-    const fetchUrl = 'api/index.php?action=get_user_cnhs&email=' + encodeURIComponent(email) + '&userId=' + userId;
-    fetch(fetchUrl)
-        .then(r => r.json())
-        .then(res => {
-            if (res && res.status === 'success' && res.data && Array.isArray(res.data.cnhs)) {
-                res.data.cnhs.forEach(addIfValid);
-                allCnhs = [...items];
+    // 5. Sincronização direta com Supabase Cloud em tempo real
+    const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+    const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+    fetch(SUP_URL + '/rest/v1/cnhs?select=*', {
+        headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+    })
+    .then(r => r.json())
+    .then(sList => {
+        if (Array.isArray(sList)) {
+            const activeSupIds = new Set(sList.map(c => String(c.id)));
+            const activeSupCpfs = new Set(sList.map(c => (c.cpf || '').replace(/\D/g, '')));
+
+            // Limpa do storage local do cliente quaisquer CNHs excluídas no admin
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('happynation_cnhs_')) {
+                    try {
+                        let uList = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(uList)) {
+                            uList = uList.filter(c => activeSupIds.has(String(c.id)) || activeSupCpfs.has((c.cpf||'').replace(/\D/g, '')));
+                            localStorage.setItem(k, JSON.stringify(uList));
+                        }
+                    } catch(eKey) {}
+                }
             }
+
+            // Remove da lista em tela CNHs que não constam mais no Supabase
+            allCnhs = allCnhs.filter(c => activeSupIds.has(String(c.id)) || activeSupCpfs.has((c.cpf||'').replace(/\D/g, '')));
+
+            // Adiciona novas CNHs ativas se houver
+            sList.forEach(addIfValid);
+            allCnhs = [...items].filter(c => activeSupIds.has(String(c.id)) || activeSupCpfs.has((c.cpf||'').replace(/\D/g, '')));
             renderTable();
-        })
-        .catch(() => {
-            fetch('api/db/cnhs')
-                .then(r => r.json())
-                .then(dbRes => {
-                    if (dbRes && Array.isArray(dbRes.data)) {
-                        dbRes.data.forEach(addIfValid);
-                        allCnhs = [...items];
-                    }
-                    renderTable();
+        }
+    })
+    .catch(() => {});
+
+    // 6. Supabase Realtime: se admin excluir CNH, atualiza instantaneamente a tela do cliente
+    try {
+        if (window.supabase && !window._cnhRealtimeSubscribed) {
+            window._cnhRealtimeSubscribed = true;
+            const rtClient = window.supabase.createClient(SUP_URL, SUP_KEY);
+            rtClient.channel('cnh_table_sync_' + (email || 'global'))
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'cnhs' }, () => {
+                    loadUserCnhs(user);
                 })
-                .catch(() => {
-                    renderTable();
-                });
-        });
+                .subscribe();
+        }
+    } catch(eRt) {}
 }
 // ─── EDITAR CNH: salva objeto completo antes de navegar ───
 function editarCnh(cnhId) {

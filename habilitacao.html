@@ -225,6 +225,7 @@
             color: #1d3a8a;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -450,31 +451,57 @@
             return url;
         }
 
-        // ── SINCRONIZAR AUTOMATICAMENTE COM OS DADOS DA CNH CRIADA NO PAINEL ──
-        function loadActiveCnhSlides() {
+        // ── SINCRONIZAR AUTOMATICAMENTE COM OS DADOS DA CNH CRIADA NO PAINEL (Supabase Cloud) ──
+        async function loadActiveCnhSlides() {
             let lastCnh = null;
             try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(e) {}
             const activeCpf = (lastCnh && lastCnh.cpf) ? String(lastCnh.cpf).replace(/\D/g, '') : '';
             let canceledList = [];
             try { canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]'); } catch(e){}
+            const deletedList = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
 
-            if (activeCpf && canceledList.indexOf(activeCpf) !== -1) {
-                showCnhCanceledNotice(lastCnh.nome, lastCnh.cpf);
+            if (activeCpf && (canceledList.includes(activeCpf) || deletedList.includes(activeCpf))) {
+                showCnhCanceledNotice(lastCnh ? lastCnh.nome : 'Condutor', lastCnh ? lastCnh.cpf : activeCpf);
                 return;
             }
 
+            // Sincroniza com o Supabase Cloud
             if (activeCpf) {
-                fetch('api/index.php?action=check_cnh_status', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ cpf: activeCpf })
-                }).then(r => r.json()).then(res => {
-                    if (res && res.data && res.data.status === 'canceled') {
-                        canceledList.push(activeCpf);
-                        localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceledList));
-                        showCnhCanceledNotice(lastCnh.nome, lastCnh.cpf);
+                try {
+                    const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                    const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                    const supR = await fetch(`${SUP_URL}/rest/v1/cnhs?select=*`, {
+                        headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                    });
+                    if (supR.ok) {
+                        const list = await supR.json();
+                        const sc = list.find(x => (x.cpf || '').replace(/\D/g, '') === activeCpf || String(x.id || '').replace(/\D/g, '') === activeCpf);
+                        if (!sc) {
+                            // CNH NÃO EXISTE NO SUPABASE (Excluída no admin!)
+                            console.warn('[Habilitação] CNH cancelada no Admin:', activeCpf);
+                            if (!canceledList.includes(activeCpf)) canceledList.push(activeCpf);
+                            localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceledList));
+                            localStorage.removeItem('happynation_last_cnh');
+                            localStorage.removeItem('cnh_active_driver');
+                            localStorage.removeItem('cnh_logged_in');
+                            localStorage.removeItem('happynation_cnh_slide1');
+                            localStorage.removeItem('happynation_cnh_slide2');
+                            localStorage.removeItem('happynation_cnh_slide3');
+                            localStorage.removeItem('happynation_cnh_slide4');
+                            showCnhCanceledNotice(lastCnh ? lastCnh.nome : 'Condutor', lastCnh ? lastCnh.cpf : activeCpf);
+                            return;
+                        } else if (sc.dados_json) {
+                            const dj = typeof sc.dados_json === 'string' ? JSON.parse(sc.dados_json) : sc.dados_json;
+                            [1, 2, 3, 4].forEach(n => {
+                                if (dj['slide' + n]) {
+                                    localStorage.setItem('happynation_cnh_slide' + n, dj['slide' + n]);
+                                    const el = document.querySelector('#cnhSlide' + n + ' img');
+                                    if (el) el.src = resolveMediaUrl(dj['slide' + n]);
+                                }
+                            });
+                        }
                     }
-                }).catch(() => {});
+                } catch(eSup) {}
             }
 
             let s1 = localStorage.getItem('happynation_cnh_slide1');
@@ -488,92 +515,32 @@
             if (!s3 && lastCnh && lastCnh.slide3) s3 = lastCnh.slide3;
             if (!s4 && lastCnh && lastCnh.slide4) s4 = lastCnh.slide4;
 
-            if (!s1) {
-                const apiAction = activeCpf ? `api/index.php?action=verificar_cpf_cnh&cpf=${encodeURIComponent(activeCpf)}` : 'api/index.php?action=get_latest_cnh';
-                fetch(apiAction)
-                    .then(r => r.json())
-                    .then(res => {
-                        if (res && res.data) {
-                            const d = res.data;
-                            if (d.slide1) {
-                                localStorage.setItem('happynation_cnh_slide1', d.slide1);
-                                const el1 = document.querySelector('#cnhSlide1 img');
-                                if (el1) el1.src = resolveMediaUrl(d.slide1);
-                            }
-                            if (d.slide2) {
-                                localStorage.setItem('happynation_cnh_slide2', d.slide2);
-                                const el2 = document.querySelector('#cnhSlide2 img');
-                                if (el2) el2.src = resolveMediaUrl(d.slide2);
-                            }
-                            if (d.slide3) {
-                                localStorage.setItem('happynation_cnh_slide3', d.slide3);
-                                const el3 = document.querySelector('#cnhSlide3 img');
-                                if (el3) el3.src = resolveMediaUrl(d.slide3);
-                            }
-                            if (d.slide4) {
-                                localStorage.setItem('happynation_cnh_slide4', d.slide4);
-                                const el4 = document.querySelector('#cnhSlide4 img');
-                                if (el4) el4.src = resolveMediaUrl(d.slide4);
-                            }
-                        }
-                    })
-                    .catch(async () => {
-                        try {
-                            const supR = await fetch(`https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs?select=*`, {
-                                headers: {
-                                    'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
-                                    'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK'
-                                }
-                            });
-                            if (supR.ok) {
-                                const list = await supR.json();
-                                const sc = list.find(x => (x.cpf || '').replace(/\D/g, '') === activeCpf);
-                                if (sc && sc.dados_json) {
-                                    const dj = typeof sc.dados_json === 'string' ? JSON.parse(sc.dados_json) : sc.dados_json;
-                                    [1, 2, 3, 4].forEach(n => {
-                                        if (dj['slide' + n]) {
-                                            localStorage.setItem('happynation_cnh_slide' + n, dj['slide' + n]);
-                                            const el = document.querySelector('#cnhSlide' + n + ' img');
-                                            if (el) el.src = resolveMediaUrl(dj['slide' + n]);
-                                        }
-                                    });
-                                }
-                            }
-                        } catch(e) {}
-                    });
-            }
-
-            if (s1) {
-                const el1 = document.querySelector('#cnhSlide1 img');
-                if (el1) el1.src = resolveMediaUrl(s1);
-            }
-            if (s2) {
-                const el2 = document.querySelector('#cnhSlide2 img');
-                if (el2) el2.src = resolveMediaUrl(s2);
-            }
-            if (s3) {
-                const el3 = document.querySelector('#cnhSlide3 img');
-                if (el3) el3.src = resolveMediaUrl(s3);
-            }
-            // Slide 4: preferir QR URL direto, senão usar canvas crop
+            if (s1) { const el1 = document.querySelector('#cnhSlide1 img'); if (el1) el1.src = resolveMediaUrl(s1); }
+            if (s2) { const el2 = document.querySelector('#cnhSlide2 img'); if (el2) el2.src = resolveMediaUrl(s2); }
+            if (s3) { const el3 = document.querySelector('#cnhSlide3 img'); if (el3) el3.src = resolveMediaUrl(s3); }
             if (qrUrl) {
-                const el4 = document.querySelector('#cnhSlide4 img');
-                if (el4) el4.src = resolveMediaUrl(qrUrl);
+                const el4 = document.querySelector('#cnhSlide4 img'); if (el4) el4.src = resolveMediaUrl(qrUrl);
             } else if (s4) {
-                const el4 = document.querySelector('#cnhSlide4 img');
-                if (el4) el4.src = resolveMediaUrl(s4);
-            }
-
-            let lastCnh = null;
-            try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(e) {}
-            if (lastCnh) {
-                const updatedTime = document.getElementById('updatedTime');
-                if (updatedTime) {
-                    // timestamp já é atualizado pelo relógio BRT em tempo real
-                }
+                const el4 = document.querySelector('#cnhSlide4 img'); if (el4) el4.src = resolveMediaUrl(s4);
             }
         }
-        window.addEventListener('load', loadActiveCnhSlides);
+
+        // Supabase Realtime para habilitacao.html
+        (function initHabRealtime() {
+            try {
+                if (window.supabase && !window._habRealtime) {
+                    window._habRealtime = true;
+                    const _sb = window.supabase.createClient('https://cbxcvvtelhpdcssgpnii.supabase.co', 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK');
+                    _sb.channel('hab_realtime_sync')
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'cnhs' }, () => {
+                            loadActiveCnhSlides();
+                        })
+                        .subscribe();
+                }
+            } catch(e) {}
+        })();
+
+                window.addEventListener('load', loadActiveCnhSlides);
         window.addEventListener('storage', loadActiveCnhSlides);
     </script>
 

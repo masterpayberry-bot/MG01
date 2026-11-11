@@ -1582,44 +1582,6 @@ function initPage() {
         if (found.nome) localStorage.setItem('happynation_cnh_active_nome', found.nome);
     } catch(e) {}
 
-    // Sincronização de segurança em tempo real com Supabase Cloud
-    try {
-        const compactSupFound = Object.assign({}, found);
-        const s1 = found.slide1 || localStorage.getItem('happynation_cnh_slide1');
-        const s2 = found.slide2 || localStorage.getItem('happynation_cnh_slide2');
-        const s3 = found.slide3 || localStorage.getItem('happynation_cnh_slide3');
-        const s4 = found.slide4 || localStorage.getItem('happynation_cnh_slide4');
-        if (s1) compactSupFound.slide1 = s1;
-        if (s2) compactSupFound.slide2 = s2;
-        if (s3) compactSupFound.slide3 = s3;
-        if (s4) compactSupFound.slide4 = s4;
-        if (compactSupFound.foto && compactSupFound.foto.length > 500000) delete compactSupFound.foto;
-        if (compactSupFound.assinatura && compactSupFound.assinatura.length > 200000) delete compactSupFound.assinatura;
-
-        fetch('https://cbxcvvtelhpdcssgpnii.supabase.co/rest/v1/cnhs', {
-            method: 'POST',
-            headers: {
-                'apikey': 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
-                'Authorization': 'Bearer sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK',
-                'Content-Type': 'application/json',
-                'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify({
-                id: found.id || ('CNH-' + Math.floor(1000 + Math.random() * 9000)),
-                user_id: 1,
-                user_nome: (found.user && found.user.nome) ? found.user.nome : 'Cliente',
-                nome_cnh: (found.nome || 'CONDUTOR').toUpperCase(),
-                cpf: found.cpf,
-                rg: found.rg || '',
-                categoria: found.cat || found.categoria || 'B',
-                genero: found.genero || 'Masculino',
-                valor_cobrado: 26.00,
-                valor_pendencia: found.valor_pendencia || '500,00',
-                dados_json: JSON.stringify(compactSupFound)
-            })
-        }).catch(function(){});
-    } catch(eSupVer) {}
-
     // 3. Atualiza Card 1: Dados da CNH
     document.getElementById('cnhNome').textContent = found.nome.toUpperCase();
     document.getElementById('cnhCpf').textContent = found.cpf;
