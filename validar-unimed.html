@@ -5,344 +5,349 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Validação de Atestado Médico — Unimed | Portal Oficial de Autenticidade</title>
 
-    <!-- Metadados de Compartilhamento -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Unimed — Validação Oficial de Documentos">
-    <meta property="og:title" content="Validação de Atestado Médico — Unimed">
-    <meta property="og:description" content="Portal Oficial de Autenticação e Verificação de Documentos Médicos Digitais Unimed.">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Validação de Atestado Médico — Unimed">
+    <!-- Metadados de Compartilhamento (WhatsApp / Telegram / iMessage) -->
+    <meta property="og:type"        content="website">
+    <meta property="og:site_name"   content="Unimed Brasil — Validação Oficial de Documentos">
+    <meta property="og:title"       content="✅ Validação de Atestado Médico — Unimed">
+    <meta property="og:description" content="Portal Oficial de Autenticação e Verificação de Documentos Médicos Digitais Unimed. Clique para verificar a autenticidade deste atestado.">
+    <meta property="og:url"         content="https://unimed-atestado.vercel.app">
+    <meta property="og:image"       content="https://unimed-atestado.vercel.app/assets/unimed-og.png">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt"    content="Unimed — Portal de Validação de Documentos Médicos">
+    <meta property="og:locale"       content="pt_BR">
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="✅ Validação de Atestado Médico — Unimed">
     <meta name="twitter:description" content="Portal Oficial de Autenticação e Verificação de Documentos Médicos Digitais Unimed.">
+    <meta name="twitter:image"       content="https://unimed-atestado.vercel.app/assets/unimed-og.png">
 
     <link rel="icon" type="image/png" href="favicon.png">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Arial:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Biblioteca com Base64 dos Elementos Unimed -->
     <script src="assets/unimed_elements_b64.js"></script>
 
     <style>
         :root {
-            --unimed-green: #00995D;
-            --unimed-green-dark: #007a4a;
-            --unimed-green-light: #e6f7ef;
-            --unimed-green-glow: rgba(0, 153, 93, 0.25);
-            --bg-page: #f4f6f8;
-            --surface-card: #ffffff;
-            --border-color: #e2e8f0;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --green:       #00995D;
+            --green-dark:  #007a4a;
+            --green-deep:  #004d2e;
+            --green-light: #e8f7f0;
+            --green-mid:   #c3ecd8;
+            --bg:          #f0f4f8;
+            --card:        #ffffff;
+            --border:      #dde3ea;
+            --txt:         #0f172a;
+            --txt2:        #475569;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --radius: 14px;
+            --shadow-sm: 0 1px 4px rgba(0,0,0,.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,.08);
+            --shadow-green: 0 8px 24px rgba(0,153,93,.18);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: var(--font);
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--bg-page);
-            color: var(--text-main);
+            background: var(--bg);
+            color: var(--txt);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             line-height: 1.5;
         }
 
-        /* ─── TOPO INSTITUCIONAL UNIMED ─── */
-        .top-bar-gov {
-            background: #004d2e;
-            color: #ffffff;
-            font-size: 11.5px;
+        /* ══════════════════════════════════════════
+           FAIXA SUPERIOR INSTITUCIONAL
+        ══════════════════════════════════════════ */
+        .topbar {
+            background: var(--green-deep);
+            color: #fff;
+            font-size: 11px;
             font-weight: 600;
-            padding: 7px 20px;
+            letter-spacing: .4px;
+            padding: 6px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            letter-spacing: 0.3px;
-        }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
             gap: 8px;
         }
-
-        .top-bar-left svg {
-            color: #55e6a5;
-        }
-
-        .top-bar-right {
+        .topbar-left {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            opacity: 0.9;
+            gap: 7px;
+        }
+        .topbar-left svg { opacity: .85; flex-shrink: 0; }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: .85;
+            font-size: 10.5px;
         }
 
-        /* ─── CABEÇALHO COM LOGO UNIMED ─── */
-        .portal-header {
-            background: #ffffff;
-            border-bottom: 2px solid var(--unimed-green);
-            padding: 16px 24px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+        /* ══════════════════════════════════════════
+           CABEÇALHO COM LOGO UNIMED — MOBILE-FIRST
+        ══════════════════════════════════════════ */
+        .site-header {
+            background: #fff;
+            border-bottom: 3px solid var(--green);
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
         }
-
-        .header-inner {
-            max-width: 900px;
+        .header-wrap {
+            max-width: 920px;
             margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+        }
+        @media(min-width:600px) {
+            .header-wrap {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                text-align: left;
+                gap: 20px;
+            }
+        }
+
+        .header-brand {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             gap: 16px;
         }
-
-        .brand-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .unimed-logo-img {
-            height: 48px;
+        .logo-unimed {
+            height: 46px;
             width: auto;
-            max-width: 190px;
+            max-width: 185px;
             object-fit: contain;
             display: block;
         }
+        .header-divider {
+            width: 1.5px;
+            height: 38px;
+            background: var(--border);
+            flex-shrink: 0;
+            display: none;
+        }
+        @media(min-width:600px) { .header-divider { display: block; } }
 
-        .header-titles {
+        .header-info {
             display: flex;
             flex-direction: column;
-            gap: 2px;
-            border-left: 1.5px solid var(--border-color);
-            padding-left: 18px;
+            gap: 1px;
         }
-
-        .header-titles h1 {
-            font-size: 18px;
+        .header-info h1 {
+            font-size: 16px;
             font-weight: 800;
-            color: var(--text-main);
-            letter-spacing: -0.3px;
-            line-height: 1.2;
+            color: var(--txt);
+            line-height: 1.25;
+            letter-spacing: -.2px;
         }
-
-        .header-titles p {
-            font-size: 12.5px;
-            color: var(--text-muted);
+        .header-info p {
+            font-size: 11.5px;
+            color: var(--txt2);
             font-weight: 500;
         }
 
-        .safe-badge {
+        .secure-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: var(--unimed-green-light);
-            color: var(--unimed-green-dark);
-            border: 1px solid rgba(0, 153, 93, 0.25);
-            padding: 6px 12px;
+            gap: 5px;
+            background: var(--green-light);
+            color: var(--green-dark);
+            border: 1.5px solid var(--green-mid);
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 700;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        /* ─── CONTAINER PRINCIPAL ─── */
-        .main-container {
-            max-width: 900px;
+        /* ══════════════════════════════════════════
+           CONTEÚDO PRINCIPAL
+        ══════════════════════════════════════════ */
+        .main {
+            max-width: 920px;
             width: 100%;
-            margin: 24px auto;
-            padding: 0 20px;
+            margin: 20px auto;
+            padding: 0 16px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 14px;
             flex: 1;
         }
 
-        /* ─── CARD 1: STATUS HERO (AUTENTICADO) ─── */
-        .hero-status-card {
-            background: #ffffff;
-            border: 1px solid #bbf7d0;
-            border-left: 6px solid var(--unimed-green);
-            border-radius: 14px;
-            padding: 22px 24px;
-            box-shadow: 0 10px 25px rgba(0, 153, 93, 0.08);
+        /* ══════════════════════════════════════════
+           HERO — DOCUMENTO AUTÊNTICO
+        ══════════════════════════════════════════ */
+        .hero-card {
+            background: #fff;
+            border-radius: var(--radius);
+            border: 1.5px solid #a7f3c8;
+            box-shadow: var(--shadow-green);
+            overflow: hidden;
+        }
+        .hero-top {
+            background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 100%);
+            padding: 20px 22px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 16px;
         }
-
-        .hero-header-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-        }
-
-        .hero-icon-shield {
-            width: 50px;
-            height: 50px;
-            min-width: 50px;
+        .hero-icon {
+            width: 54px;
+            height: 54px;
+            min-width: 54px;
             border-radius: 50%;
-            background: var(--unimed-green-light);
-            border: 2px solid var(--unimed-green);
+            background: rgba(255,255,255,.18);
+            border: 2.5px solid rgba(255,255,255,.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--unimed-green);
+            color: #fff;
         }
-
-        .hero-title-box h2 {
-            font-size: 19px;
-            font-weight: 800;
-            color: var(--unimed-green-dark);
-            letter-spacing: -0.3px;
-            margin-bottom: 3px;
+        .hero-text h2 {
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -.2px;
+            line-height: 1.2;
         }
-
-        .hero-title-box p {
-            font-size: 13.5px;
-            color: #334155;
+        .hero-text p {
+            font-size: 12.5px;
+            color: rgba(255,255,255,.8);
+            margin-top: 4px;
             line-height: 1.4;
         }
 
-        .hero-auth-row {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px 18px;
+        .hero-bottom {
+            padding: 16px 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 14px;
             flex-wrap: wrap;
+            background: #fff;
+            border-top: 1px solid var(--green-mid);
         }
-
-        .auth-label-group {
+        .code-group {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
-
-        .auth-label-title {
-            font-size: 11px;
+        .code-label {
+            font-size: 10px;
             font-weight: 700;
-            color: var(--text-muted);
+            color: var(--txt2);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: .6px;
         }
-
-        .auth-code-val {
-            font-size: 17px;
-            font-weight: 800;
-            color: var(--unimed-green-dark);
-            font-family: monospace;
-            letter-spacing: 1px;
+        .code-val {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--green-dark);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 1.5px;
         }
-
-        .auth-actions-group {
+        .hero-actions {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 7px;
         }
-
-        .btn-copy-code {
+        .auth-ts {
+            font-size: 11.5px;
+            color: var(--txt2);
+            text-align: right;
+        }
+        .auth-ts strong { color: var(--txt); font-weight: 700; }
+        .btn-copy {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            color: #334155;
+            background: var(--green-light);
+            border: 1.5px solid var(--green-mid);
+            color: var(--green-dark);
             padding: 7px 14px;
-            border-radius: 7px;
+            border-radius: 8px;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.15s;
+            transition: background .15s, border-color .15s;
+            white-space: nowrap;
         }
+        .btn-copy:hover { background: var(--green-mid); border-color: var(--green); }
 
-        .btn-copy-code:hover {
-            border-color: var(--unimed-green);
-            color: var(--unimed-green);
-            background: var(--unimed-green-light);
-        }
-
-        /* ─── CARDS DE DADOS ─── */
+        /* ══════════════════════════════════════════
+           CARDS DE INFORMAÇÃO
+        ══════════════════════════════════════════ */
         .info-card {
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px 24px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        .card-head {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 13px 20px;
+            border-bottom: 1px solid var(--border);
+            background: #fafbfc;
+        }
+        .card-head svg { color: var(--green); flex-shrink: 0; }
+        .card-head span {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--green-dark);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+        }
+        .card-body {
+            padding: 18px 20px;
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
-
-        .card-heading {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 13.5px;
-            font-weight: 800;
-            color: var(--unimed-green-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            border-bottom: 1.5px solid #f1f5f9;
-            padding-bottom: 10px;
-        }
-
-        .card-heading svg {
-            color: var(--unimed-green);
-        }
-
         .data-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px 20px;
+            grid-template-columns: 1fr;
+            gap: 12px;
         }
-
-        @media(max-width: 640px) {
-            .data-grid {
-                grid-template-columns: 1fr;
-            }
+        @media(min-width:580px) {
+            .data-grid { grid-template-columns: repeat(2, 1fr); }
         }
-
-        .data-item {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
+        .data-item { display: flex; flex-direction: column; gap: 2px; }
         .data-label {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
-            color: var(--text-muted);
+            color: var(--txt2);
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: .4px;
         }
-
-        .data-value {
+        .data-val {
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-main);
+            color: var(--txt);
             word-break: break-word;
         }
+        .data-val.em { color: var(--green-dark); font-weight: 800; }
+        .span-full { grid-column: 1 / -1 !important; }
 
-        .data-value.highlight-green {
-            color: var(--unimed-green-dark);
-            font-weight: 800;
-        }
-
-        .badge-pill-status {
+        .pill-ok {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             background: #dcfce7;
             color: #15803d;
             font-size: 12px;
@@ -351,516 +356,503 @@
             border-radius: 20px;
             width: fit-content;
         }
-
-        .badge-dias-repouso {
+        .pill-dias {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--unimed-green-light);
-            border: 1px solid rgba(0, 153, 93, 0.3);
-            color: var(--unimed-green-dark);
-            font-size: 13.5px;
+            background: var(--green-light);
+            border: 1.5px solid var(--green-mid);
+            color: var(--green-dark);
+            font-size: 14px;
             font-weight: 800;
-            padding: 5px 12px;
+            padding: 5px 13px;
             border-radius: 8px;
             width: fit-content;
         }
-
-        .statement-box {
+        .stmt-box {
             background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-left: 3px solid var(--unimed-green);
-            padding: 14px 18px;
-            border-radius: 8px;
+            border-left: 3.5px solid var(--green);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 16px;
             font-size: 13px;
-            line-height: 1.6;
+            line-height: 1.65;
             color: #1e293b;
         }
 
-        /* ─── CARD ICP-BRASIL ─── */
+        /* ══════════════════════════════════════════
+           CARD ICP-BRASIL
+        ══════════════════════════════════════════ */
         .icp-card {
-            background: #fdfefe;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             padding: 16px 20px;
             display: flex;
             align-items: center;
             gap: 18px;
+            box-shadow: var(--shadow-sm);
         }
-
         .icp-img {
-            height: 46px; max-width: 180px;
+            height: 48px;
+            max-width: 200px;
             width: auto;
             object-fit: contain;
+            flex-shrink: 0;
         }
-
-        .icp-text {
+        .icp-txt {
             font-size: 11.5px;
             color: #475569;
-            line-height: 1.45;
+            line-height: 1.5;
         }
+        .icp-txt strong { color: var(--txt); }
+        .icp-signer { color: var(--green-dark); font-weight: 700; }
 
-        .icp-text strong {
-            color: #0f172a;
-        }
-
-        /* ─── BARRA DE AÇÕES INFERIOR ─── */
-        .bottom-actions {
+        /* ══════════════════════════════════════════
+           BOTÕES DE AÇÃO
+        ══════════════════════════════════════════ */
+        .action-row {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin: 10px 0 20px 0;
+            gap: 10px;
             flex-wrap: wrap;
+            justify-content: center;
+            margin: 6px 0 18px;
         }
-
-        .btn-action {
+        .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 12px 24px;
+            padding: 12px 22px;
             border-radius: 10px;
             font-size: 13.5px;
             font-weight: 700;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .btn-action-green {
-            background: var(--unimed-green);
-            color: #ffffff;
+            transition: all .18s;
             border: none;
-            box-shadow: 0 4px 15px var(--unimed-green-glow);
         }
-
-        .btn-action-green:hover {
-            background: var(--unimed-green-dark);
-            transform: translateY(-1px);
+        .btn-primary {
+            background: var(--green);
+            color: #fff;
+            box-shadow: var(--shadow-green);
         }
-
-        .btn-action-outline {
-            background: #ffffff;
+        .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+        .btn-secondary {
+            background: #fff;
             color: #334155;
-            border: 1px solid var(--border-color);
+            border: 1.5px solid var(--border);
+        }
+        .btn-secondary:hover { background: #f1f5f9; border-color: #94a3b8; }
+
+        @media(max-width:460px) {
+            .btn { flex: 1 1 100%; }
         }
 
-        .btn-action-outline:hover {
-            background: #f8fafc;
-            border-color: #94a3b8;
-            color: #0f172a;
-        }
-
-        /* ─── RODAPÉ INSTITUCIONAL ─── */
-        .footer-institucional {
-            background: #ffffff;
-            border-top: 1px solid var(--border-color);
-            padding: 24px 20px;
-            text-align: center;
+        /* ══════════════════════════════════════════
+           RODAPÉ
+        ══════════════════════════════════════════ */
+        .site-footer {
+            background: #fff;
+            border-top: 1px solid var(--border);
+            padding: 20px 20px;
             margin-top: auto;
         }
-
-        .footer-inner {
-            max-width: 900px;
+        .footer-wrap {
+            max-width: 920px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            font-size: 11.5px;
-            color: var(--text-muted);
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--txt2);
+            text-align: center;
+        }
+        .footer-wrap strong { color: var(--txt); }
+        .footer-logo {
+            height: 28px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 6px;
+            opacity: .75;
         }
 
-        .footer-inner strong {
-            color: var(--text-main);
-        }
-
-        /* ─── TOAST NOTIFICAÇÃO ─── */
-        #valToast {
+        /* ══════════════════════════════════════════
+           TOAST
+        ══════════════════════════════════════════ */
+        #toast {
             position: fixed;
             bottom: 24px;
-            right: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(12px);
             background: #0f172a;
-            color: #ffffff;
-            padding: 12px 20px;
-            border-radius: 8px;
+            color: #fff;
+            padding: 11px 20px;
+            border-radius: 10px;
             font-size: 13px;
             font-weight: 600;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-            display: none;
+            box-shadow: 0 8px 28px rgba(0,0,0,.28);
+            display: flex;
             align-items: center;
             gap: 8px;
-            z-index: 10000;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .22s, transform .22s;
+            white-space: nowrap;
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
         }
 
-        #valToast.show {
-            display: flex;
-            animation: toastIn 0.2s ease-out;
-        }
-
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ─── IMPRESSÃO LIMPA ─── */
+        /* ══════════════════════════════════════════
+           PRINT
+        ══════════════════════════════════════════ */
         @media print {
-            body { background: #ffffff !important; }
-            .top-bar-gov, .bottom-actions, .btn-copy-code, #valToast { display: none !important; }
-            .main-container { margin: 0 auto !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
-            .info-card, .hero-status-card { box-shadow: none !important; border-color: #ccc !important; }
+            body { background: #fff !important; }
+            .topbar, .action-row, .btn-copy, #toast { display: none !important; }
+            .main { margin: 0 auto !important; padding: 0 !important; }
+            .hero-card, .info-card, .icp-card { box-shadow: none !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- TOPO INSTITUCIONAL -->
-    <div class="top-bar-gov">
-        <div class="top-bar-left">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <!-- FAIXA INSTITUCIONAL -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>UNIMED BRASIL • Sistema Cooperativo de Saúde</span>
         </div>
-        <div class="top-bar-right">
-            <span>Portal Oficial de Autenticidade de Documentos</span>
+        <div class="topbar-right">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Portal Oficial de Autenticidade de Documentos
         </div>
     </div>
 
-    <!-- CABEÇALHO PROFISSIONAL COM LOGO UNIMED -->
-    <header class="portal-header">
-        <div class="header-inner">
-            <div class="brand-wrapper">
-                <img src="" id="logoUnimed" alt="Unimed" class="unimed-logo-img">
-                <div class="header-titles">
+    <!-- CABEÇALHO -->
+    <header class="site-header">
+        <div class="header-wrap">
+            <div class="header-brand">
+                <img id="logoUnimed" src="" alt="Unimed" class="logo-unimed">
+                <div class="header-divider"></div>
+                <div class="header-info">
                     <h1>Validação de Documento Médico</h1>
-                    <p>Telemedicina & Atendimento Presencial Cooperativa Unimed</p>
+                    <p>Telemedicina &amp; Atendimento Presencial — Cooperativa Unimed</p>
                 </div>
             </div>
-            <div class="safe-badge">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span>Ambiente Seguro</span>
+            <div class="secure-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Ambiente Seguro
             </div>
         </div>
     </header>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <main class="main-container">
+    <main class="main">
 
-        <!-- CARD 1: STATUS DE AUTENTICIDADE -->
-        <div class="hero-status-card">
-            <div class="hero-header-row">
-                <div class="hero-icon-shield">
+        <!-- HERO: STATUS DE AUTENTICIDADE -->
+        <div class="hero-card">
+            <div class="hero-top">
+                <div class="hero-icon">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 </div>
-                <div class="hero-title-box">
+                <div class="hero-text">
                     <h2>DOCUMENTO AUTÊNTICO E VÁLIDO</h2>
                     <p>Este Atestado Médico foi validado eletronicamente e encontra-se devidamente registrado e ativo na base de dados Unimed.</p>
                 </div>
             </div>
-
-            <div class="hero-auth-row">
-                <div class="auth-label-group">
-                    <span class="auth-label-title">Código Verificador de Autenticidade</span>
-                    <span class="auth-code-val" id="lblCodValid">1469239712</span>
+            <div class="hero-bottom">
+                <div class="code-group">
+                    <span class="code-label">Código Verificador de Autenticidade</span>
+                    <span class="code-val" id="lblCodValid">1469239712</span>
                 </div>
-                <div class="auth-actions-group">
-                    <span style="font-size:12px; color:var(--text-muted);" id="lblTimestamp">Autenticado em: <strong>29/08/2024 às 03:20:50</strong></span>
-                    <button type="button" class="btn-copy-code" onclick="copiarCodigo()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        <span>Copiar Código</span>
+                <div class="hero-actions">
+                    <span class="auth-ts" id="lblTimestamp">Autenticado em: <strong>29/08/2024 às 03:20:50</strong></span>
+                    <button type="button" class="btn-copy" onclick="copiarCodigo()">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copiar Código
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- CARD 2: IDENTIFICAÇÃO DO PACIENTE -->
+        <!-- CARD: IDENTIFICAÇÃO DO PACIENTE -->
         <div class="info-card">
-            <div class="card-heading">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div class="card-head">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <span>Identificação do Paciente</span>
             </div>
-
-            <div class="data-grid">
-                <div class="data-item">
-                    <span class="data-label">Nome Completo do Paciente</span>
-                    <span class="data-value highlight-green" id="valNome">LAURA NASCIMENTO OLIVEIRA DE MELLO</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">CPF do Paciente</span>
-                    <span class="data-value" id="valCpf">182.114.717-01</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">Data de Nascimento / Idade</span>
-                    <span class="data-value" id="valNascIdade">23/08/1985 (25 Anos 2 Meses 29 Dias)</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">Nome da Mãe</span>
-                    <span class="data-value" id="valMae">VANESSA SANTOS DO NASCIMENTO</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">Nº Prontuário / Nº Atendimento</span>
-                    <span class="data-value" id="valProntAtend">005592173 / 2290479</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">Convênio / Setor</span>
-                    <span class="data-value" id="valConvenio">UNIMED RJ (Geral)</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">Situação do Documento</span>
-                    <div class="badge-pill-status">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>Emitido & Ativo</span>
+            <div class="card-body">
+                <div class="data-grid">
+                    <div class="data-item span-full">
+                        <span class="data-label">Nome Completo do Paciente</span>
+                        <span class="data-val em" id="valNome">LAURA NASCIMENTO OLIVEIRA DE MELLO</span>
                     </div>
-                </div>
-
-                <div class="data-item" id="boxAcomp" style="display:none;">
-                    <span class="data-label">Acompanhante</span>
-                    <span class="data-value" id="valAcomp">-</span>
+                    <div class="data-item">
+                        <span class="data-label">CPF do Paciente</span>
+                        <span class="data-val" id="valCpf">182.114.717-01</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Data de Nascimento / Idade</span>
+                        <span class="data-val" id="valNascIdade">23/08/1985 (25 Anos 2 Meses 29 Dias)</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Nome da Mãe</span>
+                        <span class="data-val" id="valMae">VANESSA SANTOS DO NASCIMENTO</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Nº Prontuário / Nº Atendimento</span>
+                        <span class="data-val" id="valProntAtend">005592173 / 2290479</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Convênio / Setor</span>
+                        <span class="data-val" id="valConvenio">UNIMED RJ (Geral)</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Situação do Documento</span>
+                        <div class="pill-ok">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            Emitido &amp; Ativo
+                        </div>
+                    </div>
+                    <div class="data-item" id="boxAcomp" style="display:none;">
+                        <span class="data-label">Acompanhante</span>
+                        <span class="data-val" id="valAcomp">-</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- CARD 3: DIAGNÓSTICO E PERÍODO DE REPOUSO -->
+        <!-- CARD: DIAGNÓSTICO E AFASTAMENTO -->
         <div class="info-card">
-            <div class="card-heading">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <div class="card-head">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 <span>Diagnóstico e Período de Afastamento</span>
             </div>
-
-            <div class="data-grid">
-                <div class="data-item">
-                    <span class="data-label">Classificação Internacional de Doenças (CID-10)</span>
-                    <span class="data-value highlight-green" id="valCid">CID A90</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">Período de Afastamento do Trabalho</span>
-                    <div class="badge-dias-repouso">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <span id="valDias">2 dias</span>
+            <div class="card-body">
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">CID-10 — Classificação Internacional de Doenças</span>
+                        <span class="data-val em" id="valCid">CID A90</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Período de Afastamento</span>
+                        <div class="pill-dias">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span id="valDias">2 dias</span>
+                        </div>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Data e Hora do Atendimento</span>
+                        <span class="data-val" id="valDataAtend">29/08/24 às 04:07</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Diagnóstico Clínico Declarado</span>
+                        <span class="data-val" id="valDiag">Quadro de dengue</span>
                     </div>
                 </div>
-
-                <div class="data-item">
-                    <span class="data-label">Data e Hora do Atendimento</span>
-                    <span class="data-value" id="valDataAtend">29/08/24 as 04:07</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">Diagnóstico Clínico Declarado</span>
-                    <span class="data-value" id="valDiag">quadro de dengue</span>
-                </div>
-            </div>
-
-            <div class="statement-box" id="valStatement">
-                <!-- Gerado dinamicamente via JS -->
+                <div class="stmt-box" id="valStatement"></div>
             </div>
         </div>
 
-        <!-- CARD 4: MÉDICO EMISSOR E ESTABELECIMENTO -->
+        <!-- CARD: MÉDICO E UNIDADE -->
         <div class="info-card">
-            <div class="card-heading">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <div class="card-head">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                 <span>Médico Emissor e Unidade de Atendimento</span>
             </div>
-
-            <div class="data-grid">
-                <div class="data-item">
-                    <span class="data-label">Médico(a) Responsável</span>
-                    <span class="data-value highlight-green" id="valMedico">MARIA CAROLINA CALIANO DA SILVA</span>
-                </div>
-
-                <div class="data-item">
-                    <span class="data-label">Registro Profissional CRM / Função</span>
-                    <span class="data-value" id="valCrm">CRMRJ-01212699 (MÉDICA)</span>
-                </div>
-
-                <div class="data-item" style="grid-column: 1 / -1;">
-                    <span class="data-label">Unidade de Saúde Unimed</span>
-                    <span class="data-value" id="valUnidade">TELESSAUDE - UNIMEDRJ</span>
-                </div>
-
-                <div class="data-item" style="grid-column: 1 / -1;">
-                    <span class="data-label">Endereço do Estabelecimento</span>
-                    <span class="data-value" id="valEndereco">AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO</span>
+            <div class="card-body">
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">Médico(a) Responsável</span>
+                        <span class="data-val em" id="valMedico">MARIA CAROLINA CALIANO DA SILVA</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Registro Profissional CRM / Função</span>
+                        <span class="data-val" id="valCrm">CRMRJ-01212699 (MÉDICA)</span>
+                    </div>
+                    <div class="data-item span-full">
+                        <span class="data-label">Unidade de Saúde Unimed</span>
+                        <span class="data-val" id="valUnidade">TELESSAUDE - UNIMEDRJ</span>
+                    </div>
+                    <div class="data-item span-full">
+                        <span class="data-label">Endereço do Estabelecimento</span>
+                        <span class="data-val" id="valEndereco">AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- CARD 5: ASSINATURA DIGITAL ICP-BRASIL -->
+        <!-- CARD: ICP-BRASIL -->
         <div class="icp-card">
             <img src="" id="imgIcpCert" alt="ICP-Brasil" class="icp-img">
-            <div class="icp-text">
+            <div class="icp-txt">
                 <strong>Documento Assinado Digitalmente via ICP-Brasil</strong><br>
                 Em conformidade com a Medida Provisória nº 2.200-2/2001, Resolução CFM nº 1.821/2007 e Portaria nº 467/2020 do Ministério da Saúde.<br>
-                <span id="valCertSigner" style="color:var(--unimed-green-dark); font-weight:700;">MARIA CAROLINA CALIANO DA SILVA:01212699, AC CNDL RFB v3</span>
+                <span class="icp-signer" id="valCertSigner">MARIA CAROLINA CALIANO DA SILVA:01212699, AC CNDL RFB v3</span>
             </div>
         </div>
 
-        <!-- AÇÕES INFERIORES -->
-        <div class="bottom-actions">
-            <button type="button" class="btn-action btn-action-green" onclick="window.print()">
+        <!-- BOTÕES DE AÇÃO -->
+        <div class="action-row">
+            <button type="button" class="btn btn-primary" onclick="window.print()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                <span>Imprimir / Salvar Comprovante</span>
+                Imprimir / Salvar Comprovante
             </button>
-
-            <button type="button" class="btn-action btn-action-outline" onclick="copiarLinkValidacao()">
+            <button type="button" class="btn btn-secondary" onclick="copiarLink()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                <span id="btnCopiarTxt">Copiar Link de Autenticidade</span>
+                <span id="btnLinkTxt">Copiar Link de Autenticidade</span>
             </button>
         </div>
 
     </main>
 
-    <!-- RODAPÉ INSTITUCIONAL -->
-    <footer class="footer-institucional">
-        <div class="footer-inner">
-            <span><strong>Unimed do Brasil</strong> • Confederação Nacional das Cooperativas Médicas</span>
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <img id="logoFooter" src="" alt="Unimed" class="footer-logo">
+            <span><strong>Unimed do Brasil</strong> — Confederação Nacional das Cooperativas Médicas</span>
             <span>Registro ANS nº 000000 • Sistema Eletrônico de Validação e Autenticidade em Nuvem</span>
             <span>Central de Atendimento Unimed 24h: 0800 000 1000 • Todos os direitos reservados.</span>
         </div>
     </footer>
 
-    <!-- NOTIFICAÇÃO TOAST -->
-    <div id="valToast">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-        <span id="valToastMsg">Mensagem</span>
+    <!-- TOAST -->
+    <div id="toast">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="toastMsg">Mensagem</span>
     </div>
 
     <script>
-    // ─── CARREGAR IMAGENS E PARÂMETROS ───
-    document.addEventListener('DOMContentLoaded', () => {
-        // Carrega logo Unimed e selo ICP-Brasil
-        const logo = document.getElementById('logoUnimed');
-        if (logo && window.UNIMED_LOGO_B64) {
-            logo.src = window.UNIMED_LOGO_B64;
-        }
-        const icp = document.getElementById('imgIcpCert');
-        if (icp && window.UNIMED_ICP_B64) {
-            icp.src = window.UNIMED_ICP_B64;
-        }
+    document.addEventListener('DOMContentLoaded', function() {
+        var logo = document.getElementById('logoUnimed');
+        if (logo && window.UNIMED_LOGO_B64) logo.src = window.UNIMED_LOGO_B64;
 
-        carregarDadosValidacao();
+        var logoF = document.getElementById('logoFooter');
+        if (logoF && window.UNIMED_LOGO_B64) logoF.src = window.UNIMED_LOGO_B64;
+
+        var icp = document.getElementById('imgIcpCert');
+        if (icp && window.UNIMED_ICP_B64) icp.src = window.UNIMED_ICP_B64;
+
+        carregarDados();
     });
 
-    function carregarDadosValidacao() {
-        const p = new URLSearchParams(window.location.search);
+    function carregarDados() {
+        var p = new URLSearchParams(window.location.search);
 
-        const codVal = p.get('cod') || p.get('codigo') || p.get('id') || '1469239712';
-        const nome = (p.get('nome') || p.get('paciente') || 'LAURA NASCIMENTO OLIVEIRA DE MELLO').toUpperCase();
-        const cpf = p.get('cpf') || '182.114.717-01';
-        const nasc = p.get('nasc') || '23/08/1985';
-        const idade = p.get('idade') || '25 Anos 2 Meses 29 Dias';
-        const mae = (p.get('mae') || 'VANESSA SANTOS DO NASCIMENTO').toUpperCase();
-        const pront = p.get('pront') || '005592173';
-        const atend = p.get('atend') || '2290479';
-        const conv = p.get('convenio') || p.get('conv') || 'UNIMED RJ';
-        const setor = p.get('setor') || '';
-        const cid = p.get('cid') || 'A90';
-        const diag = p.get('diag') || 'quadro de dengue';
-        const dias = p.get('dias') || '2';
-        const dataAt = p.get('data') || p.get('data_atend') || '29/08/24 as 04:07';
-        const dataAss = p.get('ass') || p.get('data_ass') || '29/08/2024 03:20:50';
-        const medico = (p.get('medico') || p.get('med') || p.get('prof') || 'MARIA CAROLINA CALIANO DA SILVA').toUpperCase();
-        const crm = (p.get('crm') || 'CRMRJ-01212699').toUpperCase();
-        const cargo = (p.get('cargo') || p.get('funcao') || 'MÉDICA').toUpperCase();
-        const unid1 = (p.get('unidade1') || p.get('unidade') || 'TELESSAUDE - UNIMEDRJ').toUpperCase();
-        const unid2 = (p.get('unidade2') || p.get('endereco') || 'AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO').toUpperCase();
-        const acomp = (p.get('acomp') || '').toUpperCase();
-        const cpfAcomp = p.get('cpf_acomp') || '';
+        var codVal  = p.get('cod')      || p.get('codigo')     || p.get('id')        || '1469239712';
+        var nome    = (p.get('nome')    || p.get('paciente')   || 'LAURA NASCIMENTO OLIVEIRA DE MELLO').toUpperCase();
+        var cpf     = p.get('cpf')      || '182.114.717-01';
+        var nasc    = p.get('nasc')     || '23/08/1985';
+        var idade   = p.get('idade')    || '25 Anos 2 Meses 29 Dias';
+        var mae     = (p.get('mae')     || 'VANESSA SANTOS DO NASCIMENTO').toUpperCase();
+        var pront   = p.get('pront')    || '005592173';
+        var atend   = p.get('atend')    || '2290479';
+        var conv    = p.get('convenio') || p.get('conv')       || 'UNIMED RJ';
+        var setor   = p.get('setor')    || '';
+        var cid     = p.get('cid')      || 'A90';
+        var diag    = p.get('diag')     || 'quadro de dengue';
+        var dias    = p.get('dias')     || '2';
+        var dataAt  = p.get('data')     || p.get('data_atend') || '29/08/24 às 04:07';
+        var dataAss = p.get('ass')      || p.get('data_ass')   || '29/08/2024 03:20:50';
+        var medico  = (p.get('medico')  || p.get('med')        || p.get('prof') || 'MARIA CAROLINA CALIANO DA SILVA').toUpperCase();
+        var crm     = (p.get('crm')     || 'CRMRJ-01212699').toUpperCase();
+        var cargo   = (p.get('cargo')   || p.get('funcao')     || 'MÉDICA').toUpperCase();
+        var unid1   = (p.get('unidade1')|| p.get('unidade')    || 'TELESSAUDE - UNIMEDRJ').toUpperCase();
+        var unid2   = (p.get('unidade2')|| p.get('endereco')   || 'AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO').toUpperCase();
+        var acomp   = (p.get('acomp')   || '').toUpperCase();
+        var cpfAcomp= p.get('cpf_acomp')|| '';
 
-        // Preenche campos
-        document.getElementById('lblCodValid').textContent = codVal;
-        document.getElementById('lblTimestamp').innerHTML = `Autenticado em: <strong>${dataAss}</strong>`;
-        document.getElementById('valNome').textContent = nome;
-        document.getElementById('valCpf').textContent = cpf;
-        document.getElementById('valNascIdade').textContent = `${nasc} (${idade})`;
-        document.getElementById('valMae').textContent = mae;
-        document.getElementById('valProntAtend').textContent = `${pront} / ${atend}`;
-        document.getElementById('valConvenio').textContent = setor ? `${conv} (${setor})` : conv;
-        document.getElementById('valCid').textContent = cid.toUpperCase().startsWith('CID') ? cid.toUpperCase() : `CID ${cid.toUpperCase()}`;
-        document.getElementById('valDias').textContent = `${dias} ${parseInt(dias) === 1 ? 'dia' : 'dias'}`;
-        document.getElementById('valDataAtend').textContent = dataAt;
-        document.getElementById('valDiag').textContent = diag;
-        document.getElementById('valMedico').textContent = medico;
-        document.getElementById('valCrm').textContent = `${crm} (${cargo})`;
-        document.getElementById('valUnidade').textContent = unid1;
-        document.getElementById('valEndereco').textContent = unid2;
-        document.getElementById('valCertSigner').textContent = `${medico}:01212699, AC CNDL RFB v3, ${dataAss}`;
+        var diasNum = parseInt(dias) || 1;
+        var diasTxt = diasNum === 1 ? '1 dia' : dias + ' dias';
+        var cidFull = cid.toUpperCase().indexOf('CID') === 0 ? cid.toUpperCase() : 'CID ' + cid.toUpperCase();
+
+        document.getElementById('lblCodValid').textContent   = codVal;
+        document.getElementById('lblTimestamp').innerHTML    = 'Autenticado em: <strong>' + dataAss + '</strong>';
+        document.getElementById('valNome').textContent       = nome;
+        document.getElementById('valCpf').textContent        = cpf;
+        document.getElementById('valNascIdade').textContent  = nasc + ' (' + idade + ')';
+        document.getElementById('valMae').textContent        = mae;
+        document.getElementById('valProntAtend').textContent = pront + ' / ' + atend;
+        document.getElementById('valConvenio').textContent   = setor ? conv + ' (' + setor + ')' : conv;
+        document.getElementById('valCid').textContent        = cidFull;
+        document.getElementById('valDias').textContent       = diasTxt;
+        document.getElementById('valDataAtend').textContent  = dataAt;
+        document.getElementById('valDiag').textContent       = diag;
+        document.getElementById('valMedico').textContent     = medico;
+        document.getElementById('valCrm').textContent        = crm + ' (' + cargo + ')';
+        document.getElementById('valUnidade').textContent    = unid1;
+        document.getElementById('valEndereco').textContent   = unid2;
+        document.getElementById('valCertSigner').textContent = medico + ':01212699, AC CNDL RFB v3, ' + dataAss;
 
         if (acomp) {
-            const b = document.getElementById('boxAcomp');
-            if (b) {
-                b.style.display = 'flex';
-                document.getElementById('valAcomp').textContent = cpfAcomp ? `${acomp} (CPF: ${cpfAcomp})` : acomp;
+            var box = document.getElementById('boxAcomp');
+            if (box) {
+                box.style.display = 'flex';
+                document.getElementById('valAcomp').textContent = cpfAcomp ? acomp + ' (CPF: ' + cpfAcomp + ')' : acomp;
             }
         }
 
-        // Texto oficial
-        let texto = `Atesto para os devidos fins, a pedido que o(a) Sr(a). <strong>${nome}</strong>, inscrito(a) no CPF sob o nº <strong>${cpf}</strong>, paciente sob meus cuidados, foi atendido(a) no dia <strong>${dataAt}</strong> apresentando <strong>${diag}</strong>`;
+        // Texto oficial do atestado
+        var stmt = 'Atesto para os devidos fins, a pedido que o(a) Sr(a). <strong>' + nome + '</strong>, inscrito(a) no CPF sob o nº <strong>' + cpf + '</strong>, paciente sob meus cuidados, foi atendido(a) no dia <strong>' + dataAt + '</strong> apresentando <strong>' + diag + '</strong>';
         if (acomp) {
-            texto += `, tendo sido acompanhado(a) por <strong>${acomp}</strong>`;
-            if (cpfAcomp) texto += `, inscrito(a) no CPF sob o nº <strong>${cpfAcomp}</strong>`;
+            stmt += ', tendo sido acompanhado(a) por <strong>' + acomp + '</strong>';
+            if (cpfAcomp) stmt += ', inscrito(a) no CPF sob o nº <strong>' + cpfAcomp + '</strong>';
         }
-        texto += `. (Este atestado é válido para as finalidades previstas nos artigos 71 e 72, parágrafo 1º do Decreto 3048/99, e será expedido para justificar o afastamento do trabalho <strong>${dias} ${parseInt(dias) === 1 ? 'dia' : 'dias'}</strong>).<br><br>`;
-        texto += `Autorizada a inclusão da <strong>CID ${cid}</strong> no atestado médico.`;
+        stmt += '. (Este atestado é válido para as finalidades previstas nos artigos 71 e 72, parágrafo 1º do Decreto 3048/99, e será expedido para justificar o afastamento do trabalho por <strong>' + diasTxt + '</strong>).<br><br>';
+        stmt += 'Autorizada a inclusão da <strong>' + cidFull + '</strong> no atestado médico.';
 
-        document.getElementById('valStatement').innerHTML = texto;
+        document.getElementById('valStatement').innerHTML = stmt;
     }
 
     function copiarCodigo() {
-        const cod = document.getElementById('lblCodValid').textContent.trim();
-        copiarTexto(cod);
-        mostrarToast('Código verificador copiado!');
+        var cod = document.getElementById('lblCodValid').textContent.trim();
+        copiar(cod);
+        toast('Código verificador copiado com sucesso!');
     }
 
-    function copiarLinkValidacao() {
-        copiarTexto(window.location.href);
-        const btn = document.getElementById('btnCopiarTxt');
+    function copiarLink() {
+        copiar(window.location.href);
+        var btn = document.getElementById('btnLinkTxt');
         if (btn) {
-            const orig = btn.textContent;
-            btn.textContent = 'Link Copiado!';
-            setTimeout(() => { btn.textContent = orig; }, 2000);
+            var orig = btn.textContent;
+            btn.textContent = '✓ Link Copiado!';
+            setTimeout(function() { btn.textContent = orig; }, 2200);
         }
-        mostrarToast('Link de autenticidade copiado com sucesso!');
+        toast('Link de autenticidade copiado!');
     }
 
-    function copiarTexto(txt) {
+    function copiar(txt) {
         if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(txt).catch(() => fallbackCopy(txt));
+            navigator.clipboard.writeText(txt).catch(function() { copiarFallback(txt); });
         } else {
-            fallbackCopy(txt);
+            copiarFallback(txt);
         }
     }
 
-    function fallbackCopy(txt) {
-        const ta = document.createElement('textarea');
+    function copiarFallback(txt) {
+        var ta = document.createElement('textarea');
         ta.value = txt;
-        ta.style.position = 'fixed';
-        ta.style.top = '0';
-        ta.style.left = '0';
+        ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
         document.body.appendChild(ta);
         ta.focus();
         ta.select();
-        document.execCommand('copy');
+        try { document.execCommand('copy'); } catch(e) {}
         document.body.removeChild(ta);
     }
 
-    function mostrarToast(msg) {
-        const t = document.getElementById('valToast');
-        const m = document.getElementById('valToastMsg');
-        if (t && m) {
-            m.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => { t.classList.remove('show'); }, 3000);
-        }
+    function toast(msg) {
+        var t = document.getElementById('toast');
+        var m = document.getElementById('toastMsg');
+        if (!t || !m) return;
+        m.textContent = msg;
+        t.classList.add('show');
+        setTimeout(function() { t.classList.remove('show'); }, 3000);
     }
     </script>
 </body>
