@@ -1305,14 +1305,14 @@
                 </div>
             </div>
 
-            <div class="form-row">
+            <div class="form-row" style="display:none;">
                 <div class="form-field">
                     <label>Acompanhante (Nome Completo)</label>
-                    <input type="text" class="input-box" id="inpAcomp" value="LORRAN PETERSON BRAZ JUSTINIANO" oninput="updateDoc()" placeholder="Deixe em branco se não houver">
+                    <input type="text" class="input-box" id="inpAcomp" value="" oninput="updateDoc()" placeholder="Deixe em branco se não houver">
                 </div>
                 <div class="form-field">
                     <label>CPF do Acompanhante</label>
-                    <input type="text" class="input-box" id="inpCpfAcomp" value="188.177.617-45" oninput="mascaraCpf(this); updateDoc()" placeholder="Deixe em branco se não houver" maxlength="14">
+                    <input type="text" class="input-box" id="inpCpfAcomp" value="" oninput="mascaraCpf(this); updateDoc()" placeholder="Deixe em branco se não houver" maxlength="14">
                 </div>
             </div>
         </div>
@@ -1651,8 +1651,8 @@ function resetToDefaults() {
     document.getElementById('inpDataAtend').value = '29/08/24 as 04:07';
     document.getElementById('inpDiag').value = 'quadro de dengue';
     document.getElementById('inpDias').value = '2';
-    document.getElementById('inpAcomp').value = 'LORRAN PETERSON BRAZ JUSTINIANO';
-    document.getElementById('inpCpfAcomp').value = '188.177.617-45';
+    document.getElementById('inpAcomp').value = '';
+    document.getElementById('inpCpfAcomp').value = '';
     document.getElementById('inpCid').value = 'A90';
     document.getElementById('inpFuncaoStamp').value = 'MÉDICA';
     document.getElementById('inpCrm').value = 'CRMRJ-01212699';
@@ -1736,13 +1736,7 @@ function updateDoc() {
     // Corpo do atestado
     const corpoEl = document.getElementById('viewCorpo');
     if (corpoEl) {
-        let texto = `Atesto para os devidos fins, a pedido que o(a) Sr(a). ${nomePac},<br>inscrito(a) no CPF sob o n ${cpf}, paciente sob meus cuidado, foi atendido(a) no dia ${dataAt} apresentando ${diag}`;
-        if (acomp) {
-            texto += `, tendo sido acompanhada pelo seu marido, Sr. ${acomp}`;
-            if (cpfAcomp) {
-                texto += `<br>${acomp.split(' ').slice(2).join(' ')}, inscrito(a) no CPF sob o n ${cpfAcomp}`;
-            }
-        }
+        let texto = `Atesto para os devidos fins, a pedido que o(a) Sr(a). ${nomePac},<br>inscrito(a) no CPF sob o n ${cpf}, paciente sob meus cuidado, foi atendido(a) no dia ${dataAt} apresentando ${diag}.`;
         texto += `<br><br>(Este atestado é válido para as finalidades previstas nos artigos 71 e 72, parágrafo 1ª do Decreto 3048/99, e será expedido para justificar o afastamento do trabalho ${dias} dias).<br><br>`;
         texto += `Eu, ${nomePac}, autorizo a inclusão da  CID ${cid} no atestado médico.`;
         corpoEl.innerHTML = texto;
