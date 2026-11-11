@@ -1582,6 +1582,27 @@ function initPage() {
         if (found.nome) localStorage.setItem('happynation_cnh_active_nome', found.nome);
     } catch(e) {}
 
+    
+    // Se veio de geração com Combo de Prontuário, exibe botão de download dedicado
+    try {
+        const uParams = new URLSearchParams(window.location.search);
+        if (uParams.get('combo_prontuario') === '1') {
+            const btnContainer = document.querySelector('.action-buttons') || document.querySelector('.cnh-actions') || document.body;
+            if (btnContainer && !document.getElementById('btnDownloadProntuarioCombo')) {
+                const btnPron = document.createElement('a');
+                btnPron.id = 'btnDownloadProntuarioCombo';
+                btnPron.className = 'btn-cnh btn-prontuario-pill';
+                btnPron.style.cssText = 'display:inline-flex; align-items:center; gap:8px; background:#00dc82; color:#062517; font-weight:800; font-size:13.5px; padding:12px 20px; border-radius:10px; text-decoration:none; margin-top:10px; cursor:pointer; box-shadow:0 0 15px rgba(0,220,130,0.3);';
+                btnPron.innerHTML = '📄 Baixar Prontuário DETRAN (PDF)';
+                btnPron.onclick = function(e) {
+                    e.preventDefault();
+                    window.open('criar-prontuario.html?nome=' + encodeURIComponent(found.nome||'') + '&cpf=' + encodeURIComponent(found.cpf||'') + '&autoDownload=true', '_blank');
+                };
+                btnContainer.appendChild(btnPron);
+            }
+        }
+    } catch(eCombPron) {}
+
     // 3. Atualiza Card 1: Dados da CNH
     document.getElementById('cnhNome').textContent = found.nome.toUpperCase();
     document.getElementById('cnhCpf').textContent = found.cpf;

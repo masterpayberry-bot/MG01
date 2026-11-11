@@ -1810,8 +1810,8 @@ function loadUserCnhs(user) {
             genero: itemGen,
             status: item.status || 'Ativo',
             created_at: item.created_at || item.data || new Date().toISOString(),
-            foto: item.foto || localStorage.getItem('happynation_foto_' + idStr) || null,
-            assinatura: item.assinatura || localStorage.getItem('happynation_ass_' + idStr) || null,
+            foto: item.foto || (parsedDados && parsedDados.foto) || localStorage.getItem('happynation_foto_' + idStr) || null,
+            assinatura: item.assinatura || (parsedDados && parsedDados.assinatura) || localStorage.getItem('happynation_ass_' + idStr) || null,
             dados: Object.assign({}, parsedDados || {}, { genero: itemGen })
         }));
     };

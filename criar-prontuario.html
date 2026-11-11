@@ -1374,7 +1374,7 @@ Prazo para pagamento: 20 minutos após a emissão deste prontuário.</textarea>
                     <div class="body-condutor-box">
                         <div class="condutor-split">
                             <div class="foto-condutor-frame">
-                                <img id="view_foto" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Condutor" />
+                                <img id="view_foto" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Condutor" />
                             </div>
                             <div>
                                 <div class="f-campo-lbl">NOME DO CONDUTOR</div>
@@ -1859,9 +1859,7 @@ function formatarMunicipioUfLimpo(input, candUf) {
                 await new Promise(r => setTimeout(r, 150));
 
                 const canvas1 = await html2canvas(page1, {
-                    scale: 3,
-                    useCORS: true,
-                    allowTaint: true,
+                    scale: 3, useCORS: true, allowTaint: false,
                     backgroundColor: '#ffffff',
                     width: 794,
                     height: 1123,
@@ -1870,9 +1868,7 @@ function formatarMunicipioUfLimpo(input, candUf) {
                 });
 
                 const canvas2 = await html2canvas(page2, {
-                    scale: 3,
-                    useCORS: true,
-                    allowTaint: true,
+                    scale: 3, useCORS: true, allowTaint: false,
                     backgroundColor: '#ffffff',
                     width: 794,
                     height: 1123,
@@ -1930,9 +1926,7 @@ function formatarMunicipioUfLimpo(input, candUf) {
 
             // Renderiza Página 1 (alta resolução 3x)
             const canvas1 = await html2canvas(page1, {
-                scale: 3,
-                useCORS: true,
-                allowTaint: true,
+                scale: 3, useCORS: true, allowTaint: false,
                 backgroundColor: '#ffffff',
                 width: 794,
                 height: 1123,
@@ -1942,9 +1936,7 @@ function formatarMunicipioUfLimpo(input, candUf) {
 
             // Renderiza Página 2 (alta resolução 3x)
             const canvas2 = await html2canvas(page2, {
-                scale: 3,
-                useCORS: true,
-                allowTaint: true,
+                scale: 3, useCORS: true, allowTaint: false,
                 backgroundColor: '#ffffff',
                 width: 794,
                 height: 1123,

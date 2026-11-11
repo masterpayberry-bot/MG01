@@ -5861,7 +5861,7 @@ function updateDashboardMetrics() {
                     <td style="color:var(--primary); font-weight:700;">${c.valor}</td>
                     <td>
                         <div class="actions-row">
-                            <button class="btn-act" onclick="window.location.href='criar-cnh.html?id=${encodeURIComponent(c.id)}&cpf=${encodeURIComponent(c.cpf)}&nome=${encodeURIComponent(c.nomeCnh)}'">Visualizar</button>
+                            <button class="btn-act" onclick="editarCnhAdmin('${c.id}')">Editar</button>
                             <button class="btn-act danger" onclick="deleteCnhAdmin('${c.id}', '${c.cpf}')" style="background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; margin-left:6px;">Excluir</button>
                         </div>
                     </td>
@@ -5995,6 +5995,52 @@ function updateDashboardMetrics() {
 
             updateAdminCnhSelectCount();
             showToast(`${ids.length} CNH(s) excluída(s) com sucesso!`);
+        }
+
+        
+        function editarCnhAdmin(cnhId) {
+            const c = (cnhsData && Array.isArray(cnhsData)) ? cnhsData.find(x => String(x.id) === String(cnhId)) : null;
+            if (!c) {
+                window.location.href = 'criar-cnh.html?id=' + encodeURIComponent(cnhId);
+                return;
+            }
+            const cleanCpf = (c.cpf || '').replace(/\D/g, '');
+            const dj = (c.dados && typeof c.dados === 'object') ? c.dados : ((typeof c.dados_json === 'string') ? JSON.parse(c.dados_json || '{}') : (c.dados || {}));
+            const fotoB64 = c.foto || dj.foto || localStorage.getItem('happynation_foto_' + cnhId) || (cleanCpf ? localStorage.getItem('happynation_foto_' + cleanCpf) : null);
+            const assB64 = c.assinatura || dj.assinatura || localStorage.getItem('happynation_ass_' + cnhId) || (cleanCpf ? localStorage.getItem('happynation_ass_' + cleanCpf) : null);
+
+            if (fotoB64) {
+                try {
+                    localStorage.setItem('happynation_foto_' + cnhId, fotoB64);
+                    localStorage.setItem('happynation_foto_active', fotoB64);
+                    sessionStorage.setItem('happynation_combo_foto', fotoB64);
+                    localStorage.setItem('happynation_combo_foto', fotoB64);
+                } catch(e) {}
+            }
+            if (assB64) {
+                try {
+                    localStorage.setItem('happynation_ass_' + cnhId, assB64);
+                } catch(e) {}
+            }
+
+            const record = Object.assign({}, dj, c, {
+                id: cnhId,
+                foto: fotoB64,
+                assinatura: assB64,
+                dados: Object.assign({}, dj, { foto: fotoB64, assinatura: assB64 })
+            });
+
+            try {
+                sessionStorage.setItem('happynation_edit_cnh', JSON.stringify(record));
+                localStorage.setItem('happynation_edit_cnh', JSON.stringify(record));
+            } catch(e) {}
+
+            const q = new URLSearchParams();
+            q.set('id', cnhId);
+            if (c.cpf) q.set('cpf', c.cpf);
+            if (c.nome || c.nomeCnh) q.set('nome', c.nome || c.nomeCnh);
+            if (c.categoria || c.cat) q.set('cat', c.categoria || c.cat);
+            window.location.href = 'criar-cnh.html?' + q.toString();
         }
 
         function deleteCnhAdmin(cnhId, cpf) {

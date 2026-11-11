@@ -3593,6 +3593,7 @@ function initParamsSync() {
         const params = new URLSearchParams(window.location.search);
         const cnhId = params.get('id') || '';
         const cpfParam = params.get('cpf') || '';
+        const cleanCpfParam = cpfParam.replace(/\D/g, '');
         const isEditMode = Boolean(cnhId || cpfParam || params.get('nome'));
 
         if (!isEditMode) {
@@ -3751,25 +3752,104 @@ function initParamsSync() {
             if (elV) elV.value = String(valPen).replace(/^R\$\s*/i, '').trim();
         }
 
-        let savedFoto = window._currentFotoBase64 || localStorage.getItem('happynation_foto_' + cnhId);
-        if (!savedFoto && mergedData.foto && !mergedData.foto.includes('eduardo_photo.png')) savedFoto = mergedData.foto;
-        if (savedFoto) {
-            window._currentFotoBase64 = savedFoto;
+        // ── RESTAURAÇÃO INFALÍVEL DE FOTO E ASSINATURA NO MODO EDIÇÃO ──
+        let savedFoto = window._currentFotoBase64 ||
+                        localStorage.getItem('happynation_foto_' + cnhId) ||
+                        (cleanCpfParam ? localStorage.getItem('happynation_foto_' + cleanCpfParam) : null) ||
+                        localStorage.getItem('happynation_foto_active') ||
+                        localStorage.getItem('happynation_combo_foto') ||
+                        sessionStorage.getItem('happynation_combo_foto');
+
+        if (!savedFoto && mergedData.foto && !mergedData.foto.includes('eduardo_photo.png')) {
+            savedFoto = mergedData.foto;
+        }
+
+        let savedAss = window._currentAssBase64 ||
+                       localStorage.getItem('happynation_ass_' + cnhId) ||
+                       (cleanCpfParam ? localStorage.getItem('happynation_ass_' + cleanCpfParam) : null);
+
+        if (!savedAss && mergedData.assinatura) {
+            savedAss = mergedData.assinatura;
+        }
+
+        function renderFotoNoEditor(fB64) {
+            if (!fB64) return;
+            window._currentFotoBase64 = fB64;
+            try {
+                sessionStorage.setItem('happynation_combo_foto', fB64);
+                localStorage.setItem('happynation_combo_foto', fB64);
+                if (cnhId) localStorage.setItem('happynation_foto_' + cnhId, fB64);
+                localStorage.setItem('happynation_foto_active', fB64);
+            } catch(e) {}
             try {
                 const fotoArea = doc.getElementById('foto-area');
-                if (fotoArea) fotoArea.innerHTML = '<img src="' + savedFoto + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;display:block;"/>';
+                if (fotoArea) {
+                    fotoArea.innerHTML = '<img src="' + fB64 + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"/>';
+                }
             } catch(ex) {}
         }
 
-        let savedAss = window._currentAssBase64 || localStorage.getItem('happynation_ass_' + cnhId);
-        if (!savedAss && mergedData.assinatura) savedAss = mergedData.assinatura;
-        if (savedAss) {
-            window._currentAssBase64 = savedAss;
+        function renderAssNoEditor(aB64) {
+            if (!aB64) return;
+            window._currentAssBase64 = aB64;
+            try {
+                if (cnhId) localStorage.setItem('happynation_ass_' + cnhId, aB64);
+            } catch(e) {}
             try {
                 const assArea = doc.getElementById('assinatura-area');
-                if (assArea) assArea.innerHTML = '<img src="' + savedAss + '" alt="Assinatura" style="width:100%;height:100%;object-fit:contain;display:block;"/>';
+                if (assArea) {
+                    assArea.innerHTML = '<img src="' + aB64 + '" alt="Assinatura" style="width:100%;height:100%;object-fit:contain;display:block;"/>';
+                }
             } catch(ex) {}
         }
+
+        if (savedFoto) renderFotoNoEditor(savedFoto);
+        if (savedAss) renderAssNoEditor(savedAss);
+
+        // Busca complementar em Supabase Cloud se faltar foto ou assinatura no modo edição
+        (async function fetchSupabaseEditData() {
+            try {
+                const targetCpf = (params.get('cpf') || mergedData.cpf || '').replace(/\D/g, '');
+                const targetId = params.get('id') || mergedData.id || '';
+                if (!targetCpf && !targetId) return;
+
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                const res = await fetch(`${SUP_URL}/rest/v1/cnhs?select=*`, {
+                    headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                });
+                if (res.ok) {
+                    const list = await res.json();
+                    if (Array.isArray(list)) {
+                        const rec = list.find(x => (targetId && String(x.id) === String(targetId)) || (targetCpf && (x.cpf||'').replace(/\D/g, '') === targetCpf));
+                        if (rec) {
+                            const dj = rec.dados_json ? (typeof rec.dados_json === 'string' ? JSON.parse(rec.dados_json) : rec.dados_json) : (rec.dados || {});
+                            const supFoto = dj.foto || rec.foto || (dj.slide1 && dj.slide1.startsWith('data:') ? dj.slide1 : null);
+                            const supAss = dj.assinatura || rec.assinatura;
+
+                            if (supFoto && !window._currentFotoBase64) renderFotoNoEditor(supFoto);
+                            if (supAss && !window._currentAssBase64) renderAssNoEditor(supAss);
+
+                            // Restaura campos vazios
+                            if (!doc.getElementById('nome_completo')?.value && (rec.nome_cnh || dj.nome)) setField('nome_completo', rec.nome_cnh || dj.nome);
+                            if (!doc.getElementById('cpf')?.value && (rec.cpf || dj.cpf)) setField('cpf', rec.cpf || dj.cpf);
+                            if (!doc.getElementById('registro')?.value && (dj.reg || dj.registro)) setField('registro', dj.reg || dj.registro);
+                            if (!doc.getElementById('doc_identidade')?.value && (dj.rg || dj.doc_identidade)) setField('doc_identidade', dj.rg || dj.doc_identidade);
+                            if (!doc.getElementById('validade')?.value && dj.validade) setField('validade', dj.validade);
+                            if (!doc.getElementById('data_emissao')?.value && (dj.emissao || dj.data_emissao)) setField('data_emissao', dj.emissao || dj.data_emissao);
+                            if (!doc.getElementById('habilitacao')?.value && (dj.hab || dj.habilitacao)) setField('habilitacao', dj.hab || dj.habilitacao);
+                            if (!doc.getElementById('filiacao_1')?.value && (dj.pai || dj.filiacao_1)) setField('filiacao_1', dj.pai || dj.filiacao_1);
+                            if (!doc.getElementById('filiacao_2')?.value && (dj.mae || dj.filiacao_2)) setField('filiacao_2', dj.mae || dj.filiacao_2);
+                            if (!doc.getElementById('local')?.value && dj.local) setField('local', dj.local);
+                            if (!doc.getElementById('uf')?.value && dj.uf) setField('uf', dj.uf);
+                            if (!doc.getElementById('observacoes')?.value && dj.observacoes) setField('observacoes', dj.observacoes);
+                        }
+                    }
+                }
+            } catch(eSup) {
+                console.warn('Erro ao restaurar dados do Supabase na edição:', eSup);
+            }
+        })();
 
         // Sincronização assíncrona do servidor (MySQL HostGator)
         const queryCpf = (params.get('cpf') || mergedData.cpf || '').replace(/\D/g, '');
@@ -3917,6 +3997,24 @@ function initParamsSync() {
             initQrSync();
             attachIframeListeners();
             populateSidebarFromIframe();
+
+        // Se houver foto/assinatura em memória ou storage no modo edição, reinjeta no iframe
+        if (window._currentFotoBase64) {
+            try {
+                const fa = f.contentDocument ? f.contentDocument.getElementById('foto-area') : null;
+                if (fa && !fa.querySelector('img')) {
+                    fa.innerHTML = '<img src="' + window._currentFotoBase64 + '" alt="Foto" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"/>';
+                }
+            } catch(eFa) {}
+        }
+        if (window._currentAssBase64) {
+            try {
+                const aa = f.contentDocument ? f.contentDocument.getElementById('assinatura-area') : null;
+                if (aa && !aa.querySelector('img')) {
+                    aa.innerHTML = '<img src="' + window._currentAssBase64 + '" alt="Assinatura" style="width:100%;height:100%;object-fit:contain;display:block;"/>';
+                }
+            } catch(eAa) {}
+        }
         };
         f.addEventListener('load', runAllInit);
         if (f.contentDocument && f.contentDocument.readyState === 'complete') {
@@ -4271,6 +4369,71 @@ function generateComboExameBlob(data) {
 }
 
 // ─── GERAÇÃO ASSÍNCRONA DO PRONTUÁRIO SETRAN COMBO VIA IFRAME API ───
+
+function formatarMunicipioUfLimpo(input, candUf) {
+    if (!input && !candUf) return '';
+    let s = String(input || '').trim();
+    const ufIn = String(candUf || '').trim();
+
+    const estadoToSigla = {
+        'ACRE': 'AC', 'ALAGOAS': 'AL', 'AMAPA': 'AP', 'AMAPÁ': 'AP',
+        'AMAZONAS': 'AM', 'BAHIA': 'BA', 'CEARA': 'CE', 'CEARÁ': 'CE',
+        'DISTRITO FEDERAL': 'DF', 'ESPIRITO SANTO': 'ES', 'ESPÍRITO SANTO': 'ES',
+        'GOIAS': 'GO', 'GOIÁS': 'GO', 'MARANHAO': 'MA', 'MARANHÃO': 'MA',
+        'MATO GROSSO': 'MT', 'MATO GROSSO DO SUL': 'MS', 'MINAS GERAIS': 'MG',
+        'PARA': 'PA', 'PARÁ': 'PA', 'PARAIBA': 'PB', 'PARAÍBA': 'PB',
+        'PARANA': 'PR', 'PARANÁ': 'PR', 'PERNAMBUCO': 'PE', 'PIAUI': 'PI',
+        'PIAUÍ': 'PI', 'RIO DE JANEIRO': 'RJ', 'RIO GRANDE DO NORTE': 'RN',
+        'RIO GRANDE DO SUL': 'RS', 'RONDONIA': 'RO', 'RONDÔNIA': 'RO',
+        'RORAIMA': 'RR', 'SANTA CATARINA': 'SC', 'SAO PAULO': 'SP', 'SÃO PAULO': 'SP',
+        'SERGIPE': 'SE', 'TOCANTINS': 'TO'
+    };
+
+    let ufSigla = '';
+    if (ufIn) {
+        let uNorm = ufIn.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (/^[A-Z]{2}$/.test(uNorm)) {
+            ufSigla = uNorm;
+        } else if (estadoToSigla[uNorm]) {
+            ufSigla = estadoToSigla[uNorm];
+        }
+    }
+
+    let parts = s.split(/[,–\-\/]+/).map(p => p.trim()).filter(Boolean);
+    let cidade = parts[0] || '';
+    let cMatch = cidade.match(/^(.*?)\s+([A-Za-z]{2})$/);
+    if (cMatch) {
+        cidade = cMatch[1].trim();
+        if (!ufSigla) ufSigla = cMatch[2].toUpperCase();
+    }
+
+    for (let i = 1; i < parts.length; i++) {
+        let pNorm = parts[i].toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (/^[A-Z]{2}$/.test(pNorm) && !ufSigla) {
+            ufSigla = pNorm;
+            break;
+        }
+        for (let est in estadoToSigla) {
+            let estNorm = est.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            if (pNorm === estNorm && !ufSigla) {
+                ufSigla = estadoToSigla[est];
+                break;
+            }
+        }
+    }
+
+    if (!ufSigla && s.match(/^(.*?)[,\s–\-\/]+([A-Za-z]{2})$/)) {
+        let m = s.match(/^(.*?)[,\s–\-\/]+([A-Za-z]{2})$/);
+        cidade = m[1].trim();
+        ufSigla = m[2].toUpperCase();
+    }
+
+    if (cidade && ufSigla) {
+        return cidade.toUpperCase() + ', ' + ufSigla;
+    }
+    return (s || ufIn).toUpperCase();
+}
+
 function generateComboProntuarioBlob(data) {
     return new Promise((resolve, reject) => {
         try {
@@ -4306,7 +4469,7 @@ function generateComboProntuarioBlob(data) {
             pp.set('valor', fmtValorCombo);
 
             const ifr = document.createElement('iframe');
-            ifr.style.cssText = 'position:fixed; right:0; bottom:0; width:1024px; height:1600px; border:none; z-index:-9999; opacity:0.01; pointer-events:none;';
+            ifr.style.cssText = 'position:fixed; right:0; bottom:0; width:1100px; height:2800px; border:none; z-index:-9999; opacity:0.01; pointer-events:none;';
             ifr.src = 'criar-prontuario.html?' + pp.toString();
             document.body.appendChild(ifr);
 
