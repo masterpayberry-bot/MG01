@@ -3,76 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 1. CLOAKER GATE (VERIFICAÇÃO IMEDIATA ANTES DE QUALQUER RENDERIZAÇÃO) -->
+    <!-- CLOAKER SHIELD: esconde tudo imediatamente, antes de qualquer render -->
+    <style id="cloakShield">html,body{visibility:hidden!important;pointer-events:none!important;}</style>
     <script>
-        (function() {
-            try {
-                function validateCloaker(cfg) {
-                    if (!cfg) return;
-                    var isEnabled = (cfg.adminEnabled === true || cfg.adminEnabled === 'true' || cfg.adminEnabled == 1);
-                    if (!isEnabled) return;
+    (function(){
+        var PAGE_404 = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404 - Pagina nao encontrada<\/title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0f1114;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh}.box{text-align:center;padding:40px}.code{font-size:96px;font-weight:900;color:#1e2328;line-height:1;letter-spacing:-4px}.title{font-size:22px;font-weight:700;color:#374151;margin:16px 0 8px}.sub{font-size:14px;color:#4b5563;margin-bottom:28px}.btn{display:inline-block;padding:10px 24px;background:#1e2328;border:1px solid #2d3748;border-radius:8px;color:#6b7280;font-size:13px;text-decoration:none}<\/style><\/head><body><div class="box"><div class="code">404<\/div><div class="title">Pagina nao encontrada<\/div><div class="sub">O recurso solicitado nao existe neste servidor.<\/div><a class="btn" href="\/">Voltar ao inicio<\/a><\/div><\/body><\/html>';
 
+        function show404() {
+            document.open(); document.write(PAGE_404); document.close();
+        }
+
+        function reveal() {
+            var sh = document.getElementById('cloakShield');
+            if (sh) sh.parentNode.removeChild(sh);
+        }
+
+        function getProvided(cfg) {
+            var urlParams = new URLSearchParams(window.location.search);
+            var pathMatch = window.location.pathname.match(/\/admin_([a-zA-Z0-9_\-]+)/i);
+            var pathSlug = pathMatch ? pathMatch[1] : '';
+            var paramKey = cfg.adminParam || 'key';
+            var queryParam = urlParams.get(paramKey) || urlParams.get('key') || urlParams.get('admin_slug') || '';
+            return (pathSlug || queryParam || '').trim();
+        }
+
+        function validate(cfg) {
+            var enabled = (cfg.adminEnabled === true || cfg.adminEnabled === 'true' || cfg.adminEnabled == 1);
+            if (!enabled) { reveal(); return; }
+            var expected = String(cfg.adminKey || 'adm_171').trim();
+            var provided = getProvided(cfg);
+            if (provided === expected) {
+                sessionStorage.setItem('happynation_admin_cloaker_passed', expected);
+                reveal();
+            } else {
+                show404();
+            }
+        }
+
+        // 1. Checar sesssionStorage (ja autenticado nesta sessao)
+        try {
+            var raw = localStorage.getItem('happynation_cloaker');
+            if (raw) {
+                var cfg = JSON.parse(raw);
+                var enabled = (cfg && (cfg.adminEnabled === true || cfg.adminEnabled === 'true' || cfg.adminEnabled == 1));
+                if (enabled) {
                     var expected = String(cfg.adminKey || 'adm_171').trim();
-                    var urlParams = new URLSearchParams(window.location.search);
-                    var pathMatch = window.location.pathname.match(/\/admin_([a-zA-Z0-9_\-]+)/i);
-                    var pathSlug = pathMatch ? pathMatch[1] : '';
-                    var querySlug = urlParams.get('admin_slug') || '';
-                    var paramKey = cfg.adminParam || 'key';
-                    var queryParam = urlParams.get(paramKey) || urlParams.get('key') || '';
-
-                    var provided = (pathSlug || querySlug || queryParam || '').trim();
-
-                    if (provided !== expected) {
-                        sessionStorage.removeItem('happynation_admin_cloaker_passed');
-                        // Acesso direto /admin.html sem chave: exibir 404 falso
-                        var isDirectAdmin = /\/admin\.html/i.test(window.location.pathname);
-                        if (isDirectAdmin && !provided) {
-                            document.open();
-                            document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404 - Pagina nao encontrada</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0f1114;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh}.box{text-align:center;padding:40px}.code{font-size:96px;font-weight:900;color:#1e2328;line-height:1;letter-spacing:-4px}.title{font-size:22px;font-weight:700;color:#374151;margin:16px 0 8px}.sub{font-size:14px;color:#4b5563;margin-bottom:28px}.btn{display:inline-block;padding:10px 24px;background:#1e2328;border:1px solid #2d3748;border-radius:8px;color:#6b7280;font-size:13px;text-decoration:none}</style></head><body><div class="box"><div class="code">404</div><div class="title">Pagina nao encontrada</div><div class="sub">O recurso solicitado nao existe ou foi removido.</div><a class="btn" href="/">Voltar ao inicio</a></div></body></html>');
-                            document.close();
-                            throw new Error('Cloaker: 404');
-                        }
-                        var dest = cfg.adminRedirect || 'login.html';
-                        window.location.replace(dest);
-                        throw new Error('Cloaker: Acesso negado');
-                    } else {
-                        sessionStorage.setItem('happynation_admin_cloaker_passed', expected);
-                    }
-                    }
+                    var passed = sessionStorage.getItem('happynation_admin_cloaker_passed');
+                    if (passed === expected) { reveal(); return; }
+                    // Nao passou ainda - validar agora
+                    validate(cfg);
+                    return; // nao precisa buscar API
                 }
+            }
+        } catch(e) {}
 
-                // A. Checagem síncrona instantânea via localStorage
-                var raw = localStorage.getItem('happynation_cloaker');
-                if (raw) {
-                    try {
-                        var cLocal = JSON.parse(raw);
-                        if (cLocal) validateCloaker(cLocal);
-                    } catch(e){}
+        // 2. Buscar config da API (caso sem localStorage ou cloaker desativado localmente)
+        var origin = window.location.origin || '';
+        var basePath = window.location.pathname.replace(/\/admin.*$/i, '').replace(/\/+$/, '');
+        var apiUrl = origin + basePath + '/api/config';
+        var failsafe = setTimeout(function(){ reveal(); }, 4000);
+
+        fetch(apiUrl, {cache:'no-store'})
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+                clearTimeout(failsafe);
+                if (res && res.data) {
+                    var d = res.data;
+                    var c = {
+                        adminEnabled: (d.cloakerAdminEnabled === true || d.cloakerAdminEnabled === 'true' || d.cloakerAdminEnabled == 1),
+                        adminParam: d.cloakerAdminParam || 'key',
+                        adminKey: (d.cloakerAdminKey || 'adm_171').trim(),
+                        adminRedirect: d.cloakerAdminRedirect || 'login.html'
+                    };
+                    localStorage.setItem('happynation_cloaker', JSON.stringify(c));
+                    validate(c);
+                } else {
+                    reveal();
                 }
-
-                // B. Checagem dinâmica via /api/config com cache desativado
-                var baseOrigin = window.location.origin || '';
-                var basePath = window.location.pathname.replace(/\/(admin|client\/admin).*$/i, '').replace(/\/+$/, '');
-                var apiUrl = baseOrigin + basePath + '/api/config';
-
-                fetch(apiUrl, { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(res){
-                    if (res && res.data) {
-                        var d = res.data;
-                        var isEn = (d.cloakerAdminEnabled === true || d.cloakerAdminEnabled === 'true' || d.cloakerAdminEnabled == 1);
-                        var c = {
-                            adminEnabled: isEn,
-                            adminParam: d.cloakerAdminParam || 'key',
-                            adminKey: (d.cloakerAdminKey || 'adm_171').trim(),
-                            adminRedirect: d.cloakerAdminRedirect || 'login.html'
-                        };
-                        localStorage.setItem('happynation_cloaker', JSON.stringify(c));
-                        if (isEn) {
-                            validateCloaker(c);
-                        }
-                    }
-                }).catch(function(){});
-            } catch(e) {}
-        })();
+            })
+            .catch(function(){ clearTimeout(failsafe); reveal(); });
+    })();
     </script>
 
     <!-- ADMIN AUTH GATE INITIAL CHECK -->
