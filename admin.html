@@ -5036,11 +5036,20 @@
             const tbody = document.getElementById('adminActivitiesTbody');
             if (!tbody) return;
 
+            // Filtro de limpeza: ignorar itens anteriores ao ultimo clear
+            const clearedAt = localStorage.getItem('happynation_activities_cleared_at');
+            const clearedTime = clearedAt ? new Date(clearedAt).getTime() : 0;
+
             const feed = [];
             const seenKeys = new Set();
 
             function addAct(item) {
                 if (!item || !item.descricao) return;
+                // Bloquear itens anteriores ao ultimo clear
+                if (clearedTime > 0 && item.created_at) {
+                    const itemTime = new Date(item.created_at).getTime();
+                    if (!isNaN(itemTime) && itemTime <= clearedTime) return;
+                }
                 const dateKey = item.created_at ? String(item.created_at).substring(0, 16) : '';
                 const k = (item.tipo || '') + '_' + item.descricao.toUpperCase().trim() + '_' + (item.usuario || '').trim() + '_' + dateKey;
                 if (!seenKeys.has(k)) {
@@ -8949,6 +8958,7 @@ function updateDashboardMetrics() {
 
 </body>
 </html>
+
 
 
 
