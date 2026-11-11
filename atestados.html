@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -239,8 +239,12 @@
             color: #64748b;
         }
         body.light-theme .name-cell {
-            color: #0f172a;
             font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         body.light-theme .cpf-cell {
             color: #334155;
@@ -805,6 +809,7 @@
             border-collapse: collapse;
             font-size: 12.5px;
             text-align: left;
+            table-layout: fixed;
         }
 
         thead th {
@@ -843,7 +848,10 @@
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
-        }
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }max-width: 220px; overflow: hidden; text-overflow: ellipsis;
 
         .cpf-cell {
             font-family: var(--font-mono);
@@ -868,8 +876,10 @@
         .actions-cell {
             display: flex;
             align-items: center;
+            justify-content: flex-end;
             gap: 8px;
             position: relative;
+            white-space: nowrap;
         }
 
         .btn-edit-cnh {
@@ -1619,13 +1629,13 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" style="accent-color:var(--primary); cursor:pointer;"></th>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>CPF</th>
-                        <th>Atestado Status</th>
-                        <th>Data e Hora da Geração</th>
-                        <th>Ações</th>
+                        <th style="width: 40px; text-align:center;"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" style="accent-color:var(--primary); cursor:pointer;"></th>
+                        <th style="width: 90px;">ID</th>
+                        <th style="min-width: 180px;">Nome</th>
+                        <th style="width: 130px;">CPF</th>
+                        <th style="width: 110px;">Atestado Status</th>
+                        <th style="width: 155px;">Data e Hora da Geração</th>
+                        <th style="width: 165px; text-align:right;">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="tblBody">
@@ -2374,6 +2384,10 @@ function handleLogout(e) {
 
 </body>
 </html>
+
+
+
+
 
 
 
