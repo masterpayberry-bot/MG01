@@ -761,14 +761,14 @@
         const mae = (p.get('mae') || 'VANESSA SANTOS DO NASCIMENTO').toUpperCase();
         const pront = p.get('pront') || '005592173';
         const atend = p.get('atend') || '2290479';
-        const conv = p.get('convenio') || 'UNIMED RJ';
+        const conv = p.get('convenio') || p.get('conv') || 'UNIMED RJ';
         const setor = p.get('setor') || '';
         const cid = p.get('cid') || 'A90';
         const diag = p.get('diag') || 'quadro de dengue';
         const dias = p.get('dias') || '2';
         const dataAt = p.get('data') || p.get('data_atend') || '29/08/24 as 04:07';
         const dataAss = p.get('ass') || p.get('data_ass') || '29/08/2024 03:20:50';
-        const medico = (p.get('medico') || p.get('prof') || 'MARIA CAROLINA CALIANO DA SILVA').toUpperCase();
+        const medico = (p.get('medico') || p.get('med') || p.get('prof') || 'MARIA CAROLINA CALIANO DA SILVA').toUpperCase();
         const crm = (p.get('crm') || 'CRMRJ-01212699').toUpperCase();
         const cargo = (p.get('cargo') || p.get('funcao') || 'MÉDICA').toUpperCase();
         const unid1 = (p.get('unidade1') || p.get('unidade') || 'TELESSAUDE - UNIMEDRJ').toUpperCase();

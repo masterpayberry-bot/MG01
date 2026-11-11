@@ -1380,13 +1380,15 @@
                         <div class="footer-logos">
                             <img id="imgIcpLogos" src="" alt="ICP Brasil" style="height:46px; object-fit:contain;">
                         </div>
-                        <div class="footer-qr-col">
-                            <div id="footerQrDiv" style="width:60px;height:60px;"></div>
-                            <div class="footer-qr-label">
-                                Aponte a câmera do celular,<br>leitor de QR code ou visite:<br>
-                                <strong id="viewUrlQr">https://unimed-atestado.vercel.app</strong>
+                        <div class="footer-qr-col" style="display:flex; flex-direction:row; align-items:center; gap:9px; flex-shrink:0;">
+                            <div id="footerQrDiv" style="width:78px; height:78px; min-width:78px; background:#ffffff; border-radius:2px; display:flex; align-items:center; justify-content:center; overflow:hidden;"></div>
+                            <div style="display:flex; flex-direction:column; gap:2px; text-align:left;">
+                                <div class="footer-qr-label" style="font-size:7px; color:#000; line-height:1.25; font-family:Arial,sans-serif;">
+                                    Aponte a câmera do celular,<br>leitor de QR code ou visite:<br>
+                                    <strong id="viewUrlQr" style="font-size:7px; font-weight:700; color:#000; font-family:Arial,sans-serif; word-break:break-all;">https://unimed-atestado.vercel.app</strong>
+                                </div>
+                                <div class="footer-qr-code" style="font-size:9.5px; font-weight:700; color:#000; font-family:Arial,sans-serif; margin-top:2px;">CÓDIGO: <span id="viewCodValid">1469239712</span></div>
                             </div>
-                            <div class="footer-qr-code">CÓDIGO: <span id="viewCodValid">1469239712</span></div>
                         </div>
                     </div>
 
@@ -1630,23 +1632,12 @@ function getUnimedValidationUrl() {
     params.set('cod', g('inpCodValid') || '1469239712');
     params.set('nome', g('inpNomePaciente') || 'LAURA NASCIMENTO OLIVEIRA DE MELLO');
     params.set('cpf', g('inpCpf') || '182.114.717-01');
-    params.set('nasc', g('inpNasc') || '23/08/1985');
-    params.set('idade', g('inpIdade') || '25 Anos 2 Meses 29 Dias');
-    params.set('mae', g('inpMae') || 'VANESSA SANTOS DO NASCIMENTO');
-    params.set('pront', g('inpPront') || '005592173');
-    params.set('atend', g('inpAtend') || '2290479');
-    params.set('convenio', g('inpConvenio') || 'UNIMED RJ');
-    params.set('setor', g('inpSetor') || '');
     params.set('cid', g('inpCid') || 'A90');
-    params.set('diag', g('inpDiag') || 'quadro de dengue');
     params.set('dias', g('inpDias') || '2');
     params.set('data', g('inpDataAtend') || '29/08/24 as 04:07');
-    params.set('ass', g('inpDataAss') || '29/08/2024 03:20:50');
-    params.set('medico', g('inpProfissional') || 'MARIA CAROLINA CALIANO DA SILVA');
     params.set('crm', g('inpCrm') || 'CRMRJ-01212699');
-    params.set('cargo', g('inpFuncaoStamp') || 'MÉDICA');
-    params.set('unidade1', g('inpUnidade1') || 'TELESSAUDE - UNIMEDRJ');
-    params.set('unidade2', g('inpUnidade2') || 'AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO');
+    params.set('med', g('inpProfissional') || 'MARIA CAROLINA CALIANO DA SILVA');
+    params.set('diag', g('inpDiag') || 'quadro de dengue');
 
     const acomp = g('inpAcomp');
     if (acomp) {
@@ -1663,15 +1654,56 @@ function gerarQr() {
     const el = document.getElementById('footerQrDiv');
     if (!el) return;
     el.innerHTML = '';
+
     if (typeof QRCode !== 'undefined') {
-        new QRCode(el, {
-            text: fullUrl,
-            width: 60,
-            height: 60,
-            colorDark: '#000000',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.M
-        });
+        try {
+            // Gera QR Code em alta resolução (320px) com correção L (módulos maiores e mais legíveis por câmeras)
+            const tempDiv = document.createElement('div');
+            new QRCode(tempDiv, {
+                text: fullUrl,
+                width: 320,
+                height: 320,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.L
+            });
+
+            setTimeout(() => {
+                let imgUrl = '';
+                const cvs = tempDiv.querySelector('canvas');
+                if (cvs) {
+                    try { imgUrl = cvs.toDataURL('image/png'); } catch(e) {}
+                }
+                const imgEl = tempDiv.querySelector('img');
+                if (!imgUrl && imgEl && imgEl.src) {
+                    imgUrl = imgEl.src;
+                }
+
+                if (imgUrl) {
+                    el.innerHTML = `<img src="${imgUrl}" alt="QR Code" style="width:76px; height:76px; display:block; image-rendering:pixelated;">`;
+                } else {
+                    el.innerHTML = '';
+                    new QRCode(el, {
+                        text: fullUrl,
+                        width: 76,
+                        height: 76,
+                        colorDark: '#000000',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.L
+                    });
+                }
+            }, 60);
+        } catch(err) {
+            console.error('Erro ao gerar QR Code HD:', err);
+            new QRCode(el, {
+                text: fullUrl,
+                width: 76,
+                height: 76,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.L
+            });
+        }
     }
 }
 
