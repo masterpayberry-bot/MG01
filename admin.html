@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -1298,6 +1298,8 @@
         .badge-unimed { background: rgba(0, 153, 93, 0.18); color: #00d67d; border: 1px solid rgba(0, 153, 93, 0.4); }
         .badge-upa { background: rgba(2, 132, 199, 0.18); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4); }
         .badge-cnh { background: rgba(0, 220, 130, 0.18); color: #00dc82; border: 1px solid rgba(0, 220, 130, 0.4); }
+        .badge-crlv { background: rgba(16, 185, 129, 0.18); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-mp { background: rgba(0, 158, 227, 0.18); color: #009ee3; border: 1px solid rgba(0, 158, 227, 0.4); }
         .badge-rg { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
         .badge-exame { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
         .badge-pron { background: rgba(234, 179, 8, 0.18); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
@@ -2319,15 +2321,6 @@
                                 <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
                                 <span>Preços & Configs</span>
                             </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="nav-item" onclick="switchTab('dominios', this)">
-                            <div class="nav-item-left">
-                                <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-                                <span>Multi-Domínios (3)</span>
-                            </div>
-                            <span class="nav-badge" style="background:rgba(0,220,130,0.18); color:#00dc82; font-weight:800; font-size:10px; border:1px solid rgba(0,220,130,0.3);">HOSTMF</span>
                         </div>
                     </li>
                     <li>
@@ -3629,7 +3622,7 @@
             <!-- TAB: CLOAKER & PROTEÇÃO DE ACESSO -->
             
             <!-- TAB: GERENCIADOR DE 3 DOMÍNIOS (HOSTMF) -->
-            <div class="view-panel" id="view-dominios">
+            <div class="view-panel" id="view-dominios" style="display:none !important;">
                 <div class="section-header">
                     <div class="sec-title-group">
                         <div class="sec-title" style="display:flex; align-items:center; gap:10px;">
@@ -5394,10 +5387,27 @@
         }
         function clearAdminActivities() {
             if (!confirm('Limpar todo o histórico de atividades?')) return;
+            // 1. Marca flag de limpeza para não recriar do histórico antigo
+            const clearTime = new Date().toISOString();
+            localStorage.setItem('happynation_activities_cleared_at', clearTime);
             localStorage.setItem(ADMIN_ACTS_KEY, '[]');
+            
+            // 2. Limpa também chaves locais antigas de atestados/exames/diplomas que alimentam a lista
+            try {
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && (k.startsWith('happynation_atestados_') || k.startsWith('happynation_exames_') || k.startsWith('happynation_prontuarios_') || k.startsWith('happynation_rgs_') || k.startsWith('happynation_diplomas_') || k === 'happynation_admin_diplomas')) {
+                        keysToRemove.push(k);
+                    }
+                }
+                keysToRemove.forEach(k => localStorage.removeItem(k));
+            } catch(e) {}
+
             const tbody = document.getElementById('adminActivitiesTbody');
             if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#475569; padding:24px;">Nenhuma atividade registrada ainda.</td></tr>';
             if (window.MGSync) window.MGSync.api.clear('activities');
+            renderAdminActivities();
         }
 
                 function countAllDocuments() {
