@@ -1164,6 +1164,33 @@
             updateDoc();
         }
 
+        function registrarAtividadeComprovante() {
+            try {
+                const ADMIN_ACTS_KEY = 'happynation_admin_activities';
+                let adminActs = [];
+                try { adminActs = JSON.parse(localStorage.getItem(ADMIN_ACTS_KEY) || '[]'); } catch(ex) {}
+                const actTimeIso = new Date().toISOString();
+                const u = JSON.parse(localStorage.getItem('happynation_user') || '{}');
+                const userNameAct = u.nome || 'Cliente';
+                const pagador = (document.getElementById('inpPagador')?.value || document.getElementById('inpTitular')?.value || 'COMPROVANTE').toUpperCase();
+
+                adminActs.unshift({
+                    tipo: 'mp',
+                    subRotulo: 'Comprovante Mercado Pago',
+                    tagClass: 'badge-mp',
+                    tagText: 'MERCADO PAGO',
+                    cor: '#009ee3',
+                    descricao: pagador,
+                    usuario: userNameAct,
+                    valor: '- R$ 10,00',
+                    status: 'concluido',
+                    created_at: actTimeIso
+                });
+                if (adminActs.length > 200) adminActs = adminActs.slice(0, 200);
+                localStorage.setItem(ADMIN_ACTS_KEY, JSON.stringify(adminActs));
+            } catch(eAct) {}
+        }
+
         // ─── GERAÇÃO DE IMAGEM PNG ───
         async function gerarImagemComprovante() {
             const btn = document.getElementById('btnDownloadPng');
@@ -1193,6 +1220,7 @@
                 if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
                     window.MGSaldo.deduct(10.00);
                 }
+                registrarAtividadeComprovante();
 
                 btn.innerHTML = '<span>Sucesso! Imagem Salva</span>';
                 setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2000);
@@ -1243,6 +1271,7 @@
                 if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
                     window.MGSaldo.deduct(10.00);
                 }
+                registrarAtividadeComprovante();
 
                 btn.innerHTML = '<span>PDF Gerado com Sucesso!</span>';
                 setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2500);

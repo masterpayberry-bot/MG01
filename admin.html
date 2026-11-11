@@ -1325,6 +1325,7 @@
         .badge-diploma { background: rgba(99, 102, 241, 0.18); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); }
         .badge-pix { background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
         .badge-user { background: rgba(236, 72, 153, 0.18); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.4); }
+        .badge-saldo { background: rgba(0, 220, 130, 0.18); color: #00dc82; border: 1px solid rgba(0, 220, 130, 0.4); }
 
         .actions-row {
             display: inline-flex;
@@ -5016,17 +5017,21 @@
         const ADMIN_ACTS_KEY = 'happynation_admin_activities';
         const MAX_ACTS = 50;
 
-        function logAdminActivity(tipo, descricao, usuario, valor, status) {
+        function logAdminActivity(tipo, descricao, usuario, valor, status, extras) {
             let acts = [];
             try { acts = JSON.parse(localStorage.getItem(ADMIN_ACTS_KEY) || '[]'); } catch(e) {}
-            acts.unshift({
+            const newAct = {
                 tipo: tipo,           // 'cnh' | 'saldo' | 'recarga'
                 descricao: descricao, // ex: "JEREMIAS BARBOSA"
                 usuario: usuario,     // nome do cliente/user
                 valor: valor,         // ex: "- R$ 26,00" ou "+ R$ 100,00"
                 status: status || 'concluido', // 'concluido' | 'pendente'
                 created_at: new Date().toISOString()
-            });
+            };
+            if (extras && typeof extras === 'object') {
+                Object.assign(newAct, extras);
+            }
+            acts.unshift(newAct);
             if (acts.length > MAX_ACTS) acts = acts.slice(0, MAX_ACTS);
             try { localStorage.setItem(ADMIN_ACTS_KEY, JSON.stringify(acts)); } catch(e) {}
             renderAdminActivities();
@@ -5369,10 +5374,70 @@
             }
 
             tbody.innerHTML = topActs.map(a => {
-                const subRot = a.subRotulo || (a.tipo === 'cnh' ? 'CNH Digital' : a.tipo === 'atestado_unimed' ? 'Atestado Médico (Unimed)' : a.tipo === 'atestado_upa' ? 'Atestado Médico (UPA 24h)' : 'Documento');
-                const tagCls = a.tagClass || (a.tipo === 'cnh' ? 'badge-cnh' : a.tipo === 'atestado_unimed' ? 'badge-unimed' : 'badge-upa');
-                const tagTxt = a.tagText || (a.tipo === 'cnh' ? 'CNH' : a.tipo === 'atestado_unimed' ? 'UNIMED' : 'UPA 24H');
-                const cor = a.cor || (a.tipo === 'atestado_unimed' ? '#00d67d' : a.tipo === 'atestado_upa' ? '#38bdf8' : '#00dc82');
+                const _tipo = a.tipo || '';
+                const subRot = a.subRotulo || (
+                    _tipo === 'cnh'            ? 'CNH Digital' :
+                    _tipo === 'atestado_unimed'? 'Atestado Médico (Unimed)' :
+                    _tipo === 'atestado_upa'   ? 'Atestado Médico (UPA 24h)' :
+                    _tipo === 'atestado'       ? 'Atestado Médico' :
+                    _tipo === 'exame'          ? 'Exame Toxicológico (DETRAN)' :
+                    _tipo === 'prontuario'     ? 'Prontuário DETRAN' :
+                    _tipo === 'rg'             ? 'Carteira de Identidade (RG)' :
+                    _tipo === 'diploma'        ? 'Diploma Universitário' :
+                    _tipo === 'crlv'           ? 'Documento Veicular (CRLV)' :
+                    _tipo === 'mp' || _tipo === 'comprovante' ? 'Comprovante Mercado Pago' :
+                    _tipo === 'saldo'          ? 'Recarga Manual (Admin)' :
+                    _tipo === 'recarga'        ? 'Recarga de Saldo (PIX)' :
+                    _tipo === 'cadastro'       ? 'Novo Cliente Cadastrado' :
+                    'Documento'
+                );
+                const tagCls = a.tagClass || (
+                    _tipo === 'cnh'            ? 'badge-cnh' :
+                    _tipo === 'atestado_unimed'? 'badge-unimed' :
+                    _tipo === 'atestado_upa'   ? 'badge-upa' :
+                    _tipo === 'atestado'       ? 'badge-upa' :
+                    _tipo === 'exame'          ? 'badge-exame' :
+                    _tipo === 'prontuario'     ? 'badge-pron' :
+                    _tipo === 'rg'             ? 'badge-rg' :
+                    _tipo === 'diploma'        ? 'badge-diploma' :
+                    _tipo === 'crlv'           ? 'badge-crlv' :
+                    _tipo === 'mp' || _tipo === 'comprovante' ? 'badge-mp' :
+                    _tipo === 'saldo'          ? 'badge-saldo' :
+                    _tipo === 'recarga'        ? 'badge-pix' :
+                    _tipo === 'cadastro'       ? 'badge-user' :
+                    'badge-upa'
+                );
+                const tagTxt = a.tagText || (
+                    _tipo === 'cnh'            ? 'CNH' :
+                    _tipo === 'atestado_unimed'? 'UNIMED' :
+                    _tipo === 'atestado_upa'   ? 'UPA 24H' :
+                    _tipo === 'atestado'       ? 'ATESTADO' :
+                    _tipo === 'exame'          ? 'TOXICOLÓGICO' :
+                    _tipo === 'prontuario'     ? 'PRONTUÁRIO' :
+                    _tipo === 'rg'             ? 'RG DIGITAL' :
+                    _tipo === 'diploma'        ? 'DIPLOMA' :
+                    _tipo === 'crlv'           ? 'CRLV' :
+                    _tipo === 'mp' || _tipo === 'comprovante' ? 'MERCADO PAGO' :
+                    _tipo === 'saldo'          ? 'SALDO' :
+                    _tipo === 'recarga'        ? 'PIX' :
+                    _tipo === 'cadastro'       ? 'CLIENTE' :
+                    'DOCUMENTO'
+                );
+                const cor = a.cor || (
+                    _tipo === 'atestado_unimed'? '#00d67d' :
+                    _tipo === 'atestado_upa'   ? '#38bdf8' :
+                    _tipo === 'atestado'       ? '#38bdf8' :
+                    _tipo === 'exame'          ? '#fbbf24' :
+                    _tipo === 'prontuario'     ? '#facc15' :
+                    _tipo === 'rg'             ? '#34d399' :
+                    _tipo === 'diploma'        ? '#818cf8' :
+                    _tipo === 'crlv'           ? '#10b981' :
+                    _tipo === 'mp' || _tipo === 'comprovante' ? '#009ee3' :
+                    _tipo === 'saldo'          ? '#00dc82' :
+                    _tipo === 'recarga'        ? '#c084fc' :
+                    _tipo === 'cadastro'       ? '#f472b6' :
+                    '#00dc82'
+                );
 
                 const acaoHtml = '<div style="display:flex; align-items:center; gap:8px;">' +
                     '<span class="badge-doc ' + tagCls + '">' + tagTxt + '</span>' +
@@ -6246,7 +6311,13 @@ function updateDashboardMetrics() {
                 'Adicionado pelo Admin',
                 activeUserForSaldo.nome,
                 `+ R$ ${amount.toFixed(2).replace('.', ',')}`,
-                'concluido'
+                'concluido',
+                {
+                    subRotulo: 'Recarga Manual (Admin)',
+                    tagClass: 'badge-saldo',
+                    tagText: 'SALDO',
+                    cor: '#00dc82'
+                }
             );
         }
 
