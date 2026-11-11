@@ -1305,7 +1305,7 @@ switch ($action) {
         }));
         writeDbJson($db);
 
-        // 3. Registra CPF na lista de cancelados
+        // 3. Registra CPF na lista de cancelados e bloqueados
         if (!empty($cleanCpf)) {
             $cfg = readConfigJson();
             if (!isset($cfg['canceled_cpfs']) || !is_array($cfg['canceled_cpfs'])) {
@@ -1314,6 +1314,11 @@ switch ($action) {
             if (!in_array($cleanCpf, $cfg['canceled_cpfs'])) {
                 $cfg['canceled_cpfs'][] = $cleanCpf;
             }
+            $vPendReq = trim($inputData['valor_pendencia'] ?? '500,00');
+            if (!isset($cfg['blocked_cpfs']) || !is_array($cfg['blocked_cpfs'])) {
+                $cfg['blocked_cpfs'] = [];
+            }
+            $cfg['blocked_cpfs'][$cleanCpf] = ['valor_pendencia' => $vPendReq];
             writeConfigJson($cfg);
         }
 
@@ -1458,7 +1463,8 @@ switch ($action) {
             // Se NÃO encontrou CNH ativa e está na lista de cancelados, aí sim avisa que o prontuário foi cancelado
             $cfg = readConfigJson();
             if (in_array($cleanCpf, $cfg['canceled_cpfs'] ?? [])) {
-                jsonResponse('error', ['status' => 'canceled'], 'Prontuário vencido, documentação foi cancelada.');
+                $vPendRet = $cfg['blocked_cpfs'][$cleanCpf]['valor_pendencia'] ?? '500,00';
+                jsonResponse('error', ['status' => 'canceled', 'blocked' => true, 'valor_pendencia' => $vPendRet], 'Prontuário bloqueado por pendência administrativa.');
             }
             jsonResponse('error', null, 'CPF não encontrado no sistema. Verifique o número digitado.');
         }

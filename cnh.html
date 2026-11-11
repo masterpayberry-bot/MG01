@@ -2161,25 +2161,18 @@ function toggleSelectAll(master) {
 }
 
 function deleteCnhRow(cnhId) {
-    if (!confirm('Deseja realmente excluir este registro de CNH? O prontuário do cliente será cancelado.')) return;
-    const itemToDelete = allCnhs.find(c => c.id === cnhId);
-    const cleanCpf = itemToDelete ? (itemToDelete.cpf || '').replace(/\D/g, '') : '';
-    allCnhs = allCnhs.filter(c => c.id !== cnhId);
+    if (!confirm('Deseja realmente excluir esta CNH permanentemente? O prontuário deste CPF será cancelado no sistema.')) return;
+
+    let cnhs = getCnhs();
+    const itemToDelete = cnhs.find(c => c.id === cnhId);
+    const cleanCpf = itemToDelete && itemToDelete.cpf ? itemToDelete.cpf.replace(/\D/g, '') : '';
+    const vPendVal = itemToDelete ? (itemToDelete.valor_pendencia || itemToDelete.valor || (itemToDelete.dados && itemToDelete.dados.valor_pendencia) || '500,00') : '500,00';
+
+    cnhs = cnhs.filter(c => c.id !== cnhId);
+    saveCnhs(cnhs);
 
     try {
-        // 1. Registra ID na lista permanente de CNHs excluídas
-        const deletedIds = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
-        if (!deletedIds.includes(cnhId)) {
-            deletedIds.push(cnhId);
-            localStorage.setItem('happynation_deleted_cnhs', JSON.stringify(deletedIds));
-        }
-
-        // 2. Remove de happynation_admin_cnhs
-        const adminCnhs = JSON.parse(localStorage.getItem('happynation_admin_cnhs') || '[]');
-        const cleanAdmin = adminCnhs.filter(c => c.id !== cnhId && (cleanCpf ? (c.cpf || '').replace(/\D/g, '') !== cleanCpf : true));
-        localStorage.setItem('happynation_admin_cnhs', JSON.stringify(cleanAdmin));
-
-        // 3. Remove de todas as chaves happynation_cnhs_*
+        // Limpa das listas em localStorage de todos os usuários
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.startsWith('happynation_cnhs_')) {
@@ -2200,17 +2193,23 @@ function deleteCnhRow(cnhId) {
             if (!canceled.includes(cleanCpf)) {
                 canceled.push(cleanCpf);
                 localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceled));
+            }
+            let delIds = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+            if (!delIds.includes(cleanCpf)) delIds.push(cleanCpf);
+            if (cnhId && !delIds.includes(String(cnhId))) delIds.push(String(cnhId));
+            localStorage.setItem('happynation_deleted_cnhs', JSON.stringify(delIds));
+
             try {
-                const vPendVal = itemToDelete ? (itemToDelete.valor_pendencia || itemToDelete.valor || (itemToDelete.dados && itemToDelete.dados.valor_pendencia) || '500,00') : '500,00';
                 localStorage.setItem('happynation_blocked_cnh_' + cleanCpf, JSON.stringify({ valor_pendencia: vPendVal }));
             } catch(eBlk) {}
-            }
 
             // Se a CNH ativa no app for deste CPF, limpa os dados da CNH
             let lastCnh = null;
             try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(ex) {}
             if (lastCnh && lastCnh.cpf && lastCnh.cpf.replace(/\D/g, '') === cleanCpf) {
                 localStorage.removeItem('happynation_last_cnh');
+                localStorage.removeItem('cnh_active_driver');
+                localStorage.removeItem('cnh_logged_in');
                 localStorage.removeItem('happynation_cnh_slide1');
                 localStorage.removeItem('happynation_cnh_slide2');
                 localStorage.removeItem('happynation_cnh_slide3');
@@ -2218,13 +2217,25 @@ function deleteCnhRow(cnhId) {
                 localStorage.removeItem('happynation_cnh_qr_url');
             }
         }
+
+        // Broadcast instantâneo para o aplicativo (fecha na hora caso o cliente esteja com o app aberto)
+        try {
+            const bc = new BroadcastChannel('happynation_live_sync');
+            bc.postMessage({
+                type: 'cnh_deleted',
+                cpf: cleanCpf,
+                id: cnhId,
+                valor_pendencia: vPendVal
+            });
+            bc.close();
+        } catch(eBc) {}
     } catch(e) {}
 
     // Notifica servidor para excluir do banco MySQL e de app/db.json
     fetch('api/index.php?action=delete_cnh', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: cnhId, cpf: cleanCpf })
+        body: JSON.stringify({ id: cnhId, cpf: cleanCpf, valor_pendencia: vPendVal })
     }).catch(() => {});
     fetch('api/db/cnhs/' + encodeURIComponent(cnhId), { method: 'DELETE' }).catch(() => {});
 

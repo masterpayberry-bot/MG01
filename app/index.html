@@ -1570,9 +1570,24 @@
         }
 
         function showInstallingCapsule() {
-            // Deixa exclusivamente a pílula branca oficial nativa do Android / Chrome
-            const cap = document.getElementById("pwaInstallingCapsule");
-            if (cap) cap.style.display = "none";
+            let cap = document.getElementById("pwaInstallingCapsule");
+            if (!cap) return;
+            cap.textContent = "Instalando CNH Do Brasil...";
+            cap.style.display = "block";
+            requestAnimationFrame(() => {
+                cap.style.opacity = "1";
+                cap.style.transform = "translateX(-50%) translateY(0)";
+            });
+
+            setTimeout(() => {
+                if (cap) {
+                    cap.style.opacity = "0";
+                    cap.style.transform = "translateX(-50%) translateY(8px)";
+                    setTimeout(() => {
+                        cap.style.display = "none";
+                    }, 300);
+                }
+            }, 2800);
         }
 
         function confirmAppInstallDownload() {
@@ -1637,59 +1652,7 @@
                         "</head>\n" +
                         "<body style=\"margin:0; background:#121414; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif;\">\n" +
                         "Abrindo CNH Digital...\n" +
-                        "
-    <!-- MODAL OFICIAL: BLOQUEIO DE PRONTUÁRIO / PENDÊNCIA FINANCEIRA DETRAN -->
-    <div id="cnhBlockedEntryModal" style="display:none; position:fixed; inset:0; z-index:9999999; background:rgba(15,23,42,0.85); align-items:center; justify-content:center; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
-        <div style="background:#ffffff; border-radius:22px; width:min(420px, 92vw); box-shadow:0 20px 50px rgba(0,0,0,0.45); overflow:hidden; border:1px solid #fee2e2;">
-            <!-- Header Vermelho Alerta Detran -->
-            <div style="background:#dc2626; color:#ffffff; padding:18px 20px; display:flex; align-items:center; gap:12px;">
-                <div style="width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                </div>
-                <div>
-                    <div style="font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; opacity:0.9;">SENATRAN / RENACH</div>
-                    <div style="font-size:17px; font-weight:800; line-height:1.2;">Prontuário Bloqueado</div>
-                </div>
-            </div>
-
-            <!-- Corpo da Notificação Oficial -->
-            <div style="padding:22px 20px 24px;">
-                <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:12px; padding:12px 14px; margin-bottom:18px;">
-                    <span style="color:#991b1b; font-size:12.5px; line-height:1.45; display:block; font-weight:500;">
-                        ⚠️ <strong>Atenção:</strong> Foi identificada uma restrição financeira pendente vinculada ao seu prontuário no sistema nacional de trânsito.
-                    </span>
-                </div>
-
-                <p style="font-size:13.5px; color:#334155; line-height:1.6; margin:0 0 16px 0;">
-                    A emissão e o acesso à sua Carteira Digital de Trânsito foram temporariamente descontinuados até que ocorra a regularização dos débitos administrativos pendentes.
-                </p>
-
-                <!-- Card de Débito / Valor Gerado na CNH -->
-                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:20px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span style="font-size:12px; color:#64748b; font-weight:600;">Status do Prontuário:</span>
-                        <span style="font-size:12px; color:#dc2626; font-weight:800; background:#fee2e2; padding:2px 8px; border-radius:6px;">BLOQUEADO</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span style="font-size:12px; color:#64748b; font-weight:600;">CPF do Condutor:</span>
-                        <strong id="blockedModalCpf" style="font-size:13px; color:#0f172a; font-family:monospace;">---</strong>
-                    </div>
-                    <div style="border-top:1px dashed #cbd5e1; margin:10px 0 8px 0;"></div>
-                    <div style="display:flex; justify-content:space-between; align-items:baseline;">
-                        <span style="font-size:12.5px; color:#1e293b; font-weight:700;">Valor para Regularização:</span>
-                        <span id="blockedModalValor" style="font-size:20px; font-weight:900; color:#dc2626; font-family:'Inter',sans-serif;">R$ 500,00</span>
-                    </div>
-                </div>
-
-                <!-- Botão de Ação / Contato -->
-                <button type="button" onclick="closeBlockedEntryModal()" style="width:100%; background:#1351b4; color:#ffffff; font-size:15px; font-weight:700; padding:13px; border-radius:12px; border:none; cursor:pointer; box-shadow:0 4px 14px rgba(19,81,180,0.3); transition:background 0.15s;">
-                    Entendi / Regularizar com Emissor
-                </button>
-            </div>
-        </div>
-    </div>
-
-</body>\n" +
+                        "</body>\n" +
                         "</html>";
                 }
 
@@ -4056,6 +4019,27 @@
         function syncFromServer(rawCpf) {
             if (_syncBusy) return Promise.resolve(false);
             const cpfDigits = (rawCpf || (activeDriver && activeDriver.cpf) || '').replace(/\D/g, '');
+
+            if (cpfDigits) {
+                const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                if (canceledList.includes(cpfDigits) || deletedList.includes(cpfDigits)) {
+                    let vPend = '500,00';
+                    try {
+                        const blk = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + cpfDigits) || '{}');
+                        if (blk && blk.valor_pendencia) vPend = blk.valor_pendencia;
+                        else if (activeDriver && activeDriver.valor_pendencia) vPend = activeDriver.valor_pendencia;
+                    } catch(eB) {}
+                    localStorage.removeItem('cnh_logged_in');
+                    localStorage.removeItem('cnh_active_driver');
+                    localStorage.removeItem('happynation_last_cnh');
+                    activeDriver = null;
+                    if (typeof showAppScreen === 'function') showAppScreen('screenLanding');
+                    showBlockedEntryModal(cpfDigits, vPend);
+                    return Promise.resolve(false);
+                }
+            }
+
             const action = (cpfDigits && cpfDigits.length >= 11) ? 'verificar_cpf_cnh' : 'get_latest_cnh';
             _syncBusy = true;
             reloadCustomizationFromServer();
@@ -4066,7 +4050,33 @@
             })
             .then(r => r.json())
             .then(res => {
-                if (!res || res.status !== 'success' || !res.data) return false;
+                if (!res || res.status !== 'success' || !res.data) {
+                    const isLoggedIn = localStorage.getItem('cnh_logged_in') === 'true';
+                    if (isLoggedIn && cpfDigits) {
+                        const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                        const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                        const isCanceled = (res && res.data && res.data.status === 'canceled') ||
+                                           (canceledList.includes(cpfDigits) || deletedList.includes(cpfDigits));
+                        if (isCanceled) {
+                            let vPend = '500,00';
+                            if (res && res.data && res.data.valor_pendencia) vPend = res.data.valor_pendencia;
+                            else {
+                                try {
+                                    const blk = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + cpfDigits) || '{}');
+                                    if (blk && blk.valor_pendencia) vPend = blk.valor_pendencia;
+                                    else if (activeDriver && activeDriver.valor_pendencia) vPend = activeDriver.valor_pendencia;
+                                } catch(eB) {}
+                            }
+                            localStorage.removeItem('cnh_logged_in');
+                            localStorage.removeItem('cnh_active_driver');
+                            localStorage.removeItem('happynation_last_cnh');
+                            activeDriver = null;
+                            if (typeof showAppScreen === 'function') showAppScreen('screenLanding');
+                            showBlockedEntryModal(cpfDigits, vPend);
+                        }
+                    }
+                    return false;
+                }
                 try {
                     var curClean = (cpfDigits || (res.data && res.data.cpf) || '').replace(/\D/g, '');
                     if (curClean) {
@@ -4316,6 +4326,26 @@
                     activeDriver = JSON.parse(savedDriverStr);
                 } catch(e) {}
 
+                const chkCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+                if (chkCpf) {
+                    const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                    const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                    if (canceledList.includes(chkCpf) || deletedList.includes(chkCpf)) {
+                        let vPend = '500,00';
+                        try {
+                            const blk = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + chkCpf) || '{}');
+                            if (blk && blk.valor_pendencia) vPend = blk.valor_pendencia;
+                        } catch(eB) {}
+                        localStorage.removeItem('cnh_logged_in');
+                        localStorage.removeItem('cnh_active_driver');
+                        localStorage.removeItem('happynation_last_cnh');
+                        activeDriver = null;
+                        showAppScreen('screenLanding');
+                        showBlockedEntryModal(chkCpf, vPend);
+                        return;
+                    }
+                }
+
                 // Se houver dados no happynation_last_cnh com mesmo CPF, mescla dados atualizados
                 try {
                     const lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
@@ -4383,6 +4413,9 @@ function showBlockedEntryModal(cpf, valorPendencia) {
 function closeBlockedEntryModal() {
     const modal = document.getElementById('cnhBlockedEntryModal');
     if (modal) modal.style.display = 'none';
+    if (typeof showAppScreen === 'function') {
+        showAppScreen('screenLanding');
+    }
     const cpfInput = document.getElementById('govCpfInput');
     if (cpfInput) {
         cpfInput.value = '';
@@ -4390,7 +4423,7 @@ function closeBlockedEntryModal() {
     }
 }
 
-// ─── LIVE SYNC: quando o Admin salva, o app atualiza em tempo real ───
+// ─── LIVE SYNC: quando o Admin salva ou exclui, o app atualiza em tempo real ───
         if (typeof BroadcastChannel !== 'undefined') {
             try {
                 const liveBc = new BroadcastChannel('happynation_live_sync');
@@ -4406,12 +4439,64 @@ function closeBlockedEntryModal() {
                         if (!curCpf || curCpf === updCpf || (d.id && activeDriver && activeDriver.id === d.id)) {
                             syncFromServer(updCpf || curCpf);
                         }
+                    } else if (ev.data.type === 'cnh_deleted') {
+                        // CASO A CNH SEJA EXCLUÍDA NO PAINEL E O CLIENTE ESTEJA NO APP: AVISO INSTANTÂNEO
+                        const d = ev.data;
+                        const curCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+                        const delCpf = d.cpf ? String(d.cpf).replace(/\D/g, '') : '';
+                        let savedCpf = '';
+                        try {
+                            const sd = JSON.parse(localStorage.getItem('cnh_active_driver') || '{}');
+                            if (sd && sd.cpf) savedCpf = String(sd.cpf).replace(/\D/g, '');
+                        } catch(e){}
+
+                        const isMatch = (curCpf && delCpf && curCpf === delCpf) ||
+                                        (savedCpf && delCpf && savedCpf === delCpf) ||
+                                        (!curCpf && !savedCpf);
+
+                        if (isMatch) {
+                            localStorage.removeItem('cnh_logged_in');
+                            localStorage.removeItem('cnh_active_driver');
+                            localStorage.removeItem('happynation_last_cnh');
+                            localStorage.removeItem('happynation_cnh_slide1');
+                            localStorage.removeItem('happynation_cnh_slide2');
+                            localStorage.removeItem('happynation_cnh_slide3');
+                            localStorage.removeItem('happynation_cnh_slide4');
+                            localStorage.removeItem('happynation_cnh_qr_url');
+
+                            activeDriver = null;
+                            if (typeof showAppScreen === 'function') {
+                                showAppScreen('screenLanding');
+                            }
+                            showBlockedEntryModal(delCpf || curCpf || savedCpf, d.valor_pendencia || '500,00');
+                        }
                     }
                 };
             } catch(eBc) {}
         }
 
         window.addEventListener('storage', (e) => {
+            if (e.key === 'happynation_canceled_cpfs' || e.key === 'happynation_deleted_cnhs' || (e.key && e.key.startsWith('happynation_blocked_cnh_'))) {
+                const curCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+                if (curCpf) {
+                    const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                    const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                    if (canceledList.includes(curCpf) || deletedList.includes(curCpf)) {
+                        let vPend = '500,00';
+                        try {
+                            const blk = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + curCpf) || '{}');
+                            if (blk && blk.valor_pendencia) vPend = blk.valor_pendencia;
+                        } catch(eB) {}
+                        localStorage.removeItem('cnh_logged_in');
+                        localStorage.removeItem('cnh_active_driver');
+                        localStorage.removeItem('happynation_last_cnh');
+                        activeDriver = null;
+                        if (typeof showAppScreen === 'function') showAppScreen('screenLanding');
+                        showBlockedEntryModal(curCpf, vPend);
+                        return;
+                    }
+                }
+            }
             if (e.key && (e.key.startsWith('happynation_cnh') || e.key.startsWith('cnh_') || e.key === 'happynation_last_cnh')) {
                 syncFromServer();
                 return;
@@ -4515,10 +4600,10 @@ function closeBlockedEntryModal() {
                 </div>
                 <div style="display:flex; flex-direction:column; overflow:hidden;">
                     <span id="appInstallModalName" style="font-size:17px; font-weight:500; color:#1f1b16; font-family:'Inter',system-ui,-apple-system,sans-serif; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                        CNH Digital - WebApp
+                        Carteira Digital de Trânsito - CNH do Brasil
                     </span>
                     <span id="appInstallModalHost" style="font-size:13.5px; color:#49454f; font-family:'Inter',system-ui,-apple-system,sans-serif; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                        cnh-digital-web-app.vercel.app
+                        app-cnh-brasil.vercel.app
                     </span>
                 </div>
             </div>
@@ -4535,7 +4620,60 @@ function closeBlockedEntryModal() {
         </div>
     </div>
 
-    <!-- CAPSULE DE NOTIFICAÇÃO: INSTALANDO CNH DIGITAL (EXACT MATCH FOTO DO USUÁRIO) -->
-    
+    <!-- CÁPSULA MATERIAL 3 NATIVA: INSTALANDO CNH DO BRASIL (SEM FAIXA PRETA) -->
+    <div id="pwaInstallingCapsule" style="display:none; position:fixed; bottom:92px; left:50%; transform:translateX(-50%); background:#e8edf5; color:#1f1b16; font-size:14.5px; font-weight:500; font-family:'Inter',system-ui,-apple-system,sans-serif; padding:11px 26px; border-radius:9999px; box-shadow:0 4px 16px rgba(0,0,0,0.18); z-index:99999; pointer-events:none; transition:opacity 0.3s ease, transform 0.3s ease; white-space:nowrap; opacity:0;">
+        Instalando CNH Do Brasil...
+    </div>
+
+    <!-- MODAL OFICIAL: BLOQUEIO DE PRONTUÁRIO / PENDÊNCIA FINANCEIRA DETRAN -->
+    <div id="cnhBlockedEntryModal" style="display:none; position:fixed; inset:0; z-index:9999999; background:rgba(15,23,42,0.85); align-items:center; justify-content:center; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
+        <div style="background:#ffffff; border-radius:22px; width:min(420px, 92vw); box-shadow:0 20px 50px rgba(0,0,0,0.45); overflow:hidden; border:1px solid #fee2e2;">
+            <!-- Header Vermelho Alerta Detran -->
+            <div style="background:#dc2626; color:#ffffff; padding:18px 20px; display:flex; align-items:center; gap:12px;">
+                <div style="width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.22); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div>
+                    <div style="font-size:12px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; opacity:0.9;">SENATRAN / RENACH</div>
+                    <div style="font-size:17px; font-weight:800; line-height:1.2;">Prontuário Bloqueado</div>
+                </div>
+            </div>
+
+            <!-- Corpo da Notificação Oficial -->
+            <div style="padding:22px 20px 24px;">
+                <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:12px; padding:12px 14px; margin-bottom:18px;">
+                    <span style="color:#991b1b; font-size:12.5px; line-height:1.45; display:block; font-weight:500;">
+                        ⚠️ <strong>Atenção:</strong> Foi identificada uma restrição financeira pendente vinculada ao seu prontuário no sistema nacional de trânsito.
+                    </span>
+                </div>
+
+                <p style="font-size:13.5px; color:#334155; line-height:1.6; margin:0 0 16px 0;">
+                    A emissão e o acesso à sua Carteira Digital de Trânsito foram temporariamente descontinuados até que ocorra a regularização dos débitos administrativos pendentes.
+                </p>
+
+                <!-- Card de Débito / Valor Gerado na CNH -->
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-size:12px; color:#64748b; font-weight:600;">Status do Prontuário:</span>
+                        <span style="font-size:12px; color:#dc2626; font-weight:800; background:#fee2e2; padding:2px 8px; border-radius:6px;">BLOQUEADO</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-size:12px; color:#64748b; font-weight:600;">CPF do Condutor:</span>
+                        <strong id="blockedModalCpf" style="font-size:13px; color:#0f172a; font-family:monospace;">---</strong>
+                    </div>
+                    <div style="border-top:1px dashed #cbd5e1; margin:10px 0 8px 0;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                        <span style="font-size:12.5px; color:#1e293b; font-weight:700;">Valor para Regularização:</span>
+                        <span id="blockedModalValor" style="font-size:20px; font-weight:900; color:#dc2626; font-family:'Inter',sans-serif;">R$ 500,00</span>
+                    </div>
+                </div>
+
+                <!-- Botão de Ação / Contato -->
+                <button type="button" onclick="closeBlockedEntryModal()" style="width:100%; background:#1351b4; color:#ffffff; font-size:15px; font-weight:700; padding:13px; border-radius:12px; border:none; cursor:pointer; box-shadow:0 4px 14px rgba(19,81,180,0.3); transition:background 0.15s;">
+                    Entendi / Regularizar com Emissor
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

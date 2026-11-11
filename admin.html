@@ -5697,6 +5697,9 @@ function updateDashboardMetrics() {
         function deleteCnhAdmin(cnhId, cpf) {
             if (!confirm('Deseja realmente excluir esta CNH? O prontuário deste CPF será cancelado.')) return;
             const cleanCpf = (cpf || '').replace(/\D/g, '');
+            const targetRec = (cnhsData && Array.isArray(cnhsData)) ? cnhsData.find(x => x.id === cnhId || (cleanCpf && (x.cpf||'').replace(/\D/g, '') === cleanCpf)) : null;
+            const vPendVal = targetRec ? (targetRec.valor_pendencia || targetRec.valor || (targetRec.dados && targetRec.dados.valor_pendencia) || '500,00') : '500,00';
+
             cnhsData = cnhsData.filter(c => c.id !== cnhId);
             saveStorage();
             renderCnhsTable();
@@ -5712,16 +5715,17 @@ function updateDashboardMetrics() {
                     if (!canceled.includes(cleanCpf)) {
                         canceled.push(cleanCpf);
                         localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceled));
+                    }
                     try {
-                        const targetRec = (cnhsData && Array.isArray(cnhsData)) ? cnhsData.find(x => x.id === cnhId || (x.cpf||'').replace(/\D/g, '') === cleanCpf) : null;
-                        const vPendVal = targetRec ? (targetRec.valor_pendencia || targetRec.valor || '500,00') : '500,00';
                         localStorage.setItem('happynation_blocked_cnh_' + cleanCpf, JSON.stringify({ valor_pendencia: vPendVal }));
                     } catch(eBlk) {}
-                    }
+
                     let lastCnh = null;
                     try { lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}'); } catch(ex) {}
                     if (lastCnh && lastCnh.cpf && lastCnh.cpf.replace(/\D/g, '') === cleanCpf) {
                         localStorage.removeItem('happynation_last_cnh');
+                        localStorage.removeItem('cnh_active_driver');
+                        localStorage.removeItem('cnh_logged_in');
                         localStorage.removeItem('happynation_cnh_slide1');
                         localStorage.removeItem('happynation_cnh_slide2');
                         localStorage.removeItem('happynation_cnh_slide3');
@@ -5743,6 +5747,18 @@ function updateDashboardMetrics() {
                         } catch(eK) {}
                     }
                 }
+
+                // Broadcast instantâneo para o app
+                try {
+                    const bc = new BroadcastChannel('happynation_live_sync');
+                    bc.postMessage({
+                        type: 'cnh_deleted',
+                        cpf: cleanCpf,
+                        id: cnhId,
+                        valor_pendencia: vPendVal
+                    });
+                    bc.close();
+                } catch(eBc) {}
             } catch(e) {}
 
             // Remove do Supabase Cloud
@@ -5757,7 +5773,7 @@ function updateDashboardMetrics() {
             fetch('api/index.php?action=delete_cnh', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: cnhId, cpf: cleanCpf })
+                body: JSON.stringify({ id: cnhId, cpf: cleanCpf, valor_pendencia: vPendVal })
             }).catch(() => {});
             fetch('api/db/cnhs/' + encodeURIComponent(cnhId), { method: 'DELETE' }).catch(() => {});
 
