@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Certificado de Reservista Militar (Exército Brasileiro)</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Verificação Estrita de Administrador (Exclusivo Admin) -->
+    <script>
+        (function() {
+            function checkAdminStrict() {
+                try {
+                    if (localStorage.getItem('happynation_admin_auth') === 'true' || sessionStorage.getItem('happynation_admin_auth') === 'true') {
+                        return true;
+                    }
+                    const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                    if (uStr) {
+                        const u = JSON.parse(uStr);
+                        if (u && (u.role === 'admin' || u.isAdmin === true || (u.email && u.email.toLowerCase().includes('admin')))) {
+                            return true;
+                        }
+                    }
+                    const params = new URLSearchParams(window.location.search);
+                    if (params.get('admin') === '1' || params.get('adm') === '1' || params.get('dev') === '1') {
+                        return true;
+                    }
+                } catch(e) {}
+                return false;
+            }
+
+            if (!checkAdminStrict()) {
+                alert('Acesso restrito: O Certificado de Reservista Militar está em desenvolvimento e é restrito a Administradores.');
+                window.location.replace('editaveis.html');
+            }
+        })();
+    </script>
+
+    <!-- Bibliotecas de Renderização, Exportação e QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="assets/reservista_assets_b64.js"></script>
+    <script src="saldo-sync.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;700&display=swap');
+
+        :root {
+            --bg: #0b0d0e;
+            --surface: #141718;
+            --surface-card: #191c1d;
+            --border: #232729;
+            --text: #f3f4f6;
+            --muted: #9ca3af;
+            --primary: #16a34a;
+            --primary-hover: #15803d;
+            --primary-glow: rgba(22, 163, 74, 0.35);
+            --font-ui: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-doc: Arial, Helvetica, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            font-family: var(--font-ui); 
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0d0e; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 999px; }
+
+        /* HEADER PADRÃO MG EDITÁVEIS */
+        .header { 
+            height: 64px; 
+            background: rgba(20, 23, 24, 0.95); 
+            backdrop-filter: blur(12px); 
+            border-bottom: 1px solid var(--border); 
+            position: sticky; 
+            top: 0; 
+            z-index: 50; 
+        }
+        .header-inner { 
+            max-width: 1560px; 
+            height: 100%; 
+            margin: 0 auto; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 24px; 
+        }
+        .header-brand { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-decoration: none; 
+        }
+        .brand-logo { 
+            width: 32px; 
+            height: 32px; 
+            background: var(--primary); 
+            border-radius: 9px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            box-shadow: 0 0 14px var(--primary-glow); 
+        }
+        .brand-icon-svg { 
+            width: 18px; 
+            height: 18px; 
+            color: #fff; 
+        }
+        .brand-text { 
+            font-size: 16px; 
+            font-weight: 800; 
+            color: #ffffff; 
+            letter-spacing: -0.3px; 
+        }
+        .brand-badge {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(22, 163, 74, 0.15);
+            border: 1px solid rgba(22, 163, 74, 0.35);
+            color: #4ade80;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-right { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            position: relative; 
+        }
+        .saldo-pill { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 6px 14px; 
+            background: rgba(22, 163, 74, 0.12); 
+            border: 1px solid rgba(22, 163, 74, 0.28); 
+            border-radius: 20px; 
+            color: #4ade80; 
+            font-size: 13px; 
+            font-weight: 700; 
+            text-decoration: none; 
+        }
+        .btn-voltar { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            padding: 7px 14px; 
+            border-radius: 8px; 
+            background: rgba(255,255,255,0.06); 
+            border: 1px solid var(--border); 
+            color: #94a3b8; 
+            font-size: 13px; 
+            font-weight: 600; 
+            text-decoration: none; 
+            transition: all 0.2s;
+        }
+        .btn-voltar:hover { 
+            background: rgba(255,255,255,0.12); 
+            color: #fff; 
+        }
+
+        /* WORKSPACE */
+        .workspace { 
+            flex: 1; 
+            max-width: 1600px; 
+            width: 100%; 
+            margin: 0 auto; 
+            padding: 20px 24px; 
+            display: grid; 
+            grid-template-columns: 480px 1fr; 
+            gap: 24px; 
+        }
+        @media (max-width: 1200px) { 
+            .workspace { grid-template-columns: 1fr; } 
+        }
+
+        /* PAINEL DO FORMULÁRIO (ESQUERDA) */
+        .form-panel { 
+            background: var(--surface); 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            padding: 22px; 
+            height: calc(100vh - 104px); 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px; 
+        }
+        .panel-header-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .panel-header-title h1 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-header-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .form-section {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .form-section-title { 
+            font-size: 11.5px; 
+            font-weight: 800; 
+            color: #4ade80; 
+            text-transform: uppercase; 
+            letter-spacing: 0.8px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-label { 
+            font-size: 11px; 
+            font-weight: 700; 
+            color: #9ca3af; 
+            text-transform: uppercase; 
+            letter-spacing: 0.3px; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .form-label-btn {
+            background: none;
+            border: none;
+            color: #38bdf8;
+            font-size: 10.5px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .form-label-btn:hover { color: #7dd3fc; }
+        .form-input, .form-select, .form-textarea { 
+            background: #0c0e10; 
+            border: 1px solid #23282b; 
+            border-radius: 8px; 
+            padding: 9px 12px; 
+            color: #fff; 
+            font-size: 13px; 
+            outline: none; 
+            transition: border-color 0.2s; 
+            width: 100%;
+            font-family: inherit;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { 
+            border-color: var(--primary); 
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 54px;
+            line-height: 1.4;
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+        .btn-random {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid #333a3d;
+            border-radius: 6px;
+            color: #cbd5e1;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            align-self: flex-start;
+            transition: all 0.2s;
+        }
+        .btn-random:hover {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+
+        /* BOTÕES DE EXPORTAÇÃO */
+        .btn-export-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            margin-top: auto; 
+            padding-top: 10px; 
+        }
+        .btn-export-main { 
+            background: var(--primary); 
+            color: #fff; 
+            border: none; 
+            border-radius: 10px; 
+            padding: 13px; 
+            font-size: 14px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            box-shadow: 0 4px 18px var(--primary-glow); 
+            transition: all 0.2s; 
+        }
+        .btn-export-main:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-1px); 
+        }
+        .btn-export-sec { 
+            background: #191c1d; 
+            color: #cbd5e1; 
+            border: 1px solid #2e3538; 
+            border-radius: 10px; 
+            padding: 11px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            transition: all 0.2s;
+        }
+        .btn-export-sec:hover { 
+            background: #23282b; 
+            color: #fff; 
+        }
+
+        /* PAINEL DE PREVIEW (DIREITA) */
+        .preview-panel { 
+            background: var(--surface); 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-start; 
+            overflow-x: auto; 
+            min-height: calc(100vh - 104px); 
+        }
+        .preview-toolbar { 
+            width: 100%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap; 
+            gap: 12px; 
+            background: #0f1112;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        /* ABAS DE VISUALIZAÇÃO */
+        .view-tabs {
+            display: inline-flex;
+            background: #191c1e;
+            border: 1px solid #272c2f;
+            border-radius: 8px;
+            padding: 3px;
+            gap: 3px;
+        }
+        .view-tab {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .view-tab.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        /* CONTROLES DE ZOOM */
+        .zoom-group {
+            display: inline-flex;
+            align-items: center;
+            background: #191c1e;
+            border: 1px solid #272c2f;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .btn-zoom {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-size: 15px;
+            font-weight: 700;
+            width: 32px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .btn-zoom:hover { background: #282c2f; color: #fff; }
+        .zoom-val {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #fff;
+            padding: 0 10px;
+            min-width: 52px;
+            text-align: center;
+        }
+
+        /* ÁREA DE VISUALIZAÇÃO DO DOCUMENTO */
+        .doc-viewport {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px 0 40px 0;
+            overflow: visible;
+        }
+        .doc-zoom-wrapper {
+            transform-origin: top center;
+            transition: transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            align-items: center;
+        }
+
+        /* ========================================================= */
+        /* ESTRUTURA DO DOCUMENTO MILITAR (CERTIFICADO DE RESERVISTA) */
+        /* ========================================================= */
+        .mil-doc-sheet {
+            width: 680px;
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+            font-family: Arial, Helvetica, sans-serif;
+            position: relative;
+            user-select: text;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            padding: 14px;
+            border-radius: 2px;
+        }
+
+        /* BORDA DUPLA MILITAR EXTERNA E INTERNA */
+        .mil-frame-outer {
+            border: 2px solid #000000;
+            padding: 3px;
+            height: 100%;
+            position: relative;
+        }
+        .mil-frame-inner {
+            border: 1px solid #000000;
+            padding: 14px 16px 14px 16px;
+            position: relative;
+            background: #ffffff;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* MARCA D'ÁGUA CENTRAL DO BRASÃO DAS ARMAS */
+        .mil-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 330px;
+            height: 330px;
+            pointer-events: none;
+            opacity: 0.085;
+            z-index: 1;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: grayscale(100%);
+        }
+
+        /* CONTEÚDO ACIMA DA MARCA D'ÁGUA */
+        .mil-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            height: 100%;
+        }
+
+        /* ─── CABEÇALHO MILITAR (PÁGINA 1) ─── */
+        .mil-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 2px;
+        }
+        .mil-qr-box {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .mil-header-center {
+            text-align: center;
+            flex: 1;
+            padding: 0 10px;
+        }
+        .mil-header-center .h-org {
+            font-size: 13.5px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            color: #000;
+            line-height: 1.25;
+            text-transform: uppercase;
+        }
+        .mil-header-center .h-force {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            color: #000;
+            line-height: 1.25;
+            margin-top: 1px;
+            text-transform: uppercase;
+        }
+        .mil-header-center .h-unit {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.1px;
+            color: #000;
+            line-height: 1.25;
+            margin-top: 2px;
+            text-transform: uppercase;
+        }
+        .mil-brasao-box {
+            width: 76px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mil-brasao-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: grayscale(100%) contrast(120%);
+        }
+
+        /* ─── CAIXAS E GRIDS DE DADOS ─── */
+        .mil-grid-row {
+            display: flex;
+            gap: 7px;
+            width: 100%;
+        }
+        .mil-box {
+            border: 1px solid #7c7c7c;
+            padding: 4px 7px 5px 7px;
+            background: transparent;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .mil-box-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.15;
+            margin-bottom: 2px;
+            white-space: nowrap;
+        }
+        .mil-box-val {
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #000000;
+            line-height: 1.25;
+            word-break: break-word;
+        }
+        .mil-box-val.bold {
+            font-weight: 700;
+        }
+
+        /* ─── RODAPÉ DA PÁGINA 1 ─── */
+        .mil-hash-row {
+            margin-top: 6px;
+            padding: 3px 0 0 2px;
+            font-size: 12px;
+            color: #000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .mil-hash-row span.lbl {
+            font-weight: 800;
+        }
+        .mil-hash-row span.hash-val {
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* ─── PÁGINA 2 (VERSO) ESPECÍFICO ─── */
+        .mil-carimbos-table {
+            border: 1px solid #7c7c7c;
+            border-collapse: collapse;
+            width: 100%;
+            height: 120px;
+            margin-top: 2px;
+        }
+        .mil-carimbos-table td {
+            border-right: 1px solid #7c7c7c;
+            width: 20%;
+            vertical-align: top;
+            padding: 4px;
+            font-size: 9px;
+            color: #888;
+        }
+        .mil-carimbos-table td:last-child {
+            border-right: none;
+        }
+
+        .mil-obriga-aviso {
+            text-align: center;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #000000;
+            margin: 6px 0 4px 0;
+            letter-spacing: 0.1px;
+        }
+
+        .mil-icp-texto {
+            text-align: center;
+            font-size: 10px;
+            line-height: 1.35;
+            color: #111111;
+            margin: 10px auto 14px auto;
+            max-width: 82%;
+        }
+
+        .mil-sig-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 6px auto 4px auto;
+            width: 320px;
+        }
+        .mil-sig-line {
+            width: 100%;
+            height: 1px;
+            background: #000000;
+            margin-bottom: 4px;
+        }
+        .mil-sig-name {
+            font-size: 11px;
+            font-weight: 800;
+            color: #000;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .mil-sig-cargo {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #000;
+            text-align: center;
+            margin-top: 1px;
+        }
+
+        /* TOAST NOTIFICAÇÃO */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #181a1c;
+            border: 1px solid #2e3538;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast-icon { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER DO SISTEMA -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="editaveis.html" class="header-brand">
+                <div class="brand-logo">
+                    <svg class="brand-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <span class="brand-text">MG Editáveis</span>
+                <span class="brand-badge">👑 ACESSO ADMIN (DEV)</span>
+            </a>
+
+            <div class="header-right">
+                <a href="recarga.html" class="saldo-pill" id="userHeaderSaldoPill" title="Seu saldo disponível">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+                <a href="editaveis.html" class="btn-voltar">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>
+                    <span>Voltar ao Painel</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ÁREA DE TRABALHO -->
+    <main class="workspace">
+
+        <!-- FORMULÁRIO (ESQUERDA) -->
+        <aside class="form-panel">
+            <div class="panel-header-title">
+                <h1>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Editor de Reservista Militar
+                </h1>
+                <span class="panel-header-tag">EXÉRCITO BRASILEIRO</span>
+            </div>
+
+            <!-- SEÇÃO 1: CABEÇALHO MILITAR -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                    Órgão Militar &amp; Comando
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ministério</label>
+                    <input type="text" class="form-input" id="inpMinisterio" value="MINISTÉRIO DA DEFESA" oninput="updateDoc()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Força Armada</label>
+                    <input type="text" class="form-input" id="inpForca" value="EXÉRCITO BRASILEIRO" oninput="updateDoc()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Comando / Brigada / Junta Militar</label>
+                    <input type="text" class="form-input" id="inpComando" value="COMANDO DA 15ª BRIGADA DE INFANTARIA MECANIZADA" oninput="updateDoc()">
+                </div>
+            </div>
+
+            <!-- SEÇÃO 2: IDENTIFICAÇÃO DO RESERVISTA -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+                    Dados do Reservista (Página 1)
+                </div>
+
+                <div class="form-row-3">
+                    <div class="form-group" style="grid-column: span 1;">
+                        <label class="form-label">Tipo Documento</label>
+                        <input type="text" class="form-input" id="inpTipoDoc" value="Certificado de Reservista" oninput="updateDoc()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            RA
+                            <button type="button" class="form-label-btn" onclick="randomRa()">🎲 Gerar</button>
+                        </label>
+                        <input type="text" class="form-input" id="inpRa" value="528960544" oninput="updateDoc()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CPF</label>
+                        <input type="text" class="form-input" id="inpCpf" value="54893978888" maxlength="14" oninput="maskCpf(this); updateDoc()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nome Completo</label>
+                    <input type="text" class="form-input" id="inpNome" value="Nycolas Soares Fernandes" oninput="updateDoc()">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Filiação (Mãe)</label>
+                        <input type="text" class="form-input" id="inpMae" value="Bruna Regina Soares Fernandes" oninput="updateDoc()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Filiação (Pai)</label>
+                        <input type="text" class="form-input" id="inpPai" value="Fábio Júnior Fernandes" oninput="updateDoc()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Local de Nascimento (Cidade, UF)</label>
+                        <input type="text" class="form-input" id="inpNascLocal" value="São José dos Campos, SP" oninput="updateDoc()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data de Nascimento</label>
+                        <input type="text" class="form-input" id="inpNascData" value="23/01/2007" maxlength="10" oninput="maskData(this); updateDoc()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Amparo Legal</label>
+                    <textarea class="form-textarea" id="inpAmparo" oninput="updateDoc()">Reservista de 1ª categoria, ficando relacionado como Soldado, QM 07/01 Infantaria na Reserva Mobilizável</textarea>
+                </div>
+
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label class="form-label">Expedido em</label>
+                        <input type="text" class="form-input" id="inpDataExpedido" value="13/05/2026" maxlength="10" oninput="maskData(this); updateDoc()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Incorporado em</label>
+                        <input type="text" class="form-input" id="inpDataIncorp" value="12/06/2026" maxlength="10" oninput="maskData(this); updateDoc()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Licenciado em</label>
+                        <input type="text" class="form-input" id="inpDataLicenc" value="13/08/2026" maxlength="10" oninput="maskData(this); updateDoc()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Código Hash de Autenticidade
+                        <button type="button" class="form-label-btn" onclick="randomHash()">🎲 Novo Hash</button>
+                    </label>
+                    <input type="text" class="form-input" id="inpHash" value="85492302167E84784F0C488035D6222D" style="font-family:'Roboto Mono', monospace; font-weight:700;" oninput="updateDoc()">
+                </div>
+            </div>
+
+            <!-- SEÇÃO 3: VERSO MILITAR & ASSINATURA -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Anotações Militares &amp; Verso (Página 2)
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tempo de Serviço</label>
+                    <input type="text" class="form-input" id="inpTempoServico" value="" placeholder="Em branco se não houver" oninput="updateDoc()">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tempo de Serviço por OM(s)</label>
+                    <input type="text" class="form-input" id="inpTempoOM" value="" placeholder="Em branco se não houver" oninput="updateDoc()">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Local e Data Expedição</label>
+                        <input type="text" class="form-input" id="inpLocalExpedicaoVerso" value="São Paulo, 12/06/2026" oninput="updateDoc()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data Assinatura ICP-Brasil</label>
+                        <input type="text" class="form-input" id="inpDataIcp" value="31/01/2023" maxlength="10" oninput="maskData(this); updateDoc()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Autoridade Militar (Nome e Posto)</label>
+                        <input type="text" class="form-input" id="inpAutoridadeNome" value="EDUARDO MENNA BARRETO - TEN CEL/ CF" oninput="updateDoc()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cargo / Função</label>
+                        <input type="text" class="form-input" id="inpAutoridadeCargo" value="Del SM/Cmt/Ch/Dir" oninput="updateDoc()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTÕES DE AÇÃO -->
+            <div class="btn-export-group">
+                <button type="button" class="btn-export-main" id="btnExportPdf" onclick="exportarPdf()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Baixar PDF Completo (Frente e Verso)</span>
+                </button>
+                <button type="button" class="btn-export-sec" id="btnExportPng" onclick="exportarPng()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <span>Salvar Imagem PNG (Ultra HD)</span>
+                </button>
+                <button type="button" class="btn-random" onclick="restaurarModeloOriginal()" style="margin-top:4px; align-self:center;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                    Restaurar Dados Exemplo (Idêntico à Foto)
+                </button>
+            </div>
+        </aside>
+
+        <!-- PAINEL DE PREVIEW (DIREITA) -->
+        <section class="preview-panel">
+            <div class="preview-toolbar">
+                <div class="view-tabs">
+                    <button type="button" class="view-tab active" id="tabAmbas" onclick="setViewMode('ambas')">Folha Completa (Frente e Verso)</button>
+                    <button type="button" class="view-tab" id="tabFrente" onclick="setViewMode('frente')">Página 1 (Frente)</button>
+                    <button type="button" class="view-tab" id="tabVerso" onclick="setViewMode('verso')">Página 2 (Verso)</button>
+                </div>
+
+                <div class="zoom-group">
+                    <button type="button" class="btn-zoom" onclick="changeZoom(-0.1)" title="Diminuir zoom">−</button>
+                    <span class="zoom-val" id="zoomValText">100%</span>
+                    <button type="button" class="btn-zoom" onclick="changeZoom(0.1)" title="Aumentar zoom">+</button>
+                    <button type="button" class="btn-zoom" onclick="resetZoom()" title="Resetar zoom" style="font-size:11px; width:auto; padding:0 8px;">100%</button>
+                    <button type="button" class="btn-zoom" onclick="fitZoom()" title="Ajustar à tela" style="font-size:11px; width:auto; padding:0 8px;">Ajustar</button>
+                </div>
+            </div>
+
+            <!-- CONTAINER DE RENDERIZAÇÃO DO DOCUMENTO -->
+            <div class="doc-viewport" id="docViewport">
+                <div class="doc-zoom-wrapper" id="docZoomWrapper">
+
+                    <!-- ========================================== -->
+                    <!-- PÁGINA 1: FRENTE DO CERTIFICADO MILITAR   -->
+                    <!-- ========================================== -->
+                    <div class="mil-doc-sheet" id="sheetFrente">
+                        <div class="mil-frame-outer">
+                            <div class="mil-frame-inner">
+                                <!-- MARCA D'ÁGUA BRASÃO DA REPÚBLICA -->
+                                <div class="mil-watermark" id="watermarkFrente"></div>
+
+                                <div class="mil-content">
+                                    <!-- CABEÇALHO MILITAR -->
+                                    <div class="mil-header-row">
+                                        <!-- QR CODE -->
+                                        <div class="mil-qr-box" id="docQrCodeBox" title="QR Code oficial"></div>
+
+                                        <!-- TEXTOS DO CABEÇALHO -->
+                                        <div class="mil-header-center">
+                                            <div class="h-org" id="docMinisterio">MINISTÉRIO DA DEFESA</div>
+                                            <div class="h-force" id="docForca">EXÉRCITO BRASILEIRO</div>
+                                            <div class="h-unit" id="docComando">COMANDO DA 15ª BRIGADA DE INFANTARIA MECANIZADA</div>
+                                        </div>
+
+                                        <!-- BRASÃO OFICIAL DAS ARMAS -->
+                                        <div class="mil-brasao-box">
+                                            <img id="imgBrasaoHeader" class="mil-brasao-img" src="" alt="Brasão da República">
+                                        </div>
+                                    </div>
+
+                                    <!-- LINHA 1: TIPO DE DOCUMENTO / RA / CPF -->
+                                    <div class="mil-grid-row">
+                                        <div class="mil-box" style="flex: 2.1;">
+                                            <div class="mil-box-lbl">Tipo de Documento</div>
+                                            <div class="mil-box-val bold" id="docTipoDoc">Certificado de Reservista</div>
+                                        </div>
+                                        <div class="mil-box" style="flex: 1;">
+                                            <div class="mil-box-lbl">RA</div>
+                                            <div class="mil-box-val bold" id="docRa">528960544</div>
+                                        </div>
+                                        <div class="mil-box" style="flex: 1;">
+                                            <div class="mil-box-lbl">CPF</div>
+                                            <div class="mil-box-val bold" id="docCpf">54893978888</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LINHA 2: NOME COMPLETO -->
+                                    <div class="mil-grid-row">
+                                        <div class="mil-box" style="width: 100%;">
+                                            <div class="mil-box-lbl">Nome</div>
+                                            <div class="mil-box-val bold" id="docNome">Nycolas Soares Fernandes</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LINHA 3: FILIAÇÃO -->
+                                    <div class="mil-grid-row">
+                                        <div class="mil-box" style="width: 100%;">
+                                            <div class="mil-box-lbl">Filiação</div>
+                                            <div class="mil-box-val" id="docMae">Bruna Regina Soares Fernandes</div>
+                                            <div class="mil-box-val" id="docPai" style="margin-top:3px;">Fábio Júnior Fernandes</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LINHA 4: LOCAL E DATA DE NASCIMENTO / AMPARO LEGAL -->
+                                    <div class="mil-grid-row">
+                                        <div class="mil-box" style="flex: 1.4;">
+                                            <div class="mil-box-lbl">Local e Data de Nascimento</div>
+                                            <div class="mil-box-val" id="docNascLocal">São José dos Campos, SP</div>
+                                            <div class="mil-box-val bold" id="docNascData" style="margin-top:4px;">23/01/2007</div>
+                                        </div>
+                                        <div class="mil-box" style="flex: 2.3;">
+                                            <div class="mil-box-lbl">Amparo legal</div>
+                                            <div class="mil-box-val" id="docAmparo" style="font-size:11.5px; line-height:1.35;">Reservista de 1ª categoria, ficando relacionado como Soldado, QM 07/01 Infantaria na Reserva Mobilizável</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LINHA 5: EXPEDIDO / INCORPORADO / LICENCIADO -->
+                                    <div class="mil-grid-row">
+                                        <div class="mil-box" style="flex: 1;">
+                                            <div class="mil-box-lbl">Expedido(a) em:</div>
+                                            <div class="mil-box-val bold" id="docDataExpedido">13/05/2026</div>
+                                        </div>
+                                        <div class="mil-box" style="flex: 1;">
+                                            <div class="mil-box-lbl" style="font-size:9.5px;">Incorporado /matriculado</div>
+                                            <div class="mil-box-val bold" id="docDataIncorp">12/06/2026</div>
+                                        </div>
+                                        <div class="mil-box" style="flex: 1;">
+                                            <div class="mil-box-lbl" style="font-size:9.5px;">Licenciado/desligado/demitido</div>
+                                            <div class="mil-box-val bold" id="docDataLicenc">13/08/2026</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LINHA 6: CÓDIGO HASH -->
+                                    <div class="mil-hash-row">
+                                        <span class="lbl">Código hash:</span>
+                                        <span class="hash-val" id="docHash">85492302167E84784F0C488035D6222D</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- PÁGINA 2: VERSO DO CERTIFICADO MILITAR    -->
+                    <!-- ========================================== -->
+                    <div class="mil-doc-sheet" id="sheetVerso">
+                        <div class="mil-frame-outer">
+                            <div class="mil-frame-inner" style="min-height: 480px;">
+                                <!-- MARCA D'ÁGUA BRASÃO DA REPÚBLICA -->
+                                <div class="mil-watermark" id="watermarkVerso"></div>
+
+                                <div class="mil-content">
+                                    <!-- LINHA 1: TEMPO DE SERVIÇO -->
+                                    <div class="mil-grid-row">
+                                        <div class="mil-box" style="width: 100%; min-height: 38px;">
+                                            <div class="mil-box-lbl">Tempo de Serviço</div>
+                                            <div class="mil-box-val" id="docTempoServico"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LINHA 2: TEMPO DE SERVIÇO POR OM(S) -->
+                                    <div class="mil-grid-row">
+                                        <div class="mil-box" style="width: 100%; min-height: 38px;">
+                                            <div class="mil-box-lbl">Tempo de Serviço por OM(s)</div>
+                                            <div class="mil-box-val" id="docTempoOM"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- GRADE DE 5 COLUNAS PARA CARIMBOS ANUAIS -->
+                                    <table class="mil-carimbos-table">
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+
+                                    <!-- DECLARAÇÃO OFICIAL -->
+                                    <div class="mil-obriga-aviso">
+                                        Em dia com as obrigações militares, de acordo com as anotações nos carimbos.
+                                    </div>
+
+                                    <!-- LOCAL E DATA DE EXPEDIÇÃO DO VERSO -->
+                                    <div class="mil-grid-row">
+                                        <div class="mil-box" style="width: 100%;">
+                                            <div class="mil-box-lbl">Local e data da expedição do documento</div>
+                                            <div class="mil-box-val" id="docLocalExpedicaoVerso">São Paulo, 12/06/2026</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TEXTO LEGAL ICP-BRASIL -->
+                                    <div class="mil-icp-texto">
+                                        Este Certificado foi assinado digitalmente pela autoridade militar competente, em <span id="docDataIcp">31/01/2023</span>, de acordo com as normas instituídas na ICP Brasil e Medida Provisória 2.200-2, de 24/08/2001.
+                                    </div>
+
+                                    <!-- ASSINATURA DA AUTORIDADE MILITAR -->
+                                    <div class="mil-sig-area">
+                                        <div class="mil-sig-line"></div>
+                                        <div class="mil-sig-name" id="docAutoridadeNome">EDUARDO MENNA BARRETO - TEN CEL/ CF</div>
+                                        <div class="mil-sig-cargo" id="docAutoridadeCargo">Del SM/Cmt/Ch/Dir</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toastBox">
+        <svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        <span id="toastMsg">Mensagem</span>
+    </div>
+
+    <script>
+        let currentZoom = 1;
+        let currentView = 'ambas'; // 'ambas' | 'frente' | 'verso'
+        const VALOR_DOCUMENTO = 25.00;
+
+        // Máscaras de entrada
+        function maskCpf(el) {
+            let v = el.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.substring(0, 11);
+            if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+            else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+            el.value = v;
+        }
+
+        function maskData(el) {
+            let v = el.value.replace(/\D/g, '');
+            if (v.length > 8) v = v.substring(0, 8);
+            if (v.length > 4) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
+            else if (v.length > 2) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+            el.value = v;
+        }
+
+        function randomRa() {
+            let ra = '';
+            for (let i = 0; i < 9; i++) ra += Math.floor(Math.random() * 10);
+            document.getElementById('inpRa').value = ra;
+            updateDoc();
+            showToast('Novo Registro de Alistamento (RA) gerado!');
+        }
+
+        function randomHash() {
+            const chars = '0123456789ABCDEF';
+            let hash = '';
+            for (let i = 0; i < 32; i++) {
+                hash += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('inpHash').value = hash;
+            updateDoc();
+            showToast('Novo Código Hash Militar gerado com sucesso!');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastBox');
+            document.getElementById('toastMsg').textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => { t.classList.remove('show'); }, 3500);
+        }
+
+        // Atualiza a renderização de todos os campos do documento
+        function updateDoc() {
+            const getVal = id => document.getElementById(id) ? document.getElementById(id).value.trim() : '';
+            const setTxt = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = val;
+            };
+
+            setTxt('docMinisterio', getVal('inpMinisterio') || 'MINISTÉRIO DA DEFESA');
+            setTxt('docForca', getVal('inpForca') || 'EXÉRCITO BRASILEIRO');
+            setTxt('docComando', getVal('inpComando') || 'COMANDO DA 15ª BRIGADA DE INFANTARIA MECANIZADA');
+
+            setTxt('docTipoDoc', getVal('inpTipoDoc') || 'Certificado de Reservista');
+            setTxt('docRa', getVal('inpRa') || '528960544');
+            setTxt('docCpf', getVal('inpCpf') || '54893978888');
+
+            setTxt('docNome', getVal('inpNome') || 'Nome do Reservista');
+            setTxt('docMae', getVal('inpMae') || 'Nome da Mãe');
+            setTxt('docPai', getVal('inpPai') || 'Nome do Pai');
+
+            setTxt('docNascLocal', getVal('inpNascLocal') || 'Cidade, UF');
+            setTxt('docNascData', getVal('inpNascData') || '01/01/2000');
+            setTxt('docAmparo', getVal('inpAmparo') || 'Reservista de 1ª categoria');
+
+            setTxt('docDataExpedido', getVal('inpDataExpedido') || '13/05/2026');
+            setTxt('docDataIncorp', getVal('inpDataIncorp') || '12/06/2026');
+            setTxt('docDataLicenc', getVal('inpDataLicenc') || '13/08/2026');
+            setTxt('docHash', getVal('inpHash') || '85492302167E84784F0C488035D6222D');
+
+            setTxt('docTempoServico', getVal('inpTempoServico'));
+            setTxt('docTempoOM', getVal('inpTempoOM'));
+            setTxt('docLocalExpedicaoVerso', getVal('inpLocalExpedicaoVerso') || 'São Paulo, 12/06/2026');
+            setTxt('docDataIcp', getVal('inpDataIcp') || '31/01/2023');
+            setTxt('docAutoridadeNome', getVal('inpAutoridadeNome') || 'AUTORIDADE MILITAR');
+            setTxt('docAutoridadeCargo', getVal('inpAutoridadeCargo') || 'Del SM/Cmt/Ch/Dir');
+
+            updateQrCode();
+        }
+
+        // Gera QR Code nítido e oficial
+        function updateQrCode() {
+            const qrBox = document.getElementById('docQrCodeBox');
+            if (!qrBox) return;
+            qrBox.innerHTML = '';
+
+            const hash = document.getElementById('inpHash') ? document.getElementById('inpHash').value.trim() : '85492302167E84784F0C488035D6222D';
+            const qrUrl = `https://alistamento.eb.mil.br/valida/${encodeURIComponent(hash)}`;
+
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(qrBox, {
+                    text: qrUrl,
+                    width: 76,
+                    height: 76,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+        }
+
+        // Alterna modos de visualização (Ambas / Frente / Verso)
+        function setViewMode(mode) {
+            currentView = mode;
+            document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active'));
+
+            const fEl = document.getElementById('sheetFrente');
+            const vEl = document.getElementById('sheetVerso');
+
+            if (mode === 'ambas') {
+                document.getElementById('tabAmbas').classList.add('active');
+                if (fEl) fEl.style.display = 'block';
+                if (vEl) vEl.style.display = 'block';
+            } else if (mode === 'frente') {
+                document.getElementById('tabFrente').classList.add('active');
+                if (fEl) fEl.style.display = 'block';
+                if (vEl) vEl.style.display = 'none';
+            } else if (mode === 'verso') {
+                document.getElementById('tabVerso').classList.add('active');
+                if (fEl) fEl.style.display = 'none';
+                if (vEl) vEl.style.display = 'block';
+            }
+        }
+
+        // Funções de Zoom
+        function changeZoom(delta) {
+            currentZoom = Math.min(Math.max(0.4, currentZoom + delta), 2.2);
+            applyZoom();
+        }
+        function resetZoom() {
+            currentZoom = 1;
+            applyZoom();
+        }
+        function fitZoom() {
+            const viewport = document.getElementById('docViewport');
+            if (!viewport) return;
+            const availableW = viewport.clientWidth - 40;
+            currentZoom = Math.min(Math.max(0.4, availableW / 680), 1.2);
+            applyZoom();
+        }
+        function applyZoom() {
+            const wrapper = document.getElementById('docZoomWrapper');
+            if (wrapper) wrapper.style.transform = `scale(${currentZoom})`;
+            const txt = document.getElementById('zoomValText');
+            if (txt) txt.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+
+        // Restaura modelo original da foto de referência
+        function restaurarModeloOriginal() {
+            document.getElementById('inpMinisterio').value = 'MINISTÉRIO DA DEFESA';
+            document.getElementById('inpForca').value = 'EXÉRCITO BRASILEIRO';
+            document.getElementById('inpComando').value = 'COMANDO DA 15ª BRIGADA DE INFANTARIA MECANIZADA';
+
+            document.getElementById('inpTipoDoc').value = 'Certificado de Reservista';
+            document.getElementById('inpRa').value = '528960544';
+            document.getElementById('inpCpf').value = '54893978888';
+
+            document.getElementById('inpNome').value = 'Nycolas Soares Fernandes';
+            document.getElementById('inpMae').value = 'Bruna Regina Soares Fernandes';
+            document.getElementById('inpPai').value = 'Fábio Júnior Fernandes';
+
+            document.getElementById('inpNascLocal').value = 'São José dos Campos, SP';
+            document.getElementById('inpNascData').value = '23/01/2007';
+            document.getElementById('inpAmparo').value = 'Reservista de 1ª categoria, ficando relacionado como Soldado, QM 07/01 Infantaria na Reserva Mobilizável';
+
+            document.getElementById('inpDataExpedido').value = '13/05/2026';
+            document.getElementById('inpDataIncorp').value = '12/06/2026';
+            document.getElementById('inpDataLicenc').value = '13/08/2026';
+            document.getElementById('inpHash').value = '85492302167E84784F0C488035D6222D';
+
+            document.getElementById('inpTempoServico').value = '';
+            document.getElementById('inpTempoOM').value = '';
+            document.getElementById('inpLocalExpedicaoVerso').value = 'São Paulo, 12/06/2026';
+            document.getElementById('inpDataIcp').value = '31/01/2023';
+            document.getElementById('inpAutoridadeNome').value = 'EDUARDO MENNA BARRETO - TEN CEL/ CF';
+            document.getElementById('inpAutoridadeCargo').value = 'Del SM/Cmt/Ch/Dir';
+
+            updateDoc();
+            showToast('Modelo restaurado fielmente aos dados da foto!');
+        }
+
+        // Exportação de PDF Completo (Frente e Verso em 2 páginas ou página única)
+        async function exportarPdf() {
+            const btn = document.getElementById('btnExportPdf');
+            const origText = btn.innerHTML;
+            btn.innerHTML = '<span>⏳ Processando e Renderizando PDF...</span>';
+            btn.disabled = true;
+
+            const zoomWrapper = document.getElementById('docZoomWrapper');
+            const origTransform = zoomWrapper.style.transform;
+            zoomWrapper.style.transform = 'scale(1)';
+
+            // Força exibição de ambas as folhas para renderização
+            const fEl = document.getElementById('sheetFrente');
+            const vEl = document.getElementById('sheetVerso');
+            fEl.style.display = 'block';
+            vEl.style.display = 'block';
+
+            try {
+                const JsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+                if (!JsPDF) throw new Error('Biblioteca jsPDF não carregada.');
+
+                // Renderiza Frente
+                const canvasFrente = await html2canvas(fEl, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                // Renderiza Verso
+                const canvasVerso = await html2canvas(vEl, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                const pdf = new JsPDF({
+                    orientation: 'portrait',
+                    unit: 'px',
+                    format: [canvasFrente.width / 3, canvasFrente.height / 3]
+                });
+
+                const pdfW = canvasFrente.width / 3;
+                const pdfH = canvasFrente.height / 3;
+
+                // Página 1: Frente
+                const imgFrente = canvasFrente.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgFrente, 'JPEG', 0, 0, pdfW, pdfH);
+
+                // Página 2: Verso
+                pdf.addPage([canvasVerso.width / 3, canvasVerso.height / 3]);
+                const imgVerso = canvasVerso.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgVerso, 'JPEG', 0, 0, canvasVerso.width / 3, canvasVerso.height / 3);
+
+                const nomeRaw = (document.getElementById('inpNome').value || 'Reservista').trim().replace(/\s+/g, '_');
+                const filename = `Certificado_Reservista_${nomeRaw}.pdf`;
+
+                // Salva PDF
+                pdf.save(filename);
+
+                // Dedução de Saldo com registro de atividade
+                if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
+                    await window.MGSaldo.deduct(VALOR_DOCUMENTO, {
+                        tipo: 'reservista',
+                        descricao: document.getElementById('inpNome').value.trim(),
+                        subRotulo: 'Certificado de Reservista Militar',
+                        tagClass: 'badge-cnh',
+                        tagText: 'RESERVISTA'
+                    });
+                }
+
+                showToast('Certificado de Reservista em PDF baixado com sucesso!');
+
+            } catch (err) {
+                console.error('Erro na geração do PDF:', err);
+                alert('Erro ao gerar PDF: ' + (err.message || err));
+            } finally {
+                zoomWrapper.style.transform = origTransform;
+                setViewMode(currentView);
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            }
+        }
+
+        // Exportação em Imagem PNG Ultra HD
+        async function exportarPng() {
+            const btn = document.getElementById('btnExportPng');
+            const origText = btn.innerHTML;
+            btn.innerHTML = '<span>⏳ Gerando Imagem Ultra HD...</span>';
+            btn.disabled = true;
+
+            const zoomWrapper = document.getElementById('docZoomWrapper');
+            const origTransform = zoomWrapper.style.transform;
+            zoomWrapper.style.transform = 'scale(1)';
+
+            const fEl = document.getElementById('sheetFrente');
+            const vEl = document.getElementById('sheetVerso');
+            fEl.style.display = 'block';
+            vEl.style.display = 'block';
+
+            try {
+                // Captura a área completa com as duas páginas
+                const canvas = await html2canvas(zoomWrapper, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#0b0d0e',
+                    logging: false
+                });
+
+                const nomeRaw = (document.getElementById('inpNome').value || 'Reservista').trim().replace(/\s+/g, '_');
+                const filename = `Certificado_Reservista_${nomeRaw}_UltraHD.png`;
+
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => link.remove(), 2000);
+
+                showToast('Imagem PNG Ultra HD baixada com sucesso!');
+
+            } catch (err) {
+                console.error('Erro ao gerar imagem:', err);
+                alert('Erro ao salvar imagem: ' + (err.message || err));
+            } finally {
+                zoomWrapper.style.transform = origTransform;
+                setViewMode(currentView);
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            // Injeta o Brasão de Armas da República Oficial (Base64)
+            if (window.BRASAO_REPUBLICA_SVG_B64) {
+                const headerBrasao = document.getElementById('imgBrasaoHeader');
+                if (headerBrasao) headerBrasao.src = window.BRASAO_REPUBLICA_SVG_B64;
+
+                const wmF = document.getElementById('watermarkFrente');
+                if (wmF) wmF.style.backgroundImage = `url("${window.BRASAO_REPUBLICA_SVG_B64}")`;
+
+                const wmV = document.getElementById('watermarkVerso');
+                if (wmV) wmV.style.backgroundImage = `url("${window.BRASAO_REPUBLICA_SVG_B64}")`;
+            }
+
+            updateDoc();
+            fitZoom();
+
+            // Sincroniza saldo exibido no header
+            try {
+                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                if (uStr) {
+                    const u = JSON.parse(uStr);
+                    const elSaldo = document.getElementById('userHeaderSaldo');
+                    if (elSaldo && u.saldo !== undefined) {
+                        elSaldo.textContent = `Saldo R$ ${parseFloat(u.saldo || 0).toFixed(2).replace('.', ',')}`;
+                    }
+                }
+            } catch(e) {}
+        });
+    </script>
+</body>
+</html>

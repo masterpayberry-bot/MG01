@@ -575,6 +575,53 @@
             color: #949aa2;
             font-weight: 400;
         }
+
+        /* ─── MARCA D'ÁGUA DE PRÉVIA (desaparece ao gerar PDF/PNG) ─── */
+        .mp-preview-watermark {
+            position: absolute;
+            inset: 0;
+            z-index: 25;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: inherit;
+        }
+        .mp-preview-watermark-inner {
+            position: absolute;
+            inset: -60px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            transform: rotate(-32deg);
+            transform-origin: center center;
+        }
+        .mp-preview-watermark-tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 24px 30px;
+            opacity: 0.12;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .mp-preview-watermark-tile img {
+            width: 105px;
+            height: auto;
+            display: block;
+            filter: grayscale(100%);
+        }
+        .mp-preview-watermark-tile span {
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            color: #009ee3;
+            text-transform: uppercase;
+        }
+        #mpReceiptDoc.generating .mp-preview-watermark {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -855,6 +902,24 @@
                     
                     <!-- O COMPROVANTE EXATO -->
                     <div id="mpReceiptDoc">
+
+                        <!-- MARCA D'ÁGUA DE PRÉVIA - DESAPARECE AO GERAR PDF/IMAGEM -->
+                        <div class="mp-preview-watermark" aria-hidden="true">
+                            <div class="mp-preview-watermark-inner">
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                                <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
+                            </div>
+                        </div>
                         
                         <!-- 1. LOGO OFICIAL MERCADO PAGO NO MESMO LOCAL -->
                         <div class="mp-logo-box">
@@ -1200,6 +1265,9 @@
 
             try {
                 const doc = document.getElementById('mpReceiptDoc');
+                doc.classList.add('generating');
+                await new Promise(r => setTimeout(r, 60));
+
                 const prevTransform = document.getElementById('zoomBox').style.transform;
                 document.getElementById('zoomBox').style.transform = 'scale(1)';
 
@@ -1210,6 +1278,7 @@
                     logging: false
                 });
 
+                doc.classList.remove('generating');
                 document.getElementById('zoomBox').style.transform = prevTransform;
 
                 const link = document.createElement('a');
@@ -1226,6 +1295,7 @@
                 setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2000);
 
             } catch (err) {
+                document.getElementById('mpReceiptDoc')?.classList.remove('generating');
                 alert('Erro ao gerar imagem: ' + err.message);
                 btn.innerHTML = orig;
                 btn.disabled = false;
@@ -1241,6 +1311,9 @@
 
             try {
                 const doc = document.getElementById('mpReceiptDoc');
+                doc.classList.add('generating');
+                await new Promise(r => setTimeout(r, 60));
+
                 const prevTransform = document.getElementById('zoomBox').style.transform;
                 document.getElementById('zoomBox').style.transform = 'scale(1)';
 
@@ -1251,6 +1324,7 @@
                     logging: false
                 });
 
+                doc.classList.remove('generating');
                 document.getElementById('zoomBox').style.transform = prevTransform;
 
                 const imgData = canvas.toDataURL('image/jpeg', 0.98);
@@ -1277,6 +1351,7 @@
                 setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2500);
 
             } catch (err) {
+                document.getElementById('mpReceiptDoc')?.classList.remove('generating');
                 alert('Erro ao gerar PDF: ' + err.message);
                 btn.innerHTML = orig;
                 btn.disabled = false;
