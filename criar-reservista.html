@@ -639,35 +639,46 @@
             filter: grayscale(100%) contrast(120%);
         }
 
-        /* ─── CAIXAS E GRIDS DE DADOS ─── */
+        /* ─── CAIXAS E GRIDS DE DADOS COM TÍTULO NA BORDA SUPERIOR (IDÊNTICO AO DOCUMENTO OFICIAL) ─── */
         .mil-grid-row {
             display: flex;
-            gap: 7px;
+            gap: 12px;
             width: 100%;
+            margin-top: 6px;
+            margin-bottom: 3px;
         }
         .mil-box {
-            border: 1px solid #7c7c7c;
-            padding: 4px 7px 5px 7px;
+            position: relative;
+            border: 1px solid #b4b4b4;
+            border-radius: 0;
+            padding: 9px 8px 7px 8px;
             background: transparent;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
         }
         .mil-box-lbl {
-            font-size: 10px;
+            position: absolute;
+            top: -7.5px;
+            left: 8px;
+            background: #ffffff;
+            padding: 0 4px;
+            font-size: 11.5px;
             font-weight: 700;
             color: #000000;
-            line-height: 1.15;
-            margin-bottom: 2px;
+            line-height: 1;
             white-space: nowrap;
+            letter-spacing: 0.1px;
+            z-index: 2;
         }
         .mil-box-val {
-            font-size: 12.5px;
-            font-weight: 500;
+            font-size: 13.5px;
+            font-weight: 400;
             color: #000000;
-            line-height: 1.25;
+            line-height: 1.35;
             word-break: break-word;
+            padding: 1px 2px;
         }
         .mil-box-val.bold {
             font-weight: 700;
@@ -675,9 +686,9 @@
 
         /* ─── RODAPÉ DA PÁGINA 1 ─── */
         .mil-hash-row {
-            margin-top: 6px;
-            padding: 3px 0 0 2px;
-            font-size: 12px;
+            margin-top: 8px;
+            padding: 4px 0 2px 2px;
+            font-size: 13.5px;
             color: #000;
             display: flex;
             align-items: center;
@@ -688,20 +699,21 @@
         }
         .mil-hash-row span.hash-val {
             font-weight: 800;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.5px;
             font-family: Arial, Helvetica, sans-serif;
         }
 
         /* ─── PÁGINA 2 (VERSO) ESPECÍFICO ─── */
         .mil-carimbos-table {
-            border: 1px solid #7c7c7c;
+            border: 1px solid #b4b4b4;
             border-collapse: collapse;
             width: 100%;
-            height: 120px;
-            margin-top: 2px;
+            height: 125px;
+            margin-top: 8px;
+            margin-bottom: 4px;
         }
         .mil-carimbos-table td {
-            border-right: 1px solid #7c7c7c;
+            border-right: 1px solid #b4b4b4;
             width: 20%;
             vertical-align: top;
             padding: 4px;
@@ -714,20 +726,20 @@
 
         .mil-obriga-aviso {
             text-align: center;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 800;
             color: #000000;
-            margin: 6px 0 4px 0;
+            margin: 8px 0 6px 0;
             letter-spacing: 0.1px;
         }
 
         .mil-icp-texto {
             text-align: center;
-            font-size: 10px;
-            line-height: 1.35;
+            font-size: 10.5px;
+            line-height: 1.4;
             color: #111111;
-            margin: 10px auto 14px auto;
-            max-width: 82%;
+            margin: 12px auto 16px auto;
+            max-width: 84%;
         }
 
         .mil-sig-area {
@@ -1036,15 +1048,15 @@
 
                                     <!-- LINHA 1: TIPO DE DOCUMENTO / RA / CPF -->
                                     <div class="mil-grid-row">
-                                        <div class="mil-box" style="flex: 2.1;">
+                                        <div class="mil-box" style="flex: 2.15; min-height: 44px;">
                                             <div class="mil-box-lbl">Tipo de Documento</div>
                                             <div class="mil-box-val bold" id="docTipoDoc">Certificado de Reservista</div>
                                         </div>
-                                        <div class="mil-box" style="flex: 1;">
+                                        <div class="mil-box" style="flex: 1.05; min-height: 44px;">
                                             <div class="mil-box-lbl">RA</div>
                                             <div class="mil-box-val bold" id="docRa">528960544</div>
                                         </div>
-                                        <div class="mil-box" style="flex: 1;">
+                                        <div class="mil-box" style="flex: 1.05; min-height: 44px;">
                                             <div class="mil-box-lbl">CPF</div>
                                             <div class="mil-box-val bold" id="docCpf">54893978888</div>
                                         </div>
@@ -1052,7 +1064,7 @@
 
                                     <!-- LINHA 2: NOME COMPLETO -->
                                     <div class="mil-grid-row">
-                                        <div class="mil-box" style="width: 100%;">
+                                        <div class="mil-box" style="width: 100%; min-height: 46px;">
                                             <div class="mil-box-lbl">Nome</div>
                                             <div class="mil-box-val bold" id="docNome">Nycolas Soares Fernandes</div>
                                         </div>
@@ -1060,38 +1072,38 @@
 
                                     <!-- LINHA 3: FILIAÇÃO -->
                                     <div class="mil-grid-row">
-                                        <div class="mil-box" style="width: 100%;">
+                                        <div class="mil-box" style="width: 100%; min-height: 56px;">
                                             <div class="mil-box-lbl">Filiação</div>
                                             <div class="mil-box-val" id="docMae">Bruna Regina Soares Fernandes</div>
-                                            <div class="mil-box-val" id="docPai" style="margin-top:3px;">Fábio Júnior Fernandes</div>
+                                            <div class="mil-box-val" id="docPai" style="margin-top:2px;">Fábio Júnior Fernandes</div>
                                         </div>
                                     </div>
 
                                     <!-- LINHA 4: LOCAL E DATA DE NASCIMENTO / AMPARO LEGAL -->
                                     <div class="mil-grid-row">
-                                        <div class="mil-box" style="flex: 1.4;">
+                                        <div class="mil-box" style="flex: 1.45; min-height: 62px;">
                                             <div class="mil-box-lbl">Local e Data de Nascimento</div>
                                             <div class="mil-box-val" id="docNascLocal">São José dos Campos, SP</div>
-                                            <div class="mil-box-val bold" id="docNascData" style="margin-top:4px;">23/01/2007</div>
+                                            <div class="mil-box-val bold" id="docNascData" style="margin-top:3px;">23/01/2007</div>
                                         </div>
-                                        <div class="mil-box" style="flex: 2.3;">
+                                        <div class="mil-box" style="flex: 2.25; min-height: 62px;">
                                             <div class="mil-box-lbl">Amparo legal</div>
-                                            <div class="mil-box-val" id="docAmparo" style="font-size:11.5px; line-height:1.35;">Reservista de 1ª categoria, ficando relacionado como Soldado, QM 07/01 Infantaria na Reserva Mobilizável</div>
+                                            <div class="mil-box-val" id="docAmparo" style="font-size:12px; line-height:1.35;">Reservista de 1ª categoria, ficando relacionado como Soldado, QM 07/01 Infantaria na Reserva Mobilizável</div>
                                         </div>
                                     </div>
 
                                     <!-- LINHA 5: EXPEDIDO / INCORPORADO / LICENCIADO -->
                                     <div class="mil-grid-row">
-                                        <div class="mil-box" style="flex: 1;">
+                                        <div class="mil-box" style="flex: 1; min-height: 44px;">
                                             <div class="mil-box-lbl">Expedido(a) em:</div>
                                             <div class="mil-box-val bold" id="docDataExpedido">13/05/2026</div>
                                         </div>
-                                        <div class="mil-box" style="flex: 1;">
-                                            <div class="mil-box-lbl" style="font-size:9.5px;">Incorporado /matriculado</div>
+                                        <div class="mil-box" style="flex: 1; min-height: 44px;">
+                                            <div class="mil-box-lbl" style="font-size:10px;">Incorporado /matriculado</div>
                                             <div class="mil-box-val bold" id="docDataIncorp">12/06/2026</div>
                                         </div>
-                                        <div class="mil-box" style="flex: 1;">
-                                            <div class="mil-box-lbl" style="font-size:9.5px;">Licenciado/desligado/demitido</div>
+                                        <div class="mil-box" style="flex: 1; min-height: 44px;">
+                                            <div class="mil-box-lbl" style="font-size:10px;">Licenciado/desligado/demitido</div>
                                             <div class="mil-box-val bold" id="docDataLicenc">13/08/2026</div>
                                         </div>
                                     </div>
@@ -1118,7 +1130,7 @@
                                 <div class="mil-content">
                                     <!-- LINHA 1: TEMPO DE SERVIÇO -->
                                     <div class="mil-grid-row">
-                                        <div class="mil-box" style="width: 100%; min-height: 38px;">
+                                        <div class="mil-box" style="width: 100%; min-height: 44px;">
                                             <div class="mil-box-lbl">Tempo de Serviço</div>
                                             <div class="mil-box-val" id="docTempoServico"></div>
                                         </div>
@@ -1126,7 +1138,7 @@
 
                                     <!-- LINHA 2: TEMPO DE SERVIÇO POR OM(S) -->
                                     <div class="mil-grid-row">
-                                        <div class="mil-box" style="width: 100%; min-height: 38px;">
+                                        <div class="mil-box" style="width: 100%; min-height: 44px;">
                                             <div class="mil-box-lbl">Tempo de Serviço por OM(s)</div>
                                             <div class="mil-box-val" id="docTempoOM"></div>
                                         </div>
@@ -1150,7 +1162,7 @@
 
                                     <!-- LOCAL E DATA DE EXPEDIÇÃO DO VERSO -->
                                     <div class="mil-grid-row">
-                                        <div class="mil-box" style="width: 100%;">
+                                        <div class="mil-box" style="width: 100%; min-height: 44px;">
                                             <div class="mil-box-lbl">Local e data da expedição do documento</div>
                                             <div class="mil-box-val" id="docLocalExpedicaoVerso">São Paulo, 12/06/2026</div>
                                         </div>
