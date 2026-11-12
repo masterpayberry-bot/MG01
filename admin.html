@@ -7918,7 +7918,7 @@ function updateDashboardMetrics() {
 
             // 1. Atualização via Realtime + Foco com debounce (sem travar a digitação ou cliques no mobile)
             let lastAdminSync = 0;
-            let _lastKnownPending = 0; // rastreia qtd de pendentes para alertar novo cadastro
+            let _lastKnownPending = -1; // -1 = primeira carga, não dispara alerta
 
             const throttledAdminReload = () => {
                 const now = Date.now();
@@ -7931,7 +7931,12 @@ function updateDashboardMetrics() {
             // Detecta novo cadastro pendente e exibe alerta visual + som
             function checkNovosCadastros() {
                 const pendentes = (usersData || []).filter(u => u.status === 'pending').length;
-                if (pendentes > _lastKnownPending && _lastKnownPending >= 0) {
+                if (_lastKnownPending === -1) {
+                    // Primeira carga: só registra o valor atual, sem alertar
+                    _lastKnownPending = pendentes;
+                    return;
+                }
+                if (pendentes > _lastKnownPending) {
                     const novos = pendentes - _lastKnownPending;
                     // Alerta visual no topo
                     try {
