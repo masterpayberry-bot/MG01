@@ -513,8 +513,12 @@
             transition: transform 0.2s ease;
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 10px;
             align-items: center;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
         /* ========================================================= */
@@ -524,14 +528,13 @@
             width: 680px;
             background: #ffffff;
             color: #000000;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
             font-family: Arial, Helvetica, sans-serif;
             position: relative;
             user-select: text;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
-            padding: 14px;
-            border-radius: 2px;
+            padding: 8px;
+            border-radius: 0;
         }
 
         /* BORDA DUPLA MILITAR EXTERNA E INTERNA */
@@ -540,6 +543,7 @@
             padding: 3px;
             height: 100%;
             position: relative;
+            box-sizing: border-box;
         }
         .mil-frame-inner {
             border: 1px solid #000000;
@@ -549,6 +553,7 @@
             min-height: 480px;
             display: flex;
             flex-direction: column;
+            box-sizing: border-box;
         }
 
         /* MARCA D'ÁGUA CENTRAL DO BRASÃO DAS ARMAS */
@@ -1050,15 +1055,15 @@
                                     <div class="mil-grid-row">
                                         <div class="mil-box" style="flex: 2.15; min-height: 44px;">
                                             <div class="mil-box-lbl">Tipo de Documento</div>
-                                            <div class="mil-box-val bold" id="docTipoDoc">Certificado de Reservista</div>
+                                            <div class="mil-box-val" id="docTipoDoc">Certificado de Reservista</div>
                                         </div>
                                         <div class="mil-box" style="flex: 1.05; min-height: 44px;">
                                             <div class="mil-box-lbl">RA</div>
-                                            <div class="mil-box-val bold" id="docRa">528960544</div>
+                                            <div class="mil-box-val" id="docRa">528960544</div>
                                         </div>
                                         <div class="mil-box" style="flex: 1.05; min-height: 44px;">
                                             <div class="mil-box-lbl">CPF</div>
-                                            <div class="mil-box-val bold" id="docCpf">54893978888</div>
+                                            <div class="mil-box-val" id="docCpf">54893978888</div>
                                         </div>
                                     </div>
 
@@ -1066,7 +1071,7 @@
                                     <div class="mil-grid-row">
                                         <div class="mil-box" style="width: 100%; min-height: 46px;">
                                             <div class="mil-box-lbl">Nome</div>
-                                            <div class="mil-box-val bold" id="docNome">Nycolas Soares Fernandes</div>
+                                            <div class="mil-box-val" id="docNome">Nycolas Soares Fernandes</div>
                                         </div>
                                     </div>
 
@@ -1084,7 +1089,7 @@
                                         <div class="mil-box" style="flex: 1.45; min-height: 62px;">
                                             <div class="mil-box-lbl">Local e Data de Nascimento</div>
                                             <div class="mil-box-val" id="docNascLocal">São José dos Campos, SP</div>
-                                            <div class="mil-box-val bold" id="docNascData" style="margin-top:3px;">23/01/2007</div>
+                                            <div class="mil-box-val" id="docNascData" style="margin-top:3px;">23/01/2007</div>
                                         </div>
                                         <div class="mil-box" style="flex: 2.25; min-height: 62px;">
                                             <div class="mil-box-lbl">Amparo legal</div>
@@ -1096,15 +1101,15 @@
                                     <div class="mil-grid-row">
                                         <div class="mil-box" style="flex: 1; min-height: 44px;">
                                             <div class="mil-box-lbl">Expedido(a) em:</div>
-                                            <div class="mil-box-val bold" id="docDataExpedido">13/05/2026</div>
+                                            <div class="mil-box-val" id="docDataExpedido">13/05/2026</div>
                                         </div>
                                         <div class="mil-box" style="flex: 1; min-height: 44px;">
                                             <div class="mil-box-lbl" style="font-size:10px;">Incorporado /matriculado</div>
-                                            <div class="mil-box-val bold" id="docDataIncorp">12/06/2026</div>
+                                            <div class="mil-box-val" id="docDataIncorp">12/06/2026</div>
                                         </div>
                                         <div class="mil-box" style="flex: 1; min-height: 44px;">
                                             <div class="mil-box-lbl" style="font-size:10px;">Licenciado/desligado/demitido</div>
-                                            <div class="mil-box-val bold" id="docDataLicenc">13/08/2026</div>
+                                            <div class="mil-box-val" id="docDataLicenc">13/08/2026</div>
                                         </div>
                                     </div>
 
@@ -1494,7 +1499,7 @@
                     scale: 3,
                     useCORS: true,
                     allowTaint: true,
-                    backgroundColor: '#0b0d0e',
+                    backgroundColor: '#ffffff',
                     logging: false
                 });
 
