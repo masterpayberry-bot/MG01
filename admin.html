@@ -7918,17 +7918,58 @@ function updateDashboardMetrics() {
 
             // 1. Atualização via Realtime + Foco com debounce (sem travar a digitação ou cliques no mobile)
             let lastAdminSync = 0;
+            let _lastKnownPending = 0; // rastreia qtd de pendentes para alertar novo cadastro
+
             const throttledAdminReload = () => {
                 const now = Date.now();
-                if (now - lastAdminSync > 25000 && !document.hidden) {
+                if (now - lastAdminSync > 10000 && !document.hidden) {
                     lastAdminSync = now;
                     loadAdminDataFromSupabase();
                 }
             };
+
+            // Detecta novo cadastro pendente e exibe alerta visual + som
+            function checkNovosCadastros() {
+                const pendentes = (usersData || []).filter(u => u.status === 'pending').length;
+                if (pendentes > _lastKnownPending && _lastKnownPending >= 0) {
+                    const novos = pendentes - _lastKnownPending;
+                    // Alerta visual no topo
+                    try {
+                        const badge = document.getElementById('badgePendingUsers');
+                        if (badge) {
+                            badge.style.animation = 'none';
+                            setTimeout(() => { badge.style.animation = 'pulse 0.6s ease 4'; }, 10);
+                        }
+                        showToast('🔔 ' + novos + ' novo(s) cadastro(s) pendente(s) aguardando aprovação!', true);
+                    } catch(e) {}
+                    // Som de notificação via Web Audio API
+                    try {
+                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                        [523, 659, 784].forEach((freq, i) => {
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.connect(gain); gain.connect(ctx.destination);
+                            osc.frequency.value = freq;
+                            osc.type = 'sine';
+                            gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.12);
+                            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.25);
+                            osc.start(ctx.currentTime + i * 0.12);
+                            osc.stop(ctx.currentTime + i * 0.12 + 0.3);
+                        });
+                    } catch(eAudio) {}
+                }
+                _lastKnownPending = pendentes;
+            }
+
             document.addEventListener('visibilitychange', throttledAdminReload);
             window.addEventListener('focus', throttledAdminReload);
-            // Polling calmo de segurança apenas a cada 60 segundos
-            setInterval(() => { if (!document.hidden) throttledAdminReload(); }, 60000);
+            // Polling a cada 15 segundos para capturar novos cadastros rapidamente
+            setInterval(() => {
+                if (!document.hidden) {
+                    throttledAdminReload();
+                    checkNovosCadastros();
+                }
+            }, 15000);
 
             // 2. Listener instantâneo de storage (atualiza na mesma hora se houver ação em outra aba)
             window.addEventListener('storage', () => {
@@ -7939,16 +7980,22 @@ function updateDashboardMetrics() {
             try {
                 const sClient = window.supabaseInstance || window.supabaseClient;
                 if (sClient && typeof sClient.channel === 'function') {
+                    const reloadAndCheck = () => {
+                        lastAdminSync = 0; // força reload imediato ignorando throttle
+                        loadAdminDataFromSupabase().then ? loadAdminDataFromSupabase().then(() => setTimeout(checkNovosCadastros, 500)) : (loadAdminDataFromSupabase(), setTimeout(checkNovosCadastros, 1000));
+                    };
                     sClient.channel('admin-realtime-sync')
-                        .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios' }, () => loadAdminDataFromSupabase())
-                        .on('postgres_changes', { event: '*', schema: 'public', table: 'recargas' }, () => loadAdminDataFromSupabase())
-                        .on('postgres_changes', { event: '*', schema: 'public', table: 'cnhs' }, () => loadAdminDataFromSupabase())
-                        .on('postgres_changes', { event: '*', schema: 'public', table: 'exames' }, () => loadAdminDataFromSupabase())
-                        .on('postgres_changes', { event: '*', schema: 'public', table: 'atestados' }, () => loadAdminDataFromSupabase())
-                        .on('postgres_changes', { event: '*', schema: 'public', table: 'indicacoes' }, () => loadAdminDataFromSupabase())
-                        .subscribe();
+                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'usuarios' }, reloadAndCheck)
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'recargas' }, () => { lastAdminSync = 0; loadAdminDataFromSupabase(); })
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'cnhs' }, () => { lastAdminSync = 0; loadAdminDataFromSupabase(); })
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'exames' }, () => { lastAdminSync = 0; loadAdminDataFromSupabase(); })
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'atestados' }, () => { lastAdminSync = 0; loadAdminDataFromSupabase(); })
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'indicacoes' }, () => { lastAdminSync = 0; loadAdminDataFromSupabase(); })
+                        .subscribe((status) => {
+                            if (status === 'SUBSCRIBED') console.log('[Admin] Realtime ativo — recebendo novos cadastros em tempo real.');
+                        });
                 }
-            } catch(eRt) {}
+            } catch(eRt) { console.warn('[Admin] Realtime indisponível, usando polling de 15s.'); }
 
             const savedPrice = localStorage.getItem('happynation_cnh_price');
             if (savedPrice) {
