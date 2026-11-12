@@ -1781,22 +1781,14 @@
                 return;
             }
 
-            // 1. CHECAGEM RÍGIDA DE CANCELAMENTO / EXCLUSÃO DE CNH
+            // 1. CHECAGEM LOCAL — apenas para leitura do valor de pendência; NÃO bloqueia mais aqui.
+            // O Supabase é consultado PRIMEIRO; o bloqueio só é exibido se o CPF não estiver cadastrado lá.
+            let _localBlockedPend = '500,00';
             try {
-                const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
-                const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
-                const isBlocked = (canceledList.includes(enteredRawCpf) || deletedList.includes(enteredRawCpf));
-                if (isBlocked) {
-                    let vPend = '500,00';
-                    try {
-                        const blockedObj = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + enteredRawCpf) || '{}');
-                        if (blockedObj.valor_pendencia) vPend = blockedObj.valor_pendencia;
-                        else if (activeDriver && activeDriver.valor_pendencia) vPend = activeDriver.valor_pendencia;
-                    } catch(eB){}
-                    showBlockedEntryModal(enteredRawCpf, vPend);
-                    return;
-                }
-            } catch(eCancelCheck) {}
+                const blockedObj = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + enteredRawCpf) || '{}');
+                if (blockedObj.valor_pendencia) _localBlockedPend = blockedObj.valor_pendencia;
+                else if (activeDriver && activeDriver.valor_pendencia) _localBlockedPend = activeDriver.valor_pendencia;
+            } catch(eB){}
 
             const btnCpf = document.getElementById('btnGovSubmitCpf');
             const originalBtnText = btnCpf ? btnCpf.textContent : 'Continuar';
@@ -1807,12 +1799,19 @@
 
             // Helper para ativar condutor e avançar
             function activateAndProceed(foundData) {
+                // Limpa TODOS os bloqueios locais ao encontrar o CPF no Supabase (recadastro)
                 try {
                     var cList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
                     if (cList.indexOf(enteredRawCpf) !== -1) {
                         cList = cList.filter(function(c){ return c !== enteredRawCpf; });
                         localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(cList));
                     }
+                    var dList = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                    if (dList.indexOf(enteredRawCpf) !== -1) {
+                        dList = dList.filter(function(d){ return d !== enteredRawCpf; });
+                        localStorage.setItem('happynation_deleted_cnhs', JSON.stringify(dList));
+                    }
+                    localStorage.removeItem('happynation_blocked_cnh_' + enteredRawCpf);
                     if (typeof hideCnhCanceledNotice === 'function') hideCnhCanceledNotice();
                 } catch(eUnc){}
 
@@ -1944,7 +1943,14 @@
                             } catch(ePurge) {}
 
                             if (btnCpf) { btnCpf.disabled = false; btnCpf.textContent = originalBtnText; }
-                            showBlockedEntryModal(enteredRawCpf, '500,00');
+                            // Verifica se CPF está na lista de bloqueados local para decidir a mensagem
+                            var _cL = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                            var _dL = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                            if (_cL.includes(enteredRawCpf) || _dL.includes(enteredRawCpf)) {
+                                showBlockedEntryModal(enteredRawCpf, _localBlockedPend);
+                            } else {
+                                alert('CPF não localizado. Verifique os dados informados.');
+                            }
                             return;
                         }
                     }
