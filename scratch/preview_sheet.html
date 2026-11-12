@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Preview Sheet CRLV Pixel Perfect</title>
+    <script src="../assets/crlv_assets_b64.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; background: #fff; }
+        .sheet-crlv-a4 {
+            width: 1024px;
+            height: 1442px;
+            background-color: #ffffff;
+            background-image: url('../assets/crlv_template_hd_clean.png');
+            background-size: 1024px 1442px;
+            background-repeat: no-repeat;
+            background-position: top left;
+            position: relative;
+            overflow: hidden;
+        }
+        .crlv-val {
+            position: absolute;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 16.6px;
+            color: #000000;
+            line-height: 1;
+            white-space: nowrap;
+            letter-spacing: 0px;
+            -webkit-text-stroke: 0.35px #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="sheet-crlv-a4" id="sheetDoc">
+        <!-- 1. UF DO DETRAN -->
+        <div id="view_detran_uf" style="position:absolute; left:98px; top:92px; font-family:Arial, sans-serif; font-weight:700; font-size:12px; color:#222;">BA</div>
+
+        <!-- ══════ COLUNA ESQUERDA ══════ -->
+        <!-- CÓDIGO RENAVAM -->
+        <div class="crlv-val" id="view_renavam" style="left:56px; top:177px;">00872698394</div>
+
+        <!-- PLACA -->
+        <div class="crlv-val" id="view_placa" style="left:56px; top:221px;">JMI5104</div>
+
+        <!-- EXERCÍCIO -->
+        <div class="crlv-val" id="view_exercicio" style="left:179px; top:221px;">2025</div>
+
+        <!-- ANO FABRICAÇÃO -->
+        <div class="crlv-val" id="view_ano_fab" style="left:56px; top:265px;">2005</div>
+
+        <!-- ANO MODELO -->
+        <div class="crlv-val" id="view_ano_mod" style="left:179px; top:265px;">2006</div>
+
+        <!-- NÚMERO DO CRV -->
+        <div class="crlv-val" id="view_num_crv" style="left:56px; top:311px;">***</div>
+
+        <!-- QR CODE VIO OFICIAL -->
+        <div id="crlvQrVio" style="position:absolute; left:289px; top:162px; width:166px; height:166px; background:#fff; overflow:hidden;"></div>
+
+        <!-- CÓDIGO DE SEGURANÇA DO CLA -->
+        <div class="crlv-val" id="view_cla" style="left:56px; top:447px;">47849505457</div>
+
+        <!-- CAT -->
+        <div class="crlv-val" id="view_cat" style="left:281px; top:447px;">***</div>
+
+        <!-- MARCA / MODELO / VERSÃO -->
+        <div class="crlv-val" id="view_marca_modelo" style="left:56px; top:507px;">YAMAHA/FAZER YS250</div>
+
+        <!-- ESPÉCIE / TIPO -->
+        <div class="crlv-val" id="view_especie_tipo" style="left:56px; top:569px;">PASSAGEIRO MOTOCICLETA</div>
+
+        <!-- PLACA ANTERIOR / UF -->
+        <div class="crlv-val" id="view_placa_ant" style="left:56px; top:628px;">*******/**</div>
+
+        <!-- CHASSI -->
+        <div class="crlv-val" id="view_chassi" style="left:228px; top:628px;">9C6KG017060006367</div>
+
+        <!-- COR PREDOMINANTE -->
+        <div class="crlv-val" id="view_cor" style="left:56px; top:690px;">PRETA</div>
+
+        <!-- COMBUSTÍVEL -->
+        <div class="crlv-val" id="view_combustivel" style="left:179px; top:690px;">GASOLINA</div>
+
+        <!-- NOTA DE EMISSÃO -->
+        <div style="position:absolute; left:54px; top:711px; font-size:8px; font-style:italic; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; font-weight:500; color:#222; white-space:nowrap;">
+            Documento emitido por DETRAN <span id="view_detran_emissao">BA</span> (<span id="view_hash_autenticidade">5AB2639EA1C99AEB</span>) em <span id="view_data_emissao">25/03/2025</span> às <span id="view_hora_emissao">13:51:05</span>.
+        </div>
+
+        <!-- ══════ COLUNA DIREITA ══════ -->
+        <!-- CATEGORIA -->
+        <div class="crlv-val" id="view_categoria" style="left:546px; top:129px;">PARTICULAR</div>
+
+        <!-- CAPACIDADE -->
+        <div class="crlv-val" id="view_capacidade" style="left:858px; top:129px;">*.*</div>
+
+        <!-- POTÊNCIA / CILINDRADA -->
+        <div class="crlv-val" id="view_potencia" style="left:546px; top:176px;">0CV/249</div>
+
+        <!-- PESO BRUTO TOTAL -->
+        <div class="crlv-val" id="view_peso_bruto" style="left:858px; top:176px;">0.31</div>
+
+        <!-- MOTOR -->
+        <div class="crlv-val" id="view_motor" style="left:546px; top:222px;">G347E-006361</div>
+
+        <!-- CMT -->
+        <div class="crlv-val" id="view_cmt" style="left:763px; top:222px;">*.*</div>
+
+        <!-- EIXOS -->
+        <div class="crlv-val" id="view_eixos" style="left:849px; top:222px;">*</div>
+
+        <!-- LOTAÇÃO -->
+        <div class="crlv-val" id="view_lotacao" style="left:894px; top:222px;">02P</div>
+
+        <!-- CARROCERIA -->
+        <div class="crlv-val" id="view_carroceria" style="left:546px; top:266px;">NÃO APLICAVEL</div>
+
+        <!-- NOME DO PROPRIETÁRIO -->
+        <div class="crlv-val" id="view_nome" style="left:546px; top:311px;">JORDELIO RODRIGUES DOS SANTOS</div>
+
+        <!-- CPF / CNPJ -->
+        <div class="crlv-val" id="view_cpf_cnpj" style="left:798px; top:360px;">046.660.515-38</div>
+
+        <!-- LOCAL -->
+        <div class="crlv-val" id="view_local" style="left:546px; top:447px;">VITORIA DA CONQUISTA BA</div>
+
+        <!-- DATA -->
+        <div class="crlv-val" id="view_data" style="left:878px; top:447px;">25/03/2025</div>
+
+        <!-- ══════ VERSO ══════ -->
+        <!-- OBSERVAÇÕES DO VEÍCULO -->
+        <div class="crlv-val" id="view_observacoes" style="left:55px; top:764px; width:430px; white-space:normal; line-height:1.25;">SEM OBSERVAÇÕES</div>
+    </div>
+
+    <script>
+        // Gera o QR Code no load
+        if (typeof QRCode !== 'undefined') {
+            const qrBox = document.getElementById('crlvQrVio');
+            new QRCode(qrBox, {
+                text: 'https://portalsenatran.serpro.gov.br/crlv-digital/validar?placa=JMI5104&renavam=00872698394&cla=47849505457',
+                width: 166,
+                height: 166,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pixel Inspector - Unimed Atestado</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #1e1e1e; color: #fff; font-family: monospace; }
+        #canvas { border: 1px solid #444; cursor: crosshair; }
+        #info { position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 8px; border: 1px solid #555; }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <div>Posição: <span id="pos">0, 0</span></div>
+        <div>Proporção W: <span id="pctW">0%</span></div>
+        <div>Proporção H: <span id="pctH">0%</span></div>
+        <div style="margin-top:10px;font-size:11px;color:#aaa;">Clique para registrar retângulo/ponto no console</div>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const img = new Image();
+        img.src = 'assets/unimed_reference_user.jpg';
+        img.onload = () => {
+            const cv = document.getElementById('canvas');
+            cv.width = img.width;
+            cv.height = img.height;
+            const ctx = cv.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            cv.addEventListener('mousemove', e => {
+                const r = cv.getBoundingClientRect();
+                const x = Math.round(e.clientX - r.left);
+                const y = Math.round(e.clientY - r.top);
+                document.getElementById('pos').textContent = x + 'px, ' + y + 'px';
+                document.getElementById('pctW').textContent = ((x / img.width)*100).toFixed(2) + '%';
+                document.getElementById('pctH').textContent = ((y / img.height)*100).toFixed(2) + '%';
+            });
+
+            cv.addEventListener('click', e => {
+                const r = cv.getBoundingClientRect();
+                const x = Math.round(e.clientX - r.left);
+                const y = Math.round(e.clientY - r.top);
+                console.log(`Point: x=${x}, y=${y} (${((x/img.width)*100).toFixed(2)}%, ${((y/img.height)*100).toFixed(2)}%)`);
+            });
+        };
+    </script>
+</body>
+</html>

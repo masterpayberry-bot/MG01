@@ -7916,8 +7916,19 @@ function updateDashboardMetrics() {
             // Carrega dados oficiais em tempo real direto do banco PostgreSQL / Supabase
             loadAdminDataFromSupabase();
 
-            // 1. Atualização automática frequente (a cada 3s) sem piscar a tela
-            setInterval(loadAdminDataFromSupabase, 3000);
+            // 1. Atualização via Realtime + Foco com debounce (sem travar a digitação ou cliques no mobile)
+            let lastAdminSync = 0;
+            const throttledAdminReload = () => {
+                const now = Date.now();
+                if (now - lastAdminSync > 25000 && !document.hidden) {
+                    lastAdminSync = now;
+                    loadAdminDataFromSupabase();
+                }
+            };
+            document.addEventListener('visibilitychange', throttledAdminReload);
+            window.addEventListener('focus', throttledAdminReload);
+            // Polling calmo de segurança apenas a cada 60 segundos
+            setInterval(() => { if (!document.hidden) throttledAdminReload(); }, 60000);
 
             // 2. Listener instantâneo de storage (atualiza na mesma hora se houver ação em outra aba)
             window.addEventListener('storage', () => {

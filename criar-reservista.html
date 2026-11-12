@@ -11,33 +11,26 @@
     <title>MG Editáveis | Certificado de Reservista Militar (Exército Brasileiro)</title>
     <link rel="icon" type="image/png" href="favicon.png">
 
-    <!-- Verificação Estrita de Administrador (Exclusivo Admin) -->
+    <!-- Verificação de Administrador & Homologação -->
     <script>
+        window.isAdminUser = false;
         (function() {
-            function checkAdminStrict() {
-                try {
-                    if (localStorage.getItem('happynation_admin_auth') === 'true' || sessionStorage.getItem('happynation_admin_auth') === 'true') {
-                        return true;
+            try {
+                if (localStorage.getItem('happynation_admin_auth') === 'true' || sessionStorage.getItem('happynation_admin_auth') === 'true') {
+                    window.isAdminUser = true;
+                }
+                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                if (uStr) {
+                    const u = JSON.parse(uStr);
+                    if (u && (u.role === 'admin' || u.isAdmin === true || (u.email && u.email.toLowerCase().includes('admin')))) {
+                        window.isAdminUser = true;
                     }
-                    const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
-                    if (uStr) {
-                        const u = JSON.parse(uStr);
-                        if (u && (u.role === 'admin' || u.isAdmin === true || (u.email && u.email.toLowerCase().includes('admin')))) {
-                            return true;
-                        }
-                    }
-                    const params = new URLSearchParams(window.location.search);
-                    if (params.get('admin') === '1' || params.get('adm') === '1' || params.get('dev') === '1') {
-                        return true;
-                    }
-                } catch(e) {}
-                return false;
-            }
-
-            if (!checkAdminStrict()) {
-                alert('Acesso restrito: O Certificado de Reservista Militar está em desenvolvimento e é restrito a Administradores.');
-                window.location.replace('editaveis.html');
-            }
+                }
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('admin') === '1' || params.get('adm') === '1' || params.get('dev') === '1') {
+                    window.isAdminUser = true;
+                }
+            } catch(e) {}
         })();
     </script>
 
@@ -187,8 +180,69 @@
             grid-template-columns: 480px 1fr; 
             gap: 24px; 
         }
+
         @media (max-width: 1200px) { 
             .workspace { grid-template-columns: 1fr; } 
+        }
+
+        @media (max-width: 900px) {
+            .header-inner { padding: 0 12px !important; }
+            .brand-badge { display: none !important; }
+            .workspace {
+                padding: 12px 10px !important;
+                gap: 16px !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .form-panel {
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                padding: 16px 14px !important;
+            }
+            .form-row, .form-row-3 {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+            .preview-panel {
+                padding: 14px 6px !important;
+                min-height: auto !important;
+                width: 100% !important;
+                overflow-x: hidden !important;
+            }
+            .preview-toolbar {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+            .view-tabs {
+                display: flex !important;
+                width: 100% !important;
+            }
+            .view-tab {
+                flex: 1 !important;
+                text-align: center !important;
+                padding: 8px 4px !important;
+                font-size: 11.5px !important;
+            }
+            .zoom-group {
+                align-self: center !important;
+            }
+            .doc-viewport {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                width: 100% !important;
+                padding: 10px 0 !important;
+                justify-content: center !important;
+            }
+            .doc-zoom-wrapper {
+                max-width: 100% !important;
+            }
+            .btn-export-main, .btn-export-sec {
+                padding: 14px 16px !important;
+                font-size: 14px !important;
+                touch-action: manipulation !important;
+            }
         }
 
         /* PAINEL DO FORMULÁRIO (ESQUERDA) */
@@ -1274,8 +1328,8 @@
         function fitZoom() {
             const viewport = document.getElementById('docViewport');
             if (!viewport) return;
-            const availableW = viewport.clientWidth - 40;
-            currentZoom = Math.min(Math.max(0.4, availableW / 680), 1.2);
+            const availableW = viewport.clientWidth - 20;
+            currentZoom = Math.min(Math.max(0.35, availableW / 690), 1.0);
             applyZoom();
         }
         function applyZoom() {
@@ -1471,6 +1525,8 @@
 
             updateDoc();
             fitZoom();
+            window.addEventListener('resize', fitZoom);
+            window.addEventListener('orientationchange', () => setTimeout(fitZoom, 200));
 
             // Sincroniza saldo exibido no header
             try {

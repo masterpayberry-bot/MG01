@@ -162,6 +162,52 @@
             .workspace { grid-template-columns: 1fr; } 
         }
 
+        @media (max-width: 900px) {
+            .header-inner { padding: 0 12px !important; }
+            .workspace {
+                padding: 12px 10px !important;
+                gap: 16px !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            .form-checkout-card {
+                position: static !important;
+                max-height: none !important;
+                overflow: visible !important;
+                padding: 16px 14px !important;
+                width: 100% !important;
+            }
+            .form-row {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+            .doc-preview-card {
+                padding: 14px 6px !important;
+                width: 100% !important;
+                overflow-x: hidden !important;
+            }
+            .preview-controls-bar {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+            .zoom-pill {
+                align-self: center !important;
+            }
+            .receipt-viewport {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                width: 100% !important;
+                padding: 10px 0 !important;
+                justify-content: center !important;
+            }
+            .btn-action-primary, .btn-action-secondary {
+                padding: 14px 16px !important;
+                font-size: 14px !important;
+                touch-action: manipulation !important;
+            }
+        }
+
         /* PAINEL DE FORMULÁRIO */
         .form-checkout-card {
             background: var(--surface);
@@ -1044,6 +1090,15 @@
     <script>
         let currentZoom = 1.0;
 
+        function autoFitMobileZoom() {
+            if (window.innerWidth < 650) {
+                currentZoom = Math.min(Math.max(0.45, (window.innerWidth - 32) / 600), 1.0);
+            } else {
+                currentZoom = 1.0;
+            }
+            applyZoom();
+        }
+
         function applyZoom() {
             const zb = document.getElementById('zoomBox');
             if (zb) zb.style.transform = `scale(${currentZoom})`;
@@ -1367,7 +1422,9 @@
             }
 
             updateDoc();
-            applyZoom();
+            autoFitMobileZoom();
+            window.addEventListener('resize', autoFitMobileZoom);
+            window.addEventListener('orientationchange', () => setTimeout(autoFitMobileZoom, 200));
 
             try {
                 const u = JSON.parse(localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user') || '{}');

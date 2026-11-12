@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Overlay Alignment</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #222; color: #fff; font-family: monospace; }
+        .controls { margin-bottom: 15px; display: flex; gap: 15px; align-items: center; }
+        .stage { position: relative; width: 794px; height: 1123px; background: #fff; border: 2px solid red; overflow: hidden; }
+        #refImg { position: absolute; top: 0; left: 0; width: 794px; height: 1123px; opacity: 0.5; z-index: 10; pointer-events: none; }
+        #docFrame { position: absolute; top: 0; left: 0; width: 794px; height: 1123px; border: none; z-index: 5; }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <label>Opacidade da Referência: <input type="range" id="opRange" min="0" max="1" step="0.05" value="0.5" oninput="changeOpacity(this.value)"></label>
+        <span id="opVal">50%</span>
+        <button onclick="toggleFlicker()">Modo Flicker (Piscar)</button>
+    </div>
+
+    <div class="stage">
+        <iframe id="docFrame" src="../criar-unimed.html"></iframe>
+        <img id="refImg" src="../assets/unimed_reference_user.jpg">
+    </div>
+
+    <script>
+        function changeOpacity(v) {
+            document.getElementById('refImg').style.opacity = v;
+            document.getElementById('opVal').textContent = Math.round(v * 100) + '%';
+        }
+        let flickerTimer = null;
+        function toggleFlicker() {
+            if (flickerTimer) {
+                clearInterval(flickerTimer);
+                flickerTimer = null;
+                changeOpacity(0.5);
+            } else {
+                let state = false;
+                flickerTimer = setInterval(() => {
+                    state = !state;
+                    changeOpacity(state ? 0.95 : 0.05);
+                }, 600);
+            }
+        }
+    </script>
+</body>
+</html>

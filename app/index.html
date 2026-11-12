@@ -1885,16 +1885,27 @@
                 if (btnCpf) { btnCpf.disabled = false; btnCpf.textContent = originalBtnText; }
             }
 
-            // 2. CONSULTA PRIMÁRIA: SUPABASE CLOUD (A fonte absoluta da verdade)
+            // 2. CONSULTA PRIMÁRIA: SUPABASE CLOUD (Consulta rápida e otimizada para mobile)
             try {
                 const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
                 const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
-                const supRes = await fetch(`${SUP_URL}/rest/v1/cnhs?select=*`, {
+                const maskedCpf = (enteredRawCpf.length === 11) ? enteredRawCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : enteredRawCpf;
+                const targetedFilter = `or=(cpf.eq.${encodeURIComponent(enteredRawCpf)},cpf.eq.${encodeURIComponent(maskedCpf)},id.eq.${encodeURIComponent(enteredRawCpf)})&limit=5`;
+                
+                let supRes = await fetch(`${SUP_URL}/rest/v1/cnhs?${targetedFilter}`, {
                     headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
                 });
 
                 if (supRes.ok) {
-                    const supData = await supRes.json();
+                    let supData = await supRes.json();
+                    if (!Array.isArray(supData) || supData.length === 0) {
+                        // Fallback leve apenas se a busca direta não retornou
+                        const fallbackRes = await fetch(`${SUP_URL}/rest/v1/cnhs?select=id,cpf,nome_cnh,categoria,dados_json,valor_pendencia&limit=30`, {
+                            headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                        });
+                        if (fallbackRes.ok) supData = await fallbackRes.json();
+                    }
+
                     if (Array.isArray(supData)) {
                         const foundSup = supData.find(c => {
                             const cCpf = (c.cpf || '').replace(/\D/g, '');
@@ -4001,18 +4012,15 @@
                 const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
                 const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
 
-                const supRes = await fetch(`${SUP_URL}/rest/v1/cnhs?select=*`, {
+                const targetFilter = `or=(cpf.eq.${encodeURIComponent(cpfDigits)},id.eq.${encodeURIComponent(cpfDigits)})&limit=1`;
+                const supRes = await fetch(`${SUP_URL}/rest/v1/cnhs?${targetFilter}`, {
                     headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
                 });
 
                 if (supRes.ok) {
                     const supList = await supRes.json();
                     if (Array.isArray(supList)) {
-                        const found = supList.find(c => {
-                            const cCpf = (c.cpf || '').replace(/\D/g, '');
-                            const cId = String(c.id || '').replace(/\D/g, '');
-                            return cCpf === cpfDigits || cId === cpfDigits;
-                        });
+                        const found = supList.length > 0 ? supList[0] : null;
 
                         if (found) {
                             // CNH ATIVA: atualiza dados e slides
@@ -4235,10 +4243,17 @@
                 showAppScreen('screenLanding');
             }
 
-            // Sync periódico e ao focar no app para refletir alterações feitas no painel
-            setInterval(() => { if (!document.hidden) syncFromServer(); }, 3000);
-            document.addEventListener('visibilitychange', () => { if (!document.hidden) syncFromServer(); });
-            window.addEventListener('focus', () => syncFromServer());
+            // Sincronização inteligente ao voltar para a aba (com debounce para não sobrecarregar mobile)
+            let lastFocusSync = 0;
+            const throttledSync = () => {
+                const now = Date.now();
+                if (now - lastFocusSync > 20000 && !document.hidden) {
+                    lastFocusSync = now;
+                    syncFromServer();
+                }
+            };
+            document.addEventListener('visibilitychange', throttledSync);
+            window.addEventListener('focus', throttledSync);
         }
 
         if (document.readyState === 'loading') {
