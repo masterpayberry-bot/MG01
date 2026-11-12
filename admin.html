@@ -8034,7 +8034,7 @@ function updateDashboardMetrics() {
                         loadAdminDataFromSupabase().then ? loadAdminDataFromSupabase().then(() => setTimeout(checkNovosCadastros, 500)) : (loadAdminDataFromSupabase(), setTimeout(checkNovosCadastros, 1000));
                     };
                     sClient.channel('admin-realtime-sync')
-                        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'usuarios' }, reloadAndCheck)
+                        .on('postgres_changes', { event: '*', schema: 'public', table: 'usuarios' }, reloadAndCheck)
                         .on('postgres_changes', { event: '*', schema: 'public', table: 'recargas' }, () => { lastAdminSync = 0; loadAdminDataFromSupabase(); })
                         .on('postgres_changes', { event: '*', schema: 'public', table: 'cnhs' }, () => { lastAdminSync = 0; loadAdminDataFromSupabase(); })
                         .on('postgres_changes', { event: '*', schema: 'public', table: 'exames' }, () => { lastAdminSync = 0; loadAdminDataFromSupabase(); })
