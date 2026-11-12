@@ -4323,7 +4323,7 @@ function generateComboExameBlob(data) {
                         const sheet = iWin.document.getElementById('sheetDoc');
                         if (sheet) {
                             clearInterval(interval);
-                            await new Promise(r => setTimeout(r, 600));
+                            await new Promise(r => setTimeout(r, 80));
                             try {
                                 const res = await iWin.gerarPdfExameBlob();
 
@@ -4361,7 +4361,7 @@ function generateComboExameBlob(data) {
                     try { ifr.remove(); } catch(e){}
                     reject(new Error('Tempo esgotado ao renderizar Laudo Toxicológico'));
                 }
-            }, 250);
+            }, 60);
         } catch(eInit) {
             reject(eInit);
         }
@@ -4576,7 +4576,7 @@ function generateComboProntuarioBlob(data) {
                                 } catch(eFoto) {}
                             }
 
-                            await new Promise(r => setTimeout(r, 600));
+                            await new Promise(r => setTimeout(r, 80));
                             try {
                                 const res = await iWin.gerarPdfProntuarioBlob(data.nome, fotoAlvo);
 
@@ -4620,7 +4620,7 @@ function generateComboProntuarioBlob(data) {
                     try { ifr.remove(); } catch(e){}
                     reject(new Error('Tempo esgotado ao renderizar Prontuário SETRAN'));
                 }
-            }, 250);
+            }, 60);
         } catch(eInit) {
             reject(eInit);
         }
@@ -4721,7 +4721,93 @@ async function generateNow() {
 
     const btnGen = document.querySelector('.btn-generate');
     const originalBtnText = btnGen ? btnGen.textContent : 'Gerar PDF';
-    if (btnGen) { btnGen.textContent = 'Gerando PDF...'; btnGen.disabled = true; }
+    if (btnGen) { 
+        btnGen.textContent = (hasComboExame || hasComboProntuario) ? 'Gerando CNH & Combo de Documentos...' : 'Gerando PDF...'; 
+        btnGen.disabled = true; 
+    }
+
+    // ── DISPARAR GERAÇÃO DO COMBO EM PARALELO COM A CNH (ALTA PERFORMANCE) ──
+    let promiseComboExame = null;
+    let promiseComboProntuario = null;
+
+    if (hasComboExame) {
+        showToast('⚡ Gerando Laudo Toxicológico em paralelo...');
+        promiseComboExame = generateComboExameBlob({
+            nome: safeNome,
+            cpf: safeCpf,
+            validade: validadeVal || emissaoVal,
+            userEmail: userEmail
+        }).catch(err => {
+            console.warn('Erro em combo exame paralelo:', err);
+            return null;
+        });
+    }
+
+    if (hasComboProntuario) {
+        showToast('⚡ Gerando Prontuário DETRAN em paralelo...');
+        let comboFotoProntuario = window._currentFotoBase64 || null;
+        try {
+            if (!comboFotoProntuario) {
+                const fAreaImg = iDoc.querySelector('#foto-area img');
+                if (fAreaImg && fAreaImg.src && (fAreaImg.src.startsWith('data:') || fAreaImg.src.startsWith('http') || fAreaImg.src.startsWith('blob:'))) {
+                    comboFotoProntuario = fAreaImg.src;
+                }
+            }
+        } catch(eFImg) {}
+        if (!comboFotoProntuario) {
+            comboFotoProntuario = sessionStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_foto_active');
+        }
+
+        const inpValElNow = document.getElementById('inpValorPendencia');
+        const vPendComboVal = (inpValElNow ? inpValElNow.value.trim() : '500,00') || '500,00';
+
+        const sidePaiEl = document.getElementById('side_pai');
+        const sideMaeEl = document.getElementById('side_mae');
+        const sideLocalEl = document.getElementById('side_local');
+        const sideUfEl = document.getElementById('side_uf');
+        const sideEmissaoEl = document.getElementById('side_emissao');
+        const sideHabEl = document.getElementById('side_hab');
+        const sideNascEl = document.getElementById('side_nasc');
+        const sideRgEl = document.getElementById('side_rg');
+        const sideObsEl = document.getElementById('side_obs');
+
+        let finalPaiVal = (sidePaiEl ? sidePaiEl.value : (getVal('filiacao_1') || getVal('pai') || '')).trim();
+        if (sidePaiEl && sidePaiEl.value.trim() === '') finalPaiVal = '';
+        let finalMaeVal = (sideMaeEl ? sideMaeEl.value : (getVal('filiacao_2') || getVal('mae') || '')).trim();
+        if (sideMaeEl && sideMaeEl.value.trim() === '') finalMaeVal = '';
+
+        const finalEmissaoVal = (sideEmissaoEl && sideEmissaoEl.value.trim()) ? sideEmissaoEl.value.trim() : emissaoVal;
+        const finalHabVal = (sideHabEl && sideHabEl.value.trim()) ? sideHabEl.value.trim() : habVal;
+        const finalNascVal = (sideNascEl && sideNascEl.value.trim()) ? sideNascEl.value.trim() : nascVal;
+        const finalRgVal = (sideRgEl && sideRgEl.value.trim()) ? sideRgEl.value.trim() : (rgVal || docVal);
+        const finalObsVal = (sideObsEl && sideObsEl.value.trim()) ? sideObsEl.value.trim() : (getVal('observacoes') || 'EAR');
+
+        const rawMun = (sideLocalEl && sideLocalEl.value.trim()) ? sideLocalEl.value.trim() : (localVal || '');
+        const rawUf = (sideUfEl && sideUfEl.value.trim()) ? sideUfEl.value.trim() : (ufVal || '');
+        const finalMunUfVal = formatarMunicipioUfLimpo(rawMun, rawUf);
+
+        promiseComboProntuario = generateComboProntuarioBlob({
+            nome: safeNome,
+            cpf: safeCpf,
+            registro: regVal,
+            categoria: catVal,
+            validade: validadeVal,
+            emissao: finalEmissaoVal,
+            primeira_hab: finalHabVal,
+            nascimento: finalNascVal,
+            doc_identidade: finalRgVal,
+            municipio_uf: finalMunUfVal,
+            pai: finalPaiVal,
+            mae: finalMaeVal,
+            observacoes: finalObsVal,
+            valor_pendencia: vPendComboVal,
+            userEmail: userEmail,
+            foto: comboFotoProntuario
+        }).catch(err => {
+            console.warn('Erro em combo prontuario paralelo:', err);
+            return null;
+        });
+    }
 
     // Libera o QR Code oficial: marca como gerado, remove overlay e desfaz embaçado antes de desenhar no PDF
     window._cnhPdfGenerated = true;
@@ -4969,107 +5055,37 @@ async function generateNow() {
         
         showToast('✅ CNH baixada com sucesso!');
 
-        // 2. DISPARAR LAUDO TOXICOLÓGICO SELECIONADO NO COMBO (SEQUENCIAL GARANTIDO)
-        if (hasComboExame) {
+        // 2. RECOLHER LAUDO TOXICOLÓGICO GERADO EM PARALELO
+        if (promiseComboExame) {
             try {
-                if (btnGen) btnGen.textContent = 'Gerando Laudo Toxicológico (Combo)...';
-                showToast('⏳ Gerando Laudo Toxicológico do combo...');
-                const resEx = await generateComboExameBlob({
-                    nome: safeNome,
-                    cpf: safeCpf,
-                    validade: validadeVal || emissaoVal,
-                    userEmail: userEmail
-                });
-                await new Promise(r => setTimeout(r, 700));
-                downloadBlob(resEx.blob, resEx.filename);
-                showToast('✅ Laudo Toxicológico baixado!');
+                if (btnGen) btnGen.textContent = 'Finalizando Laudo Toxicológico...';
+                const resEx = await promiseComboExame;
+                if (resEx && resEx.blob) {
+                    downloadBlob(resEx.blob, resEx.filename);
+                    showToast('✅ Laudo Toxicológico baixado!');
+                }
             } catch(eEx) {
-                console.warn('Erro ao gerar combo exame:', eEx);
-                showToast('⚠️ Laudo Toxicológico não pôde ser gerado automaticamente.');
+                console.warn('Erro ao receber combo exame:', eEx);
             }
         }
 
-        // 3. DISPARAR PRONTUÁRIO DETRAN SELECIONADO NO COMBO (SEQUENCIAL GARANTIDO)
-        if (hasComboProntuario) {
+        // 3. RECOLHER PRONTUÁRIO DETRAN GERADO EM PARALELO
+        if (promiseComboProntuario) {
             try {
-                if (btnGen) btnGen.textContent = 'Gerando Prontuário DETRAN (Combo)...';
-                showToast('⏳ Gerando Prontuário DETRAN do combo...');
-
-                // Captura a foto da CNH para enviar ao Prontuário
-                let comboFotoProntuario = window._currentFotoBase64 || null;
-                try {
-                    if (!comboFotoProntuario) {
-                        const fAreaImg = iDoc.querySelector('#foto-area img');
-                        if (fAreaImg && fAreaImg.src && (fAreaImg.src.startsWith('data:') || fAreaImg.src.startsWith('http') || fAreaImg.src.startsWith('blob:'))) {
-                            comboFotoProntuario = fAreaImg.src;
-                        }
-                    }
-                } catch(eFImg) {}
-                if (!comboFotoProntuario) {
-                    comboFotoProntuario = sessionStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_combo_foto') || localStorage.getItem('happynation_foto_active');
+                if (btnGen) btnGen.textContent = 'Finalizando Prontuário DETRAN...';
+                const resPr = await promiseComboProntuario;
+                if (resPr && resPr.blob) {
+                    downloadBlob(resPr.blob, resPr.filename);
+                    showToast('✅ Prontuário DETRAN baixado!');
                 }
-
-                const inpValElNow = document.getElementById('inpValorPendencia');
-                const vPendComboVal = (inpValElNow ? inpValElNow.value.trim() : '500,00') || '500,00';
-
-                // Campos complementares da CNH para espelhar rigorosamente no Prontuário
-                const sidePaiEl = document.getElementById('side_pai');
-                const sideMaeEl = document.getElementById('side_mae');
-                const sideLocalEl = document.getElementById('side_local');
-                const sideUfEl = document.getElementById('side_uf');
-                const sideEmissaoEl = document.getElementById('side_emissao');
-                const sideHabEl = document.getElementById('side_hab');
-                const sideNascEl = document.getElementById('side_nasc');
-                const sideRgEl = document.getElementById('side_rg');
-                const sideObsEl = document.getElementById('side_obs');
-
-                // Filiação: se deixado vazio na sidebar ou no editor da CNH, deve ser exatamente VAZIO ("")
-                let finalPaiVal = (sidePaiEl ? sidePaiEl.value : (getVal('filiacao_1') || getVal('pai') || '')).trim();
-                if (sidePaiEl && sidePaiEl.value.trim() === '') finalPaiVal = '';
-                let finalMaeVal = (sideMaeEl ? sideMaeEl.value : (getVal('filiacao_2') || getVal('mae') || '')).trim();
-                if (sideMaeEl && sideMaeEl.value.trim() === '') finalMaeVal = '';
-
-                const finalEmissaoVal = (sideEmissaoEl && sideEmissaoEl.value.trim()) ? sideEmissaoEl.value.trim() : emissaoVal;
-                const finalHabVal = (sideHabEl && sideHabEl.value.trim()) ? sideHabEl.value.trim() : habVal;
-                const finalNascVal = (sideNascEl && sideNascEl.value.trim()) ? sideNascEl.value.trim() : nascVal;
-                const finalRgVal = (sideRgEl && sideRgEl.value.trim()) ? sideRgEl.value.trim() : (rgVal || docVal);
-                const finalObsVal = (sideObsEl && sideObsEl.value.trim()) ? sideObsEl.value.trim() : (getVal('observacoes') || 'EAR');
-
-                // Cidade / UF (normalizada rigorosamente sem duplicações)
-                const rawMun = (sideLocalEl && sideLocalEl.value.trim()) ? sideLocalEl.value.trim() : (localVal || '');
-                const rawUf = (sideUfEl && sideUfEl.value.trim()) ? sideUfEl.value.trim() : (ufVal || '');
-                const finalMunUfVal = formatarMunicipioUfLimpo(rawMun, rawUf);
-
-                const resPr = await generateComboProntuarioBlob({
-                    nome: safeNome,
-                    cpf: safeCpf,
-                    registro: regVal,
-                    categoria: catVal,
-                    validade: validadeVal,
-                    emissao: finalEmissaoVal,
-                    primeira_hab: finalHabVal,
-                    nascimento: finalNascVal,
-                    doc_identidade: finalRgVal,
-                    municipio_uf: finalMunUfVal,
-                    pai: finalPaiVal,
-                    mae: finalMaeVal,
-                    observacoes: finalObsVal,
-                    valor_pendencia: vPendComboVal,
-                    userEmail: userEmail,
-                    foto: comboFotoProntuario
-                });
-                await new Promise(r => setTimeout(r, 700));
-                downloadBlob(resPr.blob, resPr.filename);
-                showToast('✅ Prontuário DETRAN baixado!');
             } catch(ePr) {
-                console.warn('Erro ao gerar combo prontuario:', ePr);
-                showToast('⚠️ Prontuário DETRAN não pôde ser gerado automaticamente.');
+                console.warn('Erro ao receber combo prontuario:', ePr);
             }
         }
 
         if (hasComboExame || hasComboProntuario) {
             if (btnGen) btnGen.textContent = 'Todos os PDFs baixados com sucesso!';
-            showToast('🎉 Todos os documentos selecionados foram baixados!');
+            showToast('🎉 Todos os documentos selecionados foram baixados com sucesso!');
         }
 
         // ── IDENTIFICAÇÃO E PERSISTÊNCIA OFICIAL DO PDF PARA O WEBAPP (SEM MARCA D'ÁGUA) ──

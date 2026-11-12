@@ -1891,10 +1891,10 @@
             hiddenContainer.appendChild(cleanClone);
             document.body.appendChild(hiddenContainer);
 
-            await new Promise(r => setTimeout(r, 150));
+            await new Promise(r => setTimeout(r, 60));
 
             const canvas = await html2canvas(cleanClone, {
-                scale: 3,
+                scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
@@ -1968,7 +1968,7 @@
             await new Promise(r => setTimeout(r, 120));
 
             const canvas = await html2canvas(cleanClone, {
-                scale: 3,
+                scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
