@@ -4758,17 +4758,31 @@
             if (!ip || ip === 'Não registrado') return;
             if (!confirm('Deseja realmente desbloquear o IP ' + ip + '? O visitante voltará a ter acesso.')) return;
 
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
             try {
-                const res = await fetch('api/index.php?action=desbloquear_ip&ip=' + encodeURIComponent(ip));
-                const data = await res.json();
-                if (data && data.status === 'success') {
-                    showToast('IP ' + ip + ' desbloqueado com sucesso!');
+                // Remove do Supabase
+                const res = await fetch(SUP_URL + '/rest/v1/ips_bloqueados?ip=eq.' + encodeURIComponent(ip), {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                });
+                // Remove do localStorage também
+                try {
+                    let lbIps = JSON.parse(localStorage.getItem('happynation_blocked_ips') || '[]');
+                    lbIps = lbIps.filter(b => b.ip !== ip && b !== ip);
+                    localStorage.setItem('happynation_blocked_ips', JSON.stringify(lbIps));
+                    blockedIpsData = blockedIpsData.filter(b => b.ip !== ip);
+                } catch(eLs) {}
+
+                if (res.ok) {
+                    showToast('✅ IP ' + ip + ' desbloqueado com sucesso!');
+                    renderSecurityView();
                     refreshSecurityData();
                 } else {
-                    showToast(data.message || 'Erro ao desbloquear IP.');
+                    showToast('Erro ao desbloquear IP. Tente novamente.');
                 }
             } catch(e) {
-                showToast('Falha na comunicação com o servidor.');
+                showToast('Falha na comunicação com o Supabase.');
             }
         }
 
@@ -4781,23 +4795,30 @@
                 return;
             }
 
+            const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+            const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
             try {
-                const res = await fetch('api/index.php?action=bloquear_ip', {
+                const res = await fetch(SUP_URL + '/rest/v1/ips_bloqueados', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ip: ip, motivo: motivo })
+                    headers: {
+                        'apikey': SUP_KEY,
+                        'Authorization': 'Bearer ' + SUP_KEY,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({ ip: ip, motivo: motivo, data: new Date().toISOString() })
                 });
-                const data = await res.json();
-                if (data && data.status === 'success') {
-                    showToast('IP ' + ip + ' bloqueado com sucesso!');
+                if (res.ok) {
+                    showToast('🚫 IP ' + ip + ' bloqueado com sucesso!');
                     document.getElementById('inputManualBlockIp').value = '';
                     document.getElementById('inputManualBlockMotivo').value = '';
                     refreshSecurityData();
                 } else {
-                    showToast(data.message || 'Erro ao bloquear IP.');
+                    const err = await res.json();
+                    showToast('Erro ao bloquear IP: ' + (err.message || res.status));
                 }
             } catch(e) {
-                showToast('Falha ao comunicar com o servidor.');
+                showToast('Falha ao comunicar com o Supabase.');
             }
         }
 
