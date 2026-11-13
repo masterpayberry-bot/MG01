@@ -648,6 +648,40 @@
     </div>
 
     <script>
+        // Obtém o WhatsApp configurado dinamicamente no Admin / Supabase
+        function getActiveSupportPhone() {
+            let phone = localStorage.getItem('happynation_whatsapp') || '';
+            phone = phone.replace(/\D/g, '');
+            if (!phone || phone.length < 8) {
+                phone = '5521998821029'; // fallback padrão
+            }
+            if (phone.length <= 11 && !phone.startsWith('55')) {
+                phone = '55' + phone;
+            }
+            return phone;
+        }
+
+        // Carrega configurações atualizadas do Supabase em background
+        async function fetchDynamicWhatsapp() {
+            try {
+                const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
+                const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
+                const res = await fetch(`${SUP_URL}/rest/v1/configuracoes?chave=eq.whatsapp&select=valor`, {
+                    headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0 && data[0].valor) {
+                        const cleanWpp = String(data[0].valor).replace(/\D/g, '');
+                        if (cleanWpp) {
+                            localStorage.setItem('happynation_whatsapp', cleanWpp);
+                        }
+                    }
+                }
+            } catch(e) {}
+        }
+        fetchDynamicWhatsapp();
+
         let currentAuthMode = 'login';
 
         function toggleAuthMode() {
@@ -806,7 +840,8 @@
                 }
 
                 if (user.status === 'pending') {
-                    const whatsUrl = 'https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, meu cadastro no MG Editáveis (' + (user.email || email) + ') ainda está em análise. Gostaria de agilizar a aprovação do meu acesso.');
+                    const supPhone = getActiveSupportPhone();
+                    const whatsUrl = 'https://wa.me/' + supPhone + '?text=' + encodeURIComponent('Olá, meu cadastro no MG Editáveis (' + (user.email || email) + ') ainda está em análise. Gostaria de agilizar a aprovação do meu acesso.');
                     openPendingModal(user.nome || '', email, whatsUrl);
                     showToast('Cadastro em análise! Seu acesso ainda não foi liberado pelo Administrador.', false);
                     btn.disabled = false;
@@ -964,7 +999,8 @@
                     console.warn('[Indicação] Falha ao processar vínculo:', eRef);
                 }
 
-                const whatsUrl = 'https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, acabei de me cadastrar no MG Editáveis (' + email + ') e gostaria de solicitar a aprovação do meu cadastro.');
+                const supPhone = getActiveSupportPhone();
+                const whatsUrl = 'https://wa.me/' + supPhone + '?text=' + encodeURIComponent('Olá, acabei de me cadastrar no MG Editáveis (' + email + ') e gostaria de solicitar a aprovação do meu cadastro.');
                 openPendingModal(nome, email, whatsUrl);
                 document.getElementById('loginEmail').value = email;
                 document.getElementById('loginPassword').value = '';
@@ -988,7 +1024,8 @@
                 txt.innerHTML = `Olá${safeName ? ' <strong>' + safeName + '</strong>' : ''}! Seu cadastro foi realizado com sucesso.<br><br>Para segurança da plataforma, nosso <strong>Administrador irá analisar e aprovar o seu cadastro</strong>.<br>Você só conseguirá acessar a plataforma após a aprovação no painel.`;
             }
             
-            const finalWhats = whatsUrl || ('https://wa.me/5521998821029?text=' + encodeURIComponent('Olá, acabei de me cadastrar no MG Editáveis (' + (email || '') + ') e gostaria de solicitar a aprovação do meu cadastro.'));
+            const supPhone = getActiveSupportPhone();
+            const finalWhats = whatsUrl || ('https://wa.me/' + supPhone + '?text=' + encodeURIComponent('Olá, acabei de me cadastrar no MG Editáveis (' + (email || '') + ') e gostaria de solicitar a aprovação do meu cadastro.'));
             if (btnWhats) {
                 btnWhats.href = finalWhats;
             }
@@ -1007,7 +1044,8 @@
         }
 
         function contactAdmin() {
-            window.open('https://wa.me/5521998821029?text=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20acesso%20ao%20MG%20Edit%C3%A1veis', '_blank');
+            const supPhone = getActiveSupportPhone();
+            window.open('https://wa.me/' + supPhone + '?text=' + encodeURIComponent('Olá, gostaria de solicitar suporte/acesso ao MG Editáveis'), '_blank');
         }
     </script>
 
