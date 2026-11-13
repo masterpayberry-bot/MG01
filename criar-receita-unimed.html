@@ -568,37 +568,15 @@
             flex-direction: column;
         }
 
-        /* LOGO UNIMED RETÂNGULO OFICIAL COM CIDADE DINÂMICA (RECIFE, CURITIBA, ETC) */
+        /* LOGO UNIMED SVG PURO – IDÊNTICO AO ORIGINAL */
         .rec-unimed-logo-wrapper {
-            position: relative;
-            width: 144px;
-            height: 56px;
             display: inline-block;
-            margin-bottom: 22px;
+            margin-bottom: 18px;
             user-select: none;
+            line-height: 0;
         }
-
-        .rec-unimed-badge-img {
-            width: 100%;
-            height: 100%;
-            object-fit: fill;
+        .rec-unimed-logo-wrapper svg {
             display: block;
-            border-radius: 0;
-        }
-
-        .rec-unimed-dynamic-city {
-            position: absolute;
-            bottom: 5.5px;
-            right: 13px;
-            color: #ffffff;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: -0.2px;
-            text-align: right;
-            pointer-events: none;
-            line-height: 1;
-            white-space: nowrap;
         }
 
         /* DADOS DO PACIENTE */
@@ -896,7 +874,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Unidade / Cidade</label>
-                        <input type="text" id="inpCidade" class="form-input" value="Recife" oninput="atualizarPreview()">
+                        <input type="text" id="inpCidade" class="form-input" value="são paulo" oninput="atualizarPreview()">
                     </div>
                 </div>
 
@@ -1017,9 +995,22 @@
                             <!-- COLUNA ESQUERDA: LOGO UNIMED + IDENTIFICAÇÃO DO PACIENTE -->
                             <div class="rec-top-left-col">
                                 <!-- LOGO UNIMED OFICIAL COM CIDADE EDITÁVEL -->
+                                <!-- LOGO UNIMED SVG PURO – FUNDO VERDE, "Unimed | árvore", cidade dinâmica -->
                                 <div class="rec-unimed-logo-wrapper" title="Logotipo Oficial Unimed">
-                                    <img src="assets/unimed_logo_oficial_crop.png" alt="Unimed" class="rec-unimed-badge-img">
-                                    <div class="rec-unimed-dynamic-city" id="docCity">Recife</div>
+                                  <svg id="svgUnimedLogo" xmlns="http://www.w3.org/2000/svg" width="152" height="62" viewBox="0 0 152 62">
+                                    <!-- fundo verde com cantos arredondados em TODOS os lados -->
+                                    <rect x="0" y="0" width="152" height="62" rx="9" ry="9" fill="#00995D"/>
+                                    <!-- "Unimed" em branco bold -->
+                                    <text x="11" y="34" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="800" fill="#ffffff" letter-spacing="-0.5">Unimed</text>
+                                    <!-- separador | -->
+                                    <text x="97" y="34" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="300" fill="#ffffff" opacity="0.85">|</text>
+                                    <!-- ícone árvore: dois triângulos sobrepostos (pinheiro estilizado) -->
+                                    <polygon points="118,32 125,19 132,32" fill="#ffffff"/>
+                                    <polygon points="115,38 125,24 135,38" fill="#ffffff"/>
+                                    <rect x="123" y="38" width="4" height="5" fill="#ffffff"/>
+                                    <!-- cidade dinâmica (atualizada via JS) -->
+                                    <text id="docCity" x="76" y="53" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#ffffff" text-anchor="middle" letter-spacing="0.2">são paulo</text>
+                                  </svg>
                                 </div>
 
                                 <!-- DADOS DO PACIENTE -->
@@ -1220,7 +1211,7 @@
             const crm = document.getElementById('inpCRM').value.trim() || 'CRM 91919 SP';
             const endMedico = document.getElementById('inpEndMedico').value.trim() || 'Rua das Flores, 1500, 344';
 
-            document.getElementById('docCity').textContent = cidade ? (cidade.charAt(0).toUpperCase() + cidade.slice(1)) : 'Recife';
+            document.getElementById('docCity').textContent = cidade || 'são paulo';
             document.getElementById('docPaciente').textContent = paciente.toLowerCase();
             document.getElementById('docCPF').textContent = cpf;
             document.getElementById('docNasc').textContent = nasc;
