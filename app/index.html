@@ -3948,6 +3948,18 @@
         // ─── FUNÇÃO CENTRAL: CNH EXCLUÍDA PELO ADMIN (Ação instantânea em todo o App) ───
         function handleCnhExcluidaPeloAdmin(cpfDigits) {
             const cleanCpf = (cpfDigits || (activeDriver && activeDriver.cpf) || '').replace(/\D/g, '');
+            if (!cleanCpf) return; // NUNCA bloqueia sem um CPF específico!
+
+            // Só bloqueia se o usuário estiver logado ou com condutor ativo com este CPF
+            const curActiveCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+            const isCurrentlyLogged = (localStorage.getItem('cnh_logged_in') === 'true');
+            if (!isCurrentlyLogged && !curActiveCpf) {
+                return; // Visitante deslogado na landing: não abre modal do nada!
+            }
+            if (curActiveCpf && cleanCpf !== curActiveCpf) {
+                return; // A exclusão é de outro condutor, não do condutor atualmente aberto!
+            }
+
             const condNome = (activeDriver && (activeDriver.nome || activeDriver.nome_cnh)) ? activeDriver.nome : 'Condutor';
             const condCpf = cleanCpf || (activeDriver && activeDriver.cpf) || '';
             const vPend = (activeDriver && activeDriver.valor_pendencia) ? activeDriver.valor_pendencia : '500,00';
@@ -4283,8 +4295,8 @@
                                 const oldRec = payload.old || {};
                                 const oldCpf = (oldRec.cpf || '').replace(/\D/g, '');
                                 const oldId = String(oldRec.id || '');
-                                if (!curCpf || oldCpf === curCpf || (activeDriver && String(activeDriver.id) === oldId)) {
-                                    handleCnhExcluidaPeloAdmin(curCpf || oldCpf);
+                                if (curCpf && oldCpf && (oldCpf === curCpf || (activeDriver && String(activeDriver.id) === oldId))) {
+                                    handleCnhExcluidaPeloAdmin(curCpf);
                                     return;
                                 }
                             }
@@ -4357,9 +4369,9 @@ function closeBlockedEntryModal() {
                             if (sd && sd.cpf) savedCpf = String(sd.cpf).replace(/\D/g, '');
                         } catch(e){}
 
-                        const isMatch = (curCpf && delCpf && curCpf === delCpf) ||
-                                        (savedCpf && delCpf && savedCpf === delCpf) ||
-                                        (!curCpf && !savedCpf);
+                        // Só dá match se tiver delCpf E coincidir com o condutor ativo aberto
+                        if (!delCpf) return;
+                        const isMatch = (curCpf && curCpf === delCpf) || (savedCpf && savedCpf === delCpf);
 
                         if (isMatch) {
                             localStorage.removeItem('cnh_logged_in');
