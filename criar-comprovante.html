@@ -646,24 +646,54 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            padding: 30px 36px;
-            opacity: 0.18;
+            gap: 12px;
+            padding: 40px 30px;
+            opacity: 0.32;
             white-space: nowrap;
             user-select: none;
         }
         .mp-preview-watermark-tile img {
-            width: 220px;
+            width: 340px;
             height: auto;
             display: block;
-            filter: grayscale(100%);
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
         }
         .mp-preview-watermark-tile span {
-            font-size: 16px;
+            font-size: 26px;
             font-weight: 900;
-            letter-spacing: 3.5px;
+            letter-spacing: 5px;
             color: #009ee3;
             text-transform: uppercase;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .mp-preview-watermark-center-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            z-index: 30;
+            pointer-events: none;
+            opacity: 0.36;
+            white-space: nowrap;
+        }
+        .mp-preview-watermark-center-stamp img {
+            width: 420px;
+            height: auto;
+            filter: drop-shadow(0 4px 14px rgba(0,0,0,0.25));
+        }
+        .mp-preview-watermark-center-stamp .stamp-text {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #009ee3;
+            text-transform: uppercase;
+            border-top: 3px dashed #009ee3;
+            border-bottom: 3px dashed #009ee3;
+            padding: 8px 36px;
         }
         #mpReceiptDoc.generating .mp-preview-watermark {
             display: none !important;
@@ -709,7 +739,7 @@
                     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--mp-blue);">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
                     </svg>
-                    <span>Editor de Comprovante Mercado Pago</span>
+                    <span>Comprovante Mercado Pago</span>
                 </div>
                 <div class="checkout-desc">
                     Emita comprovantes de pagamento de boleto bancário idênticos ao layout oficial com logo oficial, tipografia e detalhes originais.
@@ -951,6 +981,10 @@
 
                         <!-- MARCA D'ÁGUA DE PRÉVIA - DESAPARECE AO GERAR PDF/IMAGEM -->
                         <div class="mp-preview-watermark" aria-hidden="true">
+                            <div class="mp-preview-watermark-center-stamp">
+                                <img src="assets/logo-mercadopago-clean.png" alt="">
+                                <div class="stamp-text">PRÉVIA OFICIAL • NÃO VÁLIDO</div>
+                            </div>
                             <div class="mp-preview-watermark-inner">
                                 <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
                                 <div class="mp-preview-watermark-tile"><img src="assets/logo-mercadopago-clean.png" alt=""><span>Prévia Oficial</span></div>
@@ -1402,8 +1436,28 @@
                 }
                 registrarAtividadeComprovante();
 
-                btn.innerHTML = '<span>PDF Gerado com Sucesso!</span>';
-                setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2500);
+                try {
+                    const compRecord = {
+                        id: 'MP-' + Math.floor(10000 + Math.random() * 90000),
+                        pagador: (document.getElementById('inpTitular')?.value || document.getElementById('inpPagador')?.value || 'COMPROVANTE').toUpperCase(),
+                        valor: document.getElementById('inpValor')?.value || '1000.00',
+                        banco: document.getElementById('inpBanco')?.value || 'Mercado Pago',
+                        operacao: document.getElementById('inpOperacao')?.value || '',
+                        status: 'Concluído',
+                        created_at: new Date().toISOString()
+                    };
+                    let uEmail = 'cliente';
+                    try { uEmail = (JSON.parse(localStorage.getItem('happynation_user')||'{}').email||'cliente').toLowerCase().trim(); } catch(e){}
+                    const ckc = 'happynation_comprovantes_' + uEmail;
+                    let cList = []; try { cList = JSON.parse(localStorage.getItem(ckc)||'[]'); } catch(e){}
+                    cList.unshift(compRecord); if(cList.length>200) cList=cList.slice(0,200);
+                    localStorage.setItem(ckc, JSON.stringify(cList));
+                } catch(eSave) {}
+
+                btn.innerHTML = '<span>PDF Gerado! Redirecionando...</span>';
+                setTimeout(() => {
+                    window.location.href = 'comprovantes.html';
+                }, 1200);
 
             } catch (err) {
                 document.getElementById('mpReceiptDoc')?.classList.remove('generating');

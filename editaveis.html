@@ -1409,6 +1409,69 @@
                 </div>
             </article>
 
+            <!-- 6.1. RECEITA MÉDICA (UNIMED) — INVISÍVEL CONFORME SOLICITADO -->
+            <article id="card-receita-unimed" class="doc-card" data-category="saude" data-name="receita unimed medica prescricao farmacia remedio medicamentos controle" onclick="handleCardOptionClick(event, 'criar-receita-unimed.html')" title="Clique para emitir Receita Unimed" style="display: none; cursor:pointer; --card-accent:#00995D; --card-glow:rgba(0,153,93,0.25); --card-icon-bg:rgba(0,153,93,0.1); --card-icon-border:rgba(0,153,93,0.3); --card-pill-bg:rgba(0,153,93,0.12); --card-pill-border:rgba(0,153,93,0.3); --card-btn-bg:#00995D; --card-btn-glow:rgba(0,153,93,0.35); --card-border-hover:rgba(0,153,93,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box" style="color:#00995D; background:rgba(0,153,93,0.1); border-color:rgba(0,153,93,0.25);">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#34d399; border-color:rgba(0,153,93,0.4); background:rgba(0,153,93,0.12);">⚡ Imediato &lt; 20s</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">SAÚDE • PRESCRIÇÃO DIGITAL UNIMED</div>
+                        <h2 class="card-title">Receita Médica (Unimed)</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Prescrição médica digital oficial Unimed com validação por QR Code apontando para o portal de legitimidade, medicamentos, posologia detalhada e assinatura eletrônica padrão ICP-Brasil.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Validação por QR Code oficial apontando para verificação de legitimidade</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Layout oficial Unimed com cabeçalho timbrado e dados do consultório</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Token de receita, código de acesso e múltiplos medicamentos dinâmicos</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Assinatura digital ICP-Brasil e aceitação em farmácias em todo o Brasil</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub">Valor Unitário</span>
+                            <div class="price-main"><span class="price-currency" style="color:#00995D;">R$</span><span>20,00</span></div>
+                        </div>
+                        <div class="delivery-pill" style="color:#34d399; background:rgba(0,153,93,0.08); border-color:rgba(0,153,93,0.2);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 20s</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-receita-unimed.html" class="btn-card-emitir" onclick="event.stopPropagation()" style="background:#00995D; color:#fff; box-shadow:0 4px 14px -2px rgba(0,153,93,0.35);">
+                            <span>Editar Receita Unimed</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='receitas-unimed.html';" title="Ver Receitas Emitidas">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
             <!-- COMPROVANTE MERCADO PAGO (BOLETO) -->
             <article class="doc-card" data-category="financeiro" data-name="comprovante mercado pago boleto pagamento transferencia pix itau caixa recibo banco" onclick="window.location.href='criar-comprovante.html'" title="Clique para emitir Comprovante Mercado Pago" style="cursor:pointer; --card-accent:#009ee3; --card-glow:rgba(0,158,227,0.25); --card-icon-bg:rgba(0,158,227,0.1); --card-icon-border:rgba(0,158,227,0.3); --card-pill-bg:rgba(0,158,227,0.12); --card-pill-border:rgba(0,158,227,0.3); --card-btn-bg:#009ee3; --card-btn-glow:rgba(0,158,227,0.35); --card-border-hover:rgba(0,158,227,0.4);">
                 <div>
@@ -1465,7 +1528,7 @@
                             <span>Editar Comprovante MP</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('comprovante')" title="Ver detalhes do Comprovante Mercado Pago">
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='comprovantes.html';" title="Ver Comprovantes gerados pelo cliente">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
@@ -1528,7 +1591,7 @@
                             <span>Editar Reservista</span>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('reservista')" title="Ver detalhes do Certificado de Reservista">
+                        <button type="button" class="btn-card-preview" onclick="event.stopPropagation(); window.location.href='reservistas.html';" title="Ver Certificados de Reservista gerados pelo cliente">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>

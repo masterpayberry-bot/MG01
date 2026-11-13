@@ -1544,7 +1544,7 @@
                             <img id="imgIcpLogos" src="" alt="ICP Brasil" style="height:44px; max-width:180px; object-fit:contain; display:block;">
                         </div>
                         <div class="footer-qr-col" style="display:flex; flex-direction:row; align-items:center; gap:9px; flex-shrink:0;">
-                            <div id="footerQrDiv" style="width:78px; height:78px; min-width:78px; background:#ffffff; border-radius:2px; display:flex; align-items:center; justify-content:center; overflow:hidden;"></div>
+                            <div id="footerQrDiv" style="width:86px; height:86px; min-width:86px; padding:2px; background:#ffffff; border-radius:2px; display:flex; align-items:center; justify-content:center; overflow:hidden;"></div>
                             <div style="display:flex; flex-direction:column; gap:2px; text-align:left;">
                                 <div class="footer-qr-label" style="font-size:7px; color:#000; line-height:1.25; font-family:Arial,sans-serif;">
                                     Aponte a câmera do celular,<br>leitor de QR code ou visite:<br>
@@ -1803,7 +1803,7 @@ function getUnimedValidationUrl() {
         if (cpfAcomp) params.set('cpf_acomp', cpfAcomp);
     }
 
-    return `${baseDomain}/?${params.toString()}`;
+    return `${baseDomain}/validar-unimed.html?${params.toString()}`;
 }
 
 function gerarQr() {
@@ -1814,15 +1814,18 @@ function gerarQr() {
 
     if (typeof QRCode !== 'undefined') {
         try {
-            // Gera QR Code em alta resolução (320px) com correção L (módulos maiores e mais legíveis por câmeras)
+            // Anexa elemento invisível no DOM para o qrcodejs calcular dimensões perfeitas sem falhas
             const tempDiv = document.createElement('div');
+            tempDiv.style.cssText = 'position:fixed; left:-9999px; top:-9999px; width:320px; height:320px; background:#ffffff; padding:10px; z-index:-9999;';
+            document.body.appendChild(tempDiv);
+
             new QRCode(tempDiv, {
                 text: fullUrl,
                 width: 320,
                 height: 320,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.L
+                correctLevel: QRCode.CorrectLevel.M
             });
 
             setTimeout(() => {
@@ -1836,29 +1839,31 @@ function gerarQr() {
                     imgUrl = imgEl.src;
                 }
 
+                if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
+
                 if (imgUrl) {
-                    el.innerHTML = `<img src="${imgUrl}" alt="QR Code" style="width:76px; height:76px; display:block; image-rendering:pixelated;">`;
+                    el.innerHTML = '<img src="' + imgUrl + '" alt="QR Code" style="width:84px; height:84px; display:block; padding:2px; background:#ffffff; box-sizing:border-box;">';
                 } else {
                     el.innerHTML = '';
                     new QRCode(el, {
                         text: fullUrl,
-                        width: 76,
-                        height: 76,
+                        width: 84,
+                        height: 84,
                         colorDark: '#000000',
                         colorLight: '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.L
+                        correctLevel: QRCode.CorrectLevel.M
                     });
                 }
-            }, 60);
+            }, 80);
         } catch(err) {
             console.error('Erro ao gerar QR Code HD:', err);
             new QRCode(el, {
                 text: fullUrl,
-                width: 76,
-                height: 76,
+                width: 84,
+                height: 84,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.L
+                correctLevel: QRCode.CorrectLevel.M
             });
         }
     }

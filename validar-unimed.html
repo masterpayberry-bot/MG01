@@ -5,855 +5,2097 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Validação de Atestado Médico — Unimed | Portal Oficial de Autenticidade</title>
 
-    <!-- Metadados de Compartilhamento (WhatsApp / Telegram / iMessage) -->
-    <meta property="og:type"        content="website">
-    <meta property="og:site_name"   content="Unimed Brasil — Validação Oficial de Documentos">
-    <meta property="og:title"       content="✅ Validação de Atestado Médico — Unimed">
-    <meta property="og:description" content="Portal Oficial de Autenticação e Verificação de Documentos Médicos Digitais Unimed. Clique para verificar a autenticidade deste atestado.">
-    <meta property="og:url"         content="https://unimed-atestado.vercel.app">
-    <meta property="og:image"       content="https://unimed-atestado.vercel.app/assets/unimed-og.png">
-    <meta property="og:image:width"  content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt"    content="Unimed — Portal de Validação de Documentos Médicos">
-    <meta property="og:locale"       content="pt_BR">
-    <meta name="twitter:card"        content="summary_large_image">
-    <meta name="twitter:title"       content="✅ Validação de Atestado Médico — Unimed">
+    <!-- Metadados de Compartilhamento (WhatsApp, Android Share, Facebook, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Unimed Brasil — Validação Oficial de Documentos">
+    <meta property="og:title" content="Validação de Atestado Médico — Unimed">
+    <meta property="og:description" content="Portal Oficial de Autenticação e Verificação de Documentos Médicos Digitais Unimed.">
+    <meta property="og:image" content="https://unimed-atestado.vercel.app/assets/unimed-og.png">
+    <meta property="og:image:secure_url" content="https://unimed-atestado.vercel.app/assets/unimed-og.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="660">
+    <meta property="og:image:alt" content="Unimed Brasil — Validação Oficial de Documentos">
+    <!-- Twitter Card (Banner Grande em Cima no WhatsApp e Telegram) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Validação de Atestado Médico — Unimed">
     <meta name="twitter:description" content="Portal Oficial de Autenticação e Verificação de Documentos Médicos Digitais Unimed.">
-    <meta name="twitter:image"       content="https://unimed-atestado.vercel.app/assets/unimed-og.png">
+    <meta name="twitter:image" content="https://unimed-atestado.vercel.app/assets/unimed-og.png">
+    <link rel="image_src" href="https://unimed-atestado.vercel.app/assets/unimed-og.png">
 
-    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Favicon e Ícones Oficiais UPA 24 Horas -->
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-upa-192.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-upa.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-upa-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-upa.png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon-upa.png">
+    <link rel="shortcut icon" type="image/png" href="assets/favicon-upa.png">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Biblioteca com Base64 dos Elementos Unimed -->
+    <!-- Biblioteca Base64 do Logo Oficial UPA 24h e Assinatura Original -->
     <script src="assets/unimed_elements_b64.js"></script>
+    <script src="assets/sig_original_b64.js"></script>
+
+    <!-- Bibliotecas para QR Code e Geração de PDF Oficial em Alta Resolução -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&family=Cedarville+Cursive&family=Dancing+Script:wght@600;700&family=Caveat:wght@600;700&display=swap');
+
         :root {
-            --green:       #00995D;
-            --green-dark:  #007a4a;
-            --green-deep:  #004d2e;
-            --green-light: #e8f7f0;
-            --green-mid:   #c3ecd8;
-            --bg:          #f0f4f8;
-            --card:        #ffffff;
-            --border:      #dde3ea;
-            --txt:         #0f172a;
-            --txt2:        #475569;
-            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --radius: 14px;
-            --shadow-sm: 0 1px 4px rgba(0,0,0,.06);
-            --shadow-md: 0 4px 20px rgba(0,0,0,.08);
-            --shadow-green: 0 8px 24px rgba(0,153,93,.18);
+            --gov-navy: #004d2e;
+            --gov-blue: #00995D;
+            --gov-blue-dark: #00331e;
+            --gov-blue-light: #e8f7f0;
+            --gov-green: #00995D;
+            --gov-green-dark: #007a4a;
+            --gov-green-light: #f0fdf4;
+            --gov-green-border: #86efac;
+            --sus-blue: #00995D;
+            --bg-page: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+            --shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); -webkit-tap-highlight-color: transparent; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            width: 100% !important;
+        }
 
         body {
-            background: var(--bg);
-            color: var(--txt);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-body);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             line-height: 1.5;
+            padding-bottom: 50px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ══════════════════════════════════════════
-           FAIXA SUPERIOR INSTITUCIONAL
-        ══════════════════════════════════════════ */
-        .topbar {
-            background: var(--green-deep);
-            color: #fff;
+        /* ════════ BARRA GOV.BR PADRÃO OFICIAL ════════ */
+        .gov-bar {
+            background-color: var(--gov-navy);
+            color: #ffffff;
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 6px 14px;
+            font-size: 11.5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 100vw;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .gov-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .gov-flag {
+            width: 17px;
+            height: 12px;
+            background: linear-gradient(180deg, #009b3a 0%, #009b3a 100%);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+        }
+        .gov-flag::before {
+            content: '';
+            position: absolute;
+            width: 11px;
+            height: 7px;
+            background: #fedf00;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+        .gov-flag::after {
+            content: '';
+            position: absolute;
+            width: 4.5px;
+            height: 4.5px;
+            background: #002776;
+            border-radius: 50%;
+        }
+
+        .gov-bar-title {
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        .gov-bar-divider {
+            color: rgba(255, 255, 255, 0.3);
             font-size: 11px;
-            font-weight: 600;
-            letter-spacing: .4px;
-            padding: 6px 20px;
+        }
+
+        .gov-bar-sub {
+            color: #cbd5e1;
+            font-weight: 500;
+            font-size: 11.5px;
+        }
+
+        .gov-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* .gov-bar-badge removido */
+
+        /* ════════ CABEÇALHO OFICIAL UPA 24H & SUS ════════ */
+        .portal-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 14px 18px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .header-content {
+            max-width: 820px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-        }
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-        .topbar-left svg { opacity: .85; flex-shrink: 0; }
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            opacity: .85;
-            font-size: 10.5px;
-        }
-
-        /* ══════════════════════════════════════════
-           CABEÇALHO COM LOGO UNIMED — MOBILE-FIRST
-        ══════════════════════════════════════════ */
-        .site-header {
-            background: #fff;
-            border-bottom: 3px solid var(--green);
-            box-shadow: 0 2px 12px rgba(0,0,0,.06);
-        }
-        .header-wrap {
-            max-width: 920px;
-            margin: 0 auto;
-            padding: 14px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            text-align: center;
-        }
-        @media(min-width:600px) {
-            .header-wrap {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                text-align: left;
-                gap: 20px;
-            }
-        }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .logo-unimed {
-            height: 46px;
-            width: auto;
-            max-width: 185px;
-            object-fit: contain;
-            display: block;
-        }
-        .header-divider {
-            width: 1.5px;
-            height: 38px;
-            background: var(--border);
-            flex-shrink: 0;
-            display: none;
-        }
-        @media(min-width:600px) { .header-divider { display: block; } }
-
-        .header-info {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-        .header-info h1 {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--txt);
-            line-height: 1.25;
-            letter-spacing: -.2px;
-        }
-        .header-info p {
-            font-size: 11.5px;
-            color: var(--txt2);
-            font-weight: 500;
-        }
-
-        .secure-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: var(--green-light);
-            color: var(--green-dark);
-            border: 1.5px solid var(--green-mid);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 11.5px;
-            font-weight: 700;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        /* ══════════════════════════════════════════
-           CONTEÚDO PRINCIPAL
-        ══════════════════════════════════════════ */
-        .main {
-            max-width: 920px;
-            width: 100%;
-            margin: 20px auto;
-            padding: 0 16px;
-            display: flex;
-            flex-direction: column;
             gap: 14px;
-            flex: 1;
         }
 
-        /* ══════════════════════════════════════════
-           HERO — DOCUMENTO AUTÊNTICO
-        ══════════════════════════════════════════ */
-        .hero-card {
-            background: #fff;
-            border-radius: var(--radius);
-            border: 1.5px solid #a7f3c8;
-            box-shadow: var(--shadow-green);
-            overflow: hidden;
-        }
-        .hero-top {
-            background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 100%);
-            padding: 20px 22px;
+        .brand-block {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
+            width: 100%;
         }
-        .hero-icon {
-            width: 54px;
-            height: 54px;
-            min-width: 54px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.18);
-            border: 2.5px solid rgba(255,255,255,.4);
+
+        /* Logo oficial da UPA 24h - 100% limpo, sem borda */
+        .upa-logo-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-        }
-        .hero-text h2 {
-            font-size: 18px;
-            font-weight: 900;
-            color: #fff;
-            letter-spacing: -.2px;
-            line-height: 1.2;
-        }
-        .hero-text p {
-            font-size: 12.5px;
-            color: rgba(255,255,255,.8);
-            margin-top: 4px;
-            line-height: 1.4;
+            flex-shrink: 0;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
         }
 
-        .hero-bottom {
-            padding: 16px 22px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-            flex-wrap: wrap;
-            background: #fff;
-            border-top: 1px solid var(--green-mid);
+        .upa-logo-img {
+            height: 48px;
+            width: auto;
+            max-width: 105px;
+            object-fit: contain;
+            display: block;
         }
-        .code-group {
+
+        .brand-text {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
-        .code-label {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--txt2);
-            text-transform: uppercase;
-            letter-spacing: .6px;
+
+        .brand-text h1 {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: var(--gov-navy);
+            line-height: 1.25;
+            letter-spacing: -0.2px;
         }
-        .code-val {
-            font-size: 22px;
-            font-weight: 900;
-            color: var(--green-dark);
-            font-variant-numeric: tabular-nums;
-            letter-spacing: 1.5px;
-        }
-        .hero-actions {
+
+        .brand-sub {
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 7px;
-        }
-        .auth-ts {
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
             font-size: 11.5px;
-            color: var(--txt2);
-            text-align: right;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 2px;
         }
-        .auth-ts strong { color: var(--txt); font-weight: 700; }
-        .btn-copy {
+
+        .secure-inline-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: var(--green-light);
-            border: 1.5px solid var(--green-mid);
-            color: var(--green-dark);
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-size: 12px;
+            gap: 4px;
+            font-size: 10px;
             font-weight: 700;
-            cursor: pointer;
-            transition: background .15s, border-color .15s;
+            color: #15803d;
+            background: #dcfce7;
+            padding: 2px 7px;
+            border-radius: 12px;
             white-space: nowrap;
         }
-        .btn-copy:hover { background: var(--green-mid); border-color: var(--green); }
 
-        /* ══════════════════════════════════════════
-           CARDS DE INFORMAÇÃO
-        ══════════════════════════════════════════ */
-        .info-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
-            overflow: hidden;
-        }
-        .card-head {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            padding: 13px 20px;
-            border-bottom: 1px solid var(--border);
-            background: #fafbfc;
-        }
-        .card-head svg { color: var(--green); flex-shrink: 0; }
-        .card-head span {
-            font-size: 12.5px;
-            font-weight: 800;
-            color: var(--green-dark);
-            text-transform: uppercase;
-            letter-spacing: .6px;
-        }
-        .card-body {
-            padding: 18px 20px;
+        /* ════════ CONTAINER PRINCIPAL ════════ */
+        .main-container {
+            max-width: 820px;
+            margin: 18px auto 0 auto;
+            padding: 0 14px;
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
-        .data-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        @media(min-width:580px) {
-            .data-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        .data-item { display: flex; flex-direction: column; gap: 2px; }
-        .data-label {
-            font-size: 10.5px;
-            font-weight: 700;
-            color: var(--txt2);
-            text-transform: uppercase;
-            letter-spacing: .4px;
-        }
-        .data-val {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--txt);
-            word-break: break-word;
-        }
-        .data-val.em { color: var(--green-dark); font-weight: 800; }
-        .span-full { grid-column: 1 / -1 !important; }
 
-        .pill-ok {
+        /* ════════ CARD 1: STATUS DE VALIDADE OFICIAL (PADRÃO GOV/SUS) ════════ */
+        .status-hero-card {
+            background: #ffffff;
+            border: 1px solid #bbf7d0;
+            border-top: 4px solid var(--gov-green);
+            border-radius: 12px;
+            padding: 18px 18px 16px 18px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+        }
+
+        .hero-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .hero-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #dcfce7;
+            border: 2px solid #86efac;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gov-green);
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
+        }
+
+        .hero-title-area h2 {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: var(--gov-green-dark);
+            line-height: 1.25;
+            letter-spacing: -0.2px;
+        }
+
+        .hero-title-area p {
+            font-size: 12px;
+            color: #475569;
+            font-weight: 500;
+            margin-top: 3px;
+            line-height: 1.45;
+        }
+
+        .auth-hash-banner {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .auth-hash-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .auth-hash-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            color: #64748b;
+        }
+
+        .auth-code-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .auth-hash-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gov-navy);
+            background: #ffffff;
+            padding: 7px 12px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+            flex: 1;
+            overflow-x: auto;
+            border: 1px solid #cbd5e1;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .btn-copy-code {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            background: #dcfce7;
-            color: #15803d;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            width: fit-content;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .pill-dias {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--green-light);
-            border: 1.5px solid var(--green-mid);
-            color: var(--green-dark);
-            font-size: 14px;
-            font-weight: 800;
-            padding: 5px 13px;
-            border-radius: 8px;
-            width: fit-content;
-        }
-        .stmt-box {
+        .btn-copy-code:hover {
             background: #f8fafc;
-            border-left: 3.5px solid var(--green);
-            border-radius: 0 8px 8px 0;
-            padding: 12px 16px;
-            font-size: 13px;
-            line-height: 1.65;
-            color: #1e293b;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+        .btn-copy-code.copied {
+            background: #dcfce7 !important;
+            border-color: #86efac !important;
+            color: #15803d !important;
         }
 
-        /* ══════════════════════════════════════════
-           CARD ICP-BRASIL
-        ══════════════════════════════════════════ */
-        .icp-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px 20px;
+        .auth-timestamp {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 18px;
-            box-shadow: var(--shadow-sm);
+            gap: 4px;
         }
-        .icp-img {
-            height: 48px;
-            max-width: 200px;
-            width: auto;
-            object-fit: contain;
+
+        /* ════════ CARDS DE DADOS ════════ */
+        .info-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 18px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--gov-navy);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+
+        .card-heading svg {
+            width: 16px;
+            height: 16px;
+            color: var(--gov-blue);
             flex-shrink: 0;
         }
-        .icp-txt {
-            font-size: 11.5px;
-            color: #475569;
-            line-height: 1.5;
-        }
-        .icp-txt strong { color: var(--txt); }
-        .icp-signer { color: var(--green-dark); font-weight: 700; }
 
-        /* ══════════════════════════════════════════
-           BOTÕES DE AÇÃO
-        ══════════════════════════════════════════ */
-        .action-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 6px 0 18px;
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px 16px;
         }
-        .btn {
+
+        .data-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .data-label {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .data-value {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #0f172a;
+            word-break: break-word;
+            line-height: 1.35;
+        }
+
+        .data-value.highlight-green {
+            color: var(--gov-green);
+        }
+
+        .data-value.highlight-blue {
+            color: var(--gov-blue);
+        }
+
+        .badge-dias {
             display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #eff6ff;
+            color: var(--gov-blue);
+            border: 1px solid #bfdbfe;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 700;
+            width: fit-content;
+        }
+
+        .badge-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #86efac;
+            padding: 2.5px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            width: fit-content;
+        }
+
+        /* Declaração oficial do médico */
+        .atestado-statement-box {
+            background: #f8fafc;
+            border-left: 3px solid var(--sus-blue);
+            padding: 12px 14px;
+            border-radius: 0 6px 6px 0;
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: #1e293b;
+            margin-top: 12px;
+            border-top: 1px solid #f1f5f9;
+            border-right: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* ════════ CERTIFICADO ICP-BRASIL ════════ */
+        .cert-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .cert-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gov-blue);
+            flex-shrink: 0;
+        }
+
+        .cert-details h4 {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--gov-navy);
+            margin-bottom: 2px;
+        }
+
+        .cert-details p {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.45;
+        }
+
+        /* ════════ BOTÕES DE AÇÃO PRINCIPAIS ════════ */
+        .actions-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .actions-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        /* Botão 1: IMPRIMIR ATESTADO (BAIXA O ATESTADO COM O NOME EX: AtestadoUnimed_Claudia.pdf) */
+        .btn-action-print-atestado {
+            background: #15803d;
+            color: #ffffff;
+            border: none;
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 12px 22px;
-            border-radius: 10px;
-            font-size: 13.5px;
-            font-weight: 700;
             cursor: pointer;
-            text-decoration: none;
-            transition: all .18s;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(21, 128, 61, 0.25);
+            width: 100%;
+        }
+        .btn-action-print-atestado:hover {
+            background: #166534;
+            transform: translateY(-1px);
+        }
+        .btn-action-print-atestado:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Botão 2: Copiar Link Oficial */
+        .btn-action-copy {
+            background: #f1f5f9;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            width: 100%;
+        }
+        .btn-action-copy:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Botão 3: Enviar no WhatsApp */
+        .btn-action-whatsapp {
+            background: #25d366;
+            color: #ffffff;
             border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            width: 100%;
         }
-        .btn-primary {
-            background: var(--green);
-            color: #fff;
-            box-shadow: var(--shadow-green);
+        .btn-action-whatsapp:hover {
+            background: #20ba59;
+            transform: translateY(-1px);
         }
-        .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
-        .btn-secondary {
-            background: #fff;
-            color: #334155;
-            border: 1.5px solid var(--border);
-        }
-        .btn-secondary:hover { background: #f1f5f9; border-color: #94a3b8; }
 
-        @media(max-width:460px) {
-            .btn { flex: 1 1 100%; }
+        /* Toast removido - feedback integrado no botao */
+
+        /* ════════ ESTILOS DA FOLHA OFICIAL A4 PARA GERAÇÃO DO PDF DO ATESTADO ════════ */
+        .print-sheet-offscreen {
+            display: none !important;
         }
 
-        /* ══════════════════════════════════════════
-           RODAPÉ
-        ══════════════════════════════════════════ */
-        .site-footer {
-            background: #fff;
-            border-top: 1px solid var(--border);
-            padding: 20px 20px;
-            margin-top: auto;
+        .sheet-header-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #000;
+            margin-bottom: 18px;
         }
-        .footer-wrap {
-            max-width: 920px;
-            margin: 0 auto;
+
+        .sheet-upa-logo-img {
+            height: 72px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .sheet-address-box {
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.4;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .sheet-header-qr {
+            width: 76px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        
+        .sheet-title-bar {
+            text-align: center;
+            border-top: 1.5px solid #000;
+            border-bottom: 1.5px solid #000;
+            padding: 6px 0;
+            margin-top: 2px;
+            margin-bottom: 28px;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #000;
+        }
+        .sheet-para-row {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .sheet-text-main {
+            font-size: 14.5px;
+            line-height: 2.1;
+            color: #000;
+            text-align: justify;
+            margin-bottom: 24px;
+        }
+        .sheet-cid-row {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        .sheet-date-local {
+            font-size: 14px;
+            text-align: right;
+            margin-bottom: 30px;
+        }
+        .sheet-footer-box {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            border-top: 1.5px solid #000;
+            padding-top: 12px;
+            gap: 16px;
+        }
+        .sheet-footer-left {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .sheet-footer-upa-img {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+        }
+        .sheet-legal-box {
+            font-size: 8.5px;
+            line-height: 1.35;
+            color: #333;
+            text-align: justify;
+        }
+        .sheet-footer-qr {
+            width: 66px;
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .sheet-footer-right {
+            flex: 1.1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            color: var(--txt2);
             text-align: center;
         }
-        .footer-wrap strong { color: var(--txt); }
-        .footer-logo {
-            height: 28px;
-            width: auto;
-            object-fit: contain;
-            margin-bottom: 6px;
-            opacity: .75;
-        }
 
-        /* ══════════════════════════════════════════
-           TOAST
-        ══════════════════════════════════════════ */
-        #toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(12px);
-            background: #0f172a;
-            color: #fff;
-            padding: 11px 20px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 8px 28px rgba(0,0,0,.28);
+
+        .sheet-footer-line {
             display: flex;
             align-items: center;
-            gap: 8px;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .22s, transform .22s;
-            white-space: nowrap;
-        }
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-            pointer-events: auto;
+            justify-content: space-between;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            font-size: 11px;
+            color: #000;
         }
 
-        /* ══════════════════════════════════════════
-           PRINT
-        ══════════════════════════════════════════ */
-        @media print {
-            body { background: #fff !important; }
-            .topbar, .action-row, .btn-copy, #toast { display: none !important; }
-            .main { margin: 0 auto !important; padding: 0 !important; }
-            .hero-card, .info-card, .icp-card { box-shadow: none !important; }
+        .spin {
+            animation: spin 1s linear infinite;
         }
-    </style>
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ════════ RODAPÉ INSTITUCIONAL GOV.BR ════════ */
+        .gov-footer {
+            max-width: 820px;
+            margin: 28px auto 0 auto;
+            padding: 0 16px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ════════ IMPRESSÃO LIMPA ════════ */
+        
+        /* ════════ ESTILOS EXATOS DA FOLHA OFICIAL DO ATESTADO (IDÊNTICO AO EDITOR) ════════ */
+        /* ─── FOLHA A4 DO ATESTADO (794px x 1123px - SOMENTE LEITURA / PREVIEW AO VIVO) ─── */
+        .sheet-a4 {
+            width: 794px;
+            height: 1123px;
+            max-height: 1123px;
+            background: #ffffff;
+            color: #000000;
+            padding: 42px 48px 36px 48px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+            position: relative;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14.5px;
+            line-height: 1.45;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            overflow: hidden;
+            user-select: none;
+            pointer-events: none; /* Bloqueia qualquer clique ou edição direta na folha */
+        }
+
+        /* ─── MARCA D'ÁGUA DE PRÉVIA — ELEGANTE E PROFISSIONAL ─── */
+        .watermark-grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Logo UPA grande e elegante, centralizado */
+        .watermark-upa-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .watermark-upa-logo-img {
+            width: 220px;
+            height: auto;
+            opacity: 0.18;
+            filter: grayscale(30%) contrast(110%);
+        }
+
+        .watermark-upa-label {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: rgba(185, 28, 28, 0.55);
+            text-transform: uppercase;
+            text-align: center;
+            font-family: 'Arial Black', Arial, sans-serif;
+        }
+
+        /* Faixa diagonal sutil */
+        .watermark-diagonal-band {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            white-space: nowrap;
+            font-size: 72px;
+            font-weight: 900;
+            letter-spacing: 18px;
+            color: rgba(185, 28, 28, 0.08);
+            font-family: 'Arial Black', Arial, sans-serif;
+            text-transform: uppercase;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* QR CODE BLOQUEADO NA PRÉVIA */
+        .qr-locked-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6px;
+            box-sizing: border-box;
+            color: #64748b;
+        }
+
+        .qr-locked-placeholder svg {
+            color: #ef4444;
+            margin-bottom: 4px;
+        }
+
+        .qr-locked-text {
+            font-size: 9.5px;
+            font-weight: 800;
+            color: #ef4444;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.15;
+        }
+
+        /* ─── CABEÇALHO DO ATESTADO (UPA 24h + ENDEREÇO + QR CODE) ─── */
+        .atestado-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding-bottom: 22px;
+        }
+
+        .upa-logo-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .upa-official-logo-img {
+            height: 92px;
+            width: auto;
+            max-width: 260px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .atestado-header-address {
+            flex: 1;
+            margin-left: 28px;
+            font-size: 13.5px;
+            line-height: 1.35;
+            color: #000;
+            font-weight: 700;
+        }
+
+        .atestado-header-address span {
+            font-size: 13.5px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .atestado-header-qr {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: none;
+            padding: 0;
+        }
+
+        .atestado-header-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* ─── BARRA TÍTULO CENTRAL ATESTADO MÉDICO COM LINHA DUPLA ─── */
+        .atestado-title-bar {
+            text-align: center;
+            border-top: 1.5px solid #000;
+            border-bottom: 1.5px solid #000;
+            padding: 5px 0;
+            margin-top: 2px;
+            margin-bottom: 40px;
+        }
+
+        .atestado-title-bar span {
+            font-size: 19px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            color: #000;
+        }
+
+        /* ─── CORPO DO ATESTADO (EXATOS ESPAÇAMENTOS DO ORIGINAL) ─── */
+        .atestado-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .atestado-para-row {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            color: #000;
+            margin-bottom: 38px;
+            padding-left: 55px;
+        }
+
+        .atestado-para-row .para-title {
+            font-weight: 400;
+            letter-spacing: 0.2px;
+            font-size: 15px;
+            margin-right: 4px;
+        }
+
+        .atestado-para-row .para-nome-val {
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+        }
+
+        .atestado-texto-box {
+            font-size: 14.5px;
+            line-height: 1.5;
+            color: #000;
+            text-align: justify;
+            margin-bottom: 28px;
+        }
+
+        .atestado-texto-content {
+            font-size: 14.5px;
+            line-height: 1.5;
+            color: #000;
+            text-align: justify;
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: transparent;
+        }
+
+        .atestado-cid-row {
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: baseline;
+            position: relative;
+            margin-bottom: 260px;
+            gap: 6px;
+        }
+
+        .atestado-cid-row .cid-label-badge {
+            font-size: 17px;
+            font-weight: 700;
+            color: #000;
+            user-select: none;
+        }
+
+        .atestado-cid-row .cid-code-val {
+            font-size: 17px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .atestado-data-local {
+            text-align: right;
+            margin-top: auto;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #000;
+            padding-right: 10px;
+        }
+
+        /* ─── RODAPÉ DO ATESTADO ─── */
+        .atestado-footer {
+            border-top: 1.5px solid #a0a0a0;
+            padding-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .atestado-footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .footer-left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .emitido-info {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .footer-upa-logo {
+            display: flex;
+            align-items: center;
+            margin-top: 2px;
+        }
+
+        .footer-upa-logo img {
+            height: 68px;
+            width: auto;
+            max-width: 195px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .legal-notice-box {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            font-size: 8px;
+            font-weight: 700;
+            line-height: 1.25;
+            max-width: 310px;
+            text-align: justify;
+            color: #000;
+        }
+
+        .footer-center-qr {
+            width: 78px;
+            height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 20px;
+        }
+
+        .footer-center-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .footer-right-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            text-align: center;
+            min-width: 250px;
+        }
+
+        .carimbo-container {
+            position: relative;
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-top: 6px;
+        }
+
+        .carimbo-text-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            font-family: "Times New Roman", Times, Georgia, serif;
+            color: #262626;
+            user-select: none;
+            margin-bottom: 2px;
+        }
+
+        .carimbo-dr-nome {
+            font-size: 13.5px;
+            font-weight: 500;
+            line-height: 1.25;
+            color: #1f2429;
+            white-space: nowrap;
+        }
+
+        .carimbo-dr-esp {
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.25;
+            color: #33383f;
+            white-space: nowrap;
+        }
+
+        .carimbo-dr-crm {
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.25;
+            color: #22262a;
+            white-space: nowrap;
+        }
+
+        .carimbo-sig-svg-wrap {
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .carimbo-sig-svg-wrap svg {
+            width: 240px;
+            height: 85px;
+            overflow: visible;
+        }
+
+        .carimbo-sig-svg-wrap img {
+            max-height: 75px;
+            max-width: 220px;
+            object-fit: contain;
+        }
+
+        .carimbo-divider {
+            width: 240px;
+            height: 1.2px;
+            background: #1f2429;
+            margin: 4px 0 4px 0;
+        }
+
+        .carimbo-caption {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            color: #111827;
+            text-align: center;
+        }
+
+        
+
+        /* Oculta a folha oficial na visualização de tela do portal de validação */
+        @media screen {
+            #sheetDoc {
+                display: none !important;
+            }
+        }
+
+        /* ════════ IMPRESSÃO EM FOLHA ÚNICA A4 (EXATAMENTE 1 PÁGINA) ════════ */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0 !important;
+            }
+            *, *::before, *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            html, body {
+                width: 210mm !important;
+                height: 297mm !important;
+                max-width: 210mm !important;
+                max-height: 297mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+                overflow: hidden !important;
+            }
+            .gov-bar, .portal-header, .main-container, .gov-footer, .actions-card, .btn-copy-code {
+                display: none !important;
+            }
+            #sheetDoc {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                max-width: 210mm !important;
+                max-height: 297mm !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+                padding: 38px 48px 36px 48px !important;
+                background: #ffffff !important;
+                box-shadow: none !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                z-index: 999999 !important;
+                overflow: hidden !important;
+                page-break-before: avoid !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
+        }
+    
+        /* ─── SCROLLBAR ULTRA-SLEEK E PROFISSIONAL ─── */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0d0e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            transition: background 0.2s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dc82;
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.18) #0b0d0e;
+        }
+</style>
 </head>
 <body>
 
-    <!-- FAIXA INSTITUCIONAL -->
-    <div class="topbar">
-        <div class="topbar-left">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>UNIMED BRASIL • Sistema Cooperativo de Saúde</span>
+    <!-- 1. TOPO GOV.BR OFICIAL (RESPONSIVO E FORMATADO) -->
+    <header class="gov-bar">
+        <div class="gov-bar-left">
+            <div class="gov-flag" title="Brasil"></div>
+            <span class="gov-bar-title">UNIMED BRASIL</span>
+            <span style="opacity:0.35;">|</span>
+            <span class="gov-bar-sub">Sistema Cooperativo de Saúde</span>
         </div>
-        <div class="topbar-right">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Portal Oficial de Autenticidade de Documentos
+        
+    </header>
+
+    <!-- 2. CABEÇALHO COM LOGO OFICIAL DA UPA 24H -->
+    <div class="portal-header">
+        <div class="header-content">
+            <div class="brand-block">
+                <!-- LOGO OFICIAL UPA 24H (SEM BORDA, TRANSPARENTE E OFICIAL) -->
+                <div class="upa-logo-container" title="UPA 24h Oficial">
+                    <img src="assets/unimed_logo_limpo.png" id="upaLogoValidation" alt="Unimed" style="max-height:48px; width:auto;" class="upa-logo-img">
+                </div>
+                <div class="brand-text">
+                    <h1>Validação de Atestado Médico</h1>
+                    <div class="brand-sub">
+                        <span id="subHeaderTitle">Telemedicina &amp; Atendimento Presencial • Cooperativa Unimed</span>
+                        <span class="secure-inline-badge">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Ambiente Seguro
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- CABEÇALHO -->
-    <header class="site-header">
-        <div class="header-wrap">
-            <div class="header-brand">
-                <img id="logoUnimed" src="" alt="Unimed" class="logo-unimed">
-                <div class="header-divider"></div>
-                <div class="header-info">
-                    <h1>Validação de Documento Médico</h1>
-                    <p>Telemedicina &amp; Atendimento Presencial — Cooperativa Unimed</p>
-                </div>
-            </div>
-            <div class="secure-pill">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Ambiente Seguro
-            </div>
-        </div>
-    </header>
+    <!-- 3. CONTEÚDO PRINCIPAL (ÁREA CERTIFICADA) -->
+    <main class="main-container" id="printableValidationArea">
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="main">
-
-        <!-- HERO: STATUS DE AUTENTICIDADE -->
-        <div class="hero-card">
-            <div class="hero-top">
-                <div class="hero-icon">
+        <!-- CARD 1: STATUS DE VALIDADE OFICIAL -->
+        <div class="status-hero-card">
+            <div class="hero-header">
+                <div class="hero-icon-box">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 </div>
-                <div class="hero-text">
+                <div class="hero-title-area">
                     <h2>DOCUMENTO AUTÊNTICO E VÁLIDO</h2>
                     <p>Este Atestado Médico foi validado eletronicamente e encontra-se devidamente registrado e ativo na base de dados Unimed.</p>
                 </div>
             </div>
-            <div class="hero-bottom">
-                <div class="code-group">
-                    <span class="code-label">Código Verificador de Autenticidade</span>
-                    <span class="code-val" id="lblCodValid">1469239712</span>
+
+            <div class="auth-hash-banner">
+                <div class="auth-hash-row">
+                    <span class="auth-hash-label">Código de Autenticação / Hash Único</span>
+                    <span class="auth-timestamp" id="lblTimestamp">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>Autenticado em: <strong id="lblValDataHora">07/11/2026 às 00:24:40</strong></span>
+                    </span>
                 </div>
-                <div class="hero-actions">
-                    <span class="auth-ts" id="lblTimestamp">Autenticado em: <strong>29/08/2024 às 03:20:50</strong></span>
-                    <button type="button" class="btn-copy" onclick="copiarCodigo()">
+                <div class="auth-code-wrap">
+                    <div class="auth-hash-code" id="lblAuthCode">SUS-LIC6ZU-BR</div>
+                    <button type="button" class="btn-copy-code" id="btnCopyCode" onclick="copiarCodigoAuth()" title="Copiar código verificador">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        Copiar Código
+                        <span>Copiar</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- CARD: IDENTIFICAÇÃO DO PACIENTE -->
+        <!-- CARD 2: DADOS DO PACIENTE -->
         <div class="info-card">
-            <div class="card-head">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div class="card-heading">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <span>Identificação do Paciente</span>
             </div>
-            <div class="card-body">
-                <div class="data-grid">
-                    <div class="data-item span-full">
-                        <span class="data-label">Nome Completo do Paciente</span>
-                        <span class="data-val em" id="valNome">LAURA NASCIMENTO OLIVEIRA DE MELLO</span>
+
+            <div class="data-grid">
+                <div class="data-item">
+                    <span class="data-label">Nome Completo do Paciente</span>
+                    <span class="data-value highlight-blue" id="valNome">TATIANI RODRIGUES MOR</span>
+                </div>
+
+                <div class="data-item">
+                    <span class="data-label">CPF do Paciente</span>
+                    <span class="data-value" id="valCns">458.912.873-44</span>
+                </div>
+
+                <div class="data-item">
+                    <span class="data-label">Situação Cadastral</span>
+                    <div class="badge-status-pill">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Documento Emitido & Ativo</span>
                     </div>
-                    <div class="data-item">
-                        <span class="data-label">CPF do Paciente</span>
-                        <span class="data-val" id="valCpf">182.114.717-01</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Data de Nascimento / Idade</span>
-                        <span class="data-val" id="valNascIdade">23/08/1985 (25 Anos 2 Meses 29 Dias)</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Nome da Mãe</span>
-                        <span class="data-val" id="valMae">VANESSA SANTOS DO NASCIMENTO</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Nº Prontuário / Nº Atendimento</span>
-                        <span class="data-val" id="valProntAtend">005592173 / 2290479</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Convênio / Setor</span>
-                        <span class="data-val" id="valConvenio">UNIMED RJ (Geral)</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Situação do Documento</span>
-                        <div class="pill-ok">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            Emitido &amp; Ativo
-                        </div>
-                    </div>
-                    <div class="data-item" id="boxAcomp" style="display:none;">
-                        <span class="data-label">Acompanhante</span>
-                        <span class="data-val" id="valAcomp">-</span>
-                    </div>
+                </div>
+
+                <div class="data-item">
+                    <span class="data-label">Número do Registro</span>
+                    <span class="data-value" id="valId">AT-1001</span>
                 </div>
             </div>
         </div>
 
-        <!-- CARD: DIAGNÓSTICO E AFASTAMENTO -->
+        <!-- CARD 3: DIAGNÓSTICO E PERÍODO DE REPOUSO -->
         <div class="info-card">
-            <div class="card-head">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <div class="card-heading">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 <span>Diagnóstico e Período de Afastamento</span>
             </div>
-            <div class="card-body">
-                <div class="data-grid">
-                    <div class="data-item">
-                        <span class="data-label">CID-10 — Classificação Internacional de Doenças</span>
-                        <span class="data-val em" id="valCid">CID A90</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Período de Afastamento</span>
-                        <div class="pill-dias">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            <span id="valDias">2 dias</span>
-                        </div>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Data e Hora do Atendimento</span>
-                        <span class="data-val" id="valDataAtend">29/08/24 às 04:07</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Diagnóstico Clínico Declarado</span>
-                        <span class="data-val" id="valDiag">Quadro de dengue</span>
+
+            <div class="data-grid">
+                <div class="data-item">
+                    <span class="data-label">Diagnóstico CID-10</span>
+                    <span class="data-value highlight-green" id="valCid">J02. (Faringite Aguda)</span>
+                </div>
+
+                <div class="data-item">
+                    <span class="data-label">Período Prescrito de Repouso</span>
+                    <div class="badge-dias">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span id="valDias">3 (três) dias</span>
                     </div>
                 </div>
-                <div class="stmt-box" id="valStatement"></div>
+
+                <div class="data-item">
+                    <span class="data-label">Data do Atendimento</span>
+                    <span class="data-value" id="valData">04/11/2026</span>
+                </div>
+
+                <div class="data-item">
+                    <span class="data-label">Horário de Liberação</span>
+                    <span class="data-value" id="valHora">08:12:23</span>
+                </div>
+            </div>
+
+            <div class="atestado-statement-box" id="valStatement">
+                Atesto para os devidos fins, que o(a) paciente <strong>TATIANI RODRIGUES MOR</strong>, portador(a) do CPF sob nº <strong>458.912.873-44</strong>, foi atendido(a) na presente unidade de saúde e necessita de <strong>3 (três) dias de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).
             </div>
         </div>
 
-        <!-- CARD: MÉDICO E UNIDADE -->
+        <!-- CARD 4: MÉDICO EMISSOR E UNIDADE DE SAÚDE -->
         <div class="info-card">
-            <div class="card-head">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                <span>Médico Emissor e Unidade de Atendimento</span>
+            <div class="card-heading">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>Profissional Emissor e Estabelecimento</span>
             </div>
-            <div class="card-body">
-                <div class="data-grid">
-                    <div class="data-item">
-                        <span class="data-label">Médico(a) Responsável</span>
-                        <span class="data-val em" id="valMedico">MARIA CAROLINA CALIANO DA SILVA</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-label">Registro Profissional CRM / Função</span>
-                        <span class="data-val" id="valCrm">CRMRJ-01212699 (MÉDICA)</span>
-                    </div>
-                    <div class="data-item span-full">
-                        <span class="data-label">Unidade de Saúde Unimed</span>
-                        <span class="data-val" id="valUnidade">TELESSAUDE - UNIMEDRJ</span>
-                    </div>
-                    <div class="data-item span-full">
-                        <span class="data-label">Endereço do Estabelecimento</span>
-                        <span class="data-val" id="valEndereco">AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO</span>
-                    </div>
+
+            <div class="data-grid">
+                <div class="data-item">
+                    <span class="data-label">Médico Responsável</span>
+                    <span class="data-value" id="valMedico">Dra. Flávia Nunes Maruyama</span>
+                </div>
+
+                <div class="data-item">
+                    <span class="data-label">Registro Profissional CRM</span>
+                    <span class="data-value highlight-blue" id="valCrm">CRM 216997 / SP</span>
+                </div>
+
+                <div class="data-item" style="grid-column: 1 / -1;">
+                    <span class="data-label">Estabelecimento de Saúde / Unidade</span>
+                    <span class="data-value" id="valUnidade">UPA 24h Itaquera - Consultórios Médicos</span>
+                </div>
+
+                <div class="data-item" style="grid-column: 1 / -1;">
+                    <span class="data-label">Endereço da Unidade</span>
+                    <span class="data-value" id="valEndereco">Av. Miguel Ignácio Curi, 41 — Vila Carmosina - São Paulo - SP (CEP: 08295-005)</span>
                 </div>
             </div>
         </div>
 
-        <!-- CARD: ICP-BRASIL -->
-        <div class="icp-card">
-            <img src="" id="imgIcpCert" alt="ICP-Brasil" class="icp-img">
-            <div class="icp-txt">
-                <strong>Documento Assinado Digitalmente via ICP-Brasil</strong><br>
-                Em conformidade com a Medida Provisória nº 2.200-2/2001, Resolução CFM nº 1.821/2007 e Portaria nº 467/2020 do Ministério da Saúde.<br>
-                <span class="icp-signer" id="valCertSigner">MARIA CAROLINA CALIANO DA SILVA:01212699, AC CNDL RFB v3</span>
+        <!-- CARD 5: ASSINATURA ELETRÔNICA E CONFORMIDADE -->
+        <div class="cert-card">
+            <div class="cert-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div class="cert-details">
+                <h4>Assinatura Eletrônica Avançada & Padrão ICP-Brasil</h4>
+                <p>Documento médico validado eletronicamente em conformidade com a <strong>Medida Provisória nº 2.200-2/2001</strong>, <strong>Lei Federal nº 14.063/2020</strong> e <strong>Resolução CFM nº 2.299/2021</strong>.</p>
             </div>
         </div>
 
-        <!-- BOTÕES DE AÇÃO -->
-        <div class="action-row">
-            <button type="button" class="btn btn-primary" onclick="window.print()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                Imprimir / Salvar Comprovante
-            </button>
-            <button type="button" class="btn btn-secondary" onclick="copiarLink()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                <span id="btnLinkTxt">Copiar Link de Autenticidade</span>
+        <!-- CARD DE AÇÕES: APENAS IMPRIMIR ATESTADO -->
+        <div class="actions-card">
+            <button type="button" class="btn-action-print-atestado" id="btnImprimirAtestado" onclick="imprimirAtestadoOficial()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span>Imprimir Atestado</span>
             </button>
         </div>
 
     </main>
 
-    <!-- RODAPÉ -->
-    <footer class="site-footer">
-        <div class="footer-wrap">
-            <img id="logoFooter" src="" alt="Unimed" class="footer-logo">
-            <span><strong>Unimed do Brasil</strong> — Confederação Nacional das Cooperativas Médicas</span>
-            <span>Registro ANS nº 000000 • Sistema Eletrônico de Validação e Autenticidade em Nuvem</span>
-            <span>Central de Atendimento Unimed 24h: 0800 000 1000 • Todos os direitos reservados.</span>
-        </div>
-    </footer>
+    <!-- ─── TEMPLATE OCULTO DA FOLHA A4 OFICIAL DO ATESTADO MÉDICO PARA GERAÇÃO PERFEITA DO PDF ─── -->
+    
+    <!-- ════════ FOLHA OFICIAL DO ATESTADO MÉDICO (EXATAMENTE IDÊNTICA AO EDITOR) ════════ -->
+    <div class="sheet-a4" id="sheetDoc">
+        
+        <!-- 1. CABEÇALHO COM LOGO UPA OFICIAL, ENDEREÇO E QR CODE -->
+        <div class="atestado-header">
+            <div class="upa-logo-header">
+                <img src="assets/logo_upa_oficial.png" id="upaLogoTopoImg" alt="UPA 24h" class="upa-official-logo-img">
+            </div>
 
-    <!-- TOAST -->
-    <div id="toast">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-        <span id="toastMsg">Mensagem</span>
+            <div class="atestado-header-address">
+                <span id="fld_unidade_end1">Av. Miguel Ignácio Curi, 41</span>
+                <span id="fld_unidade_end2">Vila Carmosina - São Paulo – SP</span>
+                <span id="fld_unidade_end3">CEP: 08295-005</span>
+            </div>
+
+            <div class="atestado-header-qr" id="headerQrBox" title="QR Code de validação">
+                <!-- Gerado dinamicamente via JS -->
+            </div>
+        </div>
+
+        <!-- 2. BARRA DE TÍTULO ATESTADO MÉDICO -->
+        <div class="atestado-title-bar">
+            <span>ATESTADO MÉDICO</span>
+        </div>
+
+        <!-- 3. CORPO DO ATESTADO -->
+        <div class="atestado-body">
+            
+            <!-- Destinatário / Paciente -->
+            <div class="atestado-para-row">
+                <span class="para-title">PARA:</span>
+                <span class="para-nome-val" id="fld_nome_paciente">TATIANI RODRIGUES MOR</span>
+            </div>
+
+            <!-- Texto principal do Atestado -->
+            <div class="atestado-texto-box">
+                <div class="atestado-texto-content" id="fld_texto_principal">Atesto para os devidos fins, que o(a), <b>TATIANI RODRIGUES MOR</b>, portador(a) do CPF sob nº <b>458.912.873-44</b>, foi atendido(a) no(a), <b>UPA 24h Itaquera - Consultórios</b> na data <b>04/11/2023</b><br>às <b>08:12:23</b>, necessitando de <b>3 (três)</b> dias de repouso por motivo de doença.</div>
+            </div>
+
+            <!-- CID estático -->
+            <div class="atestado-cid-row">
+                <span class="cid-label-badge">CID:</span>
+                <span class="cid-code-val" id="fld_cid">J02.</span>
+            </div>
+
+            <!-- Data e Local (Direita) -->
+            <div class="atestado-data-local">
+                <span id="fld_data_extenso">UPA 24h Itaquera, 04 de Novembro de 2023.</span>
+            </div>
+
+        </div>
+
+        <!-- 4. RODAPÉ DO ATESTADO COM LOGOS E ASSINATURA -->
+        <div class="atestado-footer">
+            
+            <div class="atestado-footer-top">
+                
+                <!-- Coluna Esquerda -->
+                <div class="footer-left-col">
+                    <div class="emitido-info">
+                        Emitido em: <span id="fld_emitido_em">04/11/2023 08:12:23</span>
+                    </div>
+
+                    <div class="footer-upa-logo">
+                        <img src="assets/logo_upa_oficial.png" id="upaLogoRodapeImg" alt="UPA 24h">
+                    </div>
+
+                    <div class="legal-notice-box">
+                        NOTA: ESTE ATESTADO É VÁLIDO PARA FINALIDADES PREVISTAS NO ARTIGO 27 DE CUPS, APROVADA PELO DECRETO Nº 89 312 DE 23/01/84, E SERÁ EXPEDIDO PARA JUSTIFICATIVA DE 1 A 15 DIAS DE AFASTAMENTO DO TRABALHO.
+                    </div>
+                </div>
+
+                <!-- Centro: Mini QR Code de Rodapé -->
+                <div class="footer-center-qr" id="footerQrBox">
+                    <!-- Gerado dinamicamente -->
+                </div>
+
+                <!-- Coluna Direita: Carimbo e Assinatura -->
+                <div class="footer-right-col">
+                    <div class="carimbo-wrapper" style="width:235px; height:120px; position:relative;">
+                        <svg id="carimboSvg" viewBox="0 0 235 120" width="235" height="120" style="overflow:visible; display:block;">
+                                            <defs>
+                                                <!-- Filtro de textura de papel e desgaste natural de caneta esferográfica -->
+                                                <filter id="canetaWear" x="-15%" y="-15%" width="130%" height="130%">
+                                                    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" result="grain" />
+                                                    <feDisplacementMap in="SourceGraphic" in2="grain" scale="1.45" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+                                                    <feColorMatrix in="displaced" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.94 0" />
+                                                </filter>
+                                            </defs>
+
+                                            <!-- 1. Textos Oficiais do Carimbo (Serif, 100% idêntico à imagem) -->
+                                            <text id="fld_medico_nome" x="95" y="38" text-anchor="middle" font-family="'Times New Roman', Georgia, serif" font-size="14.5" fill="#2d3339" font-weight="500">Dr. Jair Dacas</text>
+                                            <text id="fld_medico_esp" x="95" y="55" text-anchor="middle" font-family="'Times New Roman', Georgia, serif" font-size="13" fill="#3f454d">Médica Clínica</text>
+                                            <text id="fld_medico_crm" x="95" y="72" text-anchor="middle" font-family="'Times New Roman', Georgia, serif" font-size="13" fill="#2d3339">CRM 29022 RS</text>
+
+                                            <!-- 2. Linha Divisória Oficial -->
+                                            <line x1="0" y1="84" x2="190" y2="84" stroke="#1f2429" stroke-width="1.2" />
+
+                                            <!-- 3. Legenda Inferior -->
+                                            <text x="60" y="98" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="700" fill="#1f2429" letter-spacing="0.4">ASSINATURA/CARIMBO</text>
+
+                                            <!-- 4. Assinatura Realista em Caneta Azul com Desgastes e Falhas Naturais Feita à Mão -->
+                                            <g id="carimboSigLayer">
+                                                <!-- Traço base com borda viva de papel e pressão natural -->
+                                                <path d="M 64 58 C 66 46, 81 35, 99 34 C 112 34, 122 43, 117 57 C 111 71, 100 81, 93 84 C 84 89, 71 99, 66 104 C 66 104, 80 92, 91 84 C 104 74, 119 65, 137 62 C 154 58, 163 58, 170 64 C 177 69, 191 68, 207 64" fill="none" stroke="#1243ca" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round" opacity="0.94" filter="url(#canetaWear)" />
+                                                <!-- Traçado interno com micro-falhas e variações de tinta da esfera -->
+                                                <path d="M 64 58 C 66 46, 81 35, 99 34 C 112 34, 122 43, 117 57 C 111 71, 100 81, 93 84 C 84 89, 71 99, 66 104 C 66 104, 80 92, 91 84 C 104 74, 119 65, 137 62 C 154 58, 163 58, 170 64 C 177 69, 191 68, 207 64" fill="none" stroke="#0e37b2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24, 0.9, 18, 1.4, 36, 0.8, 48, 1.3, 22" opacity="0.85" />
+                                                <!-- Micro-acúmulos de tinta no início e curvas de parada -->
+                                                <circle cx="64.5" cy="57.5" r="1.3" fill="#0d35b0" opacity="0.95" />
+                                                <ellipse cx="106" cy="34" rx="1.8" ry="1.1" fill="#0e3cb8" opacity="0.85" />
+                                                <ellipse cx="66" cy="103.5" rx="1.5" ry="1" fill="#0e3cb8" opacity="0.88" />
+                                                <!-- Ponto característico da caneta com núcleo de tinta -->
+                                                <ellipse cx="162" cy="42" rx="1.7" ry="1.4" fill="#1243ca" opacity="0.92" filter="url(#canetaWear)" />
+                                                <circle cx="161.8" cy="41.9" r="0.9" fill="#09288a" opacity="0.95" />
+                                            </g>
+                                        </svg>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
+
+    <!-- Toast alert removido -->
+
+    <!-- 4. RODAPÉ INSTITUCIONAL GOV.BR -->
+    <footer class="gov-footer">
+        <p>Unimed do Brasil — Confederação Nacional das Cooperativas Médicas</p>
+        <p>Registro ANS nº 000000 • Sistema Eletrônico de Validação e Autenticidade em Nuvem</p>
+        <p style="margin-top:4px; opacity:0.75;">Central de Atendimento Unimed 24h • Todos os direitos reservados.</p>
+    </footer>
+
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var logo = document.getElementById('logoUnimed');
-        if (logo && window.UNIMED_LOGO_B64) logo.src = window.UNIMED_LOGO_B64;
+    let dadosAtestado = {};
 
-        var logoF = document.getElementById('logoFooter');
-        if (logoF && window.UNIMED_LOGO_B64) logoF.src = window.UNIMED_LOGO_B64;
+    // Copia universalmente compatível com HTTP, IP e HTTPS (sem toast invasivo na tela)
+    function copiarTextoUniversal(texto) {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(texto).catch(() => fallbackCopiar(texto));
+        } else {
+            fallbackCopiar(texto);
+        }
+    }
 
-        var icp = document.getElementById('imgIcpCert');
-        if (icp && window.UNIMED_ICP_B64) icp.src = window.UNIMED_ICP_B64;
+    function fallbackCopiar(texto) {
+        try {
+            const ta = document.createElement('textarea');
+            ta.value = texto;
+            ta.style.position = 'fixed';
+            ta.style.top = '0';
+            ta.style.left = '0';
+            ta.style.width = '2em';
+            ta.style.height = '2em';
+            ta.style.padding = '0';
+            ta.style.border = 'none';
+            ta.style.outline = 'none';
+            ta.style.boxShadow = 'none';
+            ta.style.background = 'transparent';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            ta.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        } catch(err) {
+            console.error('Fallback copy error:', err);
+        }
+    }
 
-        carregarDados();
-    });
+    function copiarLinkValidacao() {
+        const btn = document.getElementById('btnCopiarLink');
+        copiarTextoUniversal(window.location.href);
+        if (btn) {
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span>Link Copiado!</span>';
+            setTimeout(() => {
+                btn.innerHTML = origHtml;
+            }, 2000);
+        }
+    }
 
-    function carregarDados() {
-        var p = new URLSearchParams(window.location.search);
+    function copiarCodigoAuth() {
+        const btn = document.getElementById('btnCopyCode');
+        const code = document.getElementById('lblAuthCode')?.textContent?.trim() || '';
+        copiarTextoUniversal(code);
+        if (btn) {
+            const origHtml = btn.innerHTML;
+            btn.classList.add('copied');
+            btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span>Copiado</span>';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = origHtml;
+            }, 2000);
+        }
+    }
 
-        var codVal  = p.get('cod')      || p.get('codigo')     || p.get('id')        || '1469239712';
-        var nome    = (p.get('nome')    || p.get('paciente')   || 'LAURA NASCIMENTO OLIVEIRA DE MELLO').toUpperCase();
-        var cpf     = p.get('cpf')      || '182.114.717-01';
-        var nasc    = p.get('nasc')     || '23/08/1985';
-        var idade   = p.get('idade')    || '25 Anos 2 Meses 29 Dias';
-        var mae     = (p.get('mae')     || 'VANESSA SANTOS DO NASCIMENTO').toUpperCase();
-        var pront   = p.get('pront')    || '005592173';
-        var atend   = p.get('atend')    || '2290479';
-        var conv    = p.get('convenio') || p.get('conv')       || 'UNIMED RJ';
-        var setor   = p.get('setor')    || '';
-        var cid     = p.get('cid')      || 'A90';
-        var diag    = p.get('diag')     || 'quadro de dengue';
-        var dias    = p.get('dias')     || '2';
-        var dataAt  = p.get('data')     || p.get('data_atend') || '29/08/24 às 04:07';
-        var dataAss = p.get('ass')      || p.get('data_ass')   || '29/08/2024 03:20:50';
-        var medico  = (p.get('medico')  || p.get('med')        || p.get('prof') || 'MARIA CAROLINA CALIANO DA SILVA').toUpperCase();
-        var crm     = (p.get('crm')     || 'CRMRJ-01212699').toUpperCase();
-        var cargo   = (p.get('cargo')   || p.get('funcao')     || 'MÉDICA').toUpperCase();
-        var unid1   = (p.get('unidade1')|| p.get('unidade')    || 'TELESSAUDE - UNIMEDRJ').toUpperCase();
-        var unid2   = (p.get('unidade2')|| p.get('endereco')   || 'AV AYRTON SENNA, 2550, BARRA DA TIJUCA, RIO DE JANEIRO').toUpperCase();
-        var acomp   = (p.get('acomp')   || '').toUpperCase();
-        var cpfAcomp= p.get('cpf_acomp')|| '';
+    function compartilharWhatsApp() {
+        const nome = dadosAtestado.nome || 'Paciente';
+        const cns = dadosAtestado.cns || '';
+        const cid = dadosAtestado.cid || '';
+        const dias = dadosAtestado.dias || '';
+        const unidade = dadosAtestado.unidade || 'UPA 24h';
+        const url = window.location.href;
 
-        var diasNum = parseInt(dias) || 1;
-        var diasTxt = diasNum === 1 ? '1 dia' : dias + ' dias';
-        var cidFull = cid.toUpperCase().indexOf('CID') === 0 ? cid.toUpperCase() : 'CID ' + cid.toUpperCase();
+        const msg = `*COMPROVANTE OFICIAL DE ATESTADO MÉDICO - UPA 24h*\n` +
+            `👤 *Paciente:* ${nome}\n` +
+            `📄 *CPF do Paciente:* ${formatarCpf(cns)}\n` +
+            `🩺 *CID-10:* ${cid}\n` +
+            `⏱ *Afastamento:* ${dias} de repouso\n` +
+            `🏥 *Unidade:* ${unidade}\n\n` +
+            `✅ *Link de Autenticidade Oficial (SUS):*\n${url}`;
 
-        document.getElementById('lblCodValid').textContent   = codVal;
-        document.getElementById('lblTimestamp').innerHTML    = 'Autenticado em: <strong>' + dataAss + '</strong>';
-        document.getElementById('valNome').textContent       = nome;
-        document.getElementById('valCpf').textContent        = cpf;
-        document.getElementById('valNascIdade').textContent  = nasc + ' (' + idade + ')';
-        document.getElementById('valMae').textContent        = mae;
-        document.getElementById('valProntAtend').textContent = pront + ' / ' + atend;
-        document.getElementById('valConvenio').textContent   = setor ? conv + ' (' + setor + ')' : conv;
-        document.getElementById('valCid').textContent        = cidFull;
-        document.getElementById('valDias').textContent       = diasTxt;
-        document.getElementById('valDataAtend').textContent  = dataAt;
-        document.getElementById('valDiag').textContent       = diag;
-        document.getElementById('valMedico').textContent     = medico;
-        document.getElementById('valCrm').textContent        = crm + ' (' + cargo + ')';
-        document.getElementById('valUnidade').textContent    = unid1;
-        document.getElementById('valEndereco').textContent   = unid2;
-        document.getElementById('valCertSigner').textContent = medico + ':01212699, AC CNDL RFB v3, ' + dataAss;
+        const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, '_blank');
+    }
 
-        if (acomp) {
-            var box = document.getElementById('boxAcomp');
-            if (box) {
-                box.style.display = 'flex';
-                document.getElementById('valAcomp').textContent = cpfAcomp ? acomp + ' (CPF: ' + cpfAcomp + ')' : acomp;
+    // ════════ GERAÇÃO E DOWNLOAD EM PDF DO ATESTADO COM O NOME EX: AtestadoUnimed_Claudia.pdf ════════
+    
+    function renderSheetQrs() {
+        const qrUrl = window.location.href;
+        const hQr = document.getElementById('headerQrBox');
+        if (hQr) {
+            hQr.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(hQr, { text: qrUrl, width: 130, height: 130, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+            } else {
+                hQr.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${encodeURIComponent(qrUrl)}" width="130" height="130" alt="QR Code">`;
+            }
+        }
+        const fQr = document.getElementById('footerQrBox');
+        if (fQr) {
+            fQr.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(fQr, { text: qrUrl, width: 95, height: 95, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+            } else {
+                fQr.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=95x95&data=${encodeURIComponent(qrUrl)}" width="95" height="95" alt="QR Code">`;
+            }
+        }
+    }
+
+    function popularDadosNaFolhaOficial() {
+        const nomePaciente = (dadosAtestado.nome || 'Paciente').trim().toUpperCase();
+        const cnsPaciente = dadosAtestado.cns || '801440458570767';
+        // No modelo do atestado oficial o CID é apenas o código (ex: J02.)
+        const cidPaciente = (dadosAtestado.cidRaw || dadosAtestado.cid || 'J02.').split(' ')[0].trim();
+        const diasNum = dadosAtestado.diasNum || '3';
+        const mapaExt = {
+            '1': '1 (um)',
+            '2': '2 (dois)',
+            '3': '3 (três)',
+            '4': '4 (quatro)',
+            '5': '5 (cinco)',
+            '7': '7 (sete)',
+            '10': '10 (dez)',
+            '14': '14 (quatorze)',
+            '15': '15 (quinze)',
+            '30': '30 (trinta)'
+        };
+        const diasExtenso = mapaExt[diasNum] || (diasNum.includes('(') ? diasNum : `${diasNum}`);
+        const dataEmissao = dadosAtestado.data || '04/11/2026';
+        const horaEmissao = dadosAtestado.hora || '08:12:23';
+        const medicoNome = dadosAtestado.medico || 'Dr. Jair Dacas';
+        const medicoEsp = dadosAtestado.esp || 'Médica Clínica';
+        const medicoCrm = dadosAtestado.crm || 'CRM 29022 RS';
+        const end1 = dadosAtestado.end1 || 'Av. Miguel Ignácio Curi, 41';
+        const end2 = dadosAtestado.end2 || 'Vila Carmosina - São Paulo – SP';
+        const end3 = dadosAtestado.end3 || 'CEP: 08295-005';
+        const unidade = dadosAtestado.unidade || 'UPA 24h Itaquera - Consultórios';
+
+        const elNome = document.getElementById('fld_nome_paciente');
+        if (elNome) elNome.textContent = nomePaciente;
+
+        const elCid = document.getElementById('fld_cid');
+        if (elCid) elCid.textContent = cidPaciente;
+
+        const elEmitido = document.getElementById('fld_emitido_em');
+        if (elEmitido) elEmitido.textContent = `${dataEmissao} ${horaEmissao}`;
+
+        const elLibData = document.getElementById('fld_liberado_data');
+        if (elLibData) elLibData.textContent = dataEmissao;
+
+        const elLibHora = document.getElementById('fld_liberado_hora');
+        if (elLibHora) elLibHora.textContent = horaEmissao ? horaEmissao.substring(0, 5) : '08:12';
+
+        const elMedNome = document.getElementById('fld_medico_nome');
+        if (elMedNome) elMedNome.textContent = medicoNome;
+
+        const elMedEsp = document.getElementById('fld_medico_esp');
+        if (elMedEsp) elMedEsp.textContent = medicoEsp;
+
+        const elMedCrm = document.getElementById('fld_medico_crm');
+        if (elMedCrm) elMedCrm.textContent = medicoCrm;
+
+        // Renderiza assinatura oficial correspondente (100% idem ou cursiva do médico)
+        const sigLayer = document.getElementById('carimboSigLayer');
+        if (sigLayer) {
+            if (medicoNome.includes('Jair Dacas') || !medicoNome) {
+                sigLayer.innerHTML = `
+                    <path d="M 64 58 C 66 46, 81 35, 99 34 C 112 34, 122 43, 117 57 C 111 71, 100 81, 93 84 C 84 89, 71 99, 66 104 C 66 104, 80 92, 91 84 C 104 74, 119 65, 137 62 C 154 58, 163 58, 170 64 C 177 69, 191 68, 207 64" fill="none" stroke="#1040cf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="162" cy="42" r="1.6" fill="#1040cf" />
+                `;
+            } else {
+                const nomeSemDr = medicoNome.replace(/^(dr\.|dra\.|dr|dra)\s*/i, '');
+                sigLayer.innerHTML = `
+                    <text x="105" y="62" text-anchor="middle" font-family="'Cedarville Cursive', 'Caveat', 'Dancing Script', cursive" font-size="29" font-weight="700" fill="#1040cf" transform="rotate(-5 105 62)">${nomeSemDr}</text>
+                    <path d="M 25 78 Q 75 90 135 74 T 215 72" fill="none" stroke="#1040cf" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="205" cy="70" r="1.6" fill="#1040cf" />
+                `;
             }
         }
 
-        // Texto oficial do atestado
-        var stmt = 'Atesto para os devidos fins, a pedido que o(a) Sr(a). <strong>' + nome + '</strong>, inscrito(a) no CPF sob o nº <strong>' + cpf + '</strong>, paciente sob meus cuidados, foi atendido(a) no dia <strong>' + dataAt + '</strong> apresentando <strong>' + diag + '</strong>';
-        if (acomp) {
-            stmt += ', tendo sido acompanhado(a) por <strong>' + acomp + '</strong>';
-            if (cpfAcomp) stmt += ', inscrito(a) no CPF sob o nº <strong>' + cpfAcomp + '</strong>';
+        const elEnd1 = document.getElementById('fld_unidade_end1');
+        if (elEnd1) elEnd1.textContent = end1;
+        const elEnd2 = document.getElementById('fld_unidade_end2');
+        if (elEnd2) elEnd2.textContent = end2;
+        const elEnd3 = document.getElementById('fld_unidade_end3');
+        if (elEnd3) elEnd3.textContent = end3;
+
+        // Texto principal oficial idêntico ao preenchido no editor
+        const elTexto = document.getElementById('fld_texto_principal');
+        if (elTexto) {
+            const cpfFormatado = formatarCpf(cnsPaciente);
+            const palavraDia = (parseInt(diasNum, 10) === 1) ? 'dia' : 'dias';
+            elTexto.innerHTML = `Atesto para os devidos fins, que o(a), <b>${nomePaciente}</b>, portador(a) do CPF sob nº <b>${cpfFormatado}</b>, foi atendido(a) no(a), <b>${unidade}</b> na data <b>${dataEmissao}</b><br>às <b>${horaEmissao}</b>, necessitando de <b>${diasExtenso}</b> ${palavraDia} de repouso por motivo de doença.`;
         }
-        stmt += '. (Este atestado é válido para as finalidades previstas nos artigos 71 e 72, parágrafo 1º do Decreto 3048/99, e será expedido para justificar o afastamento do trabalho por <strong>' + diasTxt + '</strong>).<br><br>';
-        stmt += 'Autorizada a inclusão da <strong>' + cidFull + '</strong> no atestado médico.';
 
-        document.getElementById('valStatement').innerHTML = stmt;
-    }
-
-    function copiarCodigo() {
-        var cod = document.getElementById('lblCodValid').textContent.trim();
-        copiar(cod);
-        toast('Código verificador copiado com sucesso!');
-    }
-
-    function copiarLink() {
-        copiar(window.location.href);
-        var btn = document.getElementById('btnLinkTxt');
-        if (btn) {
-            var orig = btn.textContent;
-            btn.textContent = '✓ Link Copiado!';
-            setTimeout(function() { btn.textContent = orig; }, 2200);
+        // Data por extenso
+        const elDataExt = document.getElementById('fld_data_extenso');
+        if (elDataExt) {
+            const partes = dataEmissao.split('/');
+            if (partes.length === 3) {
+                const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                const mesIdx = parseInt(partes[1], 10) - 1;
+                const mesNome = meses[mesIdx] || 'Novembro';
+                const cidadeUnidade = unidade.split('-')[0].trim();
+                elDataExt.textContent = `${cidadeUnidade}, ${partes[0]} de ${mesNome} de ${partes[2]}.`;
+            }
         }
-        toast('Link de autenticidade copiado!');
+
+        // Injeta logos UPA oficiais
+        const sTop = document.getElementById('upaLogoTopoImg');
+        const sBot = document.getElementById('upaLogoRodapeImg');
+        if (window.UNIMED_LOGO_B64) {
+            const logoEl = document.getElementById('upaLogoValidation');
+            if (logoEl) logoEl.src = window.UNIMED_LOGO_B64;
+            const sTop = document.getElementById('upaLogoTopoImg');
+            if (sTop) sTop.src = window.UNIMED_LOGO_B64;
+            const sBot = document.getElementById('upaLogoRodapeImg');
+            if (sBot) sBot.src = window.UNIMED_LOGO_B64;
+        }
+
+        renderSheetQrs();
     }
 
-    function copiar(txt) {
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(txt).catch(function() { copiarFallback(txt); });
-        } else {
-            copiarFallback(txt);
+    async function imprimirAtestadoOficial() {
+        const btn = document.getElementById('btnImprimirAtestado');
+        const origText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg> <span>Baixando Atestado PDF...</span>';
+
+        try {
+            // Sincroniza e preenche todos os dados no modelo oficial
+            popularDadosNaFolhaOficial();
+
+            const nomePaciente = (dadosAtestado.nome || 'Paciente').trim();
+            const primeiroNome = nomePaciente.split(' ')[0];
+            const nomeFormatado = primeiroNome.charAt(0).toUpperCase() + primeiroNome.slice(1).toLowerCase();
+            const filename = `AtestadoUnimed_${nomeFormatado}.pdf`;
+
+            const sheet = document.getElementById('sheetDoc');
+            if (!sheet) throw new Error('Modelo oficial do atestado não encontrado');
+
+            // Gera o PDF oficial em alta resolução exatamente igual ao editor
+            const JsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+            if (typeof html2canvas !== 'undefined' && JsPDF) {
+                const clone = sheet.cloneNode(true);
+                clone.id = 'printCloneSheet';
+                clone.style.display = 'flex';
+                clone.style.visibility = 'visible';
+                clone.style.position = 'fixed';
+                clone.style.left = '-99999px';
+                clone.style.top = '0';
+                clone.style.width = '794px';
+                clone.style.minHeight = '1123px';
+                clone.style.height = '1123px';
+                clone.style.maxHeight = '1123px';
+                clone.style.padding = '36px 48px';
+                clone.style.background = '#ffffff';
+                clone.style.boxShadow = 'none';
+                clone.style.boxSizing = 'border-box';
+                clone.style.overflow = 'hidden';
+                clone.style.zIndex = '-9999';
+
+                document.body.appendChild(clone);
+
+                await new Promise(r => setTimeout(r, 280));
+
+                const canvas = await html2canvas(clone, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    width: 794,
+                    height: 1123,
+                    windowWidth: 794,
+                    windowHeight: 1123
+                });
+
+                clone.remove();
+
+                const pdf = new JsPDF({
+                    orientation: 'portrait',
+                    unit: 'px',
+                    format: [794, 1123],
+                    hotfixes: ['px_scaling']
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
+                try {
+                    const blob = pdf.output('blob');
+                    const blobUrl = URL.createObjectURL(blob);
+                    const dlLink = document.createElement('a');
+                    dlLink.href = blobUrl;
+                    dlLink.download = filename;
+                    document.body.appendChild(dlLink);
+                    dlLink.click();
+                    setTimeout(() => { dlLink.remove(); URL.revokeObjectURL(blobUrl); }, 4000);
+                } catch(eBlob) {
+                    pdf.save(filename);
+                }
+            }
+
+            btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span>Download Concluído!</span>';
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = origText;
+            }, 2500);
+
+        } catch(err) {
+            console.error('Erro ao baixar atestado:', err);
+            window.print();
+            btn.disabled = false;
+            btn.innerHTML = origText;
         }
     }
 
-    function copiarFallback(txt) {
-        var ta = document.createElement('textarea');
-        ta.value = txt;
-        ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try { document.execCommand('copy'); } catch(e) {}
-        document.body.removeChild(ta);
-    }
 
-    function toast(msg) {
-        var t = document.getElementById('toast');
-        var m = document.getElementById('toastMsg');
-        if (!t || !m) return;
-        m.textContent = msg;
-        t.classList.add('show');
-        setTimeout(function() { t.classList.remove('show'); }, 3000);
-    }
+    // ─── INICIALIZAÇÃO DA PÁGINA ───
+    (function() {
+        // Injeta logo oficial em base64 se disponível
+        if (window.UNIMED_LOGO_B64) {
+            const logoEl = document.getElementById('upaLogoValidation');
+            if (logoEl) logoEl.src = window.UNIMED_LOGO_B64;
+            const sTop = document.getElementById('sheetUpaLogoTop');
+            if (sTop) sTop.src = window.UNIMED_LOGO_B64;
+            const sBot = document.getElementById('sheetUpaLogoBottom');
+            if (sBot) sBot.src = window.UNIMED_LOGO_B64;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+
+        const id = params.get('cod') || params.get('id') || '1469239712';
+        const nome = (params.get('nome') || params.get('paciente') || 'LAURA NASCIMENTO OLIVEIRA DE MELLO').toUpperCase();
+        const cns = params.get('cpf') || params.get('cns') || '182.114.717-01';
+        const cid = params.get('cid') || 'A90';
+        const dias = params.get('dias') || '2';
+        const unidade = params.get('unidade') || params.get('unidade1') || 'TELESSAUDE - UNIMEDRJ';
+        const medico = (params.get('med') || params.get('medico') || 'MARIA CAROLINA CALIANO DA SILVA').toUpperCase();
+        const esp = params.get('esp') || params.get('cargo') || 'Médica Cooperada';
+        const crm = (params.get('crm') || 'CRMRJ-01212699').toUpperCase();
+        const data = params.get('data') || params.get('data_atend') || '29/08/2024';
+        const hora = params.get('hora') || '04:07';
+        const auth = params.get('auth') || params.get('cod') || '1469239712';
+        const end1 = params.get('end1') || params.get('endereco') || 'AV AYRTON SENNA, 2550';
+        const end2 = params.get('end2') || 'BARRA DA TIJUCA - RIO DE JANEIRO - RJ';
+        const end3 = params.get('end3') || 'CEP: 22775-003';
+
+        // Formata descrição legível de CIDs comuns
+        let cidDesc = cid;
+        if (cid.startsWith('J02')) cidDesc = cid + ' (Faringite Aguda)';
+        else if (cid.startsWith('J06')) cidDesc = cid + ' (Infecção Aguda Vias Aéreas Superiores)';
+        else if (cid.startsWith('J11')) cidDesc = cid + ' (Influenza / Gripe)';
+        else if (cid.startsWith('M54')) cidDesc = cid + ' (Dorsalgia / Lombalgia)';
+        else if (cid.startsWith('A09')) cidDesc = cid + ' (Gastroenterite Infecciosa)';
+        else if (cid.startsWith('K52')) cidDesc = cid + ' (Gastroenterite e Colite)';
+        else if (cid.startsWith('B34')) cidDesc = cid + ' (Doença Viral não Especificada)';
+
+        const mapaExtenso = {
+            '1': '1 (um) dia',
+            '2': '2 (dois) dias',
+            '3': '3 (três) dias',
+            '4': '4 (quatro) dias',
+            '5': '5 (cinco) dias',
+            '7': '7 (sete) dias',
+            '10': '10 (dez) dias',
+            '14': '14 (quatorze) dias',
+            '15': '15 (quinze) dias',
+            '30': '30 (trinta) dias'
+        };
+        const diasStr = mapaExtenso[dias] || `${dias} dias`;
+
+        dadosAtestado = {
+            id,
+            nome,
+            cns,
+            cid: cidDesc,
+            cidRaw: cid,
+            dias: diasStr,
+            diasNum: dias,
+            unidade,
+            medico,
+            esp,
+            crm,
+            data,
+            hora,
+            auth,
+            end1,
+            end2,
+            end3
+        };
+
+        // Popula elementos no DOM da tela de validação
+        document.getElementById('lblAuthCode').textContent = auth.toUpperCase();
+        document.getElementById('valId').textContent = id;
+        document.getElementById('valNome').textContent = nome;
+        document.getElementById('valCns').textContent = formatarCpf(cns);
+        document.getElementById('valCid').textContent = cidDesc;
+        document.getElementById('valDias').textContent = diasStr;
+        document.getElementById('valData').textContent = data;
+        document.getElementById('valHora').textContent = hora;
+        document.getElementById('valMedico').textContent = medico;
+        document.getElementById('valCrm').textContent = crm.includes('/') ? crm : (crm + ' / SP');
+        document.getElementById('valUnidade').textContent = unidade;
+        const vEnd = document.getElementById('valEndereco');
+        if (vEnd) vEnd.textContent = `${end1} — ${end2} (${end3})`;
+        const sEnd1 = document.getElementById('sheet_end1'); if (sEnd1) sEnd1.textContent = end1;
+        const sEnd2 = document.getElementById('sheet_end2'); if (sEnd2) sEnd2.textContent = end2;
+        const sEnd3 = document.getElementById('sheet_end3'); if (sEnd3) sEnd3.textContent = end3;
+
+        // Atualiza carimbo do tempo
+        const now = new Date();
+        const dStr = String(now.getDate()).padStart(2, '0') + '/' + String(now.getMonth() + 1).padStart(2, '0') + '/' + now.getFullYear();
+        const hStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('lblValDataHora').textContent = `${data || dStr} às ${hora || hStr}`;
+
+        // Texto da declaração formal na tela
+        const stBox = document.getElementById('valStatement');
+        if (stBox) {
+            stBox.innerHTML = `Atesto para os devidos fins, que o(a) paciente <strong>${nome}</strong>, Cartão SUS nº <strong>${cns}</strong>, foi atendido(a) no estabelecimento <strong>${unidade}</strong> na data <strong>${data}</strong> às <strong>${hora}</strong> pelo(a) <strong>${medico}</strong> (${crm}), necessitando de <strong>${diasStr} de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).`;
+        }
+
+        // Popula elementos da Folha Oficial de Impressão do Atestado (folha única idêntica ao editor)
+        popularDadosNaFolhaOficial();
+
+        document.title = `Validação de Atestado — ${nome} | Unimed`;
+
+        // Se houver backend ativo e apenas ID fornecido, tenta enriquecer dados adicionais
+        if (id && (!params.get('nome') || !params.get('paciente'))) {
+            try {
+                fetch(`api/index.php?action=verificar_atestado&id=${encodeURIComponent(id)}`)
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res && res.status === 'success' && res.data) {
+                            const d = res.data;
+                            if (d.paciente_nome) {
+                                dadosAtestado.nome = d.paciente_nome.toUpperCase();
+                                const elVn = document.getElementById('valNome'); if (elVn) elVn.textContent = dadosAtestado.nome;
+                            }
+                            if (d.cns) {
+                                dadosAtestado.cns = d.cns;
+                                const elVcns = document.getElementById('valCns'); if (elVcns) elVcns.textContent = formatarCpf(d.cns || d.cpf);
+                            }
+                            if (d.cid) {
+                                dadosAtestado.cid = d.cid;
+                                dadosAtestado.cidRaw = d.cid;
+                                const elVcid = document.getElementById('valCid'); if (elVcid) elVcid.textContent = d.cid;
+                            }
+                            if (d.dias_repouso) {
+                                dadosAtestado.dias = `${d.dias_repouso} dias`;
+                                dadosAtestado.diasNum = String(d.dias_repouso);
+                                const elVd = document.getElementById('valDias'); if (elVd) elVd.textContent = `${d.dias_repouso} dias`;
+                            }
+                            if (d.medico_nome) {
+                                dadosAtestado.medico = d.medico_nome;
+                                const elVm = document.getElementById('valMedico'); if (elVm) elVm.textContent = d.medico_nome;
+                            }
+                            if (d.crm) {
+                                dadosAtestado.crm = d.crm;
+                                const elVcrm = document.getElementById('valCrm'); if (elVcrm) elVcrm.textContent = d.crm;
+                            }
+                            if (d.unidade_saude) {
+                                dadosAtestado.unidade = d.unidade_saude;
+                                const elVu = document.getElementById('valUnidade'); if (elVu) elVu.textContent = d.unidade_saude;
+                            }
+                            popularDadosNaFolhaOficial();
+                        }
+                    })
+                    .catch(() => {});
+            } catch(e) {}
+        }
+    })();
     </script>
+
 </body>
 </html>

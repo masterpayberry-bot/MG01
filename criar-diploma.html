@@ -468,7 +468,38 @@
                 page-break-inside: avoid !important;
             }
         }
-    </style>
+    
+        /* ─── MARCA D'ÁGUA DE PRÉVIA (REMOVIDA APENAS NO PDF) ─── */
+        .diploma-watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            overflow: hidden;
+        }
+        .diploma-watermark-band {
+            font-size: 58px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: rgba(220, 38, 38, 0.16);
+            transform: rotate(-28deg);
+            white-space: nowrap;
+            user-select: none;
+            text-transform: uppercase;
+            font-family: Arial, sans-serif;
+            border: 4px dashed rgba(220, 38, 38, 0.20);
+            padding: 8px 28px;
+            border-radius: 8px;
+        }
+
+</style>
 </head>
 <body>
     <!-- HEADER PADRÃO MG EDITÁVEIS IGUAL AOS DEMAIS -->
@@ -639,7 +670,14 @@
 
             <!-- ZOOM WRAPPER QUE RESPONDE AOS CONTROLES (+ - Fit) -->
             <div id="zoomWrapper" style="transition: transform 0.15s ease-out; transform-origin: top center; width: 100%; display: flex; justify-content: center;">
-                <div class="a4-sheet" id="diplomaA4Sheet">
+                <div class="a4-sheet" id="diplomaA4Sheet" style="position:relative;">
+                    <!-- MARCA D'ÁGUA DE PRÉVIA (VISÍVEL NO EDITOR, REMOVIDA APENAS NO PDF) -->
+                    <div class="diploma-watermark-overlay" id="diplomaWatermark">
+                        <div class="diploma-watermark-band">PRÉVIA — NÃO OFICIAL</div>
+                        <div class="diploma-watermark-band">DOCUMENTO PENDENTE DE EMISSÃO</div>
+                        <div class="diploma-watermark-band">PRÉVIA — NÃO OFICIAL</div>
+                    </div>
+
                     
                     <!-- METADE SUPERIOR: FRENTE -->
                     <div class="frente-container" id="frenteContainer">
@@ -875,7 +913,10 @@
             await new Promise(r => setTimeout(r, 120));
 
             try {
-                const sheetEl = document.getElementById('diplomaA4Sheet');
+                const wmEl = document.getElementById('diplomaWatermark');
+            if (wmEl) wmEl.style.display = 'none';
+
+            const sheetEl = document.getElementById('diplomaA4Sheet');
 
                 // Renderiza folha A4 em alta resolução (escala 3x)
                 const canvas = await html2canvas(sheetEl, {
@@ -901,6 +942,7 @@
                     hotfixes: ['px_scaling']
                 });
 
+                if (wmEl) wmEl.style.display = 'flex';
                 const imgData = canvas.toDataURL('image/jpeg', 0.98);
                 pdf.addImage(imgData, 'JPEG', 0, 0, 794, 1123);
 

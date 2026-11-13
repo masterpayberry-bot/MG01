@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receitas Médicas Unimed Recentes | MG Editáveis</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Verificação de Administrador & Homologação -->
+    <script>
+        window.isAdminUser = false;
+        (function() {
+            try {
+                if (localStorage.getItem('happynation_admin_auth') === 'true' || sessionStorage.getItem('happynation_admin_auth') === 'true') {
+                    window.isAdminUser = true;
+                }
+                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                if (uStr) {
+                    const u = JSON.parse(uStr);
+                    if (u && (u.email === 'admin@gmail.com' || u.role === 'admin')) {
+                        window.isAdminUser = true;
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
+
+    <link rel="stylesheet" href="css/toast.css">
+    <script src="js/toast.js"></script>
+    <script src="saldo-sync.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;700&display=swap');
+
+        :root {
+            --bg-page: #0b0d0e;
+            --bg-surface: #141718;
+            --bg-surface-elevated: #1a1e20;
+            --border-color: #232729;
+            --border-subtle: #1c2022;
+            --primary: #00995D;
+            --primary-hover: #007a4a;
+            --primary-glow: rgba(0, 153, 93, 0.25);
+            --text-primary: #ffffff;
+            --text-secondary: #9aa2a6;
+            --text-muted: #5f686c;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'Roboto Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── CABEÇALHO PADRÃO ─── */
+        .header {
+            height: 64px;
+            background: #151718;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: #00dc82;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 14px rgba(0, 220, 130, 0.35);
+        }
+
+        .brand-icon-img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .brand-text {
+            font-weight: 800;
+            font-size: 17px;
+            letter-spacing: -0.3px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .saldo-pill {
+            background: rgba(0, 153, 93, 0.12);
+            color: #34d399;
+            border: 1px solid rgba(0, 153, 93, 0.35);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            background: #232729;
+            border: 1px solid #333a3e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            color: #00dc82;
+        }
+
+        /* ─── CONTAINER ─── */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 24px 60px;
+            flex: 1;
+        }
+
+        /* ─── HERO TOPO ─── */
+        .page-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .hero-left h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-left p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .btn-new {
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13.5px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px var(--primary-glow);
+            transition: all 0.2s ease;
+        }
+
+        .btn-new:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* ─── KPIS ─── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .kpi-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px 20px;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .kpi-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        /* ─── FILTROS ─── */
+        .filter-bar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 240px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: #0f1112;
+            border: 1px solid #232729;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 9px 12px 9px 36px;
+            font-size: 13.5px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5f686c;
+        }
+
+        /* ─── TABELA DE REGISTROS ─── */
+        .records-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+        }
+
+        .records-table th {
+            background: #111314;
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 700;
+            text-align: left;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .records-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .records-table tr:hover td {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .td-name {
+            font-weight: 700;
+            color: #ffffff !important;
+        }
+
+        .badge-token {
+            font-family: var(--font-mono);
+            background: rgba(0, 153, 93, 0.15);
+            color: #34d399;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .btn-table-action {
+            background: transparent;
+            border: 1px solid #2a3033;
+            color: #9aa2a6;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-table-action:hover {
+            border-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-table-del {
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-table-del:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            margin-bottom: 14px;
+            color: #333a3e;
+        }
+
+        .empty-state h3 {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .empty-state p {
+            font-size: 13.5px;
+            max-width: 400px;
+            margin: 0 auto 20px;
+        }
+
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            .records-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                </div>
+                <span class="brand-text">MG Editáveis</span>
+            </a>
+
+            <div class="header-actions">
+                <a href="editaveis.html" style="color: #9aa2a6; font-size: 13px; text-decoration: none; font-weight: 600;">Catálogo</a>
+                <a href="recarga.html" class="saldo-pill" id="headerSaldoPill">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span id="headerSaldoVal">R$ 0,00</span>
+                </a>
+                <div class="user-avatar" id="headerUserAvatar">U</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO -->
+    <main class="container">
+        
+        <div class="page-hero">
+            <div class="hero-left">
+                <h1>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00995D" stroke-width="2.2"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+                    Receitas Médicas Unimed Recentes
+                </h1>
+                <p>Histórico de prescrições médicas digitais emitidas com QR Code e validação.</p>
+            </div>
+            <a href="criar-receita-unimed.html" class="btn-new">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nova Receita Médica
+            </a>
+        </div>
+
+        <!-- KPIS -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Total de Receitas Emitidas</div>
+                <div class="kpi-val" id="kpiTotal">0</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Última Emissão</div>
+                <div class="kpi-val" id="kpiUltima" style="font-size: 16px;">Nenhuma</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Status do Sistema</div>
+                <div class="kpi-val" style="color: #34d399; font-size: 16px;">100% Operacional</div>
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="inpBusca" placeholder="Buscar por paciente, CPF ou token..." oninput="filtrarReceitas()">
+            </div>
+        </div>
+
+        <!-- TABELA -->
+        <div class="records-card">
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>CPF</th>
+                        <th>Médico / CRM</th>
+                        <th>Data Emissão</th>
+                        <th>Token</th>
+                        <th style="text-align: right;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="receitasTableBody">
+                    <!-- Renderizado dinamicamente -->
+                </tbody>
+            </table>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+                <h3>Nenhuma receita encontrada</h3>
+                <p>Você ainda não emitiu receitas médicas Unimed ou o filtro atual não retornou resultados.</p>
+                <a href="criar-receita-unimed.html" class="btn-new">Emitir Primeira Receita</a>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let todasReceitas = [];
+        let userEmail = 'default';
+
+        function getUserEmail() {
+            try {
+                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                if (uStr) {
+                    const u = JSON.parse(uStr);
+                    if (u && u.email) return u.email;
+                }
+            } catch(e) {}
+            return 'default';
+        }
+
+        function carregarReceitas() {
+            userEmail = getUserEmail();
+            const key = `happynation_receitas_${userEmail}`;
+            const raw = localStorage.getItem(key) || '[]';
+            try {
+                todasReceitas = JSON.parse(raw);
+                if (!Array.isArray(todasReceitas)) todasReceitas = [];
+            } catch(e) {
+                todasReceitas = [];
+            }
+
+            document.getElementById('kpiTotal').textContent = todasReceitas.length;
+            if (todasReceitas.length > 0) {
+                document.getElementById('kpiUltima').textContent = todasReceitas[0].data || todasReceitas[0].emissao || 'Hoje';
+            } else {
+                document.getElementById('kpiUltima').textContent = 'Nenhuma';
+            }
+
+            renderizarTabela(todasReceitas);
+        }
+
+        function renderizarTabela(lista) {
+            const tbody = document.getElementById('receitasTableBody');
+            const empty = document.getElementById('emptyState');
+            tbody.innerHTML = '';
+
+            if (lista.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+            empty.style.display = 'none';
+
+            lista.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                const tokenStr = item.token || 'TY5T4YK';
+                const codStr = item.codigo || item.cod || '6585';
+                
+                tr.innerHTML = `
+                    <td class="td-name">${item.paciente || item.nome || 'Paciente'}</td>
+                    <td>${item.cpf || '---'}</td>
+                    <td>${item.medico || 'Médico'} • <small style="color:#73877e;">${item.crm || ''}</small></td>
+                    <td>${item.emissao || item.data || '---'}</td>
+                    <td><span class="badge-token">${tokenStr}</span></td>
+                    <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 6px;">
+                            <a href="validar-receita-unimed.html?token=${encodeURIComponent(tokenStr)}&cod=${encodeURIComponent(codStr)}&paciente=${encodeURIComponent(item.paciente || item.nome || '')}&cpf=${encodeURIComponent(item.cpf || '')}&nasc=${encodeURIComponent(item.nasc || '')}&emissao=${encodeURIComponent(item.emissao || '')}&endereco=${encodeURIComponent(item.endereco || '')}&medico=${encodeURIComponent(item.medico || '')}&crm=${encodeURIComponent(item.crm || '')}&end_medico=${encodeURIComponent(item.end_medico || '')}" target="_blank" class="btn-table-action" title="Abrir Validação">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                Validar
+                            </a>
+                            <button onclick="excluirReceita(${index})" class="btn-table-action btn-table-del" title="Excluir">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filtrarReceitas() {
+            const q = document.getElementById('inpBusca').value.toLowerCase().trim();
+            if (!q) {
+                renderizarTabela(todasReceitas);
+                return;
+            }
+            const filtrados = todasReceitas.filter(r => {
+                return (r.paciente && r.paciente.toLowerCase().includes(q)) ||
+                       (r.cpf && r.cpf.includes(q)) ||
+                       (r.token && r.token.toLowerCase().includes(q)) ||
+                       (r.medico && r.medico.toLowerCase().includes(q));
+            });
+            renderizarTabela(filtrados);
+        }
+
+        function excluirReceita(index) {
+            if (!confirm('Deseja realmente remover este registro de receita?')) return;
+            todasReceitas.splice(index, 1);
+            const key = `happynation_receitas_${userEmail}`;
+            localStorage.setItem(key, JSON.stringify(todasReceitas));
+            carregarReceitas();
+            if (window.showToast) showToast('Receita removida.', 'success');
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarReceitas);
+    </script>
+</body>
+</html>
