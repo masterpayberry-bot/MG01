@@ -422,6 +422,30 @@
             color: var(--primary);
         }
 
+        .btn-reset-defaults {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 7px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-reset-defaults:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
         .btn-action-primary {
             background: var(--primary);
             color: #062517;
@@ -1059,12 +1083,7 @@
 
                     <div class="form-field">
                         <label>Laudo Nº</label>
-                        <input type="text" class="input-box" id="inp_laudo" value="31528116" oninput="syncFromCheckout();
-        window.addEventListener('mg_prices_synced', (ev) => {
-            const p = (ev && ev.detail && ev.detail.exame_price) ? parseFloat(ev.detail.exame_price) : (parseFloat(localStorage.getItem('happynation_exame_price')) || 20.00);
-            const cEl = document.getElementById('custoExameDisplay');
-            if (cEl) cEl.textContent = 'R$ ' + p.toFixed(2).replace('.', ',');
-        }); updateBarcode()" placeholder="Ex: 31528116">
+                        <input type="text" class="input-box" id="inp_laudo" value="31528116" oninput="syncFromCheckout(); updateBarcode()" placeholder="Ex: 31528116">
                     </div>
                 </div>
 
@@ -1166,14 +1185,17 @@
                 <div class="checkout-price-row">
                     <div>
                         <div class="price-label">Valor da Emissão:</div>
-                        <div class="price-value" id="custoExameDisplay">R$ 26,00</div>
+                        <div class="price-value" id="custoExameDisplay">R$ 20,00</div>
                     </div>
-                    <button type="button" class="razao-chip" onclick="resetToDefaults()" style="font-size:11px; padding:6px 10px;">Restaurar Padrão</button>
+                    <button type="button" class="btn-reset-defaults" onclick="resetToDefaults()" title="Restaurar dados padrão do exame">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                        <span>Restaurar Padrão</span>
+                    </button>
                 </div>
 
-                <button class="btn-action-primary" id="btnGerarPdf" onclick="gerarPdfExame()">
+                <button class="btn-action-primary btn-gerar" id="btnGerarPdf" onclick="gerarPdfExame()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    <span>Gerar e Baixar Exame PDF</span>
+                    <span id="btnGerarTxt">Gerar PDF — Exame Toxicológico</span>
                 </button>
             </div>
 
@@ -1787,6 +1809,11 @@
         const custo = parseFloat(localStorage.getItem('happynation_exame_price')) || 20.00;
         const cEl = document.getElementById('custoExameDisplay');
         if (cEl) cEl.textContent = `R$ ${custo.toFixed(2).replace('.', ',')}`;
+
+        window.addEventListener('mg_prices_synced', (ev) => {
+            const p = (ev && ev.detail && ev.detail.exame_price) ? parseFloat(ev.detail.exame_price) : (parseFloat(localStorage.getItem('happynation_exame_price')) || 20.00);
+            if (cEl) cEl.textContent = 'R$ ' + p.toFixed(2).replace('.', ',');
+        });
 
         // Puxa preço atualizado configurado pelo Admin
         fetch('api/config').then(r => r.json()).then(res => {

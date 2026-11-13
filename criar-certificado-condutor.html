@@ -87,112 +87,154 @@
         ::-webkit-scrollbar-thumb { background: #232729; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #00dc82; }
 
-        /* HEADER */
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(20, 23, 24, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            height: 68px;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
+        /* HEADER PADRÃO MG EDITÁVEIS */
+        .header { 
+            height: 64px; 
+            background: rgba(20, 23, 24, 0.95); 
+            backdrop-filter: blur(12px); 
+            border-bottom: 1px solid var(--border); 
+            position: sticky; 
+            top: 0; 
+            z-index: 50; 
         }
-        .header-inner {
-            width: 100%;
-            max-width: 1800px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .header-inner { 
+            max-width: 1560px; 
+            height: 100%; 
+            margin: 0 auto; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 24px; 
         }
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: inherit;
+        .header-brand { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-decoration: none; 
         }
-        .brand-logo {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, rgba(0,220,130,0.2), rgba(0,220,130,0.05));
-            border: 1px solid rgba(0,220,130,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+        .brand-logo { 
+            width: 32px; 
+            height: 32px; 
+            background: #00dc82; 
+            border-radius: 9px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            box-shadow: 0 0 14px rgba(0, 220, 130, 0.35); 
         }
-        .brand-icon-img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
+        .brand-icon-img { 
+            width: 20px; 
+            height: 20px; 
+            object-fit: contain; 
         }
-        .brand-text {
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(to right, #fff, #9ca3af);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .brand-text { 
+            font-weight: 800; 
+            font-size: 16px; 
+            color: #fff; 
+            letter-spacing: -0.3px; 
         }
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .header-right { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
         }
-        .tag-admin-dev {
-            background: rgba(245, 158, 11, 0.12);
-            color: #f59e0b;
-            border: 1px solid rgba(245, 158, 11, 0.35);
-            padding: 6px 12px;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .saldo-pill { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 7px; 
+            background: rgba(22, 163, 74, 0.12); 
+            border: 1px solid rgba(22, 163, 74, 0.3); 
+            color: #4ade80; 
+            padding: 6px 14px; 
+            border-radius: 999px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            text-decoration: none; 
+            transition: all 0.2s; 
         }
-        .btn-header-back {
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
+        .saldo-pill:hover { 
+            background: rgba(22, 163, 74, 0.2); 
+            border-color: rgba(22, 163, 74, 0.5); 
+            transform: translateY(-1px); 
         }
-        .btn-header-back:hover {
-            background: var(--surface-hover);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
+        .header-link { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            font-size: 13px; 
+            font-weight: 600; 
+            padding: 6px 12px; 
+            border-radius: 8px; 
+            transition: all 0.2s; 
+        }
+        .header-link:hover { 
+            color: #fff; 
+            background: rgba(255,255,255,0.05); 
+        }
+        .header-icon { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .header-icon:hover { 
+            color: #fff; 
+            background: rgba(255,255,255,0.05); 
+        }
+        .btn-voltar { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            background: rgba(255,255,255,0.06); 
+            border: 1px solid var(--border); 
+            color: var(--text-main); 
+            padding: 7px 14px; 
+            border-radius: 9px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            text-decoration: none; 
+            transition: all 0.2s; 
+        }
+        .btn-voltar:hover { 
+            background: rgba(255,255,255,0.1); 
+            color: #fff; 
         }
 
-        /* LAYOUT PRINCIPAL: 2 COLUNAS */
-        .main-container {
+        /* WORKSPACE / LAYOUT PRINCIPAL PADRÃO */
+        .main-container, .workspace {
             flex: 1;
             width: 100%;
-            max-width: 1800px;
+            max-width: 1560px;
             margin: 0 auto;
-            padding: 24px;
+            padding: 20px 24px;
             display: grid;
-            grid-template-columns: 500px 1fr;
+            grid-template-columns: 460px 1fr;
             gap: 24px;
-            align-items: start;
         }
-        @media (max-width: 1280px) {
-            .main-container {
+
+        @media (max-width: 1200px) {
+            .main-container, .workspace {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .header-inner { padding: 0 12px !important; }
+            .header-link, .header-icon { display: none !important; }
+            .main-container, .workspace {
+                padding: 12px 10px !important;
+                gap: 16px !important;
+                display: flex !important;
+                flex-direction: column !important;
             }
         }
 
@@ -356,58 +398,157 @@
 
         /* COLUNA DIREITA: PREVIEW */
         .preview-column {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            align-items: center;
+            gap: 14px;
+            min-width: 0;
         }
         .preview-toolbar {
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             flex-wrap: wrap;
             gap: 10px;
         }
-        .tab-btn-group {
-            display: flex;
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 3px;
-            gap: 4px;
+        .preview-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #e2e8f0;
         }
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #00dc82;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00dc82;
+            animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+        .zoom-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-zoom {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            color: #94a3b8;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .tab-btn.active {
-            background: #3b82f6;
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+        .btn-zoom:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .zoom-val {
+            font-size: 12px;
+            font-weight: 700;
+            color: #00dc82;
+            min-width: 44px;
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
         }
 
-        .preview-canvas-wrap {
+        .doc-viewport {
             width: 100%;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px 0 40px 0;
             overflow-x: auto;
-            padding: 10px 0 30px 0;
+        }
+        .doc-zoom-wrapper {
+            transform-origin: top center;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+        }
+        .sheet-section-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(0, 220, 130, 0.1);
+            border: 1px solid rgba(0, 220, 130, 0.25);
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #00dc82;
+            letter-spacing: 0.5px;
+        }
+        .sheet-divider-guide {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 12px 0 6px 0;
+        }
+        .sheet-divider-guide .divider-line {
+            flex: 1;
+            height: 1px;
+            background: repeating-linear-gradient(90deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 6px, transparent 6px, transparent 12px);
+        }
+        .sheet-divider-guide .divider-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 16px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px dashed rgba(14, 165, 233, 0.35);
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 0.3px;
+        }
+
+        .secondary-actions-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn-action-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 11px 16px;
+            border-radius: 9px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-action-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
         }
 
         /* ─── CERTIFICADO FOLHA A4 PAISAGEM (1024px × 726px) ─── */
@@ -566,48 +707,162 @@
             font-style: italic;
         }
 
-        /* IMPRESSÃO A4 PAISAGEM */
+        /* IMPRESSÃO A4 PAISAGEM - FRENTE E VERSO NA MESMA FOLHA */
+        @page {
+            size: A4 portrait;
+            margin: 6mm 8mm;
+        }
         @media print {
-            body {
+            html, body {
                 background: #ffffff !important;
                 color: #000000 !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                height: 100% !important;
+                overflow: hidden !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
-            .header, .form-column, .preview-toolbar {
+            .header, .form-column, .preview-toolbar, .sheet-section-header, .sheet-divider-guide, .secondary-actions-row, .toast {
                 display: none !important;
             }
-            .main-container {
+            .main-container, .workspace, .preview-column, .doc-viewport {
                 display: block !important;
                 padding: 0 !important;
                 margin: 0 !important;
-                max-width: 100% !important;
-            }
-            .preview-column {
-                background: none !important;
+                width: 100% !important;
+                background: transparent !important;
                 border: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
+                box-shadow: none !important;
             }
-            .preview-canvas-wrap {
+            .doc-zoom-wrapper, #canvasWrap {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 5mm !important;
                 padding: 0 !important;
-                margin: 0 !important;
-                display: block !important;
+                margin: 0 auto !important;
+                transform: none !important;
+                width: 100% !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
             .cert-sheet-landscape {
+                display: block !important;
                 box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
                 border-radius: 0 !important;
-                margin: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                page-break-after: always !important;
-            }
-            @page {
-                size: A4 landscape;
-                margin: 0;
+                margin: 0 auto !important;
+                width: 184mm !important;
+                height: 130mm !important;
+                page-break-inside: avoid !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+                break-inside: avoid !important;
+                break-after: avoid !important;
+                break-before: avoid !important;
+                overflow: hidden !important;
+                box-sizing: border-box !important;
+                transform: none !important;
             }
         }
+
+        
+        /* Card Resumo / Ações de Checkout Padrão */
+        .checkout-actions-card {
+            background: rgba(0, 220, 130, 0.05);
+            border: 1px solid rgba(0, 220, 130, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .checkout-price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .price-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #00dc82;
+        }
+
+        .btn-reset-defaults {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #94a3b8;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 7px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-reset-defaults:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-action-primary {
+            background: #00dc82;
+            color: #062517;
+            font-weight: 800;
+            font-size: 13.5px;
+            padding: 13px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.25);
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            width: 100%;
+        }
+
+        .btn-action-primary:hover {
+            background: #00f590;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.35);
+        }
+
     </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        const cEl = document.getElementById('custoCertificadoDisplay');
+        const custo = parseFloat(localStorage.getItem('happynation_icetran_price')) || parseFloat(localStorage.getItem('happynation_certificado_condutor_price')) || 20.00;
+        if (cEl) cEl.textContent = 'R$ ' + custo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        window.addEventListener('mg_prices_synced', function(ev) {
+            var p = (ev && ev.detail && (ev.detail.icetran_price || ev.detail.certificado_condutor_price)) ? parseFloat(ev.detail.icetran_price || ev.detail.certificado_condutor_price) : (parseFloat(localStorage.getItem('happynation_icetran_price')) || 20.00);
+            if (cEl) cEl.textContent = 'R$ ' + p.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        });
+    } catch(e) {}
+});
+</script>
+
 </head>
 <body>
 
@@ -616,19 +871,29 @@
         <div class="header-inner">
             <a href="editaveis.html" class="header-brand">
                 <div class="brand-logo">
-                    <img src="logo-icone.png" alt="Logo" class="brand-icon-img">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
                 </div>
                 <span class="brand-text">MG Editáveis</span>
             </a>
 
-            <div class="header-actions">
-                <span class="tag-admin-dev">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    EXCLUSIVO ADM • HOMOLOGAÇÃO
-                </span>
-                <a href="editaveis.html" class="btn-header-back">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    <span>Voltar ao Catálogo</span>
+            <div class="header-right">
+                <a href="recargas.html" class="saldo-pill" title="Seu Saldo Atual">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+
+                <a href="indicacoes.html" class="header-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <span>Indique e Ganhe</span>
+                </a>
+
+                <div class="header-icon" onclick="typeof showToast === 'function' ? showToast('Notificações') : alert('Sem novas notificações')" title="Notificações">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+
+                <a href="editaveis.html" class="btn-voltar" title="Voltar ao Catálogo">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                    <span>Voltar</span>
                 </a>
             </div>
         </div>
@@ -780,67 +1045,92 @@
                 </div>
             </div>
 
-            <!-- BOTÕES DE AÇÃO -->
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
-                <button type="button" class="btn-action-primary" id="btnDownloadPdf" onclick="downloadPdfCertificado()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    <span>Baixar PDF Oficial A4 (Frente e Verso)</span>
-                </button>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <button type="button" class="btn-action-secondary" onclick="window.print()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                        <span>Imprimir A4</span>
-                    </button>
-                    <button type="button" class="btn-action-secondary" onclick="salvarCertificadoNoHistorico()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        <span>Salvar no Histórico</span>
+            <!-- BOTÕES DE AÇÃO / CHECKOUT PADRÃO -->
+            <div class="checkout-actions-card">
+                <div class="checkout-price-row">
+                    <div>
+                        <div class="price-label">Valor da Emissão:</div>
+                        <div class="price-value" id="custoCertificadoDisplay">R$ 20,00</div>
+                    </div>
+                    <button type="button" class="btn-reset-defaults" onclick="restoreAdemirDefault()" title="Restaurar dados padrão do certificado">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                        <span>Restaurar Padrão</span>
                     </button>
                 </div>
+
+                <button type="button" class="btn-action-primary btn-gerar" id="btnDownloadPdf" onclick="downloadPdfCertificado()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span id="btnGerarTxt">Gerar PDF — Certificado de Condutor</span>
+                </button>
+            </div>
+
+            <div class="secondary-actions-row">
+                <button type="button" class="btn-action-secondary" onclick="imprimirCertificado()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    <span>Imprimir A4</span>
+                </button>
+                <button type="button" class="btn-action-secondary" onclick="salvarCertificadoNoHistorico()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    <span>Salvar no Histórico</span>
+                </button>
             </div>
         </section>
 
         <!-- COLUNA DIREITA: PREVIEW AO VIVO DA FOLHA A4 -->
         <section class="preview-column">
             <div class="preview-toolbar">
-                <div class="tab-btn-group">
-                    <button type="button" class="tab-btn active" id="tabBtnFrente" onclick="switchCertTab('frente')">📄 Frente</button>
-                    <button type="button" class="tab-btn" id="tabBtnVerso" onclick="switchCertTab('verso')">📄 Verso</button>
-                    <button type="button" class="tab-btn" id="tabBtnAmbos" onclick="switchCertTab('ambos')">📑 Ambos</button>
+                <div class="preview-live-badge">
+                    <span class="pulse-dot"></span>
+                    <span>Visualização ao Vivo — Frente e Verso (Folha Única A4)</span>
                 </div>
 
-                <div style="display:flex; align-items:center; gap:6px;">
-                    <button class="btn-action-secondary" style="padding:6px 12px; font-size:12px;" onclick="zoomSheet(-0.1)">-</button>
-                    <button class="btn-action-secondary" style="padding:6px 12px; font-size:12px;" onclick="zoomSheet(0.1)">+</button>
-                    <button class="btn-action-secondary" style="padding:6px 12px; font-size:12px;" onclick="resetZoom()">100%</button>
+                <div class="zoom-group">
+                    <button type="button" class="btn-zoom" onclick="changeZoom(-0.08)" title="Diminuir zoom">−</button>
+                    <span class="zoom-val" id="zoomValText">58%</span>
+                    <button type="button" class="btn-zoom" onclick="changeZoom(0.08)" title="Aumentar zoom">+</button>
+                    <button type="button" class="btn-zoom" onclick="resetZoom()" title="Resetar zoom" style="font-size:11.5px; width:auto; padding:0 10px;">100%</button>
+                    <button type="button" class="btn-zoom" onclick="fitZoom()" title="Ajustar à tela" style="font-size:11.5px; width:auto; padding:0 10px;">Ajustar</button>
                 </div>
             </div>
 
-            <div class="preview-canvas-wrap" id="canvasWrap">
+            <div class="doc-viewport" id="docViewport">
+                <div class="doc-zoom-wrapper" id="docZoomWrapper">
 
-                <!-- ─── FOLHA 1: FRENTE DO CERTIFICADO ICETRAN (100% IDÊNTICO À FOTO 2) ─── -->
-                <div class="cert-sheet-landscape" id="sheetFrente" style="position: relative; background: #ffffff; width: 1024px; height: 726px;">
-                    <img src="assets/icetran_frente_template.png" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 726px; z-index: 1; pointer-events: none;">
-                    
-                    <!-- Corpo com dados dinâmicos sobre o template 100% autêntico -->
-                    <div class="cert-frente-body-overlay">
-                        <div class="cert-num-title">
-                            CERTIFICADO Nº <span id="viewCertNumero">000250841</span>
-                        </div>
+                    <!-- FAIXA DE IDENTIFICAÇÃO: FRENTE -->
+                    <div class="sheet-section-header">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                        <span>FRENTE DO CERTIFICADO (ICETRAN)</span>
+                    </div>
 
-                        <p class="cert-main-paragraph">
-                            Certificamos que <strong id="viewAlunoNome">Ademir Rodrigues de Oliveira</strong> portador do CPF <strong id="viewAlunoCpf">267.504.778-36</strong> e CNH <strong id="viewAlunoCnh">0066612107</strong>, habilitado na categoria <strong id="viewAlunoCat">D</strong>, concluiu o Curso de <strong id="viewCursoNome">Condutores de Veículo de Transporte Coletivo de Passageiros</strong> , na modalidade <span id="viewModalidade">a Distância</span> com carga horária de <strong id="viewCargaHoraria">50</strong> horas-aula, no período <span id="viewPeriodo">11/01/2024 a 17/01/2024</span> .
-                        </p>
-
-                        <div class="cert-local-data">
-                            <span id="viewCidade">Guarulhos</span>, <span id="viewDataExtenso">17 de Janeiro de 2024</span>.
+                    <!-- ─── FOLHA 1: FRENTE DO CERTIFICADO ICETRAN (100% IDÊNTICO À FOTO 2) ─── -->
+                    <div class="cert-sheet-landscape" id="sheetFrente" style="position: relative; background: #ffffff; width: 1024px; height: 726px;">
+                        <img src="assets/icetran_frente_template.png?v=2" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 726px; z-index: 1; pointer-events: none;">
+                        
+                        <!-- Corpo com dados dinâmicos sobre o template 100% autêntico -->
+                        <div class="cert-frente-body-overlay">
+                            <div class="cert-num-title" id="viewCertNumero">CERTIFICADO Nº 000250841</div>
+                            <div class="cert-main-paragraph">
+                                Certificamos que <strong id="viewAlunoNome">Ademir Rodrigues de Oliveira</strong> portador do CPF <strong id="viewAlunoCpf">267.504.778-36</strong> e CNH <strong id="viewAlunoCnh">0066612107</strong>, habilitado na categoria <strong id="viewAlunoCategoria">D</strong>, concluiu o <strong>Curso de <span id="viewCursoNome">Condutores de Veículo de Transporte Coletivo de Passageiros</span></strong>, na modalidade a Distância com carga horária de <strong id="viewCargaHoraria">50</strong> horas-aula, no período <strong id="viewPeriodoData">13/01/2024 a 17/01/2024</strong>.
+                            </div>
+                            <div class="cert-local-data">
+                                <span id="viewCidade">Guarulhos</span>, <span id="viewDataExtenso">17 de Janeiro de 2024</span>.
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- ─── FOLHA 2: VERSO DO CERTIFICADO ICETRAN ─── -->
-                <div class="cert-sheet-landscape" id="sheetVerso" style="display:none;">
-                    <div class="cert-verso-wrap">
+                    <!-- DIVISOR ELEGANTE / GUIA DE DOBRA OU CORTE -->
+                    <div class="sheet-divider-guide">
+                        <div class="divider-line"></div>
+                        <div class="divider-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                            <span>VERSO DO CERTIFICADO (REGISTRO, CONTEÚDO PROGRAMÁTICO & VALIDAÇÃO)</span>
+                        </div>
+                        <div class="divider-line"></div>
+                    </div>
+
+                    <!-- ─── FOLHA 2: VERSO DO CERTIFICADO ICETRAN ─── -->
+                    <div class="cert-sheet-landscape" id="sheetVerso">
+<div class="cert-verso-wrap">
                         <div>
                             <table class="verso-table-container">
                                 <tr>
@@ -923,6 +1213,292 @@
                     </div>
                 </div>
 
+            </div>
+        </section>
+    </main>
+
+    <!-- LÓGICA JAVASCRIPT: CONTROLE, ZOOM, ATUALIZAÇÃO E EXPORTAÇÃO A4 -->
+    <script>
+        // Zoom sincronizado das duas folhas no viewport
+        let currentZoom = 0.58;
+        function changeZoom(delta) {
+            currentZoom = Math.min(Math.max(0.35, currentZoom + delta), 1.6);
+            applyZoom();
+        }
+        function resetZoom() {
+            currentZoom = 1;
+            applyZoom();
+        }
+        function fitZoom() {
+            const viewport = document.getElementById('docViewport');
+            if (!viewport) return;
+            const availableW = viewport.clientWidth - 40;
+            currentZoom = Math.min(Math.max(0.38, Math.round((availableW / 1024) * 100) / 100), 1.0);
+            applyZoom();
+        }
+        function applyZoom() {
+            const wrapper = document.getElementById('docZoomWrapper');
+            if (wrapper) wrapper.style.transform = `scale(${currentZoom})`;
+            const txt = document.getElementById('zoomValText');
+            if (txt) txt.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+
+        function imprimirCertificado() {
+            window.print();
+        }
+
+        // Padrão oficial Ademir (Foto 2 e Foto 3)
+        const DEFAULT_ADEMIR = {
+            alunoNome: 'Ademir Rodrigues de Oliveira',
+            alunoCpf: '267.504.778-36',
+            alunoCnh: '0066612107',
+            alunoCat: 'D',
+            renach: '004805343',
+            cursoNome: 'Condutores de Veículo de Transporte Coletivo de Passageiros',
+            certNumero: '000250841',
+            modalidade: 'a Distância',
+            cargaHoraria: '50',
+            periodo: '11/01/2024 a 17/01/2024',
+            cidade: 'Guarulhos',
+            dataExtenso: '17 de Janeiro de 2024',
+            matricula: '73170',
+            folha: '1',
+            livro: '1',
+            codigoValidacao: 'd85cb650a0063fee493bda86e7e50ecd',
+            linkValidacao: 'https://icetran.alfamaoraculo.com.br/validador'
+        };
+
+        // Máscara de CPF
+        function maskCpf(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.substring(0, 11);
+            if (v.length <= 11) {
+                v = v.replace(/(\d{3})(\d)/, '$1.$2');
+                v = v.replace(/(\d{3})(\d)/, '$1.$2');
+                v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            }
+            input.value = v;
+        }
+
+        // Atualização em Tempo Real de TODOS os campos digitados
+        function updateLiveCertificate() {
+            const nome = document.getElementById('inpAlunoNome').value.trim() || DEFAULT_ADEMIR.alunoNome;
+            const cpf = document.getElementById('inpAlunoCpf').value.trim() || DEFAULT_ADEMIR.alunoCpf;
+            const cnh = document.getElementById('inpAlunoCnh').value.trim() || DEFAULT_ADEMIR.alunoCnh;
+            const cat = document.getElementById('inpAlunoCat').value.trim() || DEFAULT_ADEMIR.alunoCat;
+            const renach = document.getElementById('inpRenach').value.trim() || DEFAULT_ADEMIR.renach;
+
+            const curso = document.getElementById('inpCursoNome').value.trim() || DEFAULT_ADEMIR.cursoNome;
+            const num = document.getElementById('inpCertNumero').value.trim() || DEFAULT_ADEMIR.certNumero;
+            const mod = document.getElementById('inpModalidade').value.trim() || DEFAULT_ADEMIR.modalidade;
+            const carga = document.getElementById('inpCargaHoraria').value.trim() || DEFAULT_ADEMIR.cargaHoraria;
+            const periodo = document.getElementById('inpPeriodo').value.trim() || DEFAULT_ADEMIR.periodo;
+            const cidade = document.getElementById('inpCidade').value.trim() || DEFAULT_ADEMIR.cidade;
+            const dataExt = document.getElementById('inpDataExtenso').value.trim() || DEFAULT_ADEMIR.dataExtenso;
+
+            const mat = document.getElementById('inpMatricula').value.trim() || DEFAULT_ADEMIR.matricula;
+            const folha = document.getElementById('inpFolha').value.trim() || DEFAULT_ADEMIR.folha;
+            const livro = document.getElementById('inpLivro').value.trim() || DEFAULT_ADEMIR.livro;
+            const codVal = document.getElementById('inpCodigoValidacao').value.trim() || DEFAULT_ADEMIR.codigoValidacao;
+            const linkVal = document.getElementById('inpLinkValidacao').value.trim() || DEFAULT_ADEMIR.linkValidacao;
+
+            // Frente
+            document.getElementById('viewCertNumero').textContent = num;
+            document.getElementById('viewAlunoNome').textContent = nome;
+            document.getElementById('viewAlunoCpf').textContent = cpf;
+            document.getElementById('viewAlunoCnh').textContent = cnh;
+            document.getElementById('viewAlunoCat').textContent = cat;
+            document.getElementById('viewCursoNome').textContent = curso;
+            document.getElementById('viewModalidade').textContent = mod;
+            document.getElementById('viewCargaHoraria').textContent = carga;
+            document.getElementById('viewPeriodo').textContent = periodo;
+            document.getElementById('viewCidade').textContent = cidade;
+            document.getElementById('viewDataExtenso').textContent = dataExt;
+
+            // Verso
+            document.getElementById('viewVersoCurso').textContent = curso;
+            document.getElementById('viewVersoCurso2').textContent = curso;
+            document.getElementById('viewVersoTotalHoras').textContent = carga;
+            document.getElementById('viewMatricula').textContent = mat;
+            document.getElementById('viewRegistro').textContent = num;
+            document.getElementById('viewFolha').textContent = folha;
+            document.getElementById('viewLivro').textContent = livro;
+            document.getElementById('viewVersoAluno').textContent = nome;
+            document.getElementById('viewRenach').textContent = renach;
+            document.getElementById('viewLinkValidacao').textContent = linkVal;
+            document.getElementById('viewCodigoValidacao').textContent = codVal;
+
+            // Se o CPF ou Registro mudou, gera QR Code dinamicamente
+            if (cpf !== DEFAULT_ADEMIR.alunoCpf || num !== DEFAULT_ADEMIR.certNumero) {
+                renderDynamicQrCode(`${linkVal}?reg=${encodeURIComponent(num)}&cpf=${encodeURIComponent(cpf)}`);
+            }
+        }
+
+        function renderDynamicQrCode(text) {
+            const container = document.getElementById('versoQrContainer');
+            if (container && window.QRCode) {
+                container.innerHTML = '';
+                new QRCode(container, {
+                    text: text,
+                    width: 110,
+                    height: 110,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+        }
+
+        // Restaura o Padrão Oficial Ademir (Fotos 2 e 3)
+        function restoreAdemirDefault() {
+            document.getElementById('inpAlunoNome').value = DEFAULT_ADEMIR.alunoNome;
+            document.getElementById('inpAlunoCpf').value = DEFAULT_ADEMIR.alunoCpf;
+            document.getElementById('inpAlunoCnh').value = DEFAULT_ADEMIR.alunoCnh;
+            document.getElementById('inpAlunoCat').value = DEFAULT_ADEMIR.alunoCat;
+            document.getElementById('inpRenach').value = DEFAULT_ADEMIR.renach;
+
+            document.getElementById('inpCursoNome').value = DEFAULT_ADEMIR.cursoNome;
+            document.getElementById('inpCertNumero').value = DEFAULT_ADEMIR.certNumero;
+            document.getElementById('inpModalidade').value = DEFAULT_ADEMIR.modalidade;
+            document.getElementById('inpCargaHoraria').value = DEFAULT_ADEMIR.cargaHoraria;
+            document.getElementById('inpPeriodo').value = DEFAULT_ADEMIR.periodo;
+            document.getElementById('inpCidade').value = DEFAULT_ADEMIR.cidade;
+            document.getElementById('inpDataExtenso').value = DEFAULT_ADEMIR.dataExtenso;
+
+            document.getElementById('inpMatricula').value = DEFAULT_ADEMIR.matricula;
+            document.getElementById('inpFolha').value = DEFAULT_ADEMIR.folha;
+            document.getElementById('inpLivro').value = DEFAULT_ADEMIR.livro;
+            document.getElementById('inpCodigoValidacao').value = DEFAULT_ADEMIR.codigoValidacao;
+            document.getElementById('inpLinkValidacao').value = DEFAULT_ADEMIR.linkValidacao;
+
+            const qrContainer = document.getElementById('versoQrContainer');
+            if (qrContainer) {
+                qrContainer.innerHTML = '<img src="assets/icetran_qr_code.png" alt="QR Code">';
+            }
+
+            updateLiveCertificate();
+        }
+
+        // Download do PDF A4 Paisagem (Frente e Verso)
+        async function downloadPdfCertificado() {
+            const btn = document.getElementById('btnDownloadPdf');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="animate-spin"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"/></svg> Gerando PDF A4...`;
+            }
+
+            try {
+                const s1 = document.getElementById('sheetFrente');
+                const s2 = document.getElementById('sheetVerso');
+                const wrapper = document.getElementById('docZoomWrapper');
+
+                const prevWrapperTransform = wrapper ? wrapper.style.transform : '';
+                if (wrapper) wrapper.style.transform = 'scale(1)';
+
+                // Captura Frente em Alta Resolução
+                const canvasFrente = await html2canvas(s1, {
+                    scale: 2.4,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                // Captura Verso em Alta Resolução
+                const canvasVerso = await html2canvas(s2, {
+                    scale: 2.4,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                // Restaura o zoom da prévia
+                if (wrapper) wrapper.style.transform = prevWrapperTransform;
+
+                const { jsPDF } = window.jspdf;
+                // Folha A4 Retrato (210 x 297 mm) - Frente e Verso em UMA ÚNICA FOLHA
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const a4W = 210;
+                const a4H = 297;
+
+                // Dimensões para acomodar perfeitamente Frente e Verso na mesma folha
+                const marginX = 12; // 12mm margem lateral
+                const renderW = a4W - (marginX * 2); // 186mm largura
+                const aspectF = canvasFrente.width / canvasFrente.height;
+                const renderHF = renderW / aspectF;
+
+                const aspectV = canvasVerso.width / canvasVerso.height;
+                const renderHV = renderW / aspectV;
+
+                const gap = 8; // 8mm de espaçamento entre Frente e Verso
+                const totalH = renderHF + gap + renderHV;
+                const startY = Math.max(10, (a4H - totalH) / 2);
+
+                const posX = marginX;
+                const posYF = startY;
+                const posYV = startY + renderHF + gap;
+
+                // Renderiza Frente
+                const imgFrente = canvasFrente.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgFrente, 'JPEG', posX, posYF, renderW, renderHF);
+
+                // Linha divisória sutil de dobra ou corte
+                pdf.setDrawColor(200, 210, 220);
+                pdf.setLineWidth(0.3);
+                pdf.setLineDashPattern([2, 2], 0);
+                pdf.line(marginX, startY + renderHF + (gap / 2), a4W - marginX, startY + renderHF + (gap / 2));
+                pdf.setLineDashPattern([], 0);
+
+                // Renderiza Verso na mesma folha
+                const imgVerso = canvasVerso.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgVerso, 'JPEG', posX, posYV, renderW, renderHV);
+
+                const reg = (document.getElementById('inpCertNumero').value || '000250841').trim();
+                pdf.save(`Certificado_ICETRAN_${reg}.pdf`);
+            } catch(err) {
+                console.error('Erro ao gerar PDF do Certificado:', err);
+                alert('Erro ao gerar o PDF. Tente novamente ou utilize o botão Imprimir A4.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="btnGerarTxt">Gerar PDF — Certificado de Condutor</span>`;
+                }
+            }
+        }
+
+        // Salvar no Histórico Local
+        function salvarCertificadoNoHistorico() {
+            const nome = document.getElementById('inpAlunoNome').value || DEFAULT_ADEMIR.alunoNome;
+            const cpf = document.getElementById('inpAlunoCpf').value || DEFAULT_ADEMIR.alunoCpf;
+            const reg = document.getElementById('inpCertNumero').value || DEFAULT_ADEMIR.certNumero;
+            const curso = document.getElementById('inpCursoNome').value || DEFAULT_ADEMIR.cursoNome;
+            try {
+                const item = {
+                    id: reg,
+                    nome: nome,
+                    cpf: cpf,
+                    curso: curso,
+                    data: new Date().toLocaleString('pt-BR'),
+                    status: 'Aprovado'
+                };
+                const hist = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
+                hist.unshift(item);
+                localStorage.setItem('icetran_historico', JSON.stringify(hist));
+                alert('Certificado de Condutor salvo com sucesso no histórico!');
+            } catch(e) {
+                alert('Erro ao salvar no histórico.');
+            }
+        }
+
+        // Inicialização
+        window.addEventListener('DOMContentLoaded', () => {
+            restoreAdemirDefault();
+        });
+    </script>
+</body>
+</html>
+                    </div>
+
+                </div>
             </div>
         </section>
     </main>
