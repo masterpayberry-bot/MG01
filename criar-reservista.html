@@ -1682,7 +1682,7 @@
                     drawWatermark(canvasVerso);
                 }
 
-                // Configura documento em formato A4 padrão (210 x 297 mm)
+                // Configura documento em formato A4 padrão (210 x 297 mm) - AMBAS AS FACES EM UMA SÓ FOLHA
                 const pdf = new JsPDF({
                     orientation: 'portrait',
                     unit: 'mm',
@@ -1691,27 +1691,39 @@
 
                 const a4W = 210;
                 const a4H = 297;
-                const margin = 10;
-                const maxW = a4W - (margin * 2);
-                const maxH = a4H - (margin * 2);
+                
+                // Ambas as faces (Frente e Verso) em UMA ÚNICA FOLHA A4 centralizada
+                const maxCardW = 172; // Largura máxima em mm na folha A4
+                const maxCardH = 126; // Altura máxima de cada face em mm
+                const gap = 8;        // Espaço entre Frente e Verso em mm
 
-                // Página 1: Frente (ajustado e centralizado em folha A4 oficial)
-                const ratioF = Math.min(maxW / (canvasFrente.width / 3), maxH / (canvasFrente.height / 3));
-                const renderWF = (canvasFrente.width / 3) * ratioF;
-                const renderHF = (canvasFrente.height / 3) * ratioF;
+                const aspectF = canvasFrente.width / canvasFrente.height;
+                let renderWF = maxCardW;
+                let renderHF = renderWF / aspectF;
+                if (renderHF > maxCardH) {
+                    renderHF = maxCardH;
+                    renderWF = renderHF * aspectF;
+                }
+
+                const aspectV = canvasVerso.width / canvasVerso.height;
+                let renderWV = maxCardW;
+                let renderHV = renderWV / aspectV;
+                if (renderHV > maxCardH) {
+                    renderHV = maxCardH;
+                    renderWV = renderHV * aspectV;
+                }
+
+                const totalH = renderHF + gap + renderHV;
+                const startY = Math.max(12, (a4H - totalH) / 2);
+
                 const posXF = (a4W - renderWF) / 2;
-                const posYF = (a4H - renderHF) / 2;
+                const posYF = startY;
+
+                const posXV = (a4W - renderWV) / 2;
+                const posYV = startY + renderHF + gap;
 
                 const imgFrente = canvasFrente.toDataURL('image/jpeg', 0.98);
                 pdf.addImage(imgFrente, 'JPEG', posXF, posYF, renderWF, renderHF);
-
-                // Página 2: Verso (ajustado e centralizado em folha A4 oficial)
-                pdf.addPage('a4', 'portrait');
-                const ratioV = Math.min(maxW / (canvasVerso.width / 3), maxH / (canvasVerso.height / 3));
-                const renderWV = (canvasVerso.width / 3) * ratioV;
-                const renderHV = (canvasVerso.height / 3) * ratioV;
-                const posXV = (a4W - renderWV) / 2;
-                const posYV = (a4H - renderHV) / 2;
 
                 const imgVerso = canvasVerso.toDataURL('image/jpeg', 0.98);
                 pdf.addImage(imgVerso, 'JPEG', posXV, posYV, renderWV, renderHV);
