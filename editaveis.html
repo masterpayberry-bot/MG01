@@ -1950,6 +1950,13 @@
                     if (el) el.textContent = parseFloat(compPrice).toFixed(2).replace('.', ',');
                 }
 
+                // 10b. Receita Médica Unimed
+                const recUniPrice = (sourceConfigs && (sourceConfigs.receita_unimed_price || sourceConfigs.receita_unimed)) || localStorage.getItem('happynation_receita_unimed_price');
+                if (recUniPrice) {
+                    const el = document.getElementById('priceReceitaUnimed');
+                    if (el) el.textContent = parseFloat(recUniPrice).toFixed(2).replace('.', ',');
+                }
+
                 // 11. Certificado de Reservista Militar
                 const resPrice = (sourceConfigs && (sourceConfigs.reservista_price || sourceConfigs.reservista)) || localStorage.getItem('happynation_reservista_price');
                 if (resPrice) {
@@ -1993,6 +2000,9 @@
                         if (data.diploma_price) localStorage.setItem('happynation_diploma_price', data.diploma_price);
                         if (data.unimed_price) localStorage.setItem('happynation_unimed_price', data.unimed_price);
                         if (data.dut_price) localStorage.setItem('happynation_dut_price', data.dut_price);
+                        Object.keys(data).forEach(function (k) {
+                            if (/_price$/.test(k) && data[k]) localStorage.setItem('happynation_' + k, data[k]);
+                        });
                         loadConfiguredPrices(data);
                     }
                 }

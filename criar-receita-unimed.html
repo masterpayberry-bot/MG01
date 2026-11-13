@@ -1004,7 +1004,7 @@
             <!-- BOTÃO DE AÇÃO -->
             <button type="button" class="btn-emitir" onclick="emitirReceitaPDF()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                Emitir Receita em PDF (R$ 15,00)
+                Emitir Receita em PDF (<span id="custoReceitaDisplay">R$ 15,00</span>)
             </button>
         </aside>
 
@@ -1384,7 +1384,7 @@
 
         // Emissão do PDF com desconto de saldo
         async function emitirReceitaPDF() {
-            const CUSTO = 15.00;
+            const CUSTO = getCustoReceita();
 
             if (window.MGSaldo && typeof window.MGSaldo.canAfford === 'function') {
                 if (!window.MGSaldo.canAfford(CUSTO)) {
@@ -1434,7 +1434,13 @@
 
                 // Deduzir saldo
                 if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
-                    window.MGSaldo.deduct(CUSTO, 'Emissão de Receita Médica Unimed');
+                    await window.MGSaldo.deduct(CUSTO, {
+                        tipo: 'receita_unimed',
+                        descricao: (document.getElementById('inpPaciente').value.trim() || 'PACIENTE').toUpperCase(),
+                        subRotulo: 'Receita Médica (Unimed)',
+                        tagClass: 'badge-unimed',
+                        tagText: 'RECEITA'
+                    });
                 }
 
                 // Salvar recente
@@ -1457,6 +1463,20 @@
                 }
             }
         }
+
+        // Preço configurado no painel admin (fonte única da verdade) — padrão R$ 15,00
+        function getCustoReceita() {
+            return parseFloat(localStorage.getItem('happynation_receita_unimed_price')) || 15.00;
+        }
+        function aplicarCustoReceita(precoNovo) {
+            const v = (precoNovo !== undefined && precoNovo !== null && !isNaN(parseFloat(precoNovo))) ? parseFloat(precoNovo) : getCustoReceita();
+            const el = document.getElementById('custoReceitaDisplay');
+            if (el) el.textContent = 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        window.addEventListener('mg_prices_synced', (ev) => {
+            aplicarCustoReceita(ev && ev.detail && ev.detail.receita_unimed_price);
+        });
+        window.addEventListener('storage', () => aplicarCustoReceita());
 
         function carregarReceitaParaEdicao() {
             try {
@@ -1493,6 +1513,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            aplicarCustoReceita();
             carregarReceitaParaEdicao();
             renderizarFormMedicamentos();
             atualizarPreview();

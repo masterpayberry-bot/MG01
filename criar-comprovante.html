@@ -1336,7 +1336,7 @@
                     cor: '#009ee3',
                     descricao: pagador,
                     usuario: userNameAct,
-                    valor: '- R$ 10,00',
+                    valor: '- R$ ' + getValorComprovante().toFixed(2).replace('.', ','),
                     status: 'concluido',
                     created_at: actTimeIso
                 });
@@ -1376,7 +1376,7 @@
                 link.click();
 
                 if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
-                    window.MGSaldo.deduct(10.00);
+                    window.MGSaldo.deduct(getValorComprovante());
                 }
                 registrarAtividadeComprovante();
 
@@ -1432,7 +1432,7 @@
                 pdf.save(`comprovante_mercadopago_${Date.now()}.pdf`);
 
                 if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
-                    window.MGSaldo.deduct(10.00);
+                    window.MGSaldo.deduct(getValorComprovante());
                 }
                 registrarAtividadeComprovante();
 
@@ -1492,5 +1492,19 @@
             } catch(e) {}
         });
     </script>
+<script>
+// Preço configurado no painel admin (fonte única da verdade) — padrão R$ 10,00
+function getValorComprovante() { return parseFloat(localStorage.getItem('happynation_comprovante_price')) || 10.00; }
+(function () {
+    function show(p) {
+        var v = (p !== undefined && p !== null && !isNaN(parseFloat(p))) ? parseFloat(p) : getValorComprovante();
+        var el = document.getElementById('custoDocDisplay');
+        if (el) el.textContent = 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    show();
+    window.addEventListener('mg_prices_synced', function (ev) { show(ev && ev.detail && ev.detail.comprovante_price); });
+    window.addEventListener('storage', function () { show(); });
+})();
+</script>
 </body>
 </html>

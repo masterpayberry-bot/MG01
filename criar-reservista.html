@@ -1239,7 +1239,7 @@
     <script>
         let currentZoom = 1;
         let currentView = 'ambas'; // 'ambas' | 'frente' | 'verso'
-        const VALOR_DOCUMENTO = 25.00;
+        function getValorDocumento() { return parseFloat(localStorage.getItem('happynation_reservista_price')) || 25.00; }
 
         // Máscaras de entrada
         function maskCpf(el) {
@@ -1580,7 +1580,7 @@
 
                 // Dedução de Saldo com registro de atividade
                 if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
-                    await window.MGSaldo.deduct(VALOR_DOCUMENTO, {
+                    await window.MGSaldo.deduct(getValorDocumento(), {
                         tipo: 'reservista',
                         descricao: document.getElementById('inpNome').value.trim(),
                         subRotulo: 'Certificado de Reservista Militar',

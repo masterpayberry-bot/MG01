@@ -512,6 +512,12 @@
                     if (configs.crlv_price) localStorage.setItem('happynation_crlv_price', configs.crlv_price);
                     if (configs.min_recharge) localStorage.setItem('happynation_min_recharge', configs.min_recharge);
                     if (configs.rg_price) localStorage.setItem('happynation_rg_price', configs.rg_price);
+                    // Sincroniza TODOS os preços de documentos (diploma, unimed, dut, reservista, comprovante, receita_unimed...)
+                    Object.keys(configs).forEach(function (k) {
+                        if (/_price$/.test(k) && configs[k] !== null && configs[k] !== undefined && configs[k] !== '') {
+                            localStorage.setItem('happynation_' + k, configs[k]);
+                        }
+                    });
                     if (configs.pix_key) localStorage.setItem('happynation_pix_key', configs.pix_key);
                     if (configs.whatsapp) localStorage.setItem('happynation_whatsapp', configs.whatsapp);
                     if (configs.webapp_customization) {

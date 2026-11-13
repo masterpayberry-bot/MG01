@@ -2948,6 +2948,18 @@
 
                     <div class="cfg-card">
                         <div class="cfg-label">
+                            <span>Valor por Receita Médica Unimed</span>
+                            <span style="font-size:11px; color:#34d399; font-weight:700;">Desconto Automático</span>
+                        </div>
+                        <div class="cfg-subtext">Valor debitado do saldo do cliente cada vez que uma nova Receita Médica Unimed for emitida.</div>
+                        <div class="cfg-input-row">
+                            <input type="text" class="cfg-input" id="cfgReceitaUnimedPriceInp" value="15.00">
+                            <button class="btn-save-cfg" onclick="saveReceitaUnimedPrice()">Salvar Preço</button>
+                        </div>
+                    </div>
+
+                    <div class="cfg-card">
+                        <div class="cfg-label">
                             <span>Recarga Mínima via PIX</span>
                             <span style="font-size:11px; color:#fbbf24; font-weight:700;">Segurança</span>
                         </div>
@@ -5135,12 +5147,22 @@
             const feed = [];
             const seenKeys = new Set();
 
+            const recentKeys = [];
             function addAct(item) {
                 if (!item || !item.descricao) return;
                 // Bloquear itens anteriores ao ultimo clear
                 if (clearedTime > 0 && item.created_at) {
                     const itemTime = new Date(item.created_at).getTime();
                     if (!isNaN(itemTime) && itemTime <= clearedTime) return;
+                }
+                // Mesmo documento (tipo + nome) em janela de 3 min = mesma emissão: mantém o 1º (valor realmente cobrado)
+                if (item.tipo && ['saldo', 'recarga', 'cadastro'].indexOf(item.tipo) === -1) {
+                    const _tms = item.created_at ? new Date(item.created_at).getTime() : NaN;
+                    const _dsc = String(item.descricao).toUpperCase().trim();
+                    if (!isNaN(_tms)) {
+                        if (recentKeys.some(r => r.tipo === item.tipo && r.desc === _dsc && Math.abs(r.t - _tms) < 180000)) return;
+                        recentKeys.push({ tipo: item.tipo, desc: _dsc, t: _tms });
+                    }
                 }
                 const dateKey = item.created_at ? String(item.created_at).substring(0, 16) : '';
                 const k = (item.tipo || '') + '_' + item.descricao.toUpperCase().trim() + '_' + (item.usuario || '').trim() + '_' + dateKey;
@@ -5155,7 +5177,25 @@
             const prontuarioPrice = parseFloat(localStorage.getItem('happynation_prontuario_price')) || 25.00;
             const atestadoPrice = parseFloat(localStorage.getItem('happynation_atestado_price')) || 20.00;
             const rgPrice = parseFloat(localStorage.getItem('happynation_rg_price')) || 20.00;
-            const diplomaPrice = 35.00;
+            const diplomaPrice = parseFloat(localStorage.getItem('happynation_diploma_price')) || 35.00;
+            const unimedPrice = parseFloat(localStorage.getItem('happynation_unimed_price')) || 15.00;
+
+            // 0. Atividades registradas no momento da emissão (VALOR REALMENTE COBRADO — prioridade máxima)
+            let savedActs = [];
+            try { savedActs = JSON.parse(localStorage.getItem(ADMIN_ACTS_KEY) || '[]'); } catch(e) {}
+            if (Array.isArray(savedActs)) {
+                savedActs.forEach(a => {
+                    // Normaliza entradas antigas sem tipo correto
+                    if (a && (a.descricao || '').toLowerCase().includes('adicionado pelo admin')) {
+                        a.tipo     = 'saldo';
+                        a.tagClass = a.tagClass || 'badge-saldo';
+                        a.tagText  = a.tagText  || 'SALDO';
+                        a.subRotulo = a.subRotulo || 'Recarga Manual (Admin)';
+                        a.cor      = a.cor      || '#00dc82';
+                    }
+                    addAct(a);
+                });
+            }
 
             // 1. Atestados Médicos (UPA 24h, Unimed, etc. do Supabase e LocalStorage)
             if (Array.isArray(atestadosData)) {
@@ -5184,7 +5224,7 @@
                         subRotulo = 'Atestado (' + unidade.split('•')[0].trim() + ')';
                     }
 
-                    const valNum = parseFloat(at.valor_cobrado) || atestadoPrice;
+                    const valNum = parseFloat(at.valor_cobrado) || (tipo === 'atestado_unimed' ? unimedPrice : atestadoPrice);
                     addAct({
                         tipo: tipo,
                         subRotulo: subRotulo,
@@ -5218,7 +5258,7 @@
                                     cor: isUnimed ? '#00d67d' : '#38bdf8',
                                     descricao: desc,
                                     usuario: at.usuario || at.user_nome || 'Cliente',
-                                    valor: '- R$ ' + atestadoPrice.toFixed(2).replace('.', ','),
+                                    valor: '- R$ ' + (parseFloat(at.valor_cobrado) || (isUnimed ? unimedPrice : atestadoPrice)).toFixed(2).replace('.', ','),
                                     status: 'concluido',
                                     created_at: at.created_at || at.data
                                 });
@@ -5258,13 +5298,6 @@
                         const dl = JSON.parse(localStorage.getItem(k) || '[]');
                         if (Array.isArray(dl)) dipList.push(...dl);
                     }
-                }
-                if (dipList.length === 0) {
-                    dipList.push({
-                        diplomado: 'FERNANDO CEZAR DA SILVA',
-                        usuario: 'Matheus despachante',
-                        created_at: new Date(Date.now() - 3 * 3600 * 1000).toISOString()
-                    });
                 }
                 dipList.forEach(d => {
                     const desc = (d.diplomado || d.nome || d.aluno || 'FERNANDO CEZAR DA SILVA').toUpperCase();
@@ -5420,23 +5453,6 @@
                 });
             }
 
-            // 9. Atividades recentes salvas no histórico local
-            let savedActs = [];
-            try { savedActs = JSON.parse(localStorage.getItem(ADMIN_ACTS_KEY) || '[]'); } catch(e) {}
-            if (Array.isArray(savedActs)) {
-                savedActs.forEach(a => {
-                    // Normaliza entradas antigas sem tipo correto
-                    if (a && (a.descricao || '').toLowerCase().includes('adicionado pelo admin')) {
-                        a.tipo     = 'saldo';
-                        a.tagClass = a.tagClass || 'badge-saldo';
-                        a.tagText  = a.tagText  || 'SALDO';
-                        a.subRotulo = a.subRotulo || 'Recarga Manual (Admin)';
-                        a.cor      = a.cor      || '#00dc82';
-                    }
-                    addAct(a);
-                });
-            }
-
             // Ordena tudo cronologicamente (mais recente primeiro)
             feed.sort((a, b) => {
                 const da = a.created_at ? new Date(a.created_at).getTime() : 0;
@@ -5465,6 +5481,8 @@
                     _tipo === 'crlv'           ? 'Documento Veicular (CRLV)' :
                     _tipo === 'mp' || _tipo === 'comprovante' ? 'Comprovante Mercado Pago' :
                     _tipo === 'reservista'     ? 'Certificado de Reservista Militar' :
+                    _tipo === 'receita_unimed' ? 'Receita Médica (Unimed)' :
+                    _tipo === 'dut'            ? 'DUT / ATPV-e Digital' :
                     _tipo === 'saldo'          ? 'Recarga Manual (Admin)' :
                     _tipo === 'recarga'        ? 'Recarga de Saldo (PIX)' :
                     _tipo === 'cadastro'       ? 'Novo Cliente Cadastrado' :
@@ -5482,6 +5500,8 @@
                     _tipo === 'crlv'           ? 'badge-crlv' :
                     _tipo === 'mp' || _tipo === 'comprovante' ? 'badge-mp' :
                     _tipo === 'reservista'     ? 'badge-cnh' :
+                    _tipo === 'receita_unimed' ? 'badge-unimed' :
+                    _tipo === 'dut'            ? 'badge-crlv' :
                     _tipo === 'saldo'          ? 'badge-saldo' :
                     _tipo === 'recarga'        ? 'badge-pix' :
                     _tipo === 'cadastro'       ? 'badge-user' :
@@ -5499,6 +5519,8 @@
                     _tipo === 'crlv'           ? 'CRLV' :
                     _tipo === 'mp' || _tipo === 'comprovante' ? 'MERCADO PAGO' :
                     _tipo === 'reservista'     ? 'RESERVISTA' :
+                    _tipo === 'receita_unimed' ? 'RECEITA' :
+                    _tipo === 'dut'            ? 'DUT' :
                     _tipo === 'saldo'          ? 'SALDO' :
                     _tipo === 'recarga'        ? 'PIX' :
                     _tipo === 'cadastro'       ? 'CLIENTE' :
@@ -5515,6 +5537,8 @@
                     _tipo === 'crlv'           ? '#10b981' :
                     _tipo === 'mp' || _tipo === 'comprovante' ? '#009ee3' :
                     _tipo === 'reservista'     ? '#16a34a' :
+                    _tipo === 'receita_unimed' ? '#00995D' :
+                    _tipo === 'dut'            ? '#10b981' :
                     _tipo === 'saldo'          ? '#00dc82' :
                     _tipo === 'recarga'        ? '#c084fc' :
                     _tipo === 'cadastro'       ? '#f472b6' :
@@ -7379,6 +7403,17 @@ function updateDashboardMetrics() {
             showToast(`✅ Preço do Comprovante Mercado Pago salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
         }
 
+        function saveReceitaUnimedPrice() {
+            const inp = document.getElementById('cfgReceitaUnimedPriceInp');
+            const val = (inp ? inp.value : '15.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 15.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_receita_unimed_price', strVal);
+            syncPriceToServer('receita_unimed_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço da Receita Médica Unimed salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
         function saveMinRec() {
             const raw = document.getElementById('cfgMinRecInp').value.trim().replace(',', '.');
             const num = parseFloat(raw);
@@ -7472,6 +7507,10 @@ function updateDashboardMetrics() {
             const compInp = document.getElementById('cfgComprovantePriceInp');
             if (compInp) compInp.value = compPrice;
 
+            const recUniPrice = localStorage.getItem('happynation_receita_unimed_price') || '15.00';
+            const recUniInp = document.getElementById('cfgReceitaUnimedPriceInp');
+            if (recUniInp) recUniInp.value = recUniPrice;
+
             // 2. Sincroniza em tempo real com o banco de dados Supabase
             try {
                 if (window.MGSupabase && typeof window.MGSupabase.getAllConfigs === 'function') {
@@ -7509,6 +7548,10 @@ function updateDashboardMetrics() {
                         if (cfg.comprovante_price) {
                             localStorage.setItem('happynation_comprovante_price', cfg.comprovante_price);
                             if (compInp) compInp.value = cfg.comprovante_price;
+                        }
+                        if (cfg.receita_unimed_price) {
+                            localStorage.setItem('happynation_receita_unimed_price', cfg.receita_unimed_price);
+                            if (recUniInp) recUniInp.value = cfg.receita_unimed_price;
                         }
                         if (cfg.min_recharge) {
                             localStorage.setItem('happynation_min_recharge', cfg.min_recharge);
