@@ -446,11 +446,11 @@
             padding: 10px 0 40px;
         }
 
-        /* ─── FOLHA DA RECEITA UNIMED (FIDELIDADE MÁXIMA À REFERÊNCIA) ─── */
+        /* ─── FOLHA DA RECEITA UNIMED (PROPORÇÃO IDÊNTICA AO ORIGINAL 718x1024) ─── */
         .recipe-sheet-wrapper {
             position: relative;
             box-shadow: 0 15px 50px rgba(0,0,0,0.65);
-            border-radius: 4px;
+            border-radius: 2px;
             overflow: hidden;
             background: #ffffff;
             transform-origin: top center;
@@ -458,17 +458,18 @@
         }
 
         #recipeDoc {
-            width: 620px;
-            min-height: 877px;
+            width: 718px;
+            min-height: 1024px;
             background: #ffffff;
-            color: #111111;
-            padding: 36px 42px 40px 42px;
+            color: #000000;
+            padding: 26px 36px 38px 36px;
             box-sizing: border-box;
             position: relative;
             font-family: Arial, Helvetica, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* ─── MARCA D'ÁGUA DE PRÉVIA NO EDITOR ─── */
@@ -553,80 +554,165 @@
             display: none !important;
         }
 
-        /* ─── DESIGN EXATO DA RECEITA MÉDICA UNIMED ─── */
-        
-        /* 1. TOPO */
-        .rec-header-row {
+        /* ─── 1. SEÇÃO SUPERIOR (ESQUERDA: LOGO + PACIENTE | DIREITA: BOX QR) ─── */
+        .rec-top-section {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 24px;
+            gap: 20px;
+        }
+
+        .rec-top-left-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         /* LOGO UNIMED RETÂNGULO VERDE */
-        .rec-logo-box {
-            background: #00995D;
+        .rec-unimed-logo-box {
+            background-color: #00995D;
             color: #ffffff;
             border-radius: 8px;
-            padding: 10px 18px 8px 18px;
-            display: inline-flex;
+            width: 158px;
+            height: 52px;
+            display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            min-width: 160px;
-            box-shadow: 0 2px 6px rgba(0, 153, 93, 0.2);
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .rec-logo-top {
+        .rec-unimed-logo-row {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: -0.5px;
+            width: 100%;
+        }
+
+        .rec-unimed-word {
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: #ffffff;
             line-height: 1;
         }
 
-        .rec-logo-symbol {
-            width: 18px;
+        .rec-unimed-symbol {
+            width: 22px;
             height: 18px;
             display: inline-block;
         }
 
-        .rec-logo-city {
+        .rec-unimed-city {
             font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            color: #ffffff;
+            line-height: 1;
             margin-top: 3px;
+            text-align: center;
         }
 
-        /* BOX QR CODE À DIREITA */
-        .rec-qr-box-wrapper {
-            border: 1px solid #d4d4d4;
-            border-radius: 4px;
-            padding: 8px 12px;
-            width: 250px;
+        /* DADOS DO PACIENTE */
+        .rec-patient-info-block {
+            margin-top: 4px;
+        }
+
+        .rec-lbl-paciente {
+            font-size: 11.5px;
+            color: #111111;
+            margin-bottom: 3px;
+            font-weight: 400;
+        }
+
+        .rec-val-paciente {
+            font-size: 16px;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 12px;
+            letter-spacing: -0.2px;
+        }
+
+        .rec-patient-columns-row {
+            display: flex;
+            gap: 36px;
+            margin-bottom: 10px;
+        }
+
+        .rec-field-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rec-field-col-lbl {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 3px;
+        }
+
+        .rec-field-col-val {
+            font-size: 10.5px;
+            font-weight: 400;
+            color: #111111;
+        }
+
+        .rec-patient-addr-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rec-patient-addr-lbl {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 3px;
+        }
+
+        .rec-patient-addr-val {
+            font-size: 10.5px;
+            font-weight: 400;
+            color: #111111;
+        }
+
+        /* ─── 2. COLUNA DA DIREITA: BOX QR CODE ─── */
+        .rec-qr-card-box {
+            width: 208px;
+            border: 1px solid #777777;
+            padding: 10px 12px 10px 12px;
             box-sizing: border-box;
             background: #ffffff;
+            display: flex;
+            flex-direction: column;
         }
 
-        .rec-qr-text {
-            font-size: 9.5px;
+        .rec-qr-card-intro {
+            font-size: 9px;
+            font-weight: 700;
+            color: #000000;
             line-height: 1.25;
-            color: #111111;
-            margin-bottom: 8px;
-            font-weight: 600;
+            margin-bottom: 6px;
         }
 
-        .rec-qr-bottom-row {
+        .rec-qr-card-sub {
+            font-size: 9px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.25;
+            margin-bottom: 8px;
+        }
+
+        .rec-qr-card-bottom {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .rec-qr-img-box {
-            width: 82px;
-            height: 82px;
+        .rec-qr-code-holder {
+            width: 86px;
+            height: 86px;
             background: #ffffff;
             flex-shrink: 0;
             display: flex;
@@ -634,166 +720,130 @@
             justify-content: center;
         }
 
-        .rec-qr-meta {
-            font-size: 9px;
-            color: #333333;
-            line-height: 1.35;
+        .rec-qr-code-holder img {
+            width: 86px;
+            height: 86px;
+            display: block;
+            image-rendering: pixelated;
         }
 
-        .rec-meta-label {
-            display: block;
-            color: #555555;
+        .rec-qr-keys-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .rec-key-lbl {
             font-size: 8.5px;
-        }
-
-        .rec-meta-val {
-            display: block;
-            font-weight: 800;
-            font-size: 10.5px;
-            color: #000000;
-            margin-bottom: 4px;
-        }
-
-        /* LINHA DIVISÓRIA */
-        .rec-hr {
-            border: none;
-            border-top: 1px solid #dcdcdc;
-            margin: 16px 0;
-        }
-
-        /* DADOS DO PACIENTE */
-        .rec-patient-box {
-            margin-bottom: 12px;
-        }
-
-        .rec-p-title {
-            font-size: 11px;
             color: #333333;
-            margin-bottom: 2px;
+            line-height: 1.2;
         }
 
-        .rec-p-name {
-            font-size: 17px;
+        .rec-key-val {
+            font-size: 11px;
             font-weight: 800;
             color: #000000;
-            margin-bottom: 10px;
+            line-height: 1.25;
+            margin-bottom: 6px;
         }
 
-        .rec-p-grid {
-            display: grid;
-            grid-template-columns: 140px 110px 1fr;
-            gap: 8px 12px;
-            font-size: 10px;
-            margin-bottom: 8px;
+        /* ─── 3. LINHAS HORIZONTAIS DIVISÓRIAS ─── */
+        .rec-divider-line {
+            border: none;
+            border-top: 1px solid #c8c8c8;
+            margin: 18px 0 28px 0;
+            width: 100%;
         }
 
-        .rec-p-label {
-            font-weight: 700;
-            color: #111111;
-            margin-bottom: 2px;
+        .rec-divider-line-bottom {
+            border: none;
+            border-top: 1px solid #c8c8c8;
+            margin: 0 0 34px 0;
+            width: 100%;
         }
 
-        .rec-p-val {
-            color: #222222;
-        }
-
-        .rec-p-addr-row {
-            font-size: 10px;
-        }
-
-        /* SEÇÃO DE MEDICAMENTOS */
-        .rec-meds-wrapper {
-            margin: 20px 0 30px;
+        /* ─── 4. SEÇÃO DE MEDICAMENTOS ─── */
+        .rec-meds-section {
             flex: 1;
+            padding-top: 4px;
         }
 
-        .rec-med-item {
-            margin-bottom: 22px;
+        .rec-med-row {
+            margin-bottom: 24px;
         }
 
-        .rec-med-top {
+        .rec-med-row-header {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
             margin-bottom: 4px;
         }
 
-        .rec-med-name-title {
-            font-size: 12px;
+        .rec-med-name {
+            font-size: 12.5px;
             font-weight: 800;
             color: #000000;
         }
 
-        .rec-med-qty-title {
-            font-size: 11.5px;
+        .rec-med-qty {
+            font-size: 12.5px;
             font-weight: 800;
             color: #000000;
+            text-align: right;
         }
 
-        .rec-med-posology-text {
+        .rec-med-posology {
             font-size: 10.5px;
             color: #444444;
-            line-height: 1.4;
+            line-height: 1.45;
             padding-left: 2px;
         }
 
-        /* RODAPÉ DA RECEITA */
-        .rec-footer-wrapper {
+        /* ─── 5. RODAPÉ ─── */
+        .rec-footer-area {
             margin-top: auto;
         }
 
         .rec-icp-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 26px;
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .rec-icp-badge {
-            font-size: 9px;
-            font-weight: 900;
-            border: 1px solid #777777;
-            padding: 2px 4px;
-            line-height: 1;
-            color: #222222;
-            border-radius: 2px;
+        .rec-icp-img {
+            height: 28px;
+            width: auto;
             flex-shrink: 0;
-            text-align: center;
+            filter: grayscale(100%);
         }
 
-        .rec-icp-legal-text {
-            font-size: 8px;
-            color: #666666;
-            line-height: 1.3;
+        .rec-icp-text {
+            font-size: 8.5px;
+            color: #777777;
+            line-height: 1.35;
             text-transform: uppercase;
+            letter-spacing: 0.2px;
         }
 
-        .rec-doctor-center {
+        .rec-doctor-signature-center {
             text-align: center;
-            padding-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
         }
 
         .rec-doc-name-crm {
             font-size: 12px;
             font-weight: 800;
             color: #000000;
-            margin-bottom: 3px;
+            letter-spacing: -0.1px;
         }
 
-        .rec-doc-addr {
+        .rec-doc-address {
             font-size: 9.5px;
             color: #444444;
-        }
-
-        @media (max-width: 1100px) {
-            .workspace {
-                flex-direction: column;
-                align-items: center;
-            }
-            .editor-sidebar {
-                width: 100%;
-                max-width: 620px;
-            }
         }
     </style>
 </head>
@@ -839,7 +889,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Nome Completo do Paciente</label>
-                    <input type="text" id="inpPaciente" class="form-input" value="Renato Silva" oninput="atualizarPreview()">
+                    <input type="text" id="inpPaciente" class="form-input" value="renato" oninput="atualizarPreview()">
                 </div>
 
                 <div class="form-row">
@@ -849,14 +899,14 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Nascimento</label>
-                        <input type="text" id="inpNasc" class="form-input" value="11/11/1990" oninput="atualizarPreview()">
+                        <input type="text" id="inpNasc" class="form-input" value="71/71/7171" oninput="atualizarPreview()">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Data de Emissão</label>
-                        <input type="text" id="inpEmissao" class="form-input" value="12/11/2026" oninput="atualizarPreview()">
+                        <input type="text" id="inpEmissao" class="form-input" value="11/11/26" oninput="atualizarPreview()">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Unidade / Cidade</label>
@@ -914,7 +964,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Nome do Médico</label>
-                    <input type="text" id="inpMedico" class="form-input" value="Dr. Marcelo Tavares" oninput="atualizarPreview()">
+                    <input type="text" id="inpMedico" class="form-input" value="Dr. marcelo tavares" oninput="atualizarPreview()">
                 </div>
 
                 <div class="form-group">
@@ -976,104 +1026,107 @@
                 <!-- DOCUMENTO -->
                 <div id="recipeDoc">
                     
-                    <!-- PARTE SUPERIOR -->
+                    <!-- PARTE SUPERIOR (CONTEÚDO ACIMA DO RODAPÉ) -->
                     <div>
-                        <!-- CABEÇALHO COM LOGO E QR CODE -->
-                        <div class="rec-header-row">
-                            <!-- LOGO UNIMED -->
-                            <div class="rec-logo-box">
-                                <div class="rec-logo-top">
-                                    <span>Unimed</span>
-                                    <svg class="rec-logo-symbol" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M4 14l4-8 4 8H4zm6 4l4-8 4 8h-8z"/>
-                                    </svg>
+                        <!-- SEÇÃO SUPERIOR: ESQUERDA = LOGO + PACIENTE | DIREITA = BOX QR -->
+                        <div class="rec-top-section">
+                            
+                            <!-- COLUNA ESQUERDA: LOGO UNIMED + IDENTIFICAÇÃO DO PACIENTE -->
+                            <div class="rec-top-left-col">
+                                <!-- LOGO RETÂNGULO VERDE -->
+                                <div class="rec-unimed-logo-box">
+                                    <div class="rec-unimed-logo-row">
+                                        <span class="rec-unimed-word">Unimed</span>
+                                        <svg class="rec-unimed-symbol" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M4 14l4-8 4 8H4zm6 4l4-8 4 8h-8z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="rec-unimed-city" id="docCity">são paulo</div>
                                 </div>
-                                <div class="rec-logo-city" id="docCity">são paulo</div>
-                            </div>
 
-                            <!-- BOX QR CODE -->
-                            <div class="rec-qr-box-wrapper">
-                                <div class="rec-qr-text">
-                                    Paciente,<br>
-                                    sua receita foi enviada para o seu celular e também pode ser acessada pelo QR code!<br>
-                                    Acesse e aproveite as vantagens.
-                                </div>
-                                <div class="rec-qr-bottom-row">
-                                    <div class="rec-qr-img-box" id="docQrBox"></div>
-                                    <div class="rec-qr-meta">
-                                        <span class="rec-meta-label">Token da receita:</span>
-                                        <span class="rec-meta-val" id="docToken">TY5T4YK</span>
-                                        <span class="rec-meta-label">codigo de acesso:</span>
-                                        <span class="rec-meta-val" id="docCodigo">6585</span>
+                                <!-- DADOS DO PACIENTE -->
+                                <div class="rec-patient-info-block">
+                                    <div class="rec-lbl-paciente">Paciente:</div>
+                                    <div class="rec-val-paciente" id="docPaciente">renato</div>
+
+                                    <div class="rec-patient-columns-row">
+                                        <div class="rec-field-col">
+                                            <span class="rec-field-col-lbl">CPF do Paciente:</span>
+                                            <span class="rec-field-col-val" id="docCPF">101.010.100-1</span>
+                                        </div>
+                                        <div class="rec-field-col">
+                                            <span class="rec-field-col-lbl">Nascimento:</span>
+                                            <span class="rec-field-col-val" id="docNasc">71/71/7171</span>
+                                        </div>
+                                        <div class="rec-field-col">
+                                            <span class="rec-field-col-lbl">Emissão:</span>
+                                            <span class="rec-field-col-val" id="docEmissao">11/11/26</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="rec-patient-addr-block">
+                                        <span class="rec-patient-addr-lbl">Endereço:</span>
+                                        <span class="rec-patient-addr-val" id="docEndereco">Rua das Flores, 1500, 344</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- LINHA -->
-                        <hr class="rec-hr">
-
-                        <!-- IDENTIFICAÇÃO DO PACIENTE -->
-                        <div class="rec-patient-box">
-                            <div class="rec-p-title">Paciente:</div>
-                            <div class="rec-p-name" id="docPaciente">renato</div>
-
-                            <div class="rec-p-grid">
-                                <div>
-                                    <div class="rec-p-label">CPF do Paciente:</div>
-                                    <div class="rec-p-val" id="docCPF">101.010.100-1</div>
+                            <!-- COLUNA DIREITA: BOX DO QR CODE -->
+                            <div class="rec-qr-card-box">
+                                <div class="rec-qr-card-intro">
+                                    Paciente,<br>
+                                    sua receita foi enviada para o seu celular e também pode ser acessada pelo QR code!
                                 </div>
-                                <div>
-                                    <div class="rec-p-label">Nascimento:</div>
-                                    <div class="rec-p-val" id="docNasc">11/11/1990</div>
+                                <div class="rec-qr-card-sub">
+                                    Acesse e aproveite as vantagens.
                                 </div>
-                                <div>
-                                    <div class="rec-p-label">Emissão:</div>
-                                    <div class="rec-p-val" id="docEmissao">12/11/2026</div>
+                                <div class="rec-qr-card-bottom">
+                                    <div class="rec-qr-code-holder" id="docQrBox"></div>
+                                    <div class="rec-qr-keys-col">
+                                        <span class="rec-key-lbl">Token da receita:</span>
+                                        <span class="rec-key-val" id="docToken">TY5T4YK</span>
+                                        <span class="rec-key-lbl">codigo de acesso:</span>
+                                        <span class="rec-key-val" id="docCodigo">6585</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="rec-p-addr-row">
-                                <div class="rec-p-label">Endereço:</div>
-                                <div class="rec-p-val" id="docEndereco">Rua das Flores, 1500, 344</div>
-                            </div>
                         </div>
 
-                        <!-- LINHA -->
-                        <hr class="rec-hr">
+                        <!-- 1ª LINHA HORIZONTAL CONTÍNUA (APÓS TODO O BLOCO SUPERIOR) -->
+                        <hr class="rec-divider-line">
 
-                        <!-- LISTA DE MEDICAMENTOS -->
-                        <div class="rec-meds-wrapper" id="docMedsList">
-                            <!-- Inserido dinamicamente -->
+                        <!-- SEÇÃO DE MEDICAMENTOS -->
+                        <div class="rec-meds-section" id="docMedsList">
+                            <!-- Gerado dinamicamente -->
                         </div>
                     </div>
 
                     <!-- PARTE INFERIOR / RODAPÉ -->
-                    <div class="rec-footer-wrapper">
-                        <hr class="rec-hr">
+                    <div class="rec-footer-area">
+                        <!-- 2ª LINHA HORIZONTAL CONTÍNUA (ANTES DO RODAPÉ) -->
+                        <hr class="rec-divider-line-bottom">
 
-                        <!-- ASSINATURA ICP BRASIL -->
+                        <!-- ICP BRASIL -->
                         <div class="rec-icp-row">
-                            <div class="rec-icp-badge">
-                                ICP<br>Brasil
-                            </div>
-                            <div class="rec-icp-legal-text">
+                            <img src="assets/user_icp_crop.png" alt="ICP-Brasil" class="rec-icp-img" onerror="this.style.display='none'">
+                            <div class="rec-icp-text">
                                 ESTE DOCUMENTO FOI ASSINADO DIGITALMENTE COM CERTIFICADO DIGITAL PADRÃO ICP-BRASIL AMPARADO PELA MEDIDA PROVISÓRIA 2200-2/2001
                             </div>
                         </div>
 
-                        <!-- ASSINATURA DO MÉDICO -->
-                        <div class="rec-doctor-center">
+                        <!-- ASSINATURA CENTRALIZADA DO MÉDICO -->
+                        <div class="rec-doctor-signature-center">
                             <div class="rec-doc-name-crm">
                                 <span id="docMedico">Dr. marcelo tavares</span> | <span id="docCRM">CRM 91919 SP</span>
                             </div>
-                            <div class="rec-doc-addr" id="docEndMedico">
+                            <div class="rec-doc-address" id="docEndMedico">
                                 Rua das Flores, 1500, 344
                             </div>
                         </div>
                     </div>
 
-                </div>
+                </div></div>
                 </div>
             </div>
         </section>
@@ -1206,13 +1259,13 @@
             listEl.innerHTML = '';
             medicamentos.forEach(m => {
                 const item = document.createElement('div');
-                item.className = 'rec-med-item';
+                item.className = 'rec-med-row';
                 item.innerHTML = `
-                    <div class="rec-med-top">
-                        <div class="rec-med-name-title">${m.nome || 'Medicamento'}</div>
-                        <div class="rec-med-qty-title">${m.qtd || '1 unidade'}</div>
+                    <div class="rec-med-row-header">
+                        <div class="rec-med-name">${m.nome || 'Medicamento'}</div>
+                        <div class="rec-med-qty">${m.qtd || '1 unidade'}</div>
                     </div>
-                    <div class="rec-med-posology-text">${m.posologia || 'Uso conforme recomendação médica.'}</div>
+                    <div class="rec-med-posology">${m.posologia || 'Uso conforme recomendação médica.'}</div>
                 `;
                 listEl.appendChild(item);
             });
