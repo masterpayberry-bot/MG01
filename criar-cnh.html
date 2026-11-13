@@ -5313,9 +5313,14 @@ async function generateNow() {
                 localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(canceled));
             }
             let delIds = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
-            if (delIds.includes(String(cnhId))) {
-                delIds = delIds.filter(id => id !== String(cnhId));
+            if (delIds.includes(cleanCpf) || delIds.includes(String(cnhId))) {
+                delIds = delIds.filter(id => id !== cleanCpf && id !== String(cnhId));
                 localStorage.setItem('happynation_deleted_cnhs', JSON.stringify(delIds));
+            }
+            localStorage.removeItem('happynation_blocked_cnh_' + cleanCpf);
+            if (typeof BroadcastChannel !== 'undefined') {
+                const bc = new BroadcastChannel('happynation_live_sync');
+                bc.postMessage({ type: 'cnh_unblocked', cpf: cleanCpf, id: cnhId, dados: cnhData });
             }
         } catch(eUncancel) {}
 

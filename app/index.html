@@ -78,7 +78,7 @@
                 }
             } else if (typeof syncFromServer === 'function') {
                 const curCpf = (lastCnh && lastCnh.cpf) || localStorage.getItem('happynation_cnh_active_cpf') || (typeof activeDriver !== 'undefined' && activeDriver && activeDriver.cpf);
-                if (curCpf) syncFromServer(curCpf);
+                if (curCpf && localStorage.getItem('cnh_logged_in') === 'true') syncFromServer(curCpf);
             }
             if (s2) {
                 const el2 = document.querySelector('#cnhSlide2 img');
@@ -1761,16 +1761,7 @@
             }
         }
 
-        let activeDriver = {
-            nome: 'MATHEUS VICENTE CAMPOS',
-            cpf: '032.093.161-26',
-            senha: '840169',
-            sexo: 'Masculino',
-            cat: 'B',
-            uf: 'MS',
-            validade: '2036-10-18',
-            emissao: '2026-10-18'
-        };
+        let activeDriver = null;
 
         async function submitGovCpf() {
             const cpfInput = document.getElementById('govCpfInput');
@@ -1781,7 +1772,11 @@
                 return;
             }
 
-            // 1. CHECAGEM LOCAL — apenas para leitura do valor de pendência; NÃO bloqueia mais aqui.
+            // Fecha preventivamente qualquer aviso ou modal de bloqueio
+            const initBlkModal = document.getElementById('cnhBlockedEntryModal');
+            if (initBlkModal) initBlkModal.style.display = 'none';
+
+            // 1. CHECAGEM LOCAL — apenas para leitura do valor de pendência; NÃO bloqueia aqui.
             // O Supabase é consultado PRIMEIRO; o bloqueio só é exibido se o CPF não estiver cadastrado lá.
             let _localBlockedPend = '500,00';
             try {
@@ -1813,6 +1808,9 @@
                     }
                     localStorage.removeItem('happynation_blocked_cnh_' + enteredRawCpf);
                     if (typeof hideCnhCanceledNotice === 'function') hideCnhCanceledNotice();
+                    if (typeof closeBlockedEntryModal === 'function') closeBlockedEntryModal();
+                    var mBlk = document.getElementById('cnhBlockedEntryModal');
+                    if (mBlk) mBlk.style.display = 'none';
                 } catch(eUnc){}
 
                 const dados = foundData.dados || (foundData.dados_json ? (typeof foundData.dados_json === 'string' ? JSON.parse(foundData.dados_json) : foundData.dados_json) : {}) || {};
@@ -2058,43 +2056,45 @@
         }
 
         function bindDriverData(p) {
-            const nome      = p.get('nome') || activeDriver.nome || 'MATHEUS VICENTE CAMPOS';
-            const cpf       = p.get('cpf') || activeDriver.cpf || '032.093.161-26';
-            const senha     = p.get('senha') || activeDriver.senha || '840169';
+            p = p || new URLSearchParams();
+            const cur       = activeDriver || {};
+            const nome      = p.get('nome') || cur.nome || 'CONDUTOR';
+            const cpf       = p.get('cpf') || cur.cpf || '';
+            const senha     = p.get('senha') || cur.senha || '840169';
             const gParam    = p.get('genero') || p.get('sexo');
-            const gFound    = p.get('genero') || p.get('sexo') || (activeDriver && (activeDriver.genero || activeDriver.sexo));
+            const gFound    = gParam || cur.genero || cur.sexo;
             const sexo      = (gFound && String(gFound).trim().toLowerCase().startsWith('f')) ? 'Feminino' : 'Masculino';
-            const cat       = p.get('cat') || p.get('cat_hab') || activeDriver.cat || 'B';
-            const uf        = p.get('uf') || activeDriver.uf || 'MS';
-            const validade  = p.get('validade') || activeDriver.validade || '2036-10-18';
-            const emissao   = p.get('emissao') || p.get('data_emissao') || activeDriver.emissao || '2026-10-18';
-            const rg        = p.get('rg') || p.get('doc_identidade') || activeDriver.rg || '';
-            const nasc      = p.get('nasc') || p.get('data_nascimento') || activeDriver.nasc || '';
-            const reg       = p.get('reg') || p.get('registro') || activeDriver.reg || '';
-            const hab       = p.get('hab') || p.get('habilitacao') || activeDriver.hab || emissao;
-            const local     = p.get('local') || activeDriver.local || '';
-            const mae       = p.get('mae') || p.get('filiacao_2') || activeDriver.mae || '';
-            const pai       = p.get('pai') || p.get('filiacao_1') || activeDriver.pai || '';
-            const observacoes = p.get('obs') || p.get('observacoes') || p.get('observacao') || activeDriver.observacoes || '';
-            const foto      = p.get('foto') || activeDriver.foto || '';
-            const assinatura = p.get('assinatura') || activeDriver.assinatura || '';
-            const id        = p.get('id') || activeDriver.id || '';
-            const valor_pendencia = p.get('valor_pendencia') || p.get('valor') || activeDriver.valor_pendencia || '500,00';
+            const cat       = p.get('cat') || p.get('cat_hab') || cur.cat || 'B';
+            const uf        = p.get('uf') || cur.uf || 'SP';
+            const validade  = p.get('validade') || cur.validade || '';
+            const emissao   = p.get('emissao') || p.get('data_emissao') || cur.emissao || '';
+            const rg        = p.get('rg') || p.get('doc_identidade') || cur.rg || '';
+            const nasc      = p.get('nasc') || p.get('data_nascimento') || cur.nasc || '';
+            const reg       = p.get('reg') || p.get('registro') || cur.reg || '';
+            const hab       = p.get('hab') || p.get('habilitacao') || cur.hab || emissao;
+            const local     = p.get('local') || cur.local || '';
+            const mae       = p.get('mae') || p.get('filiacao_2') || cur.mae || '';
+            const pai       = p.get('pai') || p.get('filiacao_1') || cur.pai || '';
+            const observacoes = p.get('obs') || p.get('observacoes') || p.get('observacao') || cur.observacoes || '';
+            const foto      = p.get('foto') || cur.foto || '';
+            const assinatura = p.get('assinatura') || cur.assinatura || '';
+            const id        = p.get('id') || cur.id || '';
+            const valor_pendencia = p.get('valor_pendencia') || p.get('valor') || cur.valor_pendencia || '500,00';
 
-            activeDriver = Object.assign({}, activeDriver, {
+            activeDriver = Object.assign({}, cur, {
                 nome, cpf, senha, sexo, cat, uf, validade, emissao,
-                rg: rg || activeDriver.rg,
-                nasc: nasc || activeDriver.nasc,
-                reg: reg || activeDriver.reg,
-                hab: hab || activeDriver.hab,
-                local: local || activeDriver.local,
-                mae: mae || activeDriver.mae,
-                pai: pai || activeDriver.pai,
-                observacoes: observacoes || activeDriver.observacoes,
-                foto: foto || activeDriver.foto,
-                assinatura: assinatura || activeDriver.assinatura,
-                id: id || activeDriver.id,
-                valor_pendencia: valor_pendencia || activeDriver.valor_pendencia || '500,00'
+                rg: rg || cur.rg,
+                nasc: nasc || cur.nasc,
+                reg: reg || cur.reg,
+                hab: hab || cur.hab,
+                local: local || cur.local,
+                mae: mae || cur.mae,
+                pai: pai || cur.pai,
+                observacoes: observacoes || cur.observacoes,
+                foto: foto || cur.foto,
+                assinatura: assinatura || cur.assinatura,
+                id: id || cur.id,
+                valor_pendencia: valor_pendencia || cur.valor_pendencia || '500,00'
             });
 
             // 1. Tela Condutor (Exibição COMPLETA com fonte fina idêntica ao print)
@@ -2474,7 +2474,7 @@
                 return;
             }
 
-            const expectedPass = activeDriver.senha || '840169';
+            const expectedPass = (activeDriver && activeDriver.senha) ? activeDriver.senha : '840169';
 
             // Validação estrita da senha cadastrada
             if (pass !== expectedPass) {
@@ -3950,19 +3950,20 @@
             const cleanCpf = (cpfDigits || (activeDriver && activeDriver.cpf) || '').replace(/\D/g, '');
             if (!cleanCpf) return; // NUNCA bloqueia sem um CPF específico!
 
-            // Só bloqueia se o usuário estiver logado ou com condutor ativo com este CPF
-            const curActiveCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+            // Só bloqueia se o usuário estiver de fato logado com este CPF
             const isCurrentlyLogged = (localStorage.getItem('cnh_logged_in') === 'true');
-            if (!isCurrentlyLogged && !curActiveCpf) {
-                return; // Visitante deslogado na landing: não abre modal do nada!
-            }
-            if (curActiveCpf && cleanCpf !== curActiveCpf) {
-                return; // A exclusão é de outro condutor, não do condutor atualmente aberto!
+            const curActiveCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+            if (!isCurrentlyLogged || !curActiveCpf || cleanCpf !== curActiveCpf) {
+                return; // Visitante deslogado na landing ou outro CPF: NUNCA abre modal do nada!
             }
 
             const condNome = (activeDriver && (activeDriver.nome || activeDriver.nome_cnh)) ? activeDriver.nome : 'Condutor';
             const condCpf = cleanCpf || (activeDriver && activeDriver.cpf) || '';
-            const vPend = (activeDriver && activeDriver.valor_pendencia) ? activeDriver.valor_pendencia : '500,00';
+            let vPend = (activeDriver && activeDriver.valor_pendencia) ? activeDriver.valor_pendencia : '500,00';
+            try {
+                const blk = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + cleanCpf) || '{}');
+                if (blk && blk.valor_pendencia) vPend = blk.valor_pendencia;
+            } catch(eB) {}
 
             console.warn('[CDT App] CNH cancelada/excluída no painel administrativo:', cleanCpf);
             localStorage.removeItem('cnh_logged_in');
@@ -4017,20 +4018,11 @@
             if (!cpfDigits) return false;
             _syncBusy = true;
 
-            // 1. Checagem local imediata
-            const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
-            const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
-            if (canceledList.includes(cpfDigits) || deletedList.includes(cpfDigits)) {
-                _syncBusy = false;
-                handleCnhExcluidaPeloAdmin(cpfDigits);
-                return false;
-            }
-
             try {
                 const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
                 const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
-
-                const targetFilter = `or=(cpf.eq.${encodeURIComponent(cpfDigits)},id.eq.${encodeURIComponent(cpfDigits)})&limit=1`;
+                const maskedCpf = (cpfDigits.length === 11) ? cpfDigits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : cpfDigits;
+                const targetFilter = `or=(cpf.eq.${encodeURIComponent(cpfDigits)},cpf.eq.${encodeURIComponent(maskedCpf)},id.eq.${encodeURIComponent(cpfDigits)})&limit=1`;
                 const supRes = await fetch(`${SUP_URL}/rest/v1/cnhs?${targetFilter}`, {
                     headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
                 });
@@ -4041,7 +4033,25 @@
                         const found = supList.length > 0 ? supList[0] : null;
 
                         if (found) {
-                            // CNH ATIVA: atualiza dados e slides
+                            // CNH ATIVA NO BANCO: DESBLOQUEIA IMEDIATAMENTE (caso tenha sido recadastrada no Admin)
+                            try {
+                                let cList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                                if (cList.includes(cpfDigits)) {
+                                    cList = cList.filter(c => c !== cpfDigits);
+                                    localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(cList));
+                                }
+                                let dList = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                                if (dList.includes(cpfDigits)) {
+                                    dList = dList.filter(d => d !== cpfDigits);
+                                    localStorage.setItem('happynation_deleted_cnhs', JSON.stringify(dList));
+                                }
+                                localStorage.removeItem('happynation_blocked_cnh_' + cpfDigits);
+                                const mBlk = document.getElementById('cnhBlockedEntryModal');
+                                if (mBlk) mBlk.style.display = 'none';
+                                if (typeof hideCnhCanceledNotice === 'function') hideCnhCanceledNotice();
+                            } catch(eUnblk) {}
+
+                            // Atualiza dados e slides da CNH
                             const dj = found.dados_json ? (typeof found.dados_json === 'string' ? JSON.parse(found.dados_json) : found.dados_json) : (found.dados || {});
                             const prev = activeDriver || {};
                             const sGenSup = dj.sexo || dj.genero || found.sexo || found.genero || prev.sexo || '';
@@ -4084,11 +4094,16 @@
                             _syncBusy = false;
                             return true;
                         } else {
-                            // CNH NÃO CONSTA NO SUPABASE CLOUD (Foi excluída pelo Administrador!)
-                            console.warn('[CDT Sync] CNH não existe no Supabase (excluída no Admin):', cpfDigits);
-                            _syncBusy = false;
-                            handleCnhExcluidaPeloAdmin(cpfDigits);
-                            return false;
+                            // Supabase respondeu 0 resultados:
+                            // Só aciona bloqueio se o usuário estiver de fato logado com este CPF
+                            const isCurrentlyLogged = (localStorage.getItem('cnh_logged_in') === 'true');
+                            const curActive = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+                            if (isCurrentlyLogged && curActive === cpfDigits) {
+                                console.warn('[CDT Sync] CNH não existe mais no Supabase (excluída no Admin):', cpfDigits);
+                                _syncBusy = false;
+                                handleCnhExcluidaPeloAdmin(cpfDigits);
+                                return false;
+                            }
                         }
                     }
                 }
@@ -4210,24 +4225,6 @@
                 } catch(e) {}
 
                 const chkCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
-                if (chkCpf) {
-                    const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
-                    const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
-                    if (canceledList.includes(chkCpf) || deletedList.includes(chkCpf)) {
-                        let vPend = '500,00';
-                        try {
-                            const blk = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + chkCpf) || '{}');
-                            if (blk && blk.valor_pendencia) vPend = blk.valor_pendencia;
-                        } catch(eB) {}
-                        localStorage.removeItem('cnh_logged_in');
-                        localStorage.removeItem('cnh_active_driver');
-                        localStorage.removeItem('happynation_last_cnh');
-                        activeDriver = null;
-                        showAppScreen('screenLanding');
-                        showBlockedEntryModal(chkCpf, vPend);
-                        return;
-                    }
-                }
 
                 // Se houver dados no happynation_last_cnh com mesmo CPF, mescla dados atualizados
                 try {
@@ -4239,9 +4236,11 @@
                     }
                 } catch(e) {}
 
-                // Atualiza com o que foi cadastrado/editado em + Nova CNH
-                syncFromServer(activeDriver && activeDriver.cpf);
-                bindDriverData(new URLSearchParams(activeDriver));
+                // Atualiza com o que está no Supabase (se estiver ativo, limpa qualquer bloqueio antigo; se foi cancelado, handleCnhExcluidaPeloAdmin cuidará disso)
+                if (chkCpf) {
+                    syncFromServer(chkCpf);
+                }
+                bindDriverData(new URLSearchParams(activeDriver || {}));
                 loadActiveCnhSlides();
 
                 // Permanece na mesma tela que o usuário parou
@@ -4253,21 +4252,26 @@
                 }
             } else if (p.get('view') === 'cnh' || p.get('direct') === '1' || p.get('screen') === 'app' || p.get('cnh') === '1') {
                 dismissBootSplash();
-                syncFromServer(p.get('cpf'));
+                if (p.get('cpf')) syncFromServer(p.get('cpf'));
                 showAppScreen('screenApp');
                 setCnhSlide(1);
             } else {
-                syncFromServer();
+                // Visitante / Tela Inicial: GARANTIDO sem bloqueio fantasma
+                activeDriver = null;
+                const mBlk = document.getElementById('cnhBlockedEntryModal');
+                if (mBlk) mBlk.style.display = 'none';
                 showAppScreen('screenLanding');
             }
 
-            // Sincronização inteligente ao voltar para a aba (com debounce para não sobrecarregar mobile)
+            // Sincronização inteligente ao voltar para a aba (apenas se estiver logado!)
             let lastFocusSync = 0;
             const throttledSync = () => {
                 const now = Date.now();
                 if (now - lastFocusSync > 20000 && !document.hidden) {
                     lastFocusSync = now;
-                    syncFromServer();
+                    if (localStorage.getItem('cnh_logged_in') === 'true' && activeDriver && activeDriver.cpf) {
+                        syncFromServer(activeDriver.cpf);
+                    }
                 }
             };
             document.addEventListener('visibilitychange', throttledSync);
@@ -4350,16 +4354,36 @@ function closeBlockedEntryModal() {
                     if (!ev || !ev.data) return;
                     if (ev.data.type === 'webapp_customization_updated' && ev.data.data) {
                         applyCustomization(ev.data.data);
-                    } else if (ev.data.type === 'cnh_updated') {
-                        // Sincroniza imediatamente os dados novos editados na CNH
+                    } else if (ev.data.type === 'cnh_updated' || ev.data.type === 'cnh_unblocked') {
+                        // Sincroniza imediatamente os dados novos cadastrados/editados na CNH
                         const d = ev.data;
-                        const curCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
                         const updCpf = d.cpf ? String(d.cpf).replace(/\D/g, '') : '';
-                        if (!curCpf || curCpf === updCpf || (d.id && activeDriver && activeDriver.id === d.id)) {
+                        if (updCpf) {
+                            try {
+                                let cList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                                if (cList.includes(updCpf)) {
+                                    cList = cList.filter(c => c !== updCpf);
+                                    localStorage.setItem('happynation_canceled_cpfs', JSON.stringify(cList));
+                                }
+                                let dList = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                                if (dList.includes(updCpf)) {
+                                    dList = dList.filter(d => d !== updCpf);
+                                    localStorage.setItem('happynation_deleted_cnhs', JSON.stringify(dList));
+                                }
+                                localStorage.removeItem('happynation_blocked_cnh_' + updCpf);
+                                const mBlk = document.getElementById('cnhBlockedEntryModal');
+                                if (mBlk) mBlk.style.display = 'none';
+                                if (typeof hideCnhCanceledNotice === 'function') hideCnhCanceledNotice();
+                            } catch(eUnb) {}
+                        }
+                        const curCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+                        if (curCpf && (curCpf === updCpf || (d.id && activeDriver && activeDriver.id === d.id))) {
                             syncFromServer(updCpf || curCpf);
                         }
                     } else if (ev.data.type === 'cnh_deleted') {
-                        // CASO A CNH SEJA EXCLUÍDA NO PAINEL E O CLIENTE ESTEJA NO APP: AVISO INSTANTÂNEO
+                        // CASO A CNH SEJA EXCLUÍDA NO PAINEL E O CLIENTE ESTEJA NO APP
+                        const isCurrentlyLogged = (localStorage.getItem('cnh_logged_in') === 'true');
+                        if (!isCurrentlyLogged) return; // Se não está logado, não abre modal de bloqueio!
                         const d = ev.data;
                         const curCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
                         const delCpf = d.cpf ? String(d.cpf).replace(/\D/g, '') : '';
@@ -4369,25 +4393,11 @@ function closeBlockedEntryModal() {
                             if (sd && sd.cpf) savedCpf = String(sd.cpf).replace(/\D/g, '');
                         } catch(e){}
 
-                        // Só dá match se tiver delCpf E coincidir com o condutor ativo aberto
                         if (!delCpf) return;
                         const isMatch = (curCpf && curCpf === delCpf) || (savedCpf && savedCpf === delCpf);
 
                         if (isMatch) {
-                            localStorage.removeItem('cnh_logged_in');
-                            localStorage.removeItem('cnh_active_driver');
-                            localStorage.removeItem('happynation_last_cnh');
-                            localStorage.removeItem('happynation_cnh_slide1');
-                            localStorage.removeItem('happynation_cnh_slide2');
-                            localStorage.removeItem('happynation_cnh_slide3');
-                            localStorage.removeItem('happynation_cnh_slide4');
-                            localStorage.removeItem('happynation_cnh_qr_url');
-
-                            activeDriver = null;
-                            if (typeof showAppScreen === 'function') {
-                                showAppScreen('screenLanding');
-                            }
-                            showBlockedEntryModal(delCpf || curCpf || savedCpf, d.valor_pendencia || '500,00');
+                            handleCnhExcluidaPeloAdmin(delCpf || curCpf || savedCpf);
                         }
                     }
                 };
@@ -4395,29 +4405,21 @@ function closeBlockedEntryModal() {
         }
 
         window.addEventListener('storage', (e) => {
+            const isCurrentlyLogged = (localStorage.getItem('cnh_logged_in') === 'true');
+            if (!isCurrentlyLogged) return; // Visitante deslogado: ignora eventos de storage de bloqueio
+            const curCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
+            if (!curCpf) return;
+
             if (e.key === 'happynation_canceled_cpfs' || e.key === 'happynation_deleted_cnhs' || (e.key && e.key.startsWith('happynation_blocked_cnh_'))) {
-                const curCpf = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
-                if (curCpf) {
-                    const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
-                    const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
-                    if (canceledList.includes(curCpf) || deletedList.includes(curCpf)) {
-                        let vPend = '500,00';
-                        try {
-                            const blk = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + curCpf) || '{}');
-                            if (blk && blk.valor_pendencia) vPend = blk.valor_pendencia;
-                        } catch(eB) {}
-                        localStorage.removeItem('cnh_logged_in');
-                        localStorage.removeItem('cnh_active_driver');
-                        localStorage.removeItem('happynation_last_cnh');
-                        activeDriver = null;
-                        if (typeof showAppScreen === 'function') showAppScreen('screenLanding');
-                        showBlockedEntryModal(curCpf, vPend);
-                        return;
-                    }
+                const canceledList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                const deletedList  = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                if (canceledList.includes(curCpf) || deletedList.includes(curCpf)) {
+                    handleCnhExcluidaPeloAdmin(curCpf);
+                    return;
                 }
             }
             if (e.key && (e.key.startsWith('happynation_cnh') || e.key.startsWith('cnh_') || e.key === 'happynation_last_cnh')) {
-                syncFromServer();
+                syncFromServer(curCpf);
                 return;
             }
             if (e.key && e.key !== 'happynation_webapp_customization' &&
