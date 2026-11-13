@@ -568,51 +568,36 @@
             flex-direction: column;
         }
 
-        /* LOGO UNIMED RETÂNGULO VERDE */
-        .rec-unimed-logo-box {
-            background-color: #00995D;
-            color: #ffffff;
-            border-radius: 8px;
-            width: 158px;
-            height: 52px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .rec-unimed-logo-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            width: 100%;
-        }
-
-        .rec-unimed-word {
-            font-size: 21px;
-            font-weight: 800;
-            letter-spacing: -0.4px;
-            color: #ffffff;
-            line-height: 1;
-        }
-
-        .rec-unimed-symbol {
-            width: 22px;
-            height: 18px;
+        /* LOGO UNIMED RETÂNGULO OFICIAL COM CIDADE DINÂMICA (RECIFE, CURITIBA, ETC) */
+        .rec-unimed-logo-wrapper {
+            position: relative;
+            width: 172px;
+            height: 78px;
             display: inline-block;
+            margin-bottom: 14px;
+            user-select: none;
         }
 
-        .rec-unimed-city {
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
+        .rec-unimed-badge-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .rec-unimed-dynamic-city {
+            position: absolute;
+            bottom: 8px;
+            right: 20px;
             color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            text-align: right;
+            pointer-events: none;
+            text-shadow: 0 0.5px 1px rgba(0,0,0,0.2);
             line-height: 1;
-            margin-top: 3px;
-            text-align: center;
         }
 
         /* DADOS DO PACIENTE */
@@ -910,7 +895,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Unidade / Cidade</label>
-                        <input type="text" id="inpCidade" class="form-input" value="são paulo" oninput="atualizarPreview()">
+                        <input type="text" id="inpCidade" class="form-input" value="Recife" oninput="atualizarPreview()">
                     </div>
                 </div>
 
@@ -1030,15 +1015,10 @@
                             
                             <!-- COLUNA ESQUERDA: LOGO UNIMED + IDENTIFICAÇÃO DO PACIENTE -->
                             <div class="rec-top-left-col">
-                                <!-- LOGO RETÂNGULO VERDE -->
-                                <div class="rec-unimed-logo-box">
-                                    <div class="rec-unimed-logo-row">
-                                        <span class="rec-unimed-word">Unimed</span>
-                                        <svg class="rec-unimed-symbol" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M4 14l4-8 4 8H4zm6 4l4-8 4 8h-8z"/>
-                                        </svg>
-                                    </div>
-                                    <div class="rec-unimed-city" id="docCity">são paulo</div>
+                                <!-- LOGO UNIMED OFICIAL COM CIDADE EDITÁVEL -->
+                                <div class="rec-unimed-logo-wrapper" title="Logotipo Oficial Unimed">
+                                    <img src="assets/unimed_badge_clean.png" alt="Unimed" class="rec-unimed-badge-img">
+                                    <div class="rec-unimed-dynamic-city" id="docCity">Recife</div>
                                 </div>
 
                                 <!-- DADOS DO PACIENTE -->
@@ -1239,7 +1219,7 @@
             const crm = document.getElementById('inpCRM').value.trim() || 'CRM 91919 SP';
             const endMedico = document.getElementById('inpEndMedico').value.trim() || 'Rua das Flores, 1500, 344';
 
-            document.getElementById('docCity').textContent = cidade.toLowerCase();
+            document.getElementById('docCity').textContent = cidade ? (cidade.charAt(0).toUpperCase() + cidade.slice(1)) : 'Recife';
             document.getElementById('docPaciente').textContent = paciente.toLowerCase();
             document.getElementById('docCPF').textContent = cpf;
             document.getElementById('docNasc').textContent = nasc;
