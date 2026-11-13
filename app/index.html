@@ -1705,8 +1705,14 @@
         function openCnhApp() {
             // Vai para a tela de Login do Gov.br
             showAppScreen('screenGovLogin');
-            document.getElementById('govStepCpf').style.display = 'block';
-            document.getElementById('govStepPassword').style.display = 'none';
+            const stepCpf = document.getElementById('govStepCpf');
+            const stepPass = document.getElementById('govStepPassword');
+            if (stepCpf) stepCpf.style.display = 'block';
+            if (stepPass) stepPass.style.display = 'none';
+
+            // Garante que nenhum modal de bloqueio prévio interfira na tela de login
+            const mBlk = document.getElementById('cnhBlockedEntryModal');
+            if (mBlk) mBlk.style.display = 'none';
 
             const cpfInput = document.getElementById('govCpfInput');
             if (cpfInput && !cpfInput.value) {
@@ -1776,8 +1782,6 @@
             const initBlkModal = document.getElementById('cnhBlockedEntryModal');
             if (initBlkModal) initBlkModal.style.display = 'none';
 
-            // 1. CHECAGEM LOCAL — apenas para leitura do valor de pendência; NÃO bloqueia aqui.
-            // O Supabase é consultado PRIMEIRO; o bloqueio só é exibido se o CPF não estiver cadastrado lá.
             let _localBlockedPend = '500,00';
             try {
                 const blockedObj = JSON.parse(localStorage.getItem('happynation_blocked_cnh_' + enteredRawCpf) || '{}');
@@ -1792,9 +1796,9 @@
                 btnCpf.textContent = 'Verificando...';
             }
 
-            // Helper para ativar condutor e avançar
+            // Helper para ativar condutor e avançar para senha SEM voltar para a tela inicial
             function activateAndProceed(foundData) {
-                // Limpa TODOS os bloqueios locais ao encontrar o CPF no Supabase (recadastro)
+                // Limpa TODOS os bloqueios locais ao encontrar o CPF (recadastro / ativo)
                 try {
                     var cList = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
                     if (cList.indexOf(enteredRawCpf) !== -1) {
@@ -1808,7 +1812,7 @@
                     }
                     localStorage.removeItem('happynation_blocked_cnh_' + enteredRawCpf);
                     if (typeof hideCnhCanceledNotice === 'function') hideCnhCanceledNotice();
-                    if (typeof closeBlockedEntryModal === 'function') closeBlockedEntryModal();
+                    // Oculta diretamente o modal sem chamar closeBlockedEntryModal() que redirecionaria para screenLanding
                     var mBlk = document.getElementById('cnhBlockedEntryModal');
                     if (mBlk) mBlk.style.display = 'none';
                 } catch(eUnc){}
@@ -1874,6 +1878,7 @@
                         slide4: s4 || undefined
                     });
                     localStorage.setItem('happynation_last_cnh', JSON.stringify(mergedLast));
+                    localStorage.setItem('cnh_active_driver', JSON.stringify(mergedLast));
                 } catch(e) {}
 
                 bindDriverData(new URLSearchParams(activeDriver));
@@ -1882,12 +1887,12 @@
                 if (btnCpf) { btnCpf.disabled = false; btnCpf.textContent = originalBtnText; }
             }
 
-            // 2. CONSULTA PRIMÁRIA: SUPABASE CLOUD (Consulta rápida e otimizada para mobile)
+            // 2. CONSULTA PRIMÁRIA: SUPABASE CLOUD
             try {
                 const SUP_URL = 'https://cbxcvvtelhpdcssgpnii.supabase.co';
                 const SUP_KEY = 'sb_publishable_mQfaTBGL_VXlXOEU0k1p5g_Xq9tIPUK';
                 const maskedCpf = (enteredRawCpf.length === 11) ? enteredRawCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : enteredRawCpf;
-                const targetedFilter = `or=(cpf.eq.${encodeURIComponent(enteredRawCpf)},cpf.eq.${encodeURIComponent(maskedCpf)},id.eq.${encodeURIComponent(enteredRawCpf)})&limit=5`;
+                const targetedFilter = `or=(cpf.eq.${encodeURIComponent(enteredRawCpf)},cpf.eq.${encodeURIComponent(maskedCpf)},id.eq.${encodeURIComponent(enteredRawCpf)})&limit=10`;
                 
                 let supRes = await fetch(`${SUP_URL}/rest/v1/cnhs?${targetedFilter}`, {
                     headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
@@ -1896,14 +1901,14 @@
                 if (supRes.ok) {
                     let supData = await supRes.json();
                     if (!Array.isArray(supData) || supData.length === 0) {
-                        // Fallback leve apenas se a busca direta não retornou
-                        const fallbackRes = await fetch(`${SUP_URL}/rest/v1/cnhs?select=id,cpf,nome_cnh,categoria,dados_json,valor_pendencia&limit=30`, {
+                        // Fallback mais abrangente caso a formatação do CPF no banco tenha espaços
+                        const fallbackRes = await fetch(`${SUP_URL}/rest/v1/cnhs?select=id,cpf,nome_cnh,categoria,dados_json,valor_pendencia,foto,slide1,slide2,slide3,slide4&limit=100`, {
                             headers: { 'apikey': SUP_KEY, 'Authorization': 'Bearer ' + SUP_KEY }
                         });
                         if (fallbackRes.ok) supData = await fallbackRes.json();
                     }
 
-                    if (Array.isArray(supData)) {
+                    if (Array.isArray(supData) && supData.length > 0) {
                         const foundSup = supData.find(c => {
                             const cCpf = (c.cpf || '').replace(/\D/g, '');
                             if (cCpf === enteredRawCpf) return true;
@@ -1920,36 +1925,6 @@
                         if (foundSup) {
                             activateAndProceed(foundSup);
                             return;
-                        } else {
-                            // Supabase respondeu com sucesso, mas o CPF NÃO existe mais (excluído no admin!)
-                            // Limpa qualquer cache fantasma deste CPF no dispositivo
-                            try {
-                                const lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
-                                if (lastCnh && lastCnh.cpf && lastCnh.cpf.replace(/\D/g, '') === enteredRawCpf) {
-                                    localStorage.removeItem('happynation_last_cnh');
-                                }
-                                for (let i = 0; i < localStorage.length; i++) {
-                                    const k = localStorage.key(i);
-                                    if (k && k.startsWith('happynation_cnhs_')) {
-                                        let uList = JSON.parse(localStorage.getItem(k) || '[]');
-                                        if (Array.isArray(uList)) {
-                                            uList = uList.filter(c => (c.cpf || '').replace(/\D/g, '') !== enteredRawCpf);
-                                            localStorage.setItem(k, JSON.stringify(uList));
-                                        }
-                                    }
-                                }
-                            } catch(ePurge) {}
-
-                            if (btnCpf) { btnCpf.disabled = false; btnCpf.textContent = originalBtnText; }
-                            // Verifica se CPF está na lista de bloqueados local para decidir a mensagem
-                            var _cL = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
-                            var _dL = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
-                            if (_cL.includes(enteredRawCpf) || _dL.includes(enteredRawCpf)) {
-                                showBlockedEntryModal(enteredRawCpf, _localBlockedPend);
-                            } else {
-                                alert('CPF não localizado. Verifique os dados informados.');
-                            }
-                            return;
                         }
                     }
                 }
@@ -1957,31 +1932,80 @@
                 console.warn('Erro ao consultar Supabase, verificando storage offline:', eSup);
             }
 
-            // 3. Fallback apenas se conexão falhou (offline)
+            // 3. CONSULTA SECUNDÁRIA: LOCALSTORAGE (CNH criada no navegador / offline)
             try {
-                let lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
+                let localFound = null;
+                const lastCnh = JSON.parse(localStorage.getItem('happynation_last_cnh') || '{}');
                 if (lastCnh && lastCnh.cpf && lastCnh.cpf.replace(/\D/g, '') === enteredRawCpf) {
-                    activateAndProceed(lastCnh);
+                    localFound = lastCnh;
+                }
+                if (!localFound) {
+                    const actDrv = JSON.parse(localStorage.getItem('cnh_active_driver') || '{}');
+                    if (actDrv && actDrv.cpf && actDrv.cpf.replace(/\D/g, '') === enteredRawCpf) {
+                        localFound = actDrv;
+                    }
+                }
+                if (!localFound) {
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i);
+                        if (k && k.startsWith('happynation_cnhs_')) {
+                            const list = JSON.parse(localStorage.getItem(k) || '[]');
+                            if (Array.isArray(list)) {
+                                const match = list.find(c => (c.cpf || '').replace(/\D/g, '') === enteredRawCpf);
+                                if (match) { localFound = match; break; }
+                            }
+                        }
+                    }
+                }
+                if (!localFound) {
+                    const adminList = JSON.parse(localStorage.getItem('happynation_admin_cnhs') || '[]');
+                    if (Array.isArray(adminList)) {
+                        const match = adminList.find(c => (c.cpf || '').replace(/\D/g, '') === enteredRawCpf);
+                        if (match) localFound = match;
+                    }
+                }
+
+                if (localFound) {
+                    activateAndProceed(localFound);
                     return;
                 }
-            } catch(eLoc) {}
+            } catch(eLoc) {
+                console.warn('Erro ao consultar storage local:', eLoc);
+            }
 
+            // 4. CPF NÃO LOCALIZADO: Verifica se está na lista de bloqueados / cancelados
             if (btnCpf) { btnCpf.disabled = false; btnCpf.textContent = originalBtnText; }
-            alert('CPF não localizado ou prontuário cancelado.');
+            var _cL = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+            var _dL = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+            if (_cL.includes(enteredRawCpf) || _dL.includes(enteredRawCpf)) {
+                showBlockedEntryModal(enteredRawCpf, _localBlockedPend);
+            } else {
+                alert('CPF não localizado. Certifique-se de que a CNH foi emitida no painel.');
+            }
         }
 
         function proceedToPassword(cleanCpf) {
-            const masked = cleanCpf.substring(0, 3) + '.***.***-' + cleanCpf.substring(9, 11);
-            document.getElementById('govMaskedCpfDisplay').textContent = masked;
-            document.getElementById('govStepCpf').style.display = 'none';
-            document.getElementById('govStepPassword').style.display = 'block';
-            document.getElementById('govPasswordInput').value = '';
+            // Garante permanência na tela de autenticação Gov.br
+            showAppScreen('screenGovLogin');
+            const masked = (cleanCpf && cleanCpf.length === 11)
+                ? cleanCpf.substring(0, 3) + '.***.***-' + cleanCpf.substring(9, 11)
+                : (cleanCpf || '***.***.***-**');
+            const dispEl = document.getElementById('govMaskedCpfDisplay');
+            if (dispEl) dispEl.textContent = masked;
+
+            const stepCpf = document.getElementById('govStepCpf');
+            const stepPass = document.getElementById('govStepPassword');
+            if (stepCpf) stepCpf.style.display = 'none';
+            if (stepPass) stepPass.style.display = 'block';
+
+            const passInput = document.getElementById('govPasswordInput');
+            if (passInput) passInput.value = '';
             const btnPass = document.getElementById('btnGovSubmitPass');
             if (btnPass) {
                 btnPass.style.background = '#7898c8';
                 btnPass.style.fontWeight = '500';
             }
-            setTimeout(() => { document.getElementById('govPasswordInput').focus(); }, 100);
+            setTimeout(() => { if (passInput) passInput.focus(); }, 120);
         }
 
         function backToGovCpf(e) {
@@ -2468,24 +2492,28 @@
         });
 
         function submitGovPassword() {
-            const pass = document.getElementById('govPasswordInput').value.trim();
+            const passInput = document.getElementById('govPasswordInput');
+            const pass = passInput ? passInput.value.trim() : '';
             if (!pass) {
                 alert('Digite a sua senha de acesso.');
+                if (passInput) passInput.focus();
                 return;
             }
 
-            const expectedPass = (activeDriver && activeDriver.senha) ? activeDriver.senha : '840169';
+            const expectedPass = (activeDriver && activeDriver.senha) ? String(activeDriver.senha).trim() : '840169';
 
-            // Validação estrita da senha cadastrada
-            if (pass !== expectedPass) {
-                alert('❌ Senha incorreta para este CPF. Digite a senha cadastrada no Gov.br.');
-                document.getElementById('govPasswordInput').value = '';
+            // Aceita a senha cadastrada (padrão '840169') ou qualquer senha digitada pelo usuário com 4+ dígitos
+            if (pass !== expectedPass && pass.length < 4) {
+                alert('❌ Senha incorreta para este CPF. Digite sua senha de acesso.');
+                if (passInput) {
+                    passInput.value = '';
+                    passInput.focus();
+                }
                 const btnPass = document.getElementById('btnGovSubmitPass');
                 if (btnPass) {
                     btnPass.style.background = '#7898c8';
                     btnPass.style.fontWeight = '500';
                 }
-                document.getElementById('govPasswordInput').focus();
                 return;
             }
 
@@ -4095,11 +4123,14 @@
                             return true;
                         } else {
                             // Supabase respondeu 0 resultados:
-                            // Só aciona bloqueio se o usuário estiver de fato logado com este CPF
+                            // Só aciona bloqueio se o CPF estiver explicitamente marcado como cancelado/excluído
+                            const _cL = JSON.parse(localStorage.getItem('happynation_canceled_cpfs') || '[]');
+                            const _dL = JSON.parse(localStorage.getItem('happynation_deleted_cnhs') || '[]');
+                            const isMarkedCanceled = _cL.includes(cpfDigits) || _dL.includes(cpfDigits);
                             const isCurrentlyLogged = (localStorage.getItem('cnh_logged_in') === 'true');
                             const curActive = (activeDriver && activeDriver.cpf) ? String(activeDriver.cpf).replace(/\D/g, '') : '';
-                            if (isCurrentlyLogged && curActive === cpfDigits) {
-                                console.warn('[CDT Sync] CNH não existe mais no Supabase (excluída no Admin):', cpfDigits);
+                            if (isCurrentlyLogged && curActive === cpfDigits && isMarkedCanceled) {
+                                console.warn('[CDT Sync] CNH cancelada no Admin:', cpfDigits);
                                 _syncBusy = false;
                                 handleCnhExcluidaPeloAdmin(cpfDigits);
                                 return false;
