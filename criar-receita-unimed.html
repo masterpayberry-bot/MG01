@@ -1353,7 +1353,8 @@
                 if (!Array.isArray(list)) list = [];
 
                 const item = {
-                    id: 'rec_' + Date.now(),
+                    id: (window.__editReceitaId || ('rec_' + Date.now())),
+                    cidade: (document.getElementById('inpCidade') ? document.getElementById('inpCidade').value.trim() : ''),
                     paciente: document.getElementById('inpPaciente').value.trim() || 'Renato Silva',
                     cpf: document.getElementById('inpCPF').value.trim(),
                     nasc: document.getElementById('inpNasc').value.trim(),
@@ -1368,7 +1369,13 @@
                     criadoEm: new Date().toISOString()
                 };
 
-                list.unshift(item);
+                if (window.__editReceitaId) {
+                    const ix = list.findIndex(r => String(r.id) === String(window.__editReceitaId));
+                    if (ix >= 0) { item.criadoEm = list[ix].criadoEm || item.criadoEm; list[ix] = item; }
+                    else { list.unshift(item); }
+                } else {
+                    list.unshift(item);
+                }
                 localStorage.setItem(key, JSON.stringify(list));
             } catch(e) {
                 console.warn('Erro ao salvar receita recente:', e);
@@ -1451,7 +1458,42 @@
             }
         }
 
+        function carregarReceitaParaEdicao() {
+            try {
+                const qs = new URLSearchParams(window.location.search);
+                const id = qs.get('id');
+                if (!id || qs.get('edit') !== 'true') return;
+                let found = null;
+                for (let i = 0; i < localStorage.length && !found; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_receitas_')) {
+                        const list = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(list)) found = list.find(r => String(r.id) === String(id)) || null;
+                    }
+                }
+                if (!found) return;
+                window.__editReceitaId = found.id;
+                const set = (el, v) => { const e = document.getElementById(el); if (e && v !== undefined && v !== null) e.value = v; };
+                set('inpPaciente', found.paciente);
+                set('inpCPF', found.cpf);
+                set('inpNasc', found.nasc);
+                set('inpEmissao', found.emissao);
+                set('inpCidade', found.cidade || 'são paulo');
+                set('inpEndereco', found.endereco);
+                set('inpToken', found.token);
+                set('inpCodigo', found.codigo);
+                set('inpMedico', found.medico);
+                set('inpCRM', found.crm);
+                set('inpEndMedico', found.end_medico);
+                if (Array.isArray(found.medicamentos) && found.medicamentos.length) {
+                    medicamentos.length = 0;
+                    found.medicamentos.forEach(m => medicamentos.push(m));
+                }
+            } catch(e) { console.warn('Erro ao carregar receita para edição:', e); }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            carregarReceitaParaEdicao();
             renderizarFormMedicamentos();
             atualizarPreview();
         });
