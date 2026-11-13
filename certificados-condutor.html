@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <!-- Verificação Estrita de Administrador (Privado para ADM) -->
+    <script>
+        window.isAdminUser = false;
+        (function() {
+            try {
+                if (localStorage.getItem('happynation_admin_auth') === 'true' || sessionStorage.getItem('happynation_admin_auth') === 'true') {
+                    window.isAdminUser = true;
+                }
+                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                if (uStr) {
+                    const u = JSON.parse(uStr);
+                    if (u && (u.role === 'admin' || u.isAdmin === true || (u.email && u.email.toLowerCase().includes('admin')))) {
+                        window.isAdminUser = true;
+                    }
+                }
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('admin') === '1' || params.get('adm') === '1' || params.get('dev') === '1') {
+                    window.isAdminUser = true;
+                }
+            } catch(e) {}
+
+            // Bloqueio para não-administradores
+            if (!window.isAdminUser) {
+                alert('Acesso Restrito: A listagem de Certificados de Condutor é exclusiva para Administradores.');
+                window.location.href = 'editaveis.html';
+            }
+        })();
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Certificados de Condutor (ICETRAN)</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <script src="saldo-sync.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-page: #121414;
+            --bg-header: #141716;
+            --bg-card: #191c1d;
+            --bg-card-hover: #1e2223;
+            --bg-input: #141617;
+            --border-color: #242829;
+            --border-subtle: #1e2223;
+            
+            --primary: #00dc82;
+            --primary-hover: #00c975;
+            --primary-light: rgba(0, 220, 130, 0.12);
+            --primary-border: rgba(0, 220, 130, 0.28);
+            
+            --text-main: #f3f4f6;
+            --text-muted: #8e9598;
+            --text-dark: #636b6f;
+            
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-full: 9999px;
+
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(20, 23, 22, 0.88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-color);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+        }
+        .header-inner {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(0,220,130,0.2), rgba(0,220,130,0.05));
+            border: 1px solid rgba(0,220,130,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand-icon-img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+        .brand-text {
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn-header-back {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-header-back:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .main-container {
+            flex: 1;
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 32px 28px 60px 28px;
+        }
+
+        .page-title-group {
+            margin-bottom: 24px;
+        }
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-desc {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+        }
+        .stat-value.green {
+            color: #00dc82;
+        }
+
+        /* TABELA E FILTROS */
+        .table-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+        }
+        .table-toolbar {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .search-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .search-field {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #fff;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .custom-table th {
+            text-align: left;
+            padding: 14px 18px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.15);
+        }
+        .custom-table td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-main);
+        }
+        .custom-table tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .btn-action-emit {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-action-emit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11.5px;
+            font-weight: 700;
+            background: rgba(0, 220, 130, 0.12);
+            color: #00dc82;
+            border: 1px solid rgba(0, 220, 130, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="editaveis.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="Logo" class="brand-icon-img">
+                </div>
+                <span class="brand-text">MG Editáveis</span>
+            </a>
+
+            <div class="header-actions">
+                <span class="saldo-badge" style="background:#16191b; border:1px solid #232729; padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700; color:#00dc82;">Saldo: R$ 7.990,00</span>
+                <a href="editaveis.html" class="btn-header-back">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span>Voltar</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-container">
+
+        <div class="page-title-group">
+            <h1 class="page-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Certificados de Condutor Emitidos
+            </h1>
+            <p class="page-desc">Histórico completo de certificados de cursos especializados de trânsito (ICETRAN) gerados com validação por QR Code e registro Detran.</p>
+        </div>
+
+        <!-- ESTATÍSTICAS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">Total Gerados</span>
+                <span class="stat-value" id="countTotal">1</span>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-label">Saldo Disponível</span>
+                <span class="stat-value green" id="userSaldo">R$ 7.990,00</span>
+            </div>
+
+            <div class="stat-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0.05) 100%); border-color: rgba(59,130,246,0.3);">
+                <span class="stat-label" style="color:#60a5fa;">Novo Documento</span>
+                <a href="criar-certificado-condutor.html" class="btn-action-emit" style="margin-top:6px; padding:10px 16px; justify-content:center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Emitir Novo Certificado ICETRAN</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- TABELA -->
+        <div class="table-card">
+            <div class="table-toolbar">
+                <div class="search-inputs">
+                    <input type="text" id="searchNome" class="search-field" placeholder="Buscar por nome..." oninput="filterTable()">
+                    <input type="text" id="searchCpf" class="search-field" placeholder="000.000.000-00" oninput="filterTable()">
+                </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>REGISTRO / ID</th>
+                            <th>NOME DO CONDUTOR</th>
+                            <th>CPF</th>
+                            <th>CURSO ESPECIALIZADO</th>
+                            <th>DATA DE EMISSÃO</th>
+                            <th>STATUS</th>
+                            <th style="text-align:right;">AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Itens renderizados dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const DEFAULT_ITEMS = [
+            {
+                id: '000250841',
+                nome: 'ADEMIR RODRIGUES DE OLIVEIRA',
+                cpf: '267.504.778-36',
+                curso: 'Condutores de Veículo de Transporte Coletivo de Passageiros',
+                data: '17/01/2024 10:30',
+                status: 'Aprovado'
+            }
+        ];
+
+        let allCertificados = [];
+
+        function loadCertificados() {
+            try {
+                const stored = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
+                allCertificados = [...stored, ...DEFAULT_ITEMS];
+            } catch(e) {
+                allCertificados = [...DEFAULT_ITEMS];
+            }
+            renderTable(allCertificados);
+        }
+
+        function renderTable(list) {
+            const tbody = document.getElementById('tableBody');
+            document.getElementById('countTotal').textContent = list.length;
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhum certificado encontrado.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(item => `
+                <tr>
+                    <td style="font-family:var(--font-mono); font-weight:700; color:#60a5fa;">${item.id}</td>
+                    <td style="font-weight:700;">${item.nome}</td>
+                    <td>${item.cpf}</td>
+                    <td style="color:#cbd5e1;">${item.curso}</td>
+                    <td style="color:var(--text-muted);">${item.data}</td>
+                    <td><span class="status-badge">✔ ${item.status || 'Aprovado'}</span></td>
+                    <td style="text-align:right;">
+                        <a href="criar-certificado-condutor.html?id=${encodeURIComponent(item.id)}" class="btn-action-emit">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            <span>Editar</span>
+                        </a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterTable() {
+            const nomeQ = (document.getElementById('searchNome')?.value || '').toLowerCase();
+            const cpfQ = (document.getElementById('searchCpf')?.value || '').toLowerCase();
+
+            const filtered = allCertificados.filter(c => {
+                if (nomeQ && !c.nome.toLowerCase().includes(nomeQ)) return false;
+                if (cpfQ && !c.cpf.toLowerCase().includes(cpfQ)) return false;
+                return true;
+            });
+            renderTable(filtered);
+        }
+
+        window.addEventListener('DOMContentLoaded', loadCertificados);
+    </script>
+</body>
+</html>

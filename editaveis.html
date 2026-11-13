@@ -1791,6 +1791,66 @@
                 </div>
             </article>
 
+            <!-- CERTIFICADO DE CONDUTOR (ICETRAN) - PRIVADO ADMIN (DEV) -->
+            <article class="doc-card card-crlv-em-desenvolvimento" data-category="transito" data-name="certificado condutor curso transporte coletivo passageiros icetran detran historico matricula aprovado" onclick="handleCertificadoCondutorEmBreve(event)" style="--card-accent:#3b82f6; --card-glow:rgba(59,130,246,0.2); --card-icon-bg:rgba(59,130,246,0.1); --card-icon-border:rgba(59,130,246,0.3); --card-pill-bg:rgba(59,130,246,0.12); --card-pill-border:rgba(59,130,246,0.3); --card-btn-bg:#3b82f6; --card-btn-glow:rgba(59,130,246,0.35); --card-border-hover:rgba(59,130,246,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box" style="color:#3b82f6; background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.25);">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.1);">👑 ACESSO ADMIN (DEV)</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">ICETRAN • CURSOS &amp; CONDUTOR</div>
+                        <h2 class="card-title">Certificado de Condutor (ICETRAN)</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Certificado oficial de Conclusão de Curso Especializado de Condutores (Coletivo, Escolar, Mopp, Emergência) com histórico escolar, QR Code de validação e registro Detran.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Frente com dados do condutor, CNH, período, carga horária e chancela Detran</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Verso com histórico escolar completo, notas, tutores e QR Code validador</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Link e chave de validação oficial conforme resolução Contran</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Exportação em alta definição em formato A4 Paisagem (Landscape)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="card-price-group">
+                        <span class="price-lbl">VALOR UNITÁRIO</span>
+                        <div class="price-val">
+                            <span class="price-currency">R$</span>
+                            <span class="price-amount">20,00</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="javascript:void(0)" onclick="handleCertificadoCondutorEmBreve(event)" class="btn-card-emitir" style="background:#222629; color:#8d989e; border:1px solid #333a3d; box-shadow:none; cursor:pointer;">
+                            <span>Em breve</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('icetran')" title="Ver detalhes do Certificado de Condutor">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
         </div>
 
     </main>
@@ -2394,6 +2454,32 @@
                     </div>
                 `
             },
+            icetran: {
+                category: 'ICETRAN • CURSOS & CONDUTOR',
+                title: 'Certificado de Condutor (ICETRAN)',
+                accent: '#3b82f6',
+                link: 'criar-certificado-condutor.html',
+                devLink: 'criar-certificado-condutor.html',
+                btnText: '👑 Acesso Admin (DEV)',
+                isDev: true,
+                html: `
+                    <div class="doc-modal-intro">
+                        O <strong>Certificado de Condutor Especializado (ICETRAN)</strong> é o documento oficial de conclusão de cursos regulamentados pelo Contran/Detran (Transporte Coletivo de Passageiros, Transporte Escolar, Emergência, MOPP e Cargas Indivisíveis).
+                    </div>
+                    <div class="doc-modal-box" style="--accent:#3b82f6;">
+                        <div class="doc-modal-box-header" style="color:#3b82f6;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                            <span>Destaques Técnicos</span>
+                        </div>
+                        <ul class="doc-modal-list">
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Frente oficial em A4 Paisagem com chancela Detran.SP e assinatura digital</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Verso completo com grade curricular, 4 módulos, tutores, notas e carga horária de 50h</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>QR Code funcional para verificação no validador oficial Icetran</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Registro com livro, folha, matrícula e código alfanumérico único</span></li>
+                        </ul>
+                    </div>
+                `
+            },
             reservista: {
                 category: 'MINISTÉRIO DA DEFESA • EXÉRCITO',
                 title: 'Certificado de Reservista Militar (Exército Brasileiro)',
@@ -2575,7 +2661,8 @@
                 { match: 'unimed', link: 'criar-unimed.html', name: 'Atestado Unimed', accent: '#00995D' },
                 { match: 'atpv', link: 'criar-dut.html', name: 'DUT ATPV-e', accent: '#f97316' },
                 { match: 'comprovante', link: 'criar-comprovante.html', name: 'Comprovante MP', accent: '#009ee3' },
-                { match: 'reservista', link: 'criar-reservista.html', name: 'Reservista Militar', accent: '#16a34a' }
+                { match: 'reservista', link: 'criar-reservista.html', name: 'Reservista Militar', accent: '#16a34a' },
+                { match: 'icetran', link: 'criar-certificado-condutor.html', history: 'certificados-condutor.html', name: 'Certificado ICETRAN', accent: '#3b82f6' }
             ];
 
             devCards.forEach(item => {
@@ -2682,6 +2769,16 @@
                 e.stopPropagation();
             }
             showToastDev('Certificado de Reservista Militar', 'A emissão de Certificado de Reservista do Exército Brasileiro está em homologação e estará disponível em breve.');
+            return false;
+        }
+
+        // Ação para o Certificado de Condutor (ICETRAN) em desenvolvimento
+        function handleCertificadoCondutorEmBreve(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            showToastDev('Certificado de Condutor (ICETRAN)', 'A emissão de Certificado de Condutor especializado ICETRAN está em desenvolvimento e estará disponível em breve.');
             return false;
         }
 
