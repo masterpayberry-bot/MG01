@@ -740,6 +740,11 @@
         
         function saveUserSession(user, rememberMe) {
             user.logged = true;
+            try {
+                sessionStorage.setItem('happynation_show_welcome_modal', 'true');
+                localStorage.setItem('happynation_just_logged_in', 'true');
+                sessionStorage.removeItem('happynation_welcome_shown_session');
+            } catch(e) {}
             if (rememberMe) {
                 localStorage.setItem('happynation_user', JSON.stringify(user));
                 if (user.email) {

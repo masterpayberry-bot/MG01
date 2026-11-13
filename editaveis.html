@@ -2748,7 +2748,283 @@
                     }, 500);
                 }
             } catch(e) {}
+
+            // Verifica modal de boas-vindas pós-login
+            if (typeof checkAndOpenWelcomeModal === 'function') {
+                checkAndOpenWelcomeModal();
+            }
         });
+    </script>
+
+    <!-- ─── MODAL DE BOAS-VINDAS PÓS-LOGIN (DESIGN EXCLUSIVO) ─── -->
+    <style>
+        .welcome-client-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            opacity: 0;
+            transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .welcome-client-modal-overlay.active {
+            display: flex !important;
+            opacity: 1;
+        }
+        .welcome-client-modal-card {
+            background: #14171a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            max-width: 420px;
+            width: 100%;
+            padding: 28px 24px 24px 24px;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transform: scale(0.95) translateY(8px);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .welcome-client-modal-overlay.active .welcome-client-modal-card {
+            transform: scale(1) translateY(0);
+        }
+        .welcome-client-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 18px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 6px;
+            border-radius: 8px;
+            transition: color 0.2s;
+        }
+        .welcome-client-close-btn:hover {
+            color: #ffffff;
+        }
+        .welcome-client-icon-box {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #00dc82, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px auto;
+            box-shadow: 0 8px 24px -4px rgba(0, 220, 130, 0.45);
+        }
+        .welcome-client-icon-box svg {
+            width: 28px;
+            height: 28px;
+        }
+        .welcome-client-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.4px;
+            margin: 0 0 8px 0;
+            line-height: 1.25;
+        }
+        .welcome-client-subtitle {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin: 0 auto 18px auto;
+            max-width: 340px;
+        }
+        .welcome-client-features-box {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .welcome-client-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        .welcome-check-icon {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: #00dc82;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+        .welcome-client-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        .welcome-client-status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00dc82;
+            box-shadow: 0 0 6px rgba(0, 220, 130, 0.8);
+        }
+        .welcome-client-btn-action {
+            width: 100%;
+            padding: 13px 20px;
+            border-radius: 12px;
+            background: #00dc82;
+            color: #062517;
+            font-size: 14px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px -3px rgba(0, 220, 130, 0.4);
+        }
+        .welcome-client-btn-action:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px -2px rgba(0, 220, 130, 0.55);
+        }
+    </style>
+
+    <div id="welcomeClientModalOverlay" class="welcome-client-modal-overlay" onclick="handleWelcomeOverlayClick(event)">
+        <div class="welcome-client-modal-card" onclick="event.stopPropagation()">
+            <!-- Botão Fechar -->
+            <button type="button" class="welcome-client-close-btn" onclick="closeWelcomeClientModal()" aria-label="Fechar modal">✕</button>
+
+            <!-- Ícone Topo Central (Verde) -->
+            <div class="welcome-client-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#062517" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+                </svg>
+            </div>
+
+            <!-- Título com Nome do Cliente do Cadastro -->
+            <h2 class="welcome-client-title">Bem-vindo, <span id="welcomeModalClientName">MORITZ</span></h2>
+
+            <!-- Subtítulo -->
+            <p class="welcome-client-subtitle">O melhor gerador de documentos do mercado — em constante evolução e melhorias para você.</p>
+
+            <!-- Lista de Documentações Disponíveis para Todos -->
+            <div class="welcome-client-features-box">
+                <div class="welcome-client-feature-item">
+                    <svg viewBox="0 0 24 24" class="welcome-check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>CNH Digital (Habilitação) &amp; Prontuário</span>
+                </div>
+                <div class="welcome-client-feature-item">
+                    <svg viewBox="0 0 24 24" class="welcome-check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Atestados Médicos (UPA &amp; Unimed)</span>
+                </div>
+                <div class="welcome-client-feature-item">
+                    <svg viewBox="0 0 24 24" class="welcome-check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Exame Toxicológico CNH &amp; Receitas</span>
+                </div>
+                <div class="welcome-client-feature-item">
+                    <svg viewBox="0 0 24 24" class="welcome-check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Diploma Universitário &amp; Reservista Militar</span>
+                </div>
+                <div class="welcome-client-feature-item">
+                    <svg viewBox="0 0 24 24" class="welcome-check-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>CRLV Digital, DUT Veicular &amp; RG Gov.br</span>
+                </div>
+            </div>
+
+            <!-- Pill de Versão / Status -->
+            <div class="welcome-client-status-pill">
+                <span class="welcome-client-status-dot"></span>
+                <span>v1 · Sistema em desenvolvimento</span>
+            </div>
+
+            <!-- Botão de Ação -->
+            <button type="button" class="welcome-client-btn-action" onclick="closeWelcomeClientModal()">Começar a usar</button>
+        </div>
+    </div>
+
+    <script>
+        function getClientFirstNameForModal() {
+            var user = null;
+            try {
+                user = JSON.parse(localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user') || '{}');
+            } catch(e) {}
+            var rawNome = (user && (user.nome || user.name)) ? String(user.nome || user.name).trim() : '';
+            if (!rawNome) return 'CLIENTE';
+            var parts = rawNome.split(/\s+/);
+            return (parts[0] || 'CLIENTE').toUpperCase();
+        }
+
+        function openWelcomeClientModal(customName) {
+            var overlay = document.getElementById('welcomeClientModalOverlay');
+            var nameEl = document.getElementById('welcomeModalClientName');
+            var finalName = customName || getClientFirstNameForModal();
+            if (nameEl) {
+                nameEl.textContent = finalName;
+            }
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.offsetHeight;
+                overlay.classList.add('active');
+            }
+        }
+        window.openWelcomeModal = openWelcomeClientModal;
+
+        function closeWelcomeClientModal() {
+            var overlay = document.getElementById('welcomeClientModalOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+                setTimeout(function() {
+                    overlay.style.display = 'none';
+                }, 220);
+            }
+            try {
+                sessionStorage.setItem('happynation_welcome_shown_session', 'true');
+                sessionStorage.removeItem('happynation_show_welcome_modal');
+                localStorage.removeItem('happynation_just_logged_in');
+            } catch(e) {}
+        }
+
+        function handleWelcomeOverlayClick(e) {
+            if (e.target && e.target.id === 'welcomeClientModalOverlay') {
+                closeWelcomeClientModal();
+            }
+        }
+
+        function checkAndOpenWelcomeModal(clientName) {
+            try {
+                var urlParams = new URLSearchParams(window.location.search);
+                var forceWelcome = urlParams.get('welcome') === '1';
+                var showFlag = sessionStorage.getItem('happynation_show_welcome_modal') === 'true';
+                var justLoggedIn = localStorage.getItem('happynation_just_logged_in') === 'true';
+                var alreadySeen = sessionStorage.getItem('happynation_welcome_shown_session') === 'true';
+
+                if (forceWelcome || showFlag || justLoggedIn || !alreadySeen) {
+                    setTimeout(function() {
+                        openWelcomeClientModal(clientName);
+                    }, 400);
+                }
+            } catch(e) {}
+        }
     </script>
 </body>
 </html>
