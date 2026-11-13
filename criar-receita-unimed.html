@@ -1017,7 +1017,7 @@
                 </div>
                 <div class="zoom-wrap">
                     <button type="button" class="btn-zoom" onclick="changeZoom(-0.05)" title="Afastar (−)">−</button>
-                    <span id="zoomDisp">135%</span>
+                    <span id="zoomDisp">125%</span>
                     <button type="button" class="btn-zoom" onclick="changeZoom(0.05)" title="Aproximar (+)">+</button>
                     <button type="button" class="btn-zoom btn-zoom-reset" onclick="resetZoom()" title="Tamanho Real 100%">100%</button>
                 </div>
@@ -1115,7 +1115,7 @@
     <script>
         
         // Controles de aproximação / afastamento (Zoom)
-        let currentZoom = 1.35;
+        let currentZoom = 1.25;
 
         function applyZoom() {
             const wrapper = document.getElementById('zoomSheetWrapper');
@@ -1134,7 +1134,7 @@
         }
 
         function resetZoom() {
-            currentZoom = 1.35;
+            currentZoom = 1.25;
             applyZoom();
         }
 
