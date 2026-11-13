@@ -127,9 +127,16 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 14px var(--primary-glow);
-            color: #0b0d0e;
-            font-weight: 900;
-            font-size: 15px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .brand-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 9px;
         }
 
         .brand-text {
@@ -647,9 +654,11 @@
     <!-- CABEÇALHO DO SISTEMA -->
     <header class="header">
         <div class="header-inner">
-            <a href="editaveis.html" class="header-brand">
-                <div class="brand-logo">MG</div>
-                <div class="brand-text">MG Editáveis</div>
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                </div>
+                <span class="brand-text">MG Editáveis</span>
             </a>
 
             <div class="header-right">

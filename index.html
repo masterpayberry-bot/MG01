@@ -2666,19 +2666,23 @@
             color: #ffffff;
         }
         .welcome-client-icon-box {
-            width: 54px;
-            height: 54px;
+            width: 58px;
+            height: 58px;
             border-radius: 16px;
-            background: linear-gradient(135deg, #00dc82, #059669);
+            background: #00dc82;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 18px auto;
             box-shadow: 0 8px 24px -4px rgba(0, 220, 130, 0.45);
+            overflow: hidden;
         }
-        .welcome-client-icon-box svg {
-            width: 28px;
-            height: 28px;
+        .welcome-client-icon-box .welcome-client-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 16px;
         }
         .welcome-client-title {
             font-size: 22px;
@@ -2769,12 +2773,9 @@
             <!-- Botão Fechar -->
             <button type="button" class="welcome-client-close-btn" onclick="closeWelcomeClientModal()" aria-label="Fechar modal">✕</button>
 
-            <!-- Ícone Topo Central (Verde) -->
+            <!-- Ícone Topo Central (Logo Oficial do Cabeçalho) -->
             <div class="welcome-client-icon-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#062517" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
-                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
-                </svg>
+                <img src="logo-icone.png" alt="MG Logo" class="welcome-client-logo-img">
             </div>
 
             <!-- Título com Nome do Cliente do Cadastro -->
