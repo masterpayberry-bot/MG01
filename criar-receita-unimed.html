@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -458,37 +458,50 @@
         }
 
         #recipeDoc {
-            width: 718px;
-            min-height: 1024px;
-            background: #ffffff !important;
-            color: #000000 !important;
-            padding: 26px 36px 38px 36px;
-            box-sizing: border-box;
+            width: 731px;
+            height: 1024px;
+            background: #ffffff;
+            color: #000000;
             position: relative;
-            font-family: Arial, Helvetica, sans-serif !important;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, "Liberation Sans", sans-serif;
+            overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── RESET COMPLETO: força TUDO dentro da folha a ser PRETO no Arial ── */
-        #recipeDoc div,
-        #recipeDoc span,
-        #recipeDoc p,
-        #recipeDoc strong,
-        #recipeDoc b,
-        #recipeDoc em,
-        #recipeDoc small,
-        #recipeDoc label,
-        #recipeDoc td,
-        #recipeDoc th,
-        #recipeDoc li,
-        #recipeDoc a {
-            color: #000000 !important;
-            font-family: Arial, Helvetica, sans-serif !important;
-            text-decoration: none !important;
-        }
+        /* ===== FOLHA POSICIONADA MILIMETRICAMENTE (modelo 731x1024) ===== */
+        #recipeDoc .rx { position: absolute; white-space: nowrap; margin: 0; padding: 0; color: #000; }
+        #recipeDoc .rx-b { font-weight: 700; }
+
+        #recipeDoc .rx-logo { position: absolute; left: 21.43px; top: 17.14px; width: 162.86px; height: 53.57px; overflow: hidden; background: #fff; }
+        #recipeDoc .rx-logo img { position: absolute; left: -21.43px; top: -17.14px; width: 731.43px; height: auto; max-width: none; display: block; }
+        #recipeDoc .rx-logo-cover { position: absolute; left: 40px; top: 33.9px; width: 70px; height: 15px; background: rgb(13,143,71); }
+        #recipeDoc .rx-logo-city { position: absolute; left: 42.1px; top: 32.2px; height: 16px; line-height: 16px; font-size: 14.5px; font-weight: 700; color: #ffffff; white-space: nowrap; font-family: Arial, Helvetica, sans-serif; }
+
+        #recipeDoc .rx-lbl { font-size: 12px; line-height: 14px; font-weight: 700; }
+        #recipeDoc .rx-val { font-size: 12px; line-height: 14px; font-weight: 400; }
+
+        #recipeDoc .rx-qrbox { position: absolute; left: 485px; top: 40px; width: 211px; height: 202px; border: 1px solid #7a7a7a; box-sizing: border-box; background: #fff; }
+        #recipeDoc .rx-qr-txt { font-size: 11px; line-height: 15px; font-weight: 700; }
+        #recipeDoc #docQrBox { position: absolute; left: 493px; top: 150px; width: 86px; height: 86px; background: #fff; }
+        #recipeDoc #docQrBox img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+
+        #recipeDoc .rx-line { position: absolute; left: 35px; width: 661px; height: 1px; background: #b0b0b0; }
+
+        #recipeDoc #docMedsList { position: absolute; left: 72px; top: 312.3px; width: 620px; }
+        #recipeDoc .rec-med-row { position: relative; margin: 0 0 12.6px 0; }
+        #recipeDoc .rec-med-row-header { position: relative; display: block; height: 14px; margin: 0; }
+        #recipeDoc .rec-med-name { position: absolute; left: 0; top: 0; font-size: 12.2px; line-height: 14px; font-weight: 700; color: #000; white-space: nowrap; }
+        #recipeDoc .rec-med-qty { position: absolute; left: 381.6px; top: 0; font-size: 12.2px; line-height: 14px; font-weight: 700; color: #000; text-align: left; white-space: nowrap; }
+        #recipeDoc .rec-med-posology { margin: 3.4px 0 0 0; padding: 0; font-size: 9.6px; line-height: 12px; color: #444; max-width: 330px; }
+
+        #recipeDoc .rx-icp-img { position: absolute; left: 131.4px; top: 902px; width: 27.1px; height: 34.3px; overflow: hidden; }
+        #recipeDoc .rx-icp-img img { position: absolute; left: -131.4px; top: -411.4px; width: 731.43px; height: auto; max-width: none; display: block; }
+        #recipeDoc .rx-icp-txt { left: 173.6px; top: 905.5px; font-size: 9.6px; line-height: 13px; color: #8f8f8f; text-transform: uppercase; }
+        #recipeDoc .rx-sign { position: absolute; left: 190.4px; top: 949.5px; width: 400px; text-align: center; }
+        #recipeDoc .rx-sign-in { display: inline-block; text-align: left; }
+        #recipeDoc .rx-sign-name { font-size: 12.2px; line-height: 15px; font-weight: 700; white-space: nowrap; color: #000; }
+        #recipeDoc .rx-sign-addr { font-size: 9.4px; line-height: 11px; margin: -1px 0 0 3px; white-space: nowrap; color: #000; }
 
         /* ─── MARCA D'ÁGUA DE PRÉVIA NO EDITOR ─── */
         .recipe-watermark-overlay {
@@ -1034,101 +1047,61 @@
                 </div>
 
                 <!-- DOCUMENTO -->
-                <div id="recipeDoc" style="color:#000000!important;font-family:Arial,Helvetica,sans-serif!important;background:#ffffff!important;">
-                    
-                    <!-- PARTE SUPERIOR (CONTEÚDO ACIMA DO RODAPÉ) -->
-                    <div>
-                        <!-- SEÇÃO SUPERIOR: ESQUERDA = LOGO + PACIENTE | DIREITA = BOX QR -->
-                        <div class="rec-top-section">
-                            
-                            <!-- COLUNA ESQUERDA: LOGO UNIMED + IDENTIFICAÇÃO DO PACIENTE -->
-                            <div class="rec-top-left-col">
-                                <!-- LOGO UNIMED OFICIAL COM CIDADE EDITÁVEL -->
-                                <!-- LOGO UNIMED – idêntico ao original enviado -->
-                                <div class="unimed-logo-box" title="Logotipo Oficial Unimed">
-                                    <span class="unimed-logo-name">Unimed</span>
-                                    <span class="unimed-logo-city" id="docCity">são paulo</span>
-                                </div>
+                <div id="recipeDoc">
 
-                                <!-- DADOS DO PACIENTE -->
-                                <div class="rec-patient-info-block">
-                                    <div class="rec-lbl-paciente">Paciente:</div>
-                                    <div class="rec-val-paciente" id="docPaciente">renato</div>
-
-                                    <div class="rec-patient-columns-row">
-                                        <div class="rec-field-col">
-                                            <span class="rec-field-col-lbl">CPF do Paciente:</span>
-                                            <span class="rec-field-col-val" id="docCPF">101.010.100-1</span>
-                                        </div>
-                                        <div class="rec-field-col">
-                                            <span class="rec-field-col-lbl">Nascimento:</span>
-                                            <span class="rec-field-col-val" id="docNasc">71/71/7171</span>
-                                        </div>
-                                        <div class="rec-field-col">
-                                            <span class="rec-field-col-lbl">Emissão:</span>
-                                            <span class="rec-field-col-val" id="docEmissao">11/11/26</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="rec-patient-addr-block">
-                                        <span class="rec-patient-addr-lbl">Endereço:</span>
-                                        <span class="rec-patient-addr-val" id="docEndereco">Rua das Flores, 1500, 344</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- COLUNA DIREITA: BOX DO QR CODE -->
-                            <div class="rec-qr-card-box">
-                                <div class="rec-qr-card-intro">
-                                    Paciente,<br>
-                                    sua receita foi enviada para o seu celular e também pode ser acessada pelo QR code!
-                                </div>
-                                <div class="rec-qr-card-sub">
-                                    Acesse e aproveite as vantagens.
-                                </div>
-                                <div class="rec-qr-card-bottom">
-                                    <div class="rec-qr-code-holder" id="docQrBox"></div>
-                                    <div class="rec-qr-keys-col">
-                                        <span class="rec-key-lbl">Token da receita:</span>
-                                        <span class="rec-key-val" id="docToken">TY5T4YK</span>
-                                        <span class="rec-key-lbl">codigo de acesso:</span>
-                                        <span class="rec-key-val" id="docCodigo">6585</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- 1ª LINHA HORIZONTAL CONTÍNUA (APÓS TODO O BLOCO SUPERIOR) -->
-                        <hr class="rec-divider-line">
-
-                        <!-- SEÇÃO DE MEDICAMENTOS -->
-                        <div class="rec-meds-section" id="docMedsList">
-                            <!-- Gerado dinamicamente -->
-                        </div>
+                    <!-- LOGO UNIMED (recorte do modelo) + cidade dinâmica -->
+                    <div class="rx-logo" title="Logotipo Oficial Unimed">
+                        <img src="assets/unimed_receita_ref.jpg" alt="Unimed">
+                        <div class="rx-logo-cover"></div>
+                        <div class="rx-logo-city" id="docCity">são paulo</div>
                     </div>
 
-                    <!-- PARTE INFERIOR / RODAPÉ -->
-                    <div class="rec-footer-area">
-                        <!-- 2ª LINHA HORIZONTAL CONTÍNUA (ANTES DO RODAPÉ) -->
-                        <hr class="rec-divider-line-bottom">
+                    <!-- PACIENTE -->
+                    <div class="rx rx-lbl" style="left:35px; top:103px;">Paciente:</div>
+                    <div class="rx" id="docPaciente" style="left:35px; top:118.6px; font-size:17px; line-height:20px; font-weight:700;">renato</div>
 
-                        <!-- ICP BRASIL -->
-                        <div class="rec-icp-row">
-                            <img src="assets/user_icp_crop.png" alt="ICP-Brasil" class="rec-icp-img" onerror="this.style.display='none'">
-                            <div class="rec-icp-text">
-                                ESTE DOCUMENTO FOI ASSINADO DIGITALMENTE COM CERTIFICADO DIGITAL PADRÃO ICP-BRASIL AMPARADO PELA MEDIDA PROVISÓRIA 2200-2/2001
-                            </div>
-                        </div>
+                    <div class="rx rx-lbl" style="left:35px; top:146px;">CPF do Paciente:</div>
+                    <div class="rx rx-val" id="docCPF" style="left:35.7px; top:159.4px;">101.010.100-1</div>
 
-                        <!-- ASSINATURA CENTRALIZADA DO MÉDICO -->
-                        <div class="rec-doctor-signature-center">
-                            <div class="rec-doc-name-crm">
-                                <span id="docMedico">Dr. marcelo tavares</span> | <span id="docCRM">CRM 91919 SP</span>
-                            </div>
-                            <div class="rec-doc-address" id="docEndMedico">
-                                Rua das Flores, 1500, 344
-                            </div>
+                    <div class="rx rx-lbl" style="left:209.3px; top:146px;">Nascimento:</div>
+                    <div class="rx rx-val" id="docNasc" style="left:212.9px; top:159.4px;">71/71/7171</div>
+
+                    <div class="rx rx-lbl" style="left:356.4px; top:146px;">Emissão:</div>
+                    <div class="rx" id="docEmissao" style="left:342.9px; top:162.4px; font-size:10.8px; line-height:12px;">11/11/26</div>
+
+                    <div class="rx rx-lbl" style="left:35px; top:182.3px;">Endereço:</div>
+                    <div class="rx rx-val" id="docEndereco" style="left:34.3px; top:197.3px; font-size:12.3px;">Rua das Flores, 1500, 344</div>
+
+                    <!-- BOX QR CODE -->
+                    <div class="rx-qrbox"></div>
+                    <div class="rx rx-qr-txt" style="left:496px; top:47.5px;">Paciente,<br>sua receita foi enviada para o seu<br>celular e também pode ser acessada<br>pelo QR code!</div>
+                    <div class="rx rx-qr-txt" style="left:496px; top:117px; line-height:14.6px;">Acesse e aproveite as<br>vantagens.</div>
+
+                    <div id="docQrBox"></div>
+
+                    <div class="rx" style="left:586.4px; top:158.5px; font-size:10.7px; line-height:13px;">Token da receita:</div>
+                    <div class="rx rx-b" id="docToken" style="left:572px; width:101px; text-align:center; top:171.4px; font-size:10.7px; line-height:13px;">TY5T4YK</div>
+                    <div class="rx" style="left:587px; top:203.3px; font-size:9.5px; line-height:12px;">codigo de acesso:</div>
+                    <div class="rx rx-b" id="docCodigo" style="left:572px; width:101px; text-align:center; top:214.4px; font-size:12.2px; line-height:14px;">6585</div>
+
+                    <!-- LINHA 1 -->
+                    <div class="rx-line" style="top:246.5px;"></div>
+
+                    <!-- MEDICAMENTOS -->
+                    <div id="docMedsList"></div>
+
+                    <!-- LINHA 2 -->
+                    <div class="rx-line" style="top:730.5px;"></div>
+
+                    <!-- ICP BRASIL -->
+                    <div class="rx-icp-img"><img src="assets/unimed_receita_ref2.png" alt="ICP-Brasil"></div>
+                    <div class="rx rx-icp-txt">ESTE DOCUMENTO FOI ASSINADO DIGITALMENTE COM CERTIFICADO DIGITAL PADRÃO<br>ICP-BRASIL AMPARADO PELA MEDIDA PROVISÓRIA 2200-2/2001</div>
+
+                    <!-- ASSINATURA -->
+                    <div class="rx-sign">
+                        <div class="rx-sign-in">
+                            <div class="rx-sign-name"><span id="docMedico">Dr. marcelo tavares</span> | <span id="docCRM">CRM 91919 SP</span></div>
+                            <div class="rx-sign-addr" id="docEndMedico">Rua das Flores, 1500, 344</div>
                         </div>
                     </div>
 
