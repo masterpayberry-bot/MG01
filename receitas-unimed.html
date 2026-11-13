@@ -1879,11 +1879,25 @@ function validarReceita(id) {
     const it = allReceitas.find(c => c.id === id);
     if (!it) return;
     const r = it.dados || {};
+    const medsCompact = (r.medicamentos || []).map(m => {
+        const n = (m.nome || '').replace(/[|;]/g, ' ');
+        const q = (m.qtd || '').replace(/[|;]/g, ' ');
+        const p = (m.posologia || '').replace(/[|;]/g, ' ');
+        return `${n}|${q}|${p}`;
+    }).join(';;');
     const p = new URLSearchParams({
-        token: r.token || '', cod: r.codigo || '', paciente: r.paciente || '', cpf: r.cpf || '',
-        nasc: r.nasc || '', emissao: r.emissao || '', cidade: r.cidade || '', endereco: r.endereco || '',
-        medico: r.medico || '', crm: r.crm || '', end_medico: r.end_medico || '',
-        meds: encodeURIComponent(JSON.stringify(r.medicamentos || []))
+        t: r.token || '',
+        c: r.codigo || '',
+        p: r.paciente || '',
+        cpf: r.cpf || '',
+        n: r.nasc || '',
+        e: r.emissao || '',
+        cid: r.cidade || '',
+        end: r.endereco || '',
+        m: r.medico || '',
+        crm: r.crm || '',
+        end_m: r.end_medico || '',
+        meds: medsCompact
     });
     window.location.href = 'validar-receita-unimed.html?' + p.toString();
 }

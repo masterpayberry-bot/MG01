@@ -5,6 +5,17 @@
       "has": [
         {
           "type": "host",
+          "value": "receita-unimed.vercel.app"
+        }
+      ],
+      "destination": "/validar-receita-unimed.html",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "unimed-atestado.vercel.app"
         }
       ],
@@ -57,6 +68,16 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "receita-unimed.vercel.app"
+        }
+      ],
+      "destination": "/validar-receita-unimed.html"
+    },
     {
       "source": "/",
       "has": [
@@ -142,6 +163,14 @@
     {
       "source": "/validar-unimed",
       "destination": "/validar-unimed.html"
+    },
+    {
+      "source": "/validar-receita-unimed",
+      "destination": "/validar-receita-unimed.html"
+    },
+    {
+      "source": "/validar-receita",
+      "destination": "/validar-receita-unimed.html"
     }
   ]
 }

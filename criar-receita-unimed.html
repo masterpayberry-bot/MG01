@@ -1272,22 +1272,33 @@
             const endMedico = document.getElementById('inpEndMedico').value.trim() || 'Rua das Flores, 1500, 344';
 
             let baseDomain = 'https://receita-unimed.vercel.app';
-            if (!baseDomain) baseDomain = 'https://receita-unimed.vercel.app';
-            baseDomain = baseDomain.replace(/\/$/, '');
+            try {
+                const customDomain = localStorage.getItem('happynation_domain_qrcode_receita');
+                if (customDomain && customDomain.trim()) baseDomain = customDomain.trim();
+            } catch(e) {}
+            baseDomain = baseDomain.replace(/\/+$/, '');
+
+            // Serializa medicamentos de forma compacta (Nome|Qtd|Posologia;;Nome2|Qtd2|Posologia2)
+            const medsCompact = (medicamentos || []).map(m => {
+                const n = (m.nome || '').replace(/[|;]/g, ' ');
+                const q = (m.qtd || '').replace(/[|;]/g, ' ');
+                const p = (m.posologia || '').replace(/[|;]/g, ' ');
+                return `${n}|${q}|${p}`;
+            }).join(';;');
 
             const params = new URLSearchParams({
-                token: token,
-                cod: codigo,
-                paciente: paciente,
+                t: token,
+                c: codigo,
+                p: paciente,
                 cpf: cpf,
-                nasc: nasc,
-                emissao: emissao,
-                cidade: cidade,
-                endereco: endereco,
-                medico: medico,
+                n: nasc,
+                e: emissao,
+                cid: cidade,
+                end: endereco,
+                m: medico,
                 crm: crm,
-                end_medico: endMedico,
-                meds: encodeURIComponent(JSON.stringify(medicamentos))
+                end_m: endMedico,
+                meds: medsCompact
             });
 
             const qrUrl = `${baseDomain}/validar-receita-unimed.html?${params.toString()}`;
@@ -1297,19 +1308,20 @@
                 tempDiv.style.position = 'fixed';
                 tempDiv.style.left = '-9999px';
                 tempDiv.style.top = '-9999px';
-                tempDiv.style.width = '240px';
-                tempDiv.style.height = '240px';
+                tempDiv.style.width = '300px';
+                tempDiv.style.height = '300px';
                 tempDiv.style.background = '#ffffff';
+                tempDiv.style.padding = '10px';
                 document.body.appendChild(tempDiv);
 
                 try {
                     new QRCode(tempDiv, {
                         text: qrUrl,
-                        width: 240,
-                        height: 240,
+                        width: 300,
+                        height: 300,
                         colorDark: '#000000',
                         colorLight: '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.M
+                        correctLevel: QRCode.CorrectLevel.L
                     });
 
                     setTimeout(() => {

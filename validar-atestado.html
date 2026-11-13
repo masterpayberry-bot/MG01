@@ -1377,12 +1377,12 @@
             <div class="data-grid">
                 <div class="data-item">
                     <span class="data-label">Nome Completo do Paciente</span>
-                    <span class="data-value highlight-blue" id="valNome">TATIANI RODRIGUES MOR</span>
+                    <span class="data-value highlight-blue" id="valNome">---</span>
                 </div>
 
                 <div class="data-item">
                     <span class="data-label">CPF do Paciente</span>
-                    <span class="data-value" id="valCns">458.912.873-44</span>
+                    <span class="data-value" id="valCns">---</span>
                 </div>
 
                 <div class="data-item">
@@ -1433,7 +1433,7 @@
             </div>
 
             <div class="atestado-statement-box" id="valStatement">
-                Atesto para os devidos fins, que o(a) paciente <strong>TATIANI RODRIGUES MOR</strong>, portador(a) do CPF sob nº <strong>458.912.873-44</strong>, foi atendido(a) na presente unidade de saúde e necessita de <strong>3 (três) dias de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).
+                Carregando dados da validação eletrônica...
             </div>
         </div>
 
@@ -1521,12 +1521,12 @@
             <!-- Destinatário / Paciente -->
             <div class="atestado-para-row">
                 <span class="para-title">PARA:</span>
-                <span class="para-nome-val" id="fld_nome_paciente">TATIANI RODRIGUES MOR</span>
+                <span class="para-nome-val" id="fld_nome_paciente">---</span>
             </div>
 
             <!-- Texto principal do Atestado -->
             <div class="atestado-texto-box">
-                <div class="atestado-texto-content" id="fld_texto_principal">Atesto para os devidos fins, que o(a), <b>TATIANI RODRIGUES MOR</b>, portador(a) do CPF sob nº <b>458.912.873-44</b>, foi atendido(a) no(a), <b>UPA 24h Itaquera - Consultórios</b> na data <b>04/11/2023</b><br>às <b>08:12:23</b>, necessitando de <b>3 (três)</b> dias de repouso por motivo de doença.</div>
+                <div class="atestado-texto-content" id="fld_texto_principal">Carregando dados da folha oficial...</div>
             </div>
 
             <!-- CID estático -->
@@ -1962,16 +1962,16 @@
         const params = new URLSearchParams(window.location.search);
 
         const id = params.get('id') || 'AT-1001';
-        const nome = (params.get('nome') || params.get('paciente') || 'TATIANI RODRIGUES MOR').toUpperCase();
-        const cns = params.get('cns') || '801440458570767';
-        const cid = params.get('cid') || 'J02.';
-        const dias = params.get('dias') || '3';
-        const unidade = params.get('unidade') || 'UPA 24h Itaquera - Consultórios Médicos';
-        const medico = params.get('medico') || 'Dr. Jair Dacas';
-        const esp = params.get('esp') || 'Médica Clínica';
-        const crm = params.get('crm') || 'CRM 29022 RS';
-        const data = params.get('data') || '04/11/2026';
-        const hora = params.get('hora') || '08:12:23';
+        const nome = (params.get('nome') || params.get('paciente') || '').toUpperCase();
+        const cns = params.get('cns') || params.get('cpf') || '---';
+        const cid = params.get('cid') || '---';
+        const dias = params.get('dias') || '1';
+        const unidade = params.get('unidade') || 'UPA 24h - Unidade de Pronto Atendimento';
+        const medico = params.get('medico') || 'Médico Plantonista';
+        const esp = params.get('esp') || 'Clínica Médica';
+        const crm = params.get('crm') || 'CRM Regular';
+        const data = params.get('data') || '';
+        const hora = params.get('hora') || '';
         const auth = params.get('auth') || ('SUS-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-BR');
         const end1 = params.get('end1') || 'Av. Miguel Ignácio Curi, 41';
         const end2 = params.get('end2') || 'Vila Carmosina - São Paulo - SP';
