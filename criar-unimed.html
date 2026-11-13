@@ -1795,6 +1795,8 @@ function getUnimedValidationUrl() {
     params.set('crm', g('inpCrm') || 'CRMRJ-01212699');
     params.set('med', g('inpProfissional') || 'MARIA CAROLINA CALIANO DA SILVA');
     params.set('diag', g('inpDiag') || 'quadro de dengue');
+    if (g('inpUnidade1')) params.set('unidade', g('inpUnidade1'));
+    if (g('inpUnidade2')) params.set('endereco', g('inpUnidade2'));
 
     const acomp = g('inpAcomp');
     if (acomp) {

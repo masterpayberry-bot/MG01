@@ -879,16 +879,30 @@
             if (!qrEl || typeof QRCode === 'undefined') return;
             
             // URL limpa oficial que escaneia instantaneamente no celular / Google Lens
-            const targetUrl = 'https://diploma-uninter.vercel.app';
-            
+            const gv = (id, d) => ((document.getElementById(id) && document.getElementById(id).value) || d || '').trim();
+            const qp = new URLSearchParams();
+            qp.set('nome', gv('inpNome', 'FERNANDO CEZAR DA SILVA'));
+            qp.set('curso', gv('inpCurso', 'BACHARELADO EM FARMÁCIA'));
+            qp.set('rg', gv('inpRg', 'SP- 21225232 / SSP/SP - SP'));
+            qp.set('conclusao', gv('inpDataConc', '12 DE AGOSTO DE 2026'));
+            qp.set('colacao', gv('inpDataCol', '11 DE JANEIRO DE 2027'));
+            qp.set('expedicao', gv('inpDataExp', 'SÃO PAULO, 18 DE MARÇO DE 2027'));
+            qp.set('codigo', gv('inpHash', '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17'));
+            const targetUrl = 'https://diploma-uninter.vercel.app/?' + qp.toString();
+
             qrEl.innerHTML = '';
+            // Renderiza em alta resolução (288px) e exibe em 96px para manter módulos nítidos com mais dados
             new QRCode(qrEl, {
                 text: targetUrl,
-                width: 96,
-                height: 96,
+                width: 288,
+                height: 288,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.L
+            });
+            qrEl.querySelectorAll('canvas, img').forEach(function (el) {
+                el.style.width = '96px';
+                el.style.height = '96px';
             });
         }
 

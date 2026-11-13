@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -1295,6 +1295,7 @@
             scrollbar-color: rgba(255, 255, 255, 0.18) #0b0d0e;
         }
 </style>
+<script src="js/sem-dados-qr.js"></script>
 </head>
 <body>
 
@@ -1626,6 +1627,15 @@
 
     <script>
     let dadosAtestado = {};
+
+    // Formata CPF (000.000.000-00); se não tiver 11 dígitos, devolve o texto original
+    function formatarCpf(v) {
+        const raw = String(v == null ? '' : v).trim();
+        const d = raw.replace(/\D/g, '');
+        if (d.length === 11) return d.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        return raw;
+    }
+
 
     // Copia universalmente compatível com HTTP, IP e HTTPS (sem toast invasivo na tela)
     function copiarTextoUniversal(texto) {
@@ -2021,7 +2031,7 @@
         document.getElementById('valData').textContent = data;
         document.getElementById('valHora').textContent = hora;
         document.getElementById('valMedico').textContent = medico;
-        document.getElementById('valCrm').textContent = crm.includes('/') ? crm : (crm + ' / SP');
+        document.getElementById('valCrm').textContent = crm;
         document.getElementById('valUnidade').textContent = unidade;
         const vEnd = document.getElementById('valEndereco');
         if (vEnd) vEnd.textContent = `${end1} — ${end2} (${end3})`;
@@ -2038,7 +2048,7 @@
         // Texto da declaração formal na tela
         const stBox = document.getElementById('valStatement');
         if (stBox) {
-            stBox.innerHTML = `Atesto para os devidos fins, que o(a) paciente <strong>${nome}</strong>, Cartão SUS nº <strong>${cns}</strong>, foi atendido(a) no estabelecimento <strong>${unidade}</strong> na data <strong>${data}</strong> às <strong>${hora}</strong> pelo(a) <strong>${medico}</strong> (${crm}), necessitando de <strong>${diasStr} de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).`;
+            stBox.innerHTML = `Atesto para os devidos fins, que o(a) paciente <strong>${nome}</strong>, portador(a) do CPF sob nº <strong>${cns}</strong>, foi atendido(a) no estabelecimento <strong>${unidade}</strong> na data <strong>${data}</strong> às <strong>${hora}</strong> pelo(a) <strong>${medico}</strong> (${crm}), necessitando de <strong>${diasStr} de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).`;
         }
 
         // Popula elementos da Folha Oficial de Impressão do Atestado (folha única idêntica ao editor)
@@ -2047,12 +2057,15 @@
         document.title = `Validação de Atestado — ${nome} | UPA 24h`;
 
         // Se houver backend ativo e apenas ID fornecido, tenta enriquecer dados adicionais
-        if (id && (!params.get('nome') || !params.get('paciente'))) {
+        if (!(params.get('nome') || params.get('paciente'))) {
+            // QR sem dados do paciente: nunca exibir dados fictícios / de outra pessoa
+            mgSemDados();
             try {
-                fetch(`api/index.php?action=verificar_atestado&id=${encodeURIComponent(id)}`)
+                fetch(`api/index.php?action=verificar_atestado&id=${encodeURIComponent(params.get('id') || params.get('cod') || '__sem_id__')}`)
                     .then(r => r.json())
                     .then(res => {
                         if (res && res.status === 'success' && res.data) {
+                            mgSemDadosRemover();
                             const d = res.data;
                             if (d.paciente_nome) {
                                 dadosAtestado.nome = d.paciente_nome.toUpperCase();

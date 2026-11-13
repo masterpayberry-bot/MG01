@@ -348,6 +348,7 @@
             margin-bottom: 4px;
         }
     </style>
+<script src="js/sem-dados-qr.js"></script>
 </head>
 <body>
 
@@ -496,10 +497,9 @@
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
 
-            let last = {};
-            try {
-                last = JSON.parse(localStorage.getItem('happynation_last_diploma') || '{}');
-            } catch(e) {}
+            // Somente dados do QR Code (nunca o último diploma salvo neste aparelho)
+            const last = {};
+            if (!(params.get('nome') || params.get('aluno') || params.get('diplomado'))) { mgSemDados(); }
 
             const nome = params.get('nome') || params.get('aluno') || params.get('diplomado') || last.nome;
             if (nome) document.getElementById('lblNome').textContent = nome.toUpperCase();

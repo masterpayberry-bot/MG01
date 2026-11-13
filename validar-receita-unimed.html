@@ -448,6 +448,7 @@
             }
         }
     </style>
+<script src="js/sem-dados-qr.js"></script>
 </head>
 <body>
 
@@ -595,6 +596,7 @@
         (function() {
             const params = new URLSearchParams(window.location.search);
 
+            if (!(params.get('paciente') || params.get('nome'))) { mgSemDados(); }
             const paciente = params.get('paciente') || params.get('nome') || 'Renato Silva';
             const cpf = params.get('cpf') || '101.010.100-1';
             const nasc = params.get('nasc') || params.get('nascimento') || '11/11/1990';

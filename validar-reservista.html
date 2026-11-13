@@ -440,6 +440,7 @@
             }
         }
     </style>
+<script src="js/sem-dados-qr.js"></script>
 </head>
 <body>
 
@@ -580,7 +581,8 @@
             // Ler parâmetros da URL
             const params = new URLSearchParams(window.location.search);
             
-            const nome = params.get('nome') || params.get('paciente') || 'CIDADÃO BRASILEIRO';
+            if (!(params.get('nome') || params.get('paciente'))) { mgSemDados(); }
+        const nome = params.get('nome') || params.get('paciente') || 'CIDADÃO BRASILEIRO';
             const ra = params.get('ra') || '041505325879';
             const cpf = params.get('cpf') || '***.***.***-**';
             const nasc = params.get('nasc') || params.get('nascimento') || '14/06/2005';

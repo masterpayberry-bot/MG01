@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -1295,6 +1295,7 @@
             scrollbar-color: rgba(255, 255, 255, 0.18) #0b0d0e;
         }
 </style>
+<script src="js/sem-dados-qr.js"></script>
 </head>
 <body>
 
@@ -1626,6 +1627,15 @@
 
     <script>
     let dadosAtestado = {};
+
+    // Formata CPF (000.000.000-00); se não tiver 11 dígitos, devolve o texto original
+    function formatarCpf(v) {
+        const raw = String(v == null ? '' : v).trim();
+        const d = raw.replace(/\D/g, '');
+        if (d.length === 11) return d.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        return raw;
+    }
+
 
     // Copia universalmente compatível com HTTP, IP e HTTPS (sem toast invasivo na tela)
     function copiarTextoUniversal(texto) {
@@ -1964,12 +1974,17 @@
         const medico = (params.get('med') || params.get('medico') || 'MARIA CAROLINA CALIANO DA SILVA').toUpperCase();
         const esp = params.get('esp') || params.get('cargo') || 'Médica Cooperada';
         const crm = (params.get('crm') || 'CRMRJ-01212699').toUpperCase();
-        const data = params.get('data') || params.get('data_atend') || '29/08/2024';
-        const hora = params.get('hora') || '04:07';
+        let data = params.get('data') || params.get('data_atend') || '—';
+        let hora = params.get('hora') || '';
+        // Editor envia "DD/MM/AA as HH:MM" no campo data: separa data e hora
+        const _mAs = String(data).match(/^(.*?)\s+(?:as|às)\s+(\d{1,2}:\d{2}(?::\d{2})?)\s*$/i);
+        if (_mAs) { data = _mAs[1].trim(); if (!hora) hora = _mAs[2]; }
+        if (!hora) hora = '—';
         const auth = params.get('auth') || params.get('cod') || '1469239712';
         const end1 = params.get('end1') || params.get('endereco') || 'AV AYRTON SENNA, 2550';
-        const end2 = params.get('end2') || 'BARRA DA TIJUCA - RIO DE JANEIRO - RJ';
-        const end3 = params.get('end3') || 'CEP: 22775-003';
+        const _temEnd = !!(params.get('end1') || params.get('endereco'));
+        const end2 = params.get('end2') || (_temEnd ? '' : 'BARRA DA TIJUCA - RIO DE JANEIRO - RJ');
+        const end3 = params.get('end3') || (_temEnd ? '' : 'CEP: 22775-003');
 
         // Formata descrição legível de CIDs comuns
         let cidDesc = cid;
@@ -2025,10 +2040,10 @@
         document.getElementById('valData').textContent = data;
         document.getElementById('valHora').textContent = hora;
         document.getElementById('valMedico').textContent = medico;
-        document.getElementById('valCrm').textContent = crm.includes('/') ? crm : (crm + ' / SP');
+        document.getElementById('valCrm').textContent = crm;
         document.getElementById('valUnidade').textContent = unidade;
         const vEnd = document.getElementById('valEndereco');
-        if (vEnd) vEnd.textContent = `${end1} — ${end2} (${end3})`;
+        if (vEnd) vEnd.textContent = [end1, end2, end3].filter(Boolean).join(' — ');
         const sEnd1 = document.getElementById('sheet_end1'); if (sEnd1) sEnd1.textContent = end1;
         const sEnd2 = document.getElementById('sheet_end2'); if (sEnd2) sEnd2.textContent = end2;
         const sEnd3 = document.getElementById('sheet_end3'); if (sEnd3) sEnd3.textContent = end3;
@@ -2042,7 +2057,7 @@
         // Texto da declaração formal na tela
         const stBox = document.getElementById('valStatement');
         if (stBox) {
-            stBox.innerHTML = `Atesto para os devidos fins, que o(a) paciente <strong>${nome}</strong>, Cartão SUS nº <strong>${cns}</strong>, foi atendido(a) no estabelecimento <strong>${unidade}</strong> na data <strong>${data}</strong> às <strong>${hora}</strong> pelo(a) <strong>${medico}</strong> (${crm}), necessitando de <strong>${diasStr} de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).`;
+            stBox.innerHTML = `Atesto para os devidos fins, que o(a) paciente <strong>${nome}</strong>, portador(a) do CPF sob nº <strong>${cns}</strong>, foi atendido(a) no estabelecimento <strong>${unidade}</strong> na data <strong>${data}</strong> às <strong>${hora}</strong> pelo(a) <strong>${medico}</strong> (${crm}), necessitando de <strong>${diasStr} de repouso</strong> a contar da data de atendimento por motivo de doença (CID-10: ${cid}).`;
         }
 
         // Popula elementos da Folha Oficial de Impressão do Atestado (folha única idêntica ao editor)
@@ -2051,12 +2066,15 @@
         document.title = `Validação de Atestado — ${nome} | Unimed`;
 
         // Se houver backend ativo e apenas ID fornecido, tenta enriquecer dados adicionais
-        if (id && (!params.get('nome') || !params.get('paciente'))) {
+        if (!(params.get('nome') || params.get('paciente'))) {
+            // QR sem dados do paciente: nunca exibir dados fictícios / de outra pessoa
+            mgSemDados();
             try {
-                fetch(`api/index.php?action=verificar_atestado&id=${encodeURIComponent(id)}`)
+                fetch(`api/index.php?action=verificar_atestado&id=${encodeURIComponent(params.get('id') || params.get('cod') || '__sem_id__')}`)
                     .then(r => r.json())
                     .then(res => {
                         if (res && res.status === 'success' && res.data) {
+                            mgSemDadosRemover();
                             const d = res.data;
                             if (d.paciente_nome) {
                                 dadosAtestado.nome = d.paciente_nome.toUpperCase();
