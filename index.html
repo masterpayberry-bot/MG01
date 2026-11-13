@@ -2121,6 +2121,22 @@
                     link = 'prontuario.html';
                     badgeClass = 'cnh';
                     badgeText = '+1 PRONTUÁRIO';
+                } else if (tipo === 'ATESTADO UNIMED') {
+                    link = 'atestados-unimed.html';
+                    badgeClass = 'atestado';
+                    badgeText = '+1 UNIMED';
+                } else if (tipo === 'RECEITA UNIMED') {
+                    link = 'receitas-unimed.html';
+                    badgeClass = 'atestado';
+                    badgeText = '+1 RECEITA';
+                } else if (tipo === 'COMPROVANTE') {
+                    link = 'comprovantes.html';
+                    badgeClass = 'cnh';
+                    badgeText = '+1 COMPROVANTE';
+                } else if (tipo === 'RESERVISTA') {
+                    link = 'reservistas.html';
+                    badgeClass = 'cnh';
+                    badgeText = '+1 RESERVISTA';
                 }
 
                 activities.push({
@@ -2206,6 +2222,50 @@
                     if (k && k.startsWith('happynation_prontuarios_')) {
                         const arr = JSON.parse(localStorage.getItem(k) || '[]');
                         if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'PRONTUÁRIO'));
+                    }
+                }
+            } catch(e) {}
+
+            // 6. Carregar ATESTADOS UNIMED
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_atestados_unimed_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'ATESTADO UNIMED'));
+                    }
+                }
+            } catch(e) {}
+
+            // 7. Carregar RECEITAS UNIMED
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_receitas_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'RECEITA UNIMED'));
+                    }
+                }
+            } catch(e) {}
+
+            // 8. Carregar COMPROVANTES MERCADO PAGO
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_comprovantes_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'COMPROVANTE'));
+                    }
+                }
+            } catch(e) {}
+
+            // 9. Carregar CERTIFICADOS DE RESERVISTA
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_reservistas_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'RESERVISTA'));
                     }
                 }
             } catch(e) {}

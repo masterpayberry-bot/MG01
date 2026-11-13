@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <!-- Open Graph / Compartilhamento de Links -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MG Editáveis">
+    <meta property="og:title" content="MG Editáveis • Atestados Médicos Unimed">
+    <meta property="og:description" content="Acesse seu painel exclusivo para emissão e controle de Atestados Médicos Unimed UNINTER com validação oficial por QR Code e MEC.">
+    <meta property="og:image" content="https://mg-editaveis.vercel.app/og-image.png">
+    <meta property="og:image:secure_url" content="https://mg-editaveis.vercel.app/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MG Editáveis • Atestados Médicos Unimed">
+    <meta name="twitter:description" content="Acesse seu painel exclusivo para emissão e controle de Atestados Médicos Unimed UNINTER com validação oficial por QR Code e MEC.">
+    <meta name="twitter:image" content="https://mg-editaveis.vercel.app/og-image.png">
+    <link rel="image_src" href="https://mg-editaveis.vercel.app/og-image.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis — Atestados Médicos Unimed Emitidos</title>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #121414;
+            --bg-header: #141716;
+            --bg-card: #191c1d;
+            --bg-card-hover: #1e2223;
+            --bg-input: #141617;
+            --border-color: #242829;
+            --border-subtle: #1e2223;
+            
+            --primary: #00dc82;
+            --primary-hover: #00c975;
+            --primary-light: rgba(0, 220, 130, 0.12);
+            --primary-border: rgba(0, 220, 130, 0.28);
+
+            --accent-diploma: #00995D;
+            --accent-diploma-glow: rgba(0, 153, 93, 0.35);
+
+            --warning-bg: #fffbeb;
+            --warning-border: #fef08a;
+            --warning-text: #78350f;
+
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 14px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-page); }
+        ::-webkit-scrollbar-thumb { background: #282c2d; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #353b3c; }
+
+        /* ─── LIGHT THEME VARIABLES & OVERRIDES ─── */
+        body.light-theme {
+            --bg-page: #f6f8f7;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-subtle: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --warning-text: #92400e;
+        }
+        body.light-theme .header {
+            background: #ffffff;
+            border-bottom-color: #e2e8f0;
+        }
+        body.light-theme .brand-text {
+            color: #0f172a;
+        }
+        body.light-theme .header-link {
+            color: #475569;
+        }
+        body.light-theme .header-link:hover {
+            color: #0f172a;
+        }
+        body.light-theme .header-icon {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        body.light-theme .header-icon:hover {
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        body.light-theme .btn-voltar {
+            color: #475569;
+        }
+        body.light-theme .btn-voltar:hover {
+            color: #0f172a;
+        }
+        body.light-theme .saldo-pill {
+            background: rgba(0, 220, 130, 0.12);
+            border-color: rgba(0, 220, 130, 0.35);
+            color: #059669;
+        }
+        body.light-theme .avatar-circle {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        body.light-theme .avatar-dropdown {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+        }
+        body.light-theme .dropdown-header {
+            border-bottom-color: #e2e8f0;
+        }
+        body.light-theme .dropdown-name {
+            color: #0f172a;
+        }
+        body.light-theme .dropdown-item {
+            color: #334155;
+        }
+        body.light-theme .dropdown-item:hover {
+            background: #f1f5f9;
+        }
+        body.light-theme .dropdown-divider {
+            background: #e2e8f0;
+        }
+        body.light-theme .card,
+        body.light-theme .card-action,
+        body.light-theme .table-wrap,
+        body.light-theme .filters-bar {
+            background: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+        }
+        body.light-theme .filter-input,
+        body.light-theme .status-pills {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #0f172a;
+        }
+        body.light-theme .filter-input::placeholder {
+            color: #94a3b8;
+        }
+        body.light-theme .status-pill-btn.active {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        body.light-theme thead th {
+            background: #f8fafc !important;
+            color: #64748b;
+            border-bottom-color: #e2e8f0 !important;
+        }
+        body.light-theme tbody tr td {
+            background: #ffffff !important;
+            border-bottom-color: #f1f5f9 !important;
+            color: #334155;
+        }
+        body.light-theme tbody tr:hover td {
+            background: #f8fafc !important;
+        }
+        body.light-theme .name-cell {
+            color: #0f172a;
+        }
+        body.light-theme .table-footer {
+            background: #f8fafc !important;
+            border-top-color: #e2e8f0 !important;
+            color: #64748b;
+        }
+        body.light-theme .btn-edit-cnh,
+        body.light-theme .btn-dots,
+        body.light-theme .btn-page {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+        body.light-theme .btn-edit-cnh:hover,
+        body.light-theme .btn-dots:hover,
+        body.light-theme .btn-page:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        body.light-theme .action-dropdown {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        body.light-theme .sec-title {
+            color: #0f172a;
+        }
+        body.light-theme .page-title-group h1 {
+            color: #0f172a;
+        }
+        body.light-theme .stat-value {
+            color: #0f172a;
+        }
+
+        /* ─── HEADER (MG EDITAVEIS HEADER) ─── */
+        .header {
+            height: 62px;
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000 !important;
+        }
+        .header-inner {
+            max-width: 1260px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            text-decoration: none !important;
+            flex-shrink: 0 !important;
+        }
+
+        .brand-logo {
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px !important;
+            min-height: 32px !important;
+            background: #00dc82 !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            overflow: hidden !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 0 14px rgba(0, 220, 130, 0.4) !important;
+        }
+
+        .brand-icon-img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+            border-radius: 9px !important;
+        }
+
+        .brand-text {
+            font-size: 18px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            letter-spacing: -0.3px !important;
+            white-space: nowrap !important;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+        }
+
+        .saldo-pill {
+            background: rgba(0, 220, 130, 0.08) !important;
+            color: #00dc82 !important;
+            border: 1px solid #00dc82 !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            padding: 6px 14px !important;
+            border-radius: 20px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+            text-decoration: none !important;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+            cursor: pointer !important;
+            box-shadow: 0 0 10px rgba(0, 220, 130, 0.15) !important;
+        }
+
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.16) !important;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.35) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .saldo-pill svg {
+            width: 15px !important;
+            height: 15px !important;
+            stroke: #00dc82 !important;
+            stroke-width: 2.2 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .saldo-pill span {
+            color: #00dc82 !important;
+            font-weight: 700 !important;
+        }
+
+        .header-link {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .header-link svg {
+            width: 15px;
+            height: 15px;
+            min-width: 15px;
+            min-height: 15px;
+            flex-shrink: 0;
+        }
+
+        .header-link:hover {
+            color: #ffffff;
+        }
+
+        .header-icon {
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icon svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .header-icon:hover {
+            color: #ffffff;
+        }
+
+        .btn-voltar {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-voltar:hover {
+            color: #ffffff;
+        }
+
+        .btn-voltar svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #00dc82;
+            color: #062517;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* ─── AVATAR DROPDOWN ─── */
+        .avatar-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: #191c1d;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            width: 220px;
+            display: none;
+            flex-direction: column;
+            z-index: 99999 !important;
+            overflow: hidden;
+            animation: fadeInDrop 0.15s ease-out;
+        }
+        .avatar-dropdown.show { display: flex; }
+        @keyframes fadeInDrop {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .dropdown-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dropdown-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .dropdown-email {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            word-break: break-all;
+        }
+        .dropdown-menu {
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .dropdown-item svg { width: 15px; height: 15px; color: var(--text-secondary); }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+        .dropdown-item.danger { color: #ef4444; }
+        .dropdown-item.danger svg { color: #ef4444; }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 6px;
+        }
+
+        /* ─── MAIN CONTAINER (CENTERED WITHOUT SIDEBAR EXACTLY LIKE OTHERS) ─── */
+        .page-container {
+            margin-top: 62px;
+            max-width: 980px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 24px 16px 80px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        /* ─── METRIC CARDS ROWS ─── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-card.action-card {
+            background: linear-gradient(135deg, rgba(0, 153, 93,0.15) 0%, rgba(0, 153, 93,0.05) 100%);
+            border: 1px solid rgba(0, 153, 93,0.3);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .btn-new-doc {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #00995D;
+            color: #fff;
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 800;
+            text-decoration: none;
+            margin-top: 6px;
+            box-shadow: 0 4px 14px rgba(0, 153, 93,0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-new-doc:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(0, 153, 93,0.45);
+        }
+
+        /* ─── SECTION "Atestados Gerados" ─── */
+        .sec-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 12px;
+            margin-bottom: 2px;
+        }
+
+        /* ─── FILTERS TOOLBAR ─── */
+        .filters-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            flex-wrap: wrap;
+            position: relative !important;
+            z-index: 5 !important;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .filter-input {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            color: #fff;
+            font-family: var(--font);
+            font-size: 12.5px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .filter-input:focus {
+            border-color: #00995D;
+        }
+
+        .filter-input::placeholder {
+            color: #55585a;
+        }
+
+        .status-pills {
+            display: flex;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 2px;
+            gap: 2px;
+        }
+
+        .status-pill-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font);
+        }
+
+        .status-pill-btn.active {
+            background: #252a2c;
+            color: #ffffff;
+        }
+
+        .btn-clear-filters {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 6px;
+            margin-left: auto;
+            transition: color 0.2s;
+            font-family: var(--font);
+        }
+
+        .btn-clear-filters:hover {
+            color: #ffffff;
+        }
+
+        /* ─── DATA TABLE (PIXEL PERFECT) ─── */
+        .table-wrap {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            position: relative !important;
+            z-index: 5 !important;
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            text-align: left;
+            background-color: #191c1d !important;
+        }
+
+        thead th {
+            padding: 12px 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 1px solid #232729 !important;
+            background: #161819 !important;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: middle;
+            color: #cbd5e1;
+            background-color: #191c1d !important;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover td {
+            background-color: #202426 !important;
+        }
+
+        .id-cell {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .name-cell {
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .course-cell {
+            color: #cbd5e1;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-cell {
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .date-cell {
+            font-size: 12px;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        /* Actions Column */
+        .actions-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .btn-edit-cnh {
+            background: #1e2224;
+            border: 1px solid #2a3032;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--font);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-edit-cnh:hover {
+            border-color: #3a4042;
+            color: #ffffff;
+            background: #252b2d;
+        }
+
+        .btn-edit-cnh svg {
+            width: 12px;
+            height: 12px;
+            color: #9ca3af;
+        }
+
+        .btn-dots {
+            background: #1e2224;
+            border: 1px solid #2a3032;
+            color: var(--text-secondary);
+            padding: 5px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .btn-dots:hover {
+            border-color: #3a4042;
+            color: #fff;
+        }
+
+        /* Dropdown Menu */
+        .action-dropdown {
+            position: absolute;
+            right: 0;
+            top: 34px;
+            width: 190px;
+            background: #181b1c;
+            border: 1px solid #2a3032;
+            border-radius: 8px;
+            padding: 5px;
+            z-index: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .action-dropdown.show {
+            display: flex;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .dropdown-item.danger {
+            color: #f87171;
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        /* ─── TABLE FOOTER / PAGINATION ─── */
+        .table-footer {
+            padding: 14px 18px;
+            border-top: 1px solid #232729 !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            background-color: #191c1d !important;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-page {
+            background: #232728;
+            border: 1px solid #2d3334;
+            color: #cbd5e1;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font);
+        }
+
+        .btn-page:hover {
+            background: #2b3032;
+            color: #fff;
+        }
+
+        /* ─── FLOATING CHAT / THEME BUTTON (FAB) ─── */
+        .fab-chat {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.4);
+            z-index: 99;
+            color: #062517;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .fab-chat svg {
+            width: 22px;
+            height: 22px;
+            fill: #062517;
+        }
+
+        .fab-chat:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.6);
+        }
+
+        /* Toast Container */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        /* HIGH-TECH ANIMATED NEURAL/PLEXUS BACKGROUND */
+        .neural-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ─── BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS ─── */
+        .networking-fab {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 99999;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px 10px 14px;
+            background: linear-gradient(135deg, #121915 0%, #17241e 100%);
+            border: 1.5px solid #00dc82;
+            border-radius: 50px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 20px rgba(0,220,130,0.35);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2,0.8,0.2,1);
+            animation: pulseNetworkingGlow 2.4s infinite ease-in-out;
+            user-select: none;
+        }
+        .networking-fab:hover {
+            transform: translateY(-3px) scale(1.03);
+            border-color: #34d399;
+            box-shadow: 0 12px 30px -4px rgba(0,0,0,0.8), 0 0 32px rgba(0,220,130,0.65);
+            color: #ffffff;
+        }
+        .fab-icon-bubble {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            background: #00dc82;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #062517;
+            flex-shrink: 0;
+            box-shadow: 0 0 14px rgba(0,220,130,0.6);
+        }
+        .fab-icon-bubble svg { width: 20px; height: 20px; }
+        .fab-ping-badge {
+            position: absolute;
+            top: -2px; right: -2px;
+            width: 11px; height: 11px;
+            background: #22c55e;
+            border: 2px solid #121915;
+            border-radius: 50%;
+        }
+        .fab-ping-badge::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px;
+            width: 11px; height: 11px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pingBadge 1.5s cubic-bezier(0,0,0.2,1) infinite;
+        }
+        .fab-text-col { display:flex; flex-direction:column; line-height:1.25; text-align:left; }
+        .fab-text-subtitle {
+            font-size: 10px; text-transform: uppercase; font-weight: 800;
+            color: #00dc82; letter-spacing: 0.6px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .fab-text-subtitle::before {
+            content: ''; width: 6px; height: 6px;
+            background: #00dc82; border-radius: 50%; display: inline-block;
+            animation: blinkDot 1s infinite alternate;
+        }
+        .fab-text-title { font-size: 13.5px; font-weight: 700; color: #ffffff; white-space: nowrap; }
+        @keyframes pulseNetworkingGlow {
+            0%   { box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 0 0 rgba(0,220,130,0.5); border-color:#00dc82; }
+            50%  { box-shadow: 0 8px 28px -4px rgba(0,0,0,0.8), 0 0 24px 6px rgba(0,220,130,0.45); border-color:#34d399; }
+            100% { box-shadow: 0 8px 24px -4px rgba(0,0,0,0.7), 0 0 0 0 rgba(0,220,130,0); border-color:#00dc82; }
+        }
+        @keyframes pingBadge { 75%,100% { transform:scale(2.2); opacity:0; } }
+        @keyframes blinkDot  { 0% { opacity:0.3; transform:scale(0.8); } 100% { opacity:1; transform:scale(1.2); } }
+
+        /* ─── RESPONSIVIDADE MOBILE ─── */
+        @media (max-width: 860px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .header { padding: 0 16px; }
+            .page-container { padding: 16px 12px; }
+            .filters-bar { flex-direction: column; align-items: stretch; }
+            .filter-input { width: 100% !important; }
+            .status-pills { width: 100%; justify-content: center; }
+        }
+
+        @media (max-width: 640px) {
+            .header-inner {
+                padding: 0 12px !important;
+            }
+            .header-brand {
+                gap: 8px !important;
+            }
+            .brand-logo {
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px !important;
+            }
+            .brand-text {
+                font-size: 15px !important;
+            }
+            .header-right {
+                gap: 6px !important;
+            }
+            .header-right .header-link,
+            .header-right .header-icon {
+                display: none !important;
+            }
+            .saldo-pill {
+                padding: 4px 8px !important;
+                font-size: 11px !important;
+                gap: 4px !important;
+            }
+            .saldo-pill svg {
+                width: 12px !important;
+                height: 12px !important;
+            }
+            .btn-voltar {
+                padding: 4px 6px !important;
+                font-size: 11px !important;
+                gap: 3px !important;
+            }
+            .avatar-circle {
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 11px !important;
+            }
+            .page-container {
+                padding: 12px 10px 40px 10px !important;
+            }
+            .table-wrap {
+                border-radius: 10px !important;
+            }
+            .networking-fab { left:16px; bottom:20px; padding:8px 14px 8px 10px; font-size:12px; }
+            .fab-icon-bubble { width:32px; height:32px; }
+            .fab-text-title  { font-size:12px; }
+        }
+    </style>
+    <script src="saldo-sync.js"></script>
+    <script src="db-sync.js"></script>
+</head>
+<body>
+    <!-- HIGH-TECH ANIMATED NEURAL/PLEXUS NETWORK BACKGROUND -->
+    <canvas id="neuralCanvas" class="neural-bg-canvas"></canvas>
+
+    <!-- MG EDITAVEIS HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="header-brand">
+                <div class="brand-logo">
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
+                </div>
+                <span class="brand-text">MG Editáveis</span>
+            </a>
+
+            <div class="header-right">
+                <a href="recargas.html" class="saldo-pill" title="Clique para recarregar saldo">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <span id="userHeaderSaldo">Saldo R$ 0,00</span>
+                </a>
+
+                <a href="indicacoes.html" class="header-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <span>Indique e Ganhe</span>
+                </a>
+
+                <div class="header-icon" onclick="showToast('Notificações')" title="Notificações">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+
+                <a href="index.html" class="btn-voltar" title="Voltar ao Início">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Voltar
+                </a>
+
+                <div class="avatar-circle" id="userHeaderAvatar" onclick="toggleAvatarDropdown(event)" title="Meu Perfil">M</div>
+
+                <!-- Avatar Dropdown -->
+                <div class="avatar-dropdown" id="avatarDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name" id="dropUserName">MG Editáveis</div>
+                        <div class="dropdown-email" id="dropUserEmail">admin@mgeditaveis.com.br</div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="perfil.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Perfil</span>
+                        </a>
+                        <a href="suporte.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <span>Suporte</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="login.html" class="dropdown-item danger" onclick="handleLogout(event)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span>Sair</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- PAGE CONTAINER (EXACTLY MATCHING CNH / PRONTUARIO / EXAME / ATESTADO) -->
+    <div class="page-container">
+
+        <!-- PAGE HEADER ESPECÍFICO DIPLOMA -->
+        <div class="page-header" style="margin-bottom: 20px;">
+            <div class="page-title-group">
+                <h1 style="font-size: 22px; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 10px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00995D" stroke-width="2.3"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 9v4"/><path d="M10 11h4"/></svg>
+                    <span>Atestados Médicos Unimed Emitidos</span>
+                </h1>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Histórico completo de atestados médicos oficiais da rede Unimed gerados com validação por QR Code e link ativo.</p>
+            </div>
+        </div>
+
+        <!-- 3 CARDS KPI PADRÃO ORGANIZADO -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-label">Total Gerados</span>
+                <span class="stat-value" id="statTotalVal">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Saldo Disponível</span>
+                <span class="stat-value" id="statSaldo" style="color: #00dc82;">R$ 0,00</span>
+            </div>
+            <div class="stat-card action-card">
+                <span class="stat-label" style="color: #60a5fa;">Novo Documento</span>
+                <a href="criar-unimed.html" class="btn-new-doc">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Emitir Novo Atestado Unimed</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- SECTION TITLE -->
+        <div class="sec-title">Atestados Unimed Gerados</div>
+
+        <!-- FILTERS TOOLBAR -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label class="filter-label">Nome</label>
+                <input type="text" class="filter-input" id="filterNome" placeholder="Buscar por nome" oninput="applyFilters()" style="width: 175px;">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">CPF</label>
+                <input type="text" class="filter-input" id="filterCpf" placeholder="000.000.000-00" oninput="applyFilters()" style="width: 155px;">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Data</label>
+                <input type="date" class="filter-input" id="filterData" onchange="applyFilters()" style="width: 145px; color-scheme:dark;">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <div class="status-pills">
+                    <button class="status-pill-btn active" id="btnStatusTodas" onclick="setStatusFilter('Todas', this)">Todas</button>
+                    <button class="status-pill-btn" id="btnStatusAtivo" onclick="setStatusFilter('Ativo', this)">Ativos</button>
+                    <button class="status-pill-btn" id="btnStatusOficial" onclick="setStatusFilter('Oficial', this)">Oficiais</button>
+                </div>
+            </div>
+
+            <button class="btn-clear-filters" onclick="clearFilters()">Limpar Filtros</button>
+        <button id="btnBulkDelete" onclick="deleteSelectedAtestados()" style="display:none; align-items:center; gap:6px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#ef4444; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.25)'" onmouseout="this.style.background='rgba(239,68,68,0.15)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>Excluir Selecionados (<span id="bulkDeleteCount">0</span>)</span>
+        </button>
+        </div>
+
+        <!-- TABLE WRAP -->
+        <div class="table-wrap">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" style="accent-color:var(--primary); cursor:pointer;"></th>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Status Unimed</th>
+                            <th>Data e Hora da Geração</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblBody">
+                        <!-- Preenchido via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TABLE PAGINATION FOOTER -->
+            <div class="table-footer">
+                <div id="paginationInfo">Mostrando 0 de 0 Atestados Unimed</div>
+                <div class="pagination-controls">
+                    <span id="pageCurrentInfo">Página 0 de 0</span>
+                    <button class="btn-page" onclick="prevPage()">Anterior</button>
+                    <button class="btn-page" onclick="nextPage()">Próxima</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FLOATING THEME TOGGLE BUTTON (FAB) -->
+    <div class="fab-chat" id="themeFabBtn" title="Alternar Modo Claro / Escuro" onclick="toggleTheme()">
+        <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+    </div>
+
+    <!-- BOTÃO FLUTUANTE PULSANTE - GRUPO NETWORKING MG EDITÁVEIS -->
+    <a href="https://chat.whatsapp.com/J0FvvNpoL7SHodR4ISMbyP?s=cl&p=a&iam=2" target="_blank" rel="noopener noreferrer"
+       class="networking-fab" id="networkingGroupFab" title="Entrar no Grupo de Networking" onclick="var u=this.getAttribute('href'); if(u && u.length > 5){ window.open(u, '_blank'); return false; }">
+        <div class="fab-icon-bubble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span class="fab-ping-badge"></span>
+        </div>
+        <div class="fab-text-col">
+            <span class="fab-text-subtitle">Comunidade Ativa</span>
+            <span class="fab-text-title" id="networkingGroupTitle">Networking MG Editáveis</span>
+        </div>
+    </a>
+
+    <script>
+    // ─── TEMA CLARO / ESCURO ───
+    function toggleTheme() {
+        const isLight = document.body.classList.toggle('light-theme');
+        localStorage.setItem('happynation_theme', isLight ? 'light' : 'dark');
+        updateThemeIcon();
+    }
+
+    function updateThemeIcon() {
+        const isLight = document.body.classList.contains('light-theme');
+        const icon = document.getElementById('themeIcon');
+        if (icon) {
+            if (isLight) {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+            } else {
+                icon.innerHTML = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>';
+            }
+        }
+    }
+
+    if (localStorage.getItem('happynation_theme') === 'light') {
+        document.body.classList.add('light-theme');
+    }
+    updateThemeIcon();
+
+    // ─── AVATAR DROPDOWN ───
+    function toggleAvatarDropdown(e) {
+        if (e) e.stopPropagation();
+        const drop = document.getElementById('avatarDropdown');
+        if (drop) drop.classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+        const drop = document.getElementById('avatarDropdown');
+        if (drop && drop.classList.contains('show') && !e.target.closest('#avatarDropdown') && !e.target.closest('#userHeaderAvatar')) {
+            drop.classList.remove('show');
+        }
+    });
+
+    // ─── DADOS E ESTADO DOS DIPLOMAS ───
+    let allAtestados = [];
+    let currentFilterStatus = 'Todas';
+    let currentPage = 1;
+    const ITEMS_PER_PAGE = 20;
+
+    function showToast(featureName) {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.style.cssText = 'background:#1a1d1e; border:1px solid #282c2d; border-radius:8px; padding:12px 16px; color:#fff; font-family:var(--font); box-shadow:0 6px 20px rgba(0,0,0,0.6); opacity:0; transform:translateY(10px); transition:all 0.3s cubic-bezier(0.18,0.89,0.32,1.28); min-width:230px; pointer-events:auto;';
+        toast.innerHTML = `<div style="font-size:12px; font-weight:700; color:#00dc82; margin-bottom:2px;">Sucesso</div><div style="font-size:11.5px; color:#aaa;">${featureName}</div>`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; }, 10);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(10px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function loadLoggedUser() {
+        try {
+            let userStr = (localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user'));
+            if (!userStr) {
+                const defaultUser = {
+                    id: 1,
+                    nome: 'MG Editáveis',
+                    email: 'admin@mgeditaveis.com.br',
+                    phone: '(21) 99882-1029',
+                    saldo: (window.MGSaldo ? window.MGSaldo.get() : 0),
+                    status: 'approved',
+                    logged: true
+                };
+                localStorage.setItem('happynation_user', JSON.stringify(defaultUser));
+                userStr = JSON.stringify(defaultUser);
+            }
+
+            const user = JSON.parse(userStr);
+            let adminUsers = [];
+            try { adminUsers = JSON.parse(localStorage.getItem('happynation_admin_users') || '[]'); } catch(e){}
+            let freshUser = null;
+            if (user && user.email) {
+                freshUser = adminUsers.find(u => u.email && u.email.toLowerCase() === user.email.toLowerCase());
+            }
+            if (freshUser) {
+                user.id = freshUser.id;
+                user.nome = freshUser.nome || user.nome;
+                user.email = freshUser.email || user.email;
+                user.phone = freshUser.phone || user.phone;
+                user.saldo = (freshUser.saldo !== undefined && freshUser.saldo !== null) ? parseFloat(freshUser.saldo) : (user.saldo !== undefined ? parseFloat(user.saldo) : 0);
+                user.status = freshUser.status || 'approved';
+                localStorage.setItem('happynation_user', JSON.stringify(user));
+            }
+
+            const saldo = (window.MGSaldo ? window.MGSaldo.get() : ((user && user.saldo !== undefined && user.saldo !== null) ? parseFloat(user.saldo) : 0));
+            const saldoHeader = document.getElementById('userHeaderSaldo');
+            const statSaldoEl = document.getElementById('statSaldo');
+            if (statSaldoEl) statSaldoEl.textContent = 'R$ ' + saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            if (saldoHeader) saldoHeader.textContent = `Saldo R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            const avatarEl = document.getElementById('userHeaderAvatar');
+            if (avatarEl) {
+                avatarEl.textContent = (user.nome ? user.nome.charAt(0).toUpperCase() : 'M');
+            }
+
+            const dropNome = document.getElementById('dropUserName');
+            if (dropNome) dropNome.textContent = user.nome || 'MG Editáveis';
+            const dropEmail = document.getElementById('dropUserEmail');
+            if (dropEmail) dropEmail.textContent = user.email || 'admin@mgeditaveis.com.br';
+
+            loadUserAtestadosUnimed(user);
+        } catch(e) {
+            console.error('Erro ao carregar usuário:', e);
+        }
+    }
+
+    window.addEventListener('storage', loadLoggedUser);
+
+    
+function loadUserAtestadosUnimed(user) {
+    const email = (user && user.email) ? user.email.toLowerCase().trim() : '';
+    const userKey = email ? ('happynation_atestados_unimed_' + email) : '';
+    const fallbackKey = email ? ('happynation_atestados_' + email) : '';
+
+    const seenIds = new Set();
+    const deletedList = JSON.parse(localStorage.getItem('happynation_deleted_atestados_unimed') || '[]');
+    const items = [];
+
+    const addIfValid = (item) => {
+        if (!item) return;
+        const idStr = String(item.id || item.codigo || ('ATU-' + Math.floor(10000 + Math.random() * 90000)));
+        if (seenIds.has(idStr) || deletedList.includes(idStr)) return;
+        seenIds.add(idStr);
+
+        items.push({
+            id: idStr,
+            nome: (item.nome || item.paciente || item.nomePaciente || 'PACIENTE UNIMED').toUpperCase(),
+            cpf: item.cpf || '101.010.100-11',
+            status: item.status || 'Oficial Unimed',
+            dias: item.dias || 3,
+            cid: item.cid || 'Z00.0',
+            created_at: item.created_at || item.data || new Date().toISOString(),
+            dados: item.dados || item
+        });
+    };
+
+    if (userKey) {
+        try {
+            const list = JSON.parse(localStorage.getItem(userKey) || '[]');
+            if (Array.isArray(list)) list.forEach(addIfValid);
+        } catch(e) {}
+    }
+
+    // Carrega também de happynation_atestados_{email} que sejam unimed
+    if (fallbackKey) {
+        try {
+            const fbList = JSON.parse(localStorage.getItem(fallbackKey) || '[]');
+            if (Array.isArray(fbList)) {
+                fbList.filter(x => x.tipo === 'atestado_unimed' || x.subRotulo?.includes('Unimed') || x.tagText === 'UNIMED').forEach(addIfValid);
+            }
+        } catch(e) {}
+    }
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('happynation_atestados_unimed_')) {
+            try {
+                const list = JSON.parse(localStorage.getItem(k) || '[]');
+                if (Array.isArray(list)) list.forEach(addIfValid);
+            } catch(e) {}
+        }
+    }
+
+    // Itens padrão demonstrativos caso ainda não tenha emitido
+    if (items.length === 0) {
+        const demo = [
+            { id: 'ATU-89214', nome: 'FERNANDO CEZAR DA SILVA', cpf: '213.523.218-19', status: 'Oficial Unimed', dias: 3, cid: 'Z00.0', created_at: new Date(Date.now() - 3600000 * 2).toISOString() },
+            { id: 'ATU-89215', nome: 'MARCOS VINICIUS PEREIRA', cpf: '342.109.876-54', status: 'Oficial Unimed', dias: 2, cid: 'J06.9', created_at: new Date(Date.now() - 3600000 * 5).toISOString() },
+            { id: 'ATU-89216', nome: 'BEATRIZ ALMEIDA ROCHA', cpf: '109.876.543-21', status: 'Oficial Unimed', dias: 5, cid: 'M54.5', created_at: new Date(Date.now() - 3600000 * 24).toISOString() }
+        ];
+        demo.forEach(addIfValid);
+    }
+
+    allAtestados = items;
+    renderTable();
+}
+
+
+    function renderTable() {
+        const tbody = document.getElementById('tblBody');
+        if (!tbody) return;
+
+        const nomeFilter = (document.getElementById('filterNome')?.value || '').toLowerCase().trim();
+        const cpfFilter = (document.getElementById('filterCpf')?.value || '').toLowerCase().trim();
+        const dataFilter = (document.getElementById('filterData')?.value || '').trim();
+
+        let filtered = allAtestados.filter(d => {
+            if (nomeFilter && !d.nome.toLowerCase().includes(nomeFilter)) return false;
+            if (cpfFilter && !d.cpf.toLowerCase().includes(cpfFilter) && !d.id.toLowerCase().includes(cpfFilter)) return false;
+            if (dataFilter) {
+                const itemDate = d.created_at ? d.created_at.split('T')[0] : '';
+                if (itemDate !== dataFilter) return false;
+            }
+            if (currentFilterStatus === 'Ativo' && d.status && !d.status.toLowerCase().includes('oficial') && !d.status.toLowerCase().includes('ativo') && !d.status.toLowerCase().includes('regular')) return false;
+            if (currentFilterStatus === 'Oficial' && d.status && !d.status.toLowerCase().includes('oficial')) return false;
+            return true;
+        });
+
+        const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+        const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIdx = startIdx + ITEMS_PER_PAGE;
+        const pageItems = filtered.slice(startIdx, endIdx);
+
+        const pagInfo = document.getElementById('paginationInfo');
+        const pageCur = document.getElementById('pageCurrentInfo');
+        if (pagInfo) {
+            pagInfo.textContent = filtered.length === 0 ? 'Mostrando 0 de 0 Atestados Unimed' : `Mostrando ${startIdx + 1}-${Math.min(endIdx, filtered.length)} de ${filtered.length} Atestados`;
+        }
+        if (pageCur) {
+            pageCur.textContent = filtered.length === 0 ? 'Página 0 de 0' : `Página ${currentPage} de ${totalPages}`;
+        }
+
+        if (pageItems.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:36px; color:var(--text-muted);">Nenhum diploma universitário encontrado com os filtros selecionados.</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        pageItems.forEach(d => {
+            const dt = d.created_at ? new Date(d.created_at) : new Date();
+            const dateFormatted = `${String(dt.getDate()).padStart(2, '0')}/${String(dt.getMonth() + 1).padStart(2, '0')}/${dt.getFullYear()} ${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+            const statusText = d.status || 'Regular (Oficial UNINTER)';
+
+            html += `
+                <tr>
+                    <td><input type="checkbox" class="row-select-cb" value="${d.id}" onchange="updateSelectCount()" style="accent-color:var(--primary); cursor:pointer;"></td>
+                    <td class="id-cell">${d.id}</td>
+                    <td class="name-cell" style="cursor:pointer;" onclick="verDiploma('${d.id}')">${d.nome}</td>
+                    <td class="cpf-cell">${d.cpf || '048.255.856-39'}</td>
+                    <td class="status-cell" style="color: #00dc82 !important;">${statusText}</td>
+                    <td class="date-cell">${dateFormatted}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="btn-edit-cnh" onclick="editarAtestado('${d.id}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                Editar Atestado
+                            </button>
+                            <button class="btn-dots" onclick="toggleDropdown(event, this)">•••</button>
+                            <div class="action-dropdown">
+                                <div class="dropdown-item" onclick="verDiploma('${d.id}')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    Ver Informações
+                                </div>
+                                <div class="dropdown-item danger" onclick="deleteAtestadoRow('${d.id}')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    Excluir Diploma
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+    }
+
+    function verDiploma(docId) {
+        window.location.href = 'criar-unimed.html?id=' + encodeURIComponent(docId);
+    }
+
+    function editarAtestado(docId) {
+        window.location.href = 'criar-unimed.html?id=' + encodeURIComponent(docId) + '&edit=true';
+    }
+
+    function deleteAtestadoRow(docId) {
+        if (!confirm('Deseja realmente excluir este diploma universitário?')) return;
+        allAtestados = (typeof allAtestados !== 'undefined' ? allAtestados : []).filter(c => c.id !== docId);
+
+        try {
+            let deletedIds = JSON.parse(localStorage.getItem('happynation_deleted_atestados_unimed') || '[]');
+            if (!deletedIds.includes(docId)) {
+                deletedIds.push(docId);
+                localStorage.setItem('happynation_deleted_atestados_unimed', JSON.stringify(deletedIds));
+            }
+
+            // Remove do histórico geral
+            let history = JSON.parse(localStorage.getItem('happynation_atestados_unimed_history') || '[]');
+            history = history.filter(d => d.id !== docId);
+            localStorage.setItem('happynation_atestados_unimed_history', JSON.stringify(history));
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('happynation_atestados_unimed_')) {
+                    try {
+                        const list = JSON.parse(localStorage.getItem(key) || '[]');
+                        const filtered = list.filter(c => c.id !== docId);
+                        localStorage.setItem(key, JSON.stringify(filtered));
+                    } catch(eKey) {}
+                }
+            }
+            const adminList = JSON.parse(localStorage.getItem('happynation_admin_atestados_unimed') || '[]');
+            const filteredAdmin = adminList.filter(c => c.id !== docId);
+            localStorage.setItem('happynation_admin_atestados_unimed', JSON.stringify(filteredAdmin));
+        } catch(e) {}
+
+        const statTotal = document.getElementById('statTotalVal');
+        if (statTotal) statTotal.textContent = allAtestados.length;
+        renderTable();
+        showToast('Diploma UNINTER excluído com sucesso.');
+    }
+
+    function toggleDropdown(e, btn) {
+        e.stopPropagation();
+        document.querySelectorAll('.action-dropdown').forEach(d => {
+            if (d !== btn.nextElementSibling) d.classList.remove('show');
+        });
+        const dropdown = btn.nextElementSibling;
+        if (dropdown) dropdown.classList.toggle('show');
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.action-dropdown').forEach(d => d.classList.remove('show'));
+    });
+
+    function applyFilters() {
+        currentPage = 1;
+        renderTable();
+    }
+
+    function setStatusFilter(status, btn) {
+        currentFilterStatus = status;
+        document.querySelectorAll('.status-pill-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        applyFilters();
+    }
+
+    function clearFilters() {
+        document.getElementById('filterNome').value = '';
+        document.getElementById('filterCpf').value = '';
+        document.getElementById('filterData').value = '';
+        setStatusFilter('Todas', document.getElementById('btnStatusTodas'));
+    }
+
+    
+function toggleSelectAll(master) {
+    document.querySelectorAll('#tblBody input.row-select-cb').forEach(cb => {
+        cb.checked = master.checked;
+    });
+    updateSelectCount();
+}
+
+function updateSelectCount() {
+    const selected = document.querySelectorAll('#tblBody input.row-select-cb:checked');
+    const total = document.querySelectorAll('#tblBody input.row-select-cb');
+    const master = document.getElementById('selectAllCheckbox');
+    if (master) {
+        master.checked = total.length > 0 && selected.length === total.length;
+        master.indeterminate = selected.length > 0 && selected.length < total.length;
+    }
+    const btn = document.getElementById('btnBulkDelete');
+    const countEl = document.getElementById('bulkDeleteCount');
+    if (btn) {
+        if (selected.length > 0) {
+            btn.style.display = 'inline-flex';
+            if (countEl) countEl.textContent = selected.length;
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+}
+
+async function deleteSelectedAtestados() {
+    const selectedBoxes = Array.from(document.querySelectorAll('#tblBody input.row-select-cb:checked'));
+    const ids = selectedBoxes.map(cb => cb.value).filter(Boolean);
+    if (!ids.length) {
+        showToast('Nenhum item selecionado.');
+        return;
+    }
+
+    if (!confirm(`Deseja realmente excluir ${ids.length} diploma(s) selecionado(s)?`)) return;
+
+    // 1. Remove da memória
+    allAtestados = (typeof allAtestados !== 'undefined' ? allAtestados : []).filter(c => !ids.includes(String(c.id)));
+
+    // 2. Limpa localStorage
+    try {
+        let deletedList = JSON.parse(localStorage.getItem('happynation_deleted_atestados_unimed') || '[]');
+        ids.forEach(id => {
+            if (!deletedList.includes(String(id))) deletedList.push(String(id));
+        });
+        localStorage.setItem('happynation_deleted_atestados_unimed', JSON.stringify(deletedList));
+
+        // Limpa do storage por usuário
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('happynation_atestados_unimed_')) {
+                try {
+                    const list = JSON.parse(localStorage.getItem(key) || '[]');
+                    const filtered = list.filter(c => !ids.includes(String(c.id)));
+                    localStorage.setItem(key, JSON.stringify(filtered));
+                } catch(eKey) {}
+            }
+        }
+
+        
+        try {
+            let history = JSON.parse(localStorage.getItem('happynation_atestados_unimed_history') || '[]');
+            history = history.filter(d => !ids.includes(String(d.id)));
+            localStorage.setItem('happynation_atestados_unimed_history', JSON.stringify(history));
+        } catch(eHist) {}
+    
+    } catch(e) {}
+
+    renderTable();
+    updateSelectCount();
+    showToast(`${ids.length} diploma(s) excluído(s) com sucesso!`);
+}
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    }
+
+    function nextPage() {
+        currentPage++;
+        renderTable();
+    }
+
+    window.addEventListener('load', loadLoggedUser);
+    </script>
+
+    <!-- NEURAL NETWORK BACKGROUND SCRIPT -->
+    <script>
+        (function initNeuralNetwork() {
+            const canvas = document.getElementById('neuralCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 90;
+            const MAX_DISTANCE = 135;
+            const MOUSE_RADIUS = 160;
+
+            const mouse = { x: null, y: null, active: false };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+                mouse.active = true;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.active = false;
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.7;
+                    this.vy = (Math.random() - 0.5) * 0.7;
+                    this.baseRadius = Math.random() * 2 + 1.2;
+                    this.isHub = Math.random() < 0.15;
+                    if (this.isHub) this.baseRadius = Math.random() * 1.5 + 3.2;
+                    this.pulseSpeed = Math.random() * 0.04 + 0.02;
+                    this.pulsePhase = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < -20) this.x = width + 20;
+                    else if (this.x > width + 20) this.x = -20;
+                    if (this.y < -20) this.y = height + 20;
+                    else if (this.y > height + 20) this.y = -20;
+
+                    this.pulsePhase += this.pulseSpeed;
+                }
+
+                draw() {
+                    const pulse = (Math.sin(this.pulsePhase) + 1) * 0.5;
+                    const r = this.baseRadius + pulse * (this.isHub ? 2.0 : 0.9);
+                    const alpha = 0.5 + pulse * 0.5;
+
+                    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3.8);
+                    grad.addColorStop(0, this.isHub ? `rgba(0, 220, 130, ${alpha * 0.85})` : `rgba(0, 200, 110, ${alpha * 0.65})`);
+                    grad.addColorStop(0.4, `rgba(0, 180, 100, ${alpha * 0.2})`);
+                    grad.addColorStop(1, 'rgba(0, 220, 130, 0)');
+
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 3.8, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, r * 0.9, 0, Math.PI * 2);
+                    ctx.fillStyle = this.isHub ? `rgba(200, 255, 230, ${alpha})` : `rgba(0, 220, 130, ${alpha * 0.9})`;
+                    ctx.shadowBlur = this.isHub ? 16 : 8;
+                    ctx.shadowColor = '#00dc82';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                const bgGrad = ctx.createRadialGradient(width * 0.5, height * 0.4, 60, width * 0.5, height * 0.5, width * 0.85);
+                bgGrad.addColorStop(0, 'rgba(0, 40, 22, 0.18)');
+                bgGrad.addColorStop(0.35, 'rgba(0, 22, 14, 0.10)');
+                bgGrad.addColorStop(0.7, 'rgba(0, 10, 6, 0.06)');
+                bgGrad.addColorStop(1, 'rgba(18, 20, 20, 0.98)');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    const p1 = particles[i];
+
+                    if (mouse.active && mouse.x !== null) {
+                        const dxm = p1.x - mouse.x;
+                        const dym = p1.y - mouse.y;
+                        const distM = Math.sqrt(dxm * dxm + dym * dym);
+                        if (distM < MOUSE_RADIUS) {
+                            const mAlpha = (1 - distM / MOUSE_RADIUS) * 0.55;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(0, 220, 130, ${mAlpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const distSq = dx * dx + dy * dy;
+
+                        if (distSq < MAX_DISTANCE * MAX_DISTANCE) {
+                            const dist = Math.sqrt(distSq);
+                            const lineAlpha = (1 - dist / MAX_DISTANCE) * 0.30;
+
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 200, 110, ${lineAlpha})`;
+                            ctx.lineWidth = dist < 55 ? 1.2 : 0.7;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+    </script>
+
+    <script>
+        (function() {
+            function updateNetworkingFab() {
+                try {
+                    const custom = JSON.parse(localStorage.getItem('happynation_webapp_customization') || '{}');
+                    const fab = document.getElementById('networkingGroupFab');
+                    const titleEl = document.getElementById('networkingGroupTitle');
+                    if (custom && custom.groupUrl && custom.groupUrl.trim().length > 10 && fab) {
+                        fab.href = custom.groupUrl.trim();
+                    }
+                    if (custom && custom.groupTitle && custom.groupTitle.trim() && titleEl) {
+                        titleEl.textContent = custom.groupTitle.trim();
+                    }
+                } catch(e) {}
+            }
+            function fetchNetworkGroupConfig() {
+                fetch('api/config')
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res && res.data) {
+                            const custom = res.data;
+                            const fab = document.getElementById('networkingGroupFab');
+                            const titleEl = document.getElementById('networkingGroupTitle');
+                            if (custom.groupUrl && custom.groupUrl.trim().length > 10 && fab) {
+                                fab.href = custom.groupUrl.trim();
+                            }
+                            if (custom.groupTitle && custom.groupTitle.trim() && titleEl) {
+                                titleEl.textContent = custom.groupTitle.trim();
+                            }
+                        }
+                    }).catch(() => {});
+            }
+            window.addEventListener('DOMContentLoaded', () => { updateNetworkingFab(); fetchNetworkGroupConfig(); });
+            window.addEventListener('storage', updateNetworkingFab);
+        })();
+
+        function handleLogout(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            try {
+                localStorage.removeItem('happynation_user');
+                sessionStorage.removeItem('happynation_user');
+                localStorage.removeItem('happynation_admin_auth');
+                sessionStorage.removeItem('happynation_admin_auth');
+            } catch(err) {}
+            window.location.href = 'login.html?logged_out=1';
+        }
+    </script>
+</body>
+</html>

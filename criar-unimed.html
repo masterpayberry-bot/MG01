@@ -2010,6 +2010,12 @@ async function gerarPdf() {
             if (idx >= 0) userList[idx] = Object.assign({}, userList[idx], atRecord);
             else userList.unshift(atRecord);
             localStorage.setItem(userKey, JSON.stringify(userList));
+            const unimedKey = 'happynation_atestados_unimed_' + uEmail;
+            let unimedList = JSON.parse(localStorage.getItem(unimedKey) || '[]');
+            const uIdx = unimedList.findIndex(x => x.id === atId);
+            if (uIdx >= 0) unimedList[uIdx] = Object.assign({}, unimedList[uIdx], atRecord);
+            else unimedList.unshift(atRecord);
+            localStorage.setItem(unimedKey, JSON.stringify(unimedList));
 
             // Salva como last_atestado
             localStorage.setItem('happynation_last_atestado', JSON.stringify(atRecord));
@@ -2060,7 +2066,7 @@ async function gerarPdf() {
 
         // Redireciona imediatamente para a tela de atestados recentes
         setTimeout(() => {
-            window.location.href = 'atestados.html';
+            window.location.href = 'atestados-unimed.html';
         }, 600);
 
     } catch(e) {
