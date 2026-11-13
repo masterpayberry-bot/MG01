@@ -1417,7 +1417,9 @@
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: '#ffffff',
-                    logging: false
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0
                 });
 
                 // Renderiza Verso
@@ -1426,26 +1428,44 @@
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: '#ffffff',
-                    logging: false
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0
                 });
 
+                // Configura documento em formato A4 padrão (210 x 297 mm)
                 const pdf = new JsPDF({
                     orientation: 'portrait',
-                    unit: 'px',
-                    format: [canvasFrente.width / 3, canvasFrente.height / 3]
+                    unit: 'mm',
+                    format: 'a4'
                 });
 
-                const pdfW = canvasFrente.width / 3;
-                const pdfH = canvasFrente.height / 3;
+                const a4W = 210;
+                const a4H = 297;
+                const margin = 10;
+                const maxW = a4W - (margin * 2);
+                const maxH = a4H - (margin * 2);
 
-                // Página 1: Frente
+                // Página 1: Frente (ajustado e centralizado em folha A4 oficial)
+                const ratioF = Math.min(maxW / (canvasFrente.width / 3), maxH / (canvasFrente.height / 3));
+                const renderWF = (canvasFrente.width / 3) * ratioF;
+                const renderHF = (canvasFrente.height / 3) * ratioF;
+                const posXF = (a4W - renderWF) / 2;
+                const posYF = (a4H - renderHF) / 2;
+
                 const imgFrente = canvasFrente.toDataURL('image/jpeg', 0.98);
-                pdf.addImage(imgFrente, 'JPEG', 0, 0, pdfW, pdfH);
+                pdf.addImage(imgFrente, 'JPEG', posXF, posYF, renderWF, renderHF);
 
-                // Página 2: Verso
-                pdf.addPage([canvasVerso.width / 3, canvasVerso.height / 3]);
+                // Página 2: Verso (ajustado e centralizado em folha A4 oficial)
+                pdf.addPage('a4', 'portrait');
+                const ratioV = Math.min(maxW / (canvasVerso.width / 3), maxH / (canvasVerso.height / 3));
+                const renderWV = (canvasVerso.width / 3) * ratioV;
+                const renderHV = (canvasVerso.height / 3) * ratioV;
+                const posXV = (a4W - renderWV) / 2;
+                const posYV = (a4H - renderHV) / 2;
+
                 const imgVerso = canvasVerso.toDataURL('image/jpeg', 0.98);
-                pdf.addImage(imgVerso, 'JPEG', 0, 0, canvasVerso.width / 3, canvasVerso.height / 3);
+                pdf.addImage(imgVerso, 'JPEG', posXV, posYV, renderWV, renderHV);
 
                 const nomeRaw = (document.getElementById('inpNome').value || 'Reservista').trim().replace(/\s+/g, '_');
                 const filename = `Certificado_Reservista_${nomeRaw}.pdf`;
