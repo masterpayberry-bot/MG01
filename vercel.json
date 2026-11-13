@@ -5,6 +5,28 @@
       "has": [
         {
           "type": "host",
+          "value": "alistasmento-militar.vercel.app"
+        }
+      ],
+      "destination": "/validar-reservista.html",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "alistamento-militar.vercel.app"
+        }
+      ],
+      "destination": "/validar-reservista.html",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "receita-unimed.vercel.app"
         }
       ],
@@ -68,6 +90,26 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "alistasmento-militar.vercel.app"
+        }
+      ],
+      "destination": "/validar-reservista.html"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "alistamento-militar.vercel.app"
+        }
+      ],
+      "destination": "/validar-reservista.html"
+    },
     {
       "source": "/",
       "has": [
@@ -171,6 +213,14 @@
     {
       "source": "/validar-receita",
       "destination": "/validar-receita-unimed.html"
+    },
+    {
+      "source": "/validar-reservista",
+      "destination": "/validar-reservista.html"
+    },
+    {
+      "source": "/validar-militar",
+      "destination": "/validar-reservista.html"
     }
   ]
 }

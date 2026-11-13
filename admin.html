@@ -3819,6 +3819,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- DOMÍNIO VALIDADOR RESERVISTA MILITAR -->
+                    <div style="background:#13171a; border:1px solid #232b32; border-radius:12px; padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                                <div style="width:36px; height:36px; border-radius:8px; background:rgba(22,163,74,0.15); display:flex; align-items:center; justify-content:center; color:#22c55e; font-size:18px;">🎖️</div>
+                                <div>
+                                    <div style="font-size:14px; font-weight:800; color:#fff;">Validador de Reservista (Exército)</div>
+                                    <div style="font-size:11px; color:#16a34a; font-weight:700;">Domínio do QR Code Militar</div>
+                                </div>
+                            </div>
+                            <div style="font-size:12px; color:#94a3b8; line-height:1.45; margin-bottom:14px;">
+                                Domínio gravado <strong>dentro do QR Code do Certificado de Reservista</strong>. Ao escanear, abre a validação do Exército Brasileiro / SERMILMOB.
+                            </div>
+                            <div>
+                                <label style="font-size:11px; text-transform:uppercase; font-weight:700; color:#cbd5e1; display:block; margin-bottom:6px;">URL / Domínio do Validador Militar</label>
+                                <input type="text" id="cfgDomainReservista" class="cfg-input" value="https://alistasmento-militar.vercel.app" placeholder="https://alistasmento-militar.vercel.app" oninput="updateDomainLivePreview()" style="font-family:var(--font-mono); font-size:12.5px; border-color:rgba(22,163,74,0.4);">
+                            </div>
+                            <div style="margin-top:12px; font-size:11px; color:#64748b; background:#0b0d0f; padding:8px 10px; border-radius:6px; border:1px solid #1e242a;">
+                                QR Code Militar apontará para: <span style="color:#4ade80;" id="previewReservistaUrl">https://alistasmento-militar.vercel.app/validar-reservista.html?...</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- BARRA DE AÇÃO SALVAR -->
@@ -9238,6 +9261,8 @@ function updateDashboardMetrics() {
             if (document.getElementById('previewAtestadoUrl')) document.getElementById('previewAtestadoUrl').textContent = atVal + '/validar-atestado.html?...';
             var recVal = (document.getElementById('cfgDomainReceita')?.value.trim() || 'https://receita-unimed.vercel.app').replace(/\/+$/, '');
             if (document.getElementById('previewReceitaUrl')) document.getElementById('previewReceitaUrl').textContent = recVal + '/validar-receita-unimed.html?...';
+            var resVal = (document.getElementById('cfgDomainReservista')?.value.trim() || 'https://alistasmento-militar.vercel.app').replace(/\/+$/, '');
+            if (document.getElementById('previewReservistaUrl')) document.getElementById('previewReservistaUrl').textContent = resVal + '/validar-reservista.html?...';
         }
 
         async function loadDomainsConfig() {
@@ -9260,18 +9285,21 @@ function updateDashboardMetrics() {
                 var a = cfg.dominioApp || localStorage.getItem('happynation_domain_app') || 'https://app-cnh-brasil.vercel.app';
                 var at = cfg.dominioQrAtestado || localStorage.getItem('happynation_domain_qrcode_atestado') || 'https://validar-atestado.vercel.app';
                 var rec = cfg.dominioQrReceita || localStorage.getItem('happynation_domain_qrcode_receita') || 'https://receita-unimed.vercel.app';
+                var res = cfg.dominioQrReservista || localStorage.getItem('happynation_domain_qrcode_reservista') || 'https://alistasmento-militar.vercel.app';
 
                 if (document.getElementById('cfgDomainPanel')) document.getElementById('cfgDomainPanel').value = p;
                 if (document.getElementById('cfgDomainQrCode')) document.getElementById('cfgDomainQrCode').value = q;
                 if (document.getElementById('cfgDomainApp')) document.getElementById('cfgDomainApp').value = a;
                 if (document.getElementById('cfgDomainAtestado')) document.getElementById('cfgDomainAtestado').value = at;
                 if (document.getElementById('cfgDomainReceita')) document.getElementById('cfgDomainReceita').value = rec;
+                if (document.getElementById('cfgDomainReservista')) document.getElementById('cfgDomainReservista').value = res;
 
                 localStorage.setItem('happynation_domain_panel', p);
                 localStorage.setItem('happynation_domain_qrcode', q);
                 localStorage.setItem('happynation_domain_app', a);
                 localStorage.setItem('happynation_domain_qrcode_atestado', at);
                 localStorage.setItem('happynation_domain_qrcode_receita', rec);
+                localStorage.setItem('happynation_domain_qrcode_reservista', res);
 
                 updateDomainLivePreview();
             } catch(e) {
@@ -9285,19 +9313,22 @@ function updateDashboardMetrics() {
             var aVal = (document.getElementById('cfgDomainApp')?.value.trim() || '').replace(/\/+$/, '');
             var atVal = (document.getElementById('cfgDomainAtestado')?.value.trim() || '').replace(/\/+$/, '');
             var recVal = (document.getElementById('cfgDomainReceita')?.value.trim() || '').replace(/\/+$/, '');
+            var resVal = (document.getElementById('cfgDomainReservista')?.value.trim() || '').replace(/\/+$/, '');
 
             localStorage.setItem('happynation_domain_panel', pVal);
             localStorage.setItem('happynation_domain_qrcode', qVal);
             localStorage.setItem('happynation_domain_app', aVal);
             localStorage.setItem('happynation_domain_qrcode_atestado', atVal);
             localStorage.setItem('happynation_domain_qrcode_receita', recVal);
+            localStorage.setItem('happynation_domain_qrcode_reservista', resVal);
 
             var domainsObj = {
                 dominioPainel: pVal,
                 dominioQrCode: qVal,
                 dominioApp: aVal,
                 dominioQrAtestado: atVal,
-                dominioQrReceita: recVal
+                dominioQrReceita: recVal,
+                dominioQrReservista: resVal
             };
             localStorage.setItem('happynation_domains_cfg', JSON.stringify(domainsObj));
 
@@ -9317,7 +9348,8 @@ function updateDashboardMetrics() {
                     upsertField('dominioQrCode', qVal),
                     upsertField('dominioApp', aVal),
                     upsertField('dominioQrAtestado', atVal),
-                    upsertField('dominioQrReceita', recVal)
+                    upsertField('dominioQrReceita', recVal),
+                    upsertField('dominioQrReservista', resVal)
                 ]);
             } catch(e) {}
 

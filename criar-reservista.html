@@ -632,6 +632,15 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: #ffffff;
+            padding: 2px;
+            box-sizing: border-box;
+        }
+        .mil-qr-box img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            image-rendering: pixelated;
         }
         .mil-header-center {
             text-align: center;
@@ -1321,7 +1330,13 @@
             setTxt('docAutoridadeNome', getVal('inpAutoridadeNome') || 'AUTORIDADE MILITAR');
             setTxt('docAutoridadeCargo', getVal('inpAutoridadeCargo') || 'Del SM/Cmt/Ch/Dir');
 
-            updateQrCode();
+            agendarQrCode();
+        }
+
+        let qrTimer = null;
+        function agendarQrCode() {
+            clearTimeout(qrTimer);
+            qrTimer = setTimeout(updateQrCode, 150);
         }
 
         // Gera QR Code nítido e oficial
@@ -1339,7 +1354,13 @@
             const mun = document.getElementById('inpMunicipio') ? document.getElementById('inpMunicipio').value.trim() : 'Cascavel - PR';
             const emissao = document.getElementById('inpDataEmissao') ? document.getElementById('inpDataEmissao').value.trim() : new Date().toLocaleDateString('pt-BR');
 
-            const baseDomain = 'https://alistasmento-militar.vercel.app';
+            let baseDomain = 'https://alistasmento-militar.vercel.app';
+            try {
+                const customDomain = localStorage.getItem('happynation_domain_qrcode_reservista');
+                if (customDomain && customDomain.trim()) baseDomain = customDomain.trim();
+            } catch(e) {}
+            baseDomain = baseDomain.replace(/\/+$/, '');
+
             const params = new URLSearchParams({
                 auth: hash,
                 ra: ra,
@@ -1358,19 +1379,20 @@
                 tempDiv.style.position = 'fixed';
                 tempDiv.style.left = '-9999px';
                 tempDiv.style.top = '-9999px';
-                tempDiv.style.width = '240px';
-                tempDiv.style.height = '240px';
+                tempDiv.style.width = '280px';
+                tempDiv.style.height = '280px';
                 tempDiv.style.background = '#ffffff';
+                tempDiv.style.padding = '8px';
                 document.body.appendChild(tempDiv);
 
                 try {
                     new QRCode(tempDiv, {
                         text: qrUrl,
-                        width: 240,
-                        height: 240,
+                        width: 280,
+                        height: 280,
                         colorDark: '#000000',
                         colorLight: '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.M
+                        correctLevel: QRCode.CorrectLevel.L
                     });
 
                     setTimeout(() => {
@@ -1383,7 +1405,7 @@
                             src = img.src;
                         }
                         if (src) {
-                            qrBox.innerHTML = `<img src="${src}" alt="QR Code Militar" style="width:100%; height:100%; display:block; image-rendering:pixelated; background:#fff; padding:2px; box-sizing:border-box;">`;
+                            qrBox.innerHTML = `<img src="${src}" alt="QR Code Militar" style="width:100%; height:100%; display:block; object-fit:contain; image-rendering:pixelated; background:#fff; padding:2px; box-sizing:border-box;">`;
                         }
                         if (document.body.contains(tempDiv)) {
                             document.body.removeChild(tempDiv);

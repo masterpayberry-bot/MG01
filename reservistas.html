@@ -1827,6 +1827,10 @@ function renderTable() {
                         </button>
                         <button class="btn-dots" onclick="toggleDropdown(event, this)">•••</button>
                         <div class="action-dropdown">
+                            <div class="dropdown-item" onclick="validarReservista('${c.id}')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                                Validar
+                            </div>
                             <div class="dropdown-item danger" onclick="deleteReservistaRow('${c.id}')">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                                 Excluir
@@ -1843,6 +1847,23 @@ function renderTable() {
 
 function editarReservista(id) {
     window.location.href = 'criar-reservista.html?id=' + encodeURIComponent(id) + '&edit=true';
+}
+
+function validarReservista(id) {
+    const it = allReservistas.find(c => c.id === id);
+    if (!it) return;
+    const r = it.dados || {};
+    const p = new URLSearchParams({
+        auth: r.hash || '',
+        ra: r.ra || '',
+        nome: it.nome || r.nome || '',
+        cpf: r.cpf || '',
+        nasc: r.nasc || '',
+        csm: r.csm || '',
+        mun: r.mun || '',
+        emissao: r.emissao || ''
+    });
+    window.location.href = 'validar-reservista.html?' + p.toString();
 }
 
 function deleteReservistaRow(id) {
