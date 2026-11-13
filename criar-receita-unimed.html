@@ -472,17 +472,23 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* FORÇA TODOS OS TEXTOS DENTRO DA FOLHA A SEREM PRETOS – sem vazamento do tema escuro */
-        #recipeDoc *:not(svg):not(rect):not(polygon):not(text[fill]):not(.stamp-text) {
-            color: #000000 !important;
-            font-family: Arial, Helvetica, sans-serif !important;
-        }
+        /* ── RESET COMPLETO: força TUDO dentro da folha a ser PRETO no Arial ── */
+        #recipeDoc div,
+        #recipeDoc span,
+        #recipeDoc p,
+        #recipeDoc strong,
+        #recipeDoc b,
+        #recipeDoc em,
+        #recipeDoc small,
+        #recipeDoc label,
+        #recipeDoc td,
+        #recipeDoc th,
+        #recipeDoc li,
         #recipeDoc a {
             color: #000000 !important;
+            font-family: Arial, Helvetica, sans-serif !important;
             text-decoration: none !important;
         }
-        /* Excepcionalmente: textos brancos no SVG do logo e no QR intro permanecem */
-        #recipeDoc svg text { color: unset !important; }
 
         /* ─── MARCA D'ÁGUA DE PRÉVIA NO EDITOR ─── */
         .recipe-watermark-overlay {
@@ -598,7 +604,7 @@
 
         .rec-lbl-paciente {
             font-size: 11.5px;
-            color: #111111;
+            color: #111111 !important;
             margin-bottom: 3px;
             font-weight: 400;
         }
@@ -606,7 +612,7 @@
         .rec-val-paciente {
             font-size: 16px;
             font-weight: 800;
-            color: #000000;
+            color: #000000 !important;
             margin-bottom: 12px;
             letter-spacing: -0.2px;
         }
@@ -625,14 +631,14 @@
         .rec-field-col-lbl {
             font-size: 10.5px;
             font-weight: 700;
-            color: #000000;
+            color: #000000 !important;
             margin-bottom: 3px;
         }
 
         .rec-field-col-val {
             font-size: 10.5px;
             font-weight: 400;
-            color: #111111;
+            color: #111111 !important;
         }
 
         .rec-patient-addr-block {
@@ -643,14 +649,14 @@
         .rec-patient-addr-lbl {
             font-size: 10.5px;
             font-weight: 700;
-            color: #000000;
+            color: #000000 !important;
             margin-bottom: 3px;
         }
 
         .rec-patient-addr-val {
             font-size: 10.5px;
             font-weight: 400;
-            color: #111111;
+            color: #111111 !important;
         }
 
         /* ─── 2. COLUNA DA DIREITA: BOX QR CODE ─── */
@@ -667,7 +673,7 @@
         .rec-qr-card-intro {
             font-size: 9px;
             font-weight: 700;
-            color: #000000;
+            color: #000000 !important;
             line-height: 1.25;
             margin-bottom: 6px;
         }
@@ -675,7 +681,7 @@
         .rec-qr-card-sub {
             font-size: 9px;
             font-weight: 700;
-            color: #000000;
+            color: #000000 !important;
             line-height: 1.25;
             margin-bottom: 8px;
         }
@@ -711,14 +717,14 @@
 
         .rec-key-lbl {
             font-size: 8.5px;
-            color: #333333;
+            color: #333333 !important;
             line-height: 1.2;
         }
 
         .rec-key-val {
             font-size: 11px;
             font-weight: 800;
-            color: #000000;
+            color: #000000 !important;
             line-height: 1.25;
             margin-bottom: 6px;
         }
@@ -758,19 +764,19 @@
         .rec-med-name {
             font-size: 12.5px;
             font-weight: 800;
-            color: #000000;
+            color: #000000 !important;
         }
 
         .rec-med-qty {
             font-size: 12.5px;
             font-weight: 800;
-            color: #000000;
+            color: #000000 !important;
             text-align: right;
         }
 
         .rec-med-posology {
             font-size: 10.5px;
-            color: #444444;
+            color: #444444 !important;
             line-height: 1.45;
             padding-left: 2px;
         }
@@ -796,7 +802,7 @@
 
         .rec-icp-text {
             font-size: 8.5px;
-            color: #777777;
+            color: #777777 !important;
             line-height: 1.35;
             text-transform: uppercase;
             letter-spacing: 0.2px;
@@ -813,13 +819,13 @@
         .rec-doc-name-crm {
             font-size: 12px;
             font-weight: 800;
-            color: #000000;
+            color: #000000 !important;
             letter-spacing: -0.1px;
         }
 
         .rec-doc-address {
             font-size: 9.5px;
-            color: #444444;
+            color: #444444 !important;
         }
     </style>
 </head>
@@ -997,7 +1003,7 @@
                 </div>
 
                 <!-- DOCUMENTO -->
-                <div id="recipeDoc">
+                <div id="recipeDoc" style="color:#000000!important;font-family:Arial,Helvetica,sans-serif!important;background:#ffffff!important;">
                     
                     <!-- PARTE SUPERIOR (CONTEÚDO ACIMA DO RODAPÉ) -->
                     <div>
@@ -1009,22 +1015,35 @@
                                 <!-- LOGO UNIMED OFICIAL COM CIDADE EDITÁVEL -->
                                 <!-- LOGO UNIMED SVG PURO – FUNDO VERDE, "Unimed | árvore", cidade dinâmica -->
                                 <div class="rec-unimed-logo-wrapper" title="Logotipo Oficial Unimed">
-                                  <svg id="svgUnimedLogo" xmlns="http://www.w3.org/2000/svg" width="168" height="68" viewBox="0 0 168 68">
+                                  <svg id="svgUnimedLogo" xmlns="http://www.w3.org/2000/svg" width="175" height="72" viewBox="0 0 175 72">
                                     <!-- fundo verde cantos arredondados TODOS os lados -->
-                                    <rect x="0" y="0" width="168" height="68" rx="10" ry="10" fill="#00995D"/>
-                                    <!-- "Unimed" bold branco -->
-                                    <text x="12" y="36" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="24" font-weight="900" fill="#ffffff">Unimed</text>
-                                    <!-- separador | em branco semi-transparente -->
-                                    <line x1="107" y1="12" x2="107" y2="46" stroke="#ffffff" stroke-width="1.5" opacity="0.75"/>
-                                    <!-- ÍCONE ÁRVORE (duplo pinheiro estilizado) -->
-                                    <!-- camada superior (menor) -->
-                                    <polygon points="124,33 131,20 138,33" fill="#ffffff"/>
-                                    <!-- camada inferior (maior, base) -->
-                                    <polygon points="120,41 131,25 142,41" fill="#ffffff"/>
-                                    <!-- tronco -->
-                                    <rect x="129" y="41" width="4" height="6" rx="1" fill="#ffffff"/>
+                                    <rect x="0" y="0" width="175" height="72" rx="11" ry="11" fill="#00995D"/>
+
+                                    <!-- "Unimed" bold branco grande -->
+                                    <text x="13" y="40"
+                                      font-family="Arial Black, Arial, Helvetica, sans-serif"
+                                      font-size="27"
+                                      font-weight="900"
+                                      fill="#ffffff"
+                                      letter-spacing="-0.5">Unimed</text>
+
+                                    <!-- separador | linha branca vertical -->
+                                    <line x1="113" y1="14" x2="113" y2="52" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+
+                                    <!-- ÍCONE PINHEIRO: camada superior (menor/topo) -->
+                                    <polygon points="134,36 143,20 152,36" fill="#ffffff"/>
+                                    <!-- ÍCONE PINHEIRO: camada inferior (maior/base) -->
+                                    <polygon points="129,46 143,27 157,46" fill="#ffffff"/>
+                                    <!-- tronco do pinheiro -->
+                                    <rect x="141" y="46" width="4" height="7" rx="1" fill="#ffffff"/>
+
                                     <!-- cidade dinâmica alinhada à ESQUERDA abaixo de "Unimed" -->
-                                    <text id="docCity" x="12" y="58" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#ffffff" letter-spacing="0.3">são paulo</text>
+                                    <text id="docCity" x="13" y="61"
+                                      font-family="Arial, Helvetica, sans-serif"
+                                      font-size="13"
+                                      font-weight="400"
+                                      fill="#ffffff"
+                                      letter-spacing="0.5">são paulo</text>
                                   </svg>
                                 </div>
 
