@@ -100,35 +100,24 @@
         .brand-logo { 
             width: 32px; 
             height: 32px; 
-            background: var(--primary); 
+            background: #00dc82; 
             border-radius: 9px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             overflow: hidden; 
-            box-shadow: 0 0 14px var(--primary-glow); 
+            box-shadow: 0 0 14px rgba(0, 220, 130, 0.35); 
         }
-        .brand-icon-svg { 
-            width: 18px; 
-            height: 18px; 
-            color: #fff; 
+        .brand-icon-img { 
+            width: 20px; 
+            height: 20px; 
+            object-fit: contain; 
         }
         .brand-text { 
             font-size: 16px; 
             font-weight: 800; 
             color: #ffffff; 
             letter-spacing: -0.3px; 
-        }
-        .brand-badge {
-            font-size: 10.5px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
-            background: rgba(22, 163, 74, 0.15);
-            border: 1px solid rgba(22, 163, 74, 0.35);
-            color: #4ade80;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .header-right { 
@@ -142,13 +131,52 @@
             align-items: center; 
             gap: 8px; 
             padding: 6px 14px; 
-            background: rgba(22, 163, 74, 0.12); 
-            border: 1px solid rgba(22, 163, 74, 0.28); 
+            background: rgba(0, 220, 130, 0.08); 
+            border: 1px solid rgba(0, 220, 130, 0.25); 
             border-radius: 20px; 
-            color: #4ade80; 
+            color: #00dc82; 
             font-size: 13px; 
             font-weight: 700; 
             text-decoration: none; 
+            transition: all 0.2s;
+        }
+        .saldo-pill:hover {
+            background: rgba(0, 220, 130, 0.16);
+            box-shadow: 0 0 14px rgba(0, 220, 130, 0.3);
+        }
+        .saldo-pill svg {
+            width: 15px;
+            height: 15px;
+            color: #00dc82;
+        }
+        .header-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .header-link:hover { color: #fff; }
+        .header-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid #27272a;
+            background: rgba(255,255,255,0.03);
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .header-icon:hover {
+            border-color: #3f3f46;
+            color: #fff;
+            background: rgba(255,255,255,0.08);
         }
         .btn-voltar { 
             display: inline-flex; 
@@ -575,8 +603,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            opacity: 0.12;
-            filter: grayscale(100%);
+            opacity: 0.16;
             display: block;
         }
 
@@ -818,20 +845,29 @@
         <div class="header-inner">
             <a href="editaveis.html" class="header-brand">
                 <div class="brand-logo">
-                    <svg class="brand-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
                 </div>
                 <span class="brand-text">MG Editáveis</span>
-                <span class="brand-badge">👑 ACESSO ADMIN (DEV)</span>
             </a>
 
             <div class="header-right">
-                <a href="recarga.html" class="saldo-pill" id="userHeaderSaldoPill" title="Seu saldo disponível">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <a href="recargas.html" class="saldo-pill" title="Seu Saldo Atual">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                     <span id="userHeaderSaldo">Saldo R$ 0,00</span>
                 </a>
-                <a href="editaveis.html" class="btn-voltar">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>
-                    <span>Voltar ao Painel</span>
+
+                <a href="indicacoes.html" class="header-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <span>Indique e Ganhe</span>
+                </a>
+
+                <div class="header-icon" onclick="typeof showToast === 'function' ? showToast('Notificações') : alert('Sem novas notificações')" title="Notificações">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+
+                <a href="editaveis.html" class="btn-voltar" title="Voltar ao Catálogo">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                    <span>Voltar</span>
                 </a>
             </div>
         </div>
@@ -1432,6 +1468,23 @@
                     scrollY: 0
                 });
 
+                // Aplica a Marca d'Água do Brasão da República com 100% de garantia nos dois lados
+                if (window._watermarkImg && (window._watermarkImg.complete || window._watermarkImg.naturalWidth > 0)) {
+                    const drawWatermark = (cvs) => {
+                        const ctx = cvs.getContext('2d');
+                        const wmSize = Math.min(cvs.width, cvs.height) * 0.44;
+                        const posX = (cvs.width - wmSize) / 2;
+                        const posY = (cvs.height - wmSize) / 2;
+                        ctx.save();
+                        ctx.globalAlpha = 0.16; // Visibilidade nítida oficial
+                        ctx.globalCompositeOperation = 'multiply';
+                        ctx.drawImage(window._watermarkImg, posX, posY, wmSize, wmSize);
+                        ctx.restore();
+                    };
+                    drawWatermark(canvasFrente);
+                    drawWatermark(canvasVerso);
+                }
+
                 // Configura documento em formato A4 padrão (210 x 297 mm)
                 const pdf = new JsPDF({
                     orientation: 'portrait',
@@ -1545,20 +1598,58 @@
             }
         }
 
+        let _watermarkImg = null;
+
+        function prepararMarcaDagua() {
+            if (!window.BRASAO_REPUBLICA_SVG_B64) return;
+            const headerBrasao = document.getElementById('imgBrasaoHeader');
+            if (headerBrasao) headerBrasao.src = window.BRASAO_REPUBLICA_SVG_B64;
+
+            const tempImg = new Image();
+            tempImg.crossOrigin = 'anonymous';
+            tempImg.onload = () => {
+                try {
+                    const c = document.createElement('canvas');
+                    c.width = 600;
+                    c.height = 600;
+                    const ctx = c.getContext('2d');
+                    ctx.drawImage(tempImg, 0, 0, 600, 600);
+
+                    // Converte para escala de cinza de alta precisão
+                    const idata = ctx.getImageData(0, 0, 600, 600);
+                    const d = idata.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        const g = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+                        d[i] = g;
+                        d[i+1] = g;
+                        d[i+2] = g;
+                    }
+                    ctx.putImageData(idata, 0, 0);
+
+                    const pngDataUrl = c.toDataURL('image/png');
+                    const wmImg = new Image();
+                    wmImg.src = pngDataUrl;
+                    window._watermarkImg = wmImg;
+
+                    const imgWmF = document.getElementById('imgWatermarkFrente');
+                    if (imgWmF) imgWmF.src = pngDataUrl;
+                    const imgWmV = document.getElementById('imgWatermarkVerso');
+                    if (imgWmV) imgWmV.src = pngDataUrl;
+                } catch(e) {
+                    console.warn('Fallback SVG watermark:', e);
+                    window._watermarkImg = tempImg;
+                    const imgWmF = document.getElementById('imgWatermarkFrente');
+                    if (imgWmF) imgWmF.src = window.BRASAO_REPUBLICA_SVG_B64;
+                    const imgWmV = document.getElementById('imgWatermarkVerso');
+                    if (imgWmV) imgWmV.src = window.BRASAO_REPUBLICA_SVG_B64;
+                }
+            };
+            tempImg.src = window.BRASAO_REPUBLICA_SVG_B64;
+        }
+
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            // Injeta o Brasão de Armas da República Oficial (Base64)
-            if (window.BRASAO_REPUBLICA_SVG_B64) {
-                const headerBrasao = document.getElementById('imgBrasaoHeader');
-                if (headerBrasao) headerBrasao.src = window.BRASAO_REPUBLICA_SVG_B64;
-
-                const imgWmF = document.getElementById('imgWatermarkFrente');
-                if (imgWmF) imgWmF.src = window.BRASAO_REPUBLICA_SVG_B64;
-
-                const imgWmV = document.getElementById('imgWatermarkVerso');
-                if (imgWmV) imgWmV.src = window.BRASAO_REPUBLICA_SVG_B64;
-            }
-
+            prepararMarcaDagua();
             updateDoc();
             fitZoom();
             window.addEventListener('resize', fitZoom);
@@ -1566,12 +1657,16 @@
 
             // Sincroniza saldo exibido no header
             try {
-                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
-                if (uStr) {
-                    const u = JSON.parse(uStr);
-                    const elSaldo = document.getElementById('userHeaderSaldo');
-                    if (elSaldo && u.saldo !== undefined) {
-                        elSaldo.textContent = `Saldo R$ ${parseFloat(u.saldo || 0).toFixed(2).replace('.', ',')}`;
+                if (window.MGSaldo) {
+                    window.MGSaldo.sync();
+                } else {
+                    const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                    if (uStr) {
+                        const u = JSON.parse(uStr);
+                        const elSaldo = document.getElementById('userHeaderSaldo');
+                        if (elSaldo && u.saldo !== undefined) {
+                            elSaldo.textContent = `Saldo R$ ${parseFloat(u.saldo || 0).toFixed(2).replace('.', ',')}`;
+                        }
                     }
                 }
             } catch(e) {}

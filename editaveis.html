@@ -1472,6 +1472,69 @@
                 </div>
             </article>
 
+            <!-- CERTIFICADO DE RESERVISTA MILITAR (EXÉRCITO BRASILEIRO) -->
+            <article class="doc-card" data-category="militar" data-name="certificado de reservista militar exercito brasileiro alistamento cdi csm forcas armadas ministerio defesa" onclick="window.location.href='criar-reservista.html'" title="Clique para emitir Certificado de Reservista Militar" style="cursor:pointer; --card-accent:#16a34a; --card-glow:rgba(22,163,74,0.25); --card-icon-bg:rgba(22,163,74,0.1); --card-icon-border:rgba(22,163,74,0.3); --card-pill-bg:rgba(22,163,74,0.12); --card-pill-border:rgba(22,163,74,0.3); --card-btn-bg:#16a34a; --card-btn-glow:rgba(22,163,74,0.35); --card-border-hover:rgba(22,163,74,0.4);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box" style="color:#16a34a; background:rgba(22,163,74,0.1); border-color:rgba(22,163,74,0.25);">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#16a34a; border-color:rgba(22,163,74,0.4); background:rgba(22,163,74,0.12);">★ NOVO MODELO</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">MINISTÉRIO DA DEFESA • EXÉRCITO</div>
+                        <h2 class="card-title">Certificado de Reservista Militar</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Certificado oficial de Reservista do Exército Brasileiro (1ª e 2ª categoria) com QR Code validador, RA, dados de incorporação, amparo legal, carimbos e assinatura digital ICP-Brasil.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Layout 100% fiel ao espelho expedido pelo Exército Brasileiro</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Brasão de Armas da República e QR Code de validação</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Frente e Verso completos em folha padrão A4 com carimbos militares</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Download em PDF pronto para apresentação com marca d'água oficial</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-row">
+                        <div class="price-info">
+                            <span class="price-sub">VALOR UNITÁRIO</span>
+                            <div class="price-main"><span class="price-currency" style="color:#16a34a;">R$</span><span id="priceReservista">25,00</span></div>
+                        </div>
+                        <div class="delivery-pill" style="color:#4ade80; background:rgba(22,163,74,0.08); border-color:rgba(22,163,74,0.25);">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Imediato &lt; 10s</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <a href="criar-reservista.html" class="btn-card-emitir" onclick="event.stopPropagation()" style="background:#16a34a; color:#fff; box-shadow:0 4px 14px -2px rgba(22,163,74,0.35);">
+                            <span>Editar Reservista</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('reservista')" title="Ver detalhes do Certificado de Reservista">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
             <!-- 6. CRLV DIGITAL / LICENCIAMENTO (EM DESENVOLVIMENTO) -->
             <article class="doc-card card-crlv-em-desenvolvimento" data-category="transito" data-name="crlv digital licenciamento veiculo renavam senatran detran placa chassi documento" onclick="handleCrlvEmBreve(event)" style="--card-accent:#10b981; --card-glow:rgba(16,185,129,0.15);">
                 <div>
@@ -1663,69 +1726,6 @@
                 </div>
             </article>
 
-            <!-- 8. CERTIFICADO DE RESERVISTA MILITAR (EXÉRCITO BRASILEIRO - EM DESENVOLVIMENTO) -->
-            <article class="doc-card card-crlv-em-desenvolvimento" data-category="militar" data-name="certificado de reservista militar exercito brasileiro alistamento cdi csm forcas armadas ministerio defesa" onclick="handleReservistaEmBreve(event)" style="--card-accent:#16a34a; --card-glow:rgba(22,163,74,0.22); --card-icon-bg:rgba(22,163,74,0.1); --card-icon-border:rgba(22,163,74,0.3); --card-pill-bg:rgba(22,163,74,0.12); --card-pill-border:rgba(22,163,74,0.3); --card-btn-bg:#16a34a; --card-btn-glow:rgba(22,163,74,0.35); --card-border-hover:rgba(22,163,74,0.4);">
-                <div>
-                    <div class="card-top">
-                        <div class="card-icon-box" style="color:#16a34a; background:rgba(22,163,74,0.1); border-color:rgba(22,163,74,0.25);">
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        </div>
-                        <span class="card-badge-pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.1);">🔧 EM DESENVOLVIMENTO</span>
-                    </div>
-
-                    <div class="card-title-group">
-                        <div class="card-category-lbl">MINISTÉRIO DA DEFESA • EXÉRCITO</div>
-                        <h2 class="card-title">Certificado de Reservista Militar</h2>
-                    </div>
-
-                    <p class="card-desc">
-                        Certificado oficial de Reservista do Exército Brasileiro (1ª e 2ª categoria) com QR Code validador, RA, dados de incorporação, amparo legal, carimbos e assinatura digital ICP-Brasil.
-                    </p>
-
-                    <ul class="card-features">
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Layout 100% fiel ao espelho expedido pelo Exército Brasileiro</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Brasão de Armas da República e QR Code de validação</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Frente e Verso completos com quadro de carimbos militares</span>
-                        </li>
-                        <li class="feature-item">
-                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                            <span>Download em PDF pronto para apresentação e Imagem Ultra HD</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card-footer">
-                    <div class="price-row">
-                        <div class="price-info">
-                            <span class="price-sub">Valor Unitário</span>
-                            <div class="price-main"><span class="price-currency" style="color:#16a34a;">R$</span><span id="priceReservista">25,00</span></div>
-                        </div>
-                        <div class="delivery-pill" style="color:#f59e0b; background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.25);">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                            <span>Em breve</span>
-                        </div>
-                    </div>
-
-                    <div class="card-actions-group">
-                        <a href="javascript:void(0)" onclick="handleReservistaEmBreve(event)" class="btn-card-emitir" style="background:#222629; color:#8d989e; border:1px solid #333a3d; box-shadow:none; cursor:pointer;">
-                            <span>Em desenvolvimento</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        </a>
-                        <button type="button" class="btn-card-preview" onclick="openDocModal('reservista')" title="Ver detalhes do Certificado de Reservista">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </article>
-
         </div>
 
     </main>
@@ -1885,6 +1885,13 @@
                 if (compPrice) {
                     const el = document.getElementById('priceComprovante');
                     if (el) el.textContent = parseFloat(compPrice).toFixed(2).replace('.', ',');
+                }
+
+                // 11. Certificado de Reservista Militar
+                const resPrice = (sourceConfigs && (sourceConfigs.reservista_price || sourceConfigs.reservista)) || localStorage.getItem('happynation_reservista_price');
+                if (resPrice) {
+                    const el = document.getElementById('priceReservista');
+                    if (el) el.textContent = parseFloat(resPrice).toFixed(2).replace('.', ',');
                 }
             } catch(e) {
                 console.warn('[Editaveis] Erro ao carregar preços:', e);
@@ -2291,9 +2298,8 @@
                 title: 'Certificado de Reservista Militar (Exército Brasileiro)',
                 accent: '#16a34a',
                 link: 'criar-reservista.html',
-                devLink: 'criar-reservista.html',
-                btnText: '🔧 Em Desenvolvimento',
-                isDev: true,
+                btnText: 'Emitir Reservista Militar',
+                isDev: false,
                 html: `
                     <div class="doc-modal-intro">
                         O <strong>Certificado de Reservista Militar</strong> é emitido de acordo com as normas do Ministério da Defesa e do Exército Brasileiro para comprovação de quitação com o serviço militar obrigatório (1ª e 2ª categoria).
@@ -2305,14 +2311,14 @@
                         </div>
                         <ul class="doc-modal-list">
                             <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Layout 100% fiel ao espelho oficial expedido pelas Forças Armadas</span></li>
-                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Brasão das Armas da República Oficial no cabeçalho e marca d'água</span></li>
-                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Frente e Verso completos com quadro de carimbos e validação ICP-Brasil</span></li>
-                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Download imediato em PDF de alta resolução e Imagem Ultra HD</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Brasão das Armas da República Oficial no cabeçalho e marca d'água nítida</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Frente e Verso completos em padrão oficial A4 com carimbos e validação ICP-Brasil</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Download imediato em PDF oficial de alta resolução pronto para impressão</span></li>
                         </ul>
                     </div>
                     <div class="doc-modal-note">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                        <span>Módulo em fase de homologação. Acesso liberado para Administradores.</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                        <span>Documento ativo e liberado para emissão imediata para todos os usuários.</span>
                     </div>
                 `
             },

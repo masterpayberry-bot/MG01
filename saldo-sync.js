@@ -259,6 +259,77 @@
       persistRemote(novo);
       return novo;
     },
+    deduct: async function (amount, activityPayload) {
+      const val = parseFloat(amount) || 0;
+      if (val <= 0) return true;
+
+      const current = getSaldoNumber();
+      const novo = Math.max(0, current - val);
+
+      lastLocalUpdate = Date.now();
+      persistAll(novo);
+      await persistRemote(novo);
+
+      // Registra atividade no histórico do usuário e do Admin
+      try {
+        const user = safeJSON(USER_KEY, {});
+        const uEmail = (user.email || '').toLowerCase().trim();
+        const userName = user.nome || 'Cliente';
+
+        if (activityPayload && typeof activityPayload === 'object') {
+          const tipo = activityPayload.tipo || 'documento';
+          const descricao = activityPayload.descricao || 'Emissão de Documento';
+          const subRotulo = activityPayload.subRotulo || '';
+
+          // 1. Histórico do Usuário
+          if (uEmail) {
+            const actKey = 'happynation_activities_' + uEmail;
+            const acts = safeJSON(actKey, []);
+            acts.unshift({
+              title: (subRotulo ? subRotulo + ' - ' : '') + String(descricao).toUpperCase(),
+              time: 'agora',
+              created_at: new Date().toISOString(),
+              val: '- R$ ' + val.toFixed(2).replace('.', ',')
+            });
+            if (acts.length > 50) acts.length = 50;
+            try { localStorage.setItem(actKey, JSON.stringify(acts)); } catch(e) {}
+          }
+
+          // 2. Histórico do Painel Admin
+          const adminActs = safeJSON(ADMIN_KEY.replace('_users', '_activities'), []);
+          const newAct = {
+            id: 'act_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            tipo: tipo,
+            descricao: descricao,
+            subRotulo: subRotulo,
+            usuario: userName,
+            valor: '- R$ ' + val.toFixed(2).replace('.', ','),
+            status: 'concluido',
+            created_at: new Date().toISOString()
+          };
+          adminActs.unshift(newAct);
+          if (adminActs.length > 50) adminActs.length = 50;
+          try { localStorage.setItem(ADMIN_KEY.replace('_users', '_activities'), JSON.stringify(adminActs)); } catch(e) {}
+
+          // Notificação em tempo real (BroadcastChannel e Storage)
+          if (typeof BroadcastChannel !== 'undefined') {
+            try {
+              const bc = new BroadcastChannel('happynation_live_sync');
+              bc.postMessage({ type: 'activity_created', activity: newAct });
+              bc.close();
+            } catch(eBc) {}
+          }
+          try {
+            localStorage.setItem('happynation_last_sync_event', JSON.stringify({ type: 'activity_created', activity: newAct, time: Date.now() }));
+          } catch(eLs) {}
+        }
+      } catch(eAct) {
+        console.warn('[SaldoSync] Erro ao registrar atividade na dedução:', eAct);
+      }
+
+      console.log(`[SaldoSync] Descontado R$ ${val.toFixed(2)}. Novo saldo: R$ ${novo.toFixed(2)}`);
+      return novo;
+    },
     format: function (val) {
       return formatMoney(val !== undefined ? val : getSaldoNumber());
     },

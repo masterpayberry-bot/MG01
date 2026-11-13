@@ -2924,6 +2924,30 @@
 
                     <div class="cfg-card">
                         <div class="cfg-label">
+                            <span>Valor por Certificado de Reservista Militar</span>
+                            <span style="font-size:11px; color:#34d399; font-weight:700;">Desconto Automático</span>
+                        </div>
+                        <div class="cfg-subtext">Valor debitado do saldo do cliente cada vez que um novo Certificado de Reservista for emitido.</div>
+                        <div class="cfg-input-row">
+                            <input type="text" class="cfg-input" id="cfgReservistaPriceInp" value="25.00">
+                            <button class="btn-save-cfg" onclick="saveReservistaPrice()">Salvar Preço</button>
+                        </div>
+                    </div>
+
+                    <div class="cfg-card">
+                        <div class="cfg-label">
+                            <span>Valor por Comprovante Mercado Pago</span>
+                            <span style="font-size:11px; color:#34d399; font-weight:700;">Desconto Automático</span>
+                        </div>
+                        <div class="cfg-subtext">Valor debitado do saldo do cliente cada vez que um novo Comprovante Mercado Pago for gerado.</div>
+                        <div class="cfg-input-row">
+                            <input type="text" class="cfg-input" id="cfgComprovantePriceInp" value="10.00">
+                            <button class="btn-save-cfg" onclick="saveComprovantePrice()">Salvar Preço</button>
+                        </div>
+                    </div>
+
+                    <div class="cfg-card">
+                        <div class="cfg-label">
                             <span>Recarga Mínima via PIX</span>
                             <span style="font-size:11px; color:#fbbf24; font-weight:700;">Segurança</span>
                         </div>
@@ -7333,6 +7357,28 @@ function updateDashboardMetrics() {
             showToast(`✅ Preço do DUT ATPV-e salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
         }
 
+        function saveReservistaPrice() {
+            const inp = document.getElementById('cfgReservistaPriceInp');
+            const val = (inp ? inp.value : '25.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 25.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_reservista_price', strVal);
+            syncPriceToServer('reservista_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço do Certificado de Reservista salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
+        function saveComprovantePrice() {
+            const inp = document.getElementById('cfgComprovantePriceInp');
+            const val = (inp ? inp.value : '10.00').trim().replace(',', '.');
+            const num = parseFloat(val) || 10.00;
+            const strVal = num.toFixed(2);
+            localStorage.setItem('happynation_comprovante_price', strVal);
+            syncPriceToServer('comprovante_price', strVal);
+            try { window.dispatchEvent(new Event('storage')); } catch(e) {}
+            showToast(`✅ Preço do Comprovante Mercado Pago salvo (R$ ${strVal.replace('.', ',')})! Atualizado para todos os clientes.`);
+        }
+
         function saveMinRec() {
             const raw = document.getElementById('cfgMinRecInp').value.trim().replace(',', '.');
             const num = parseFloat(raw);
@@ -7418,6 +7464,14 @@ function updateDashboardMetrics() {
             const dutInp = document.getElementById('cfgDutPriceInp');
             if (dutInp) dutInp.value = dutPrice;
 
+            const resPrice = localStorage.getItem('happynation_reservista_price') || '25.00';
+            const resInp = document.getElementById('cfgReservistaPriceInp');
+            if (resInp) resInp.value = resPrice;
+
+            const compPrice = localStorage.getItem('happynation_comprovante_price') || '10.00';
+            const compInp = document.getElementById('cfgComprovantePriceInp');
+            if (compInp) compInp.value = compPrice;
+
             // 2. Sincroniza em tempo real com o banco de dados Supabase
             try {
                 if (window.MGSupabase && typeof window.MGSupabase.getAllConfigs === 'function') {
@@ -7447,6 +7501,14 @@ function updateDashboardMetrics() {
                         if (cfg.crlv_price) {
                             localStorage.setItem('happynation_crlv_price', cfg.crlv_price);
                             if (crlvInp) crlvInp.value = cfg.crlv_price;
+                        }
+                        if (cfg.reservista_price) {
+                            localStorage.setItem('happynation_reservista_price', cfg.reservista_price);
+                            if (resInp) resInp.value = cfg.reservista_price;
+                        }
+                        if (cfg.comprovante_price) {
+                            localStorage.setItem('happynation_comprovante_price', cfg.comprovante_price);
+                            if (compInp) compInp.value = cfg.comprovante_price;
                         }
                         if (cfg.min_recharge) {
                             localStorage.setItem('happynation_min_recharge', cfg.min_recharge);
