@@ -165,7 +165,7 @@
                 <input type="text" class="form-input" id="inpCompEnd" value="Rua das Palmeiras, 450 - Jd. Europa, Campinas - SP" oninput="updateDut()">
             </div>
 
-            <button type="button" class="btn-export" onclick="window.print()">
+            <button type="button" class="btn-export" onclick="exportDutPdf()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span>Baixar DUT / ATPV-e em PDF</span>
             </button>
@@ -289,6 +289,61 @@
                 if (el) el.textContent = `Saldo R$ ${saldo.toFixed(2).replace('.', ',')}`;
             } catch(e) {}
         });
+
+        async function exportDutPdf() {
+            const btn = document.querySelector('.btn-export');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<span>⏳ Gerando DUT em PDF...</span>';
+            btn.disabled = true;
+
+            try {
+                const sheet = document.getElementById('dutSheet');
+                const canvas = await html2canvas(sheet, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                const JsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+                const pdf = new JsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const a4W = 210;
+                const a4H = 297;
+                const ratio = Math.min((a4W - 10) / (canvas.width / 3), (a4H - 10) / (canvas.height / 3));
+                const renderW = (canvas.width / 3) * ratio;
+                const renderH = (canvas.height / 3) * ratio;
+                const posX = (a4W - renderW) / 2;
+                const posY = (a4H - renderH) / 2;
+
+                const img = canvas.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(img, 'JPEG', posX, posY, renderW, renderH);
+
+                const placa = (document.getElementById('inpPlaca').value || 'VEICULO').trim().replace(/\s+/g, '_');
+                pdf.save(`DUT_ATPVE_${placa}.pdf`);
+
+                // Dedução de Saldo
+                const precoDut = parseFloat(localStorage.getItem('happynation_dut_price')) || 25.00;
+                if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
+                    await window.MGSaldo.deduct(precoDut, {
+                        tipo: 'dut',
+                        descricao: document.getElementById('inpPlaca').value || 'Transferência Veicular',
+                        subRotulo: 'DUT / ATPV-e Digital',
+                        tagClass: 'badge-crlv',
+                        tagText: 'DUT'
+                    });
+                }
+            } catch(e) {
+                alert('Erro ao gerar DUT: ' + (e.message || e));
+            } finally {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>

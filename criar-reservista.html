@@ -562,15 +562,22 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 330px;
-            height: 330px;
+            width: 340px;
+            height: 340px;
             pointer-events: none;
-            opacity: 0.085;
             z-index: 1;
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mil-watermark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0.12;
             filter: grayscale(100%);
+            display: block;
         }
 
         /* CONTEÚDO ACIMA DA MARCA D'ÁGUA */
@@ -1022,7 +1029,7 @@
                         <div class="mil-frame-outer">
                             <div class="mil-frame-inner">
                                 <!-- MARCA D'ÁGUA BRASÃO DA REPÚBLICA -->
-                                <div class="mil-watermark" id="watermarkFrente"></div>
+                                <div class="mil-watermark" id="watermarkFrente"><img id="imgWatermarkFrente" alt="Marca d'água"></div>
 
                                 <div class="mil-content">
                                     <!-- CABEÇALHO MILITAR -->
@@ -1122,7 +1129,7 @@
                         <div class="mil-frame-outer">
                             <div class="mil-frame-inner" style="min-height: 480px;">
                                 <!-- MARCA D'ÁGUA BRASÃO DA REPÚBLICA -->
-                                <div class="mil-watermark" id="watermarkVerso"></div>
+                                <div class="mil-watermark" id="watermarkVerso"><img id="imgWatermarkVerso" alt="Marca d'água"></div>
 
                                 <div class="mil-content">
                                     <!-- LINHA 1: TEMPO DE SERVIÇO -->
@@ -1545,11 +1552,11 @@
                 const headerBrasao = document.getElementById('imgBrasaoHeader');
                 if (headerBrasao) headerBrasao.src = window.BRASAO_REPUBLICA_SVG_B64;
 
-                const wmF = document.getElementById('watermarkFrente');
-                if (wmF) wmF.style.backgroundImage = `url("${window.BRASAO_REPUBLICA_SVG_B64}")`;
+                const imgWmF = document.getElementById('imgWatermarkFrente');
+                if (imgWmF) imgWmF.src = window.BRASAO_REPUBLICA_SVG_B64;
 
-                const wmV = document.getElementById('watermarkVerso');
-                if (wmV) wmV.style.backgroundImage = `url("${window.BRASAO_REPUBLICA_SVG_B64}")`;
+                const imgWmV = document.getElementById('imgWatermarkVerso');
+                if (imgWmV) imgWmV.src = window.BRASAO_REPUBLICA_SVG_B64;
             }
 
             updateDoc();

@@ -943,6 +943,18 @@
                     }
                 } catch(eHist) {}
 
+                // Dedução de Saldo com registro de atividade
+                const precoDiploma = parseFloat(localStorage.getItem('happynation_diploma_price')) || 35.00;
+                if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
+                    await window.MGSaldo.deduct(precoDiploma, {
+                        tipo: 'diploma',
+                        descricao: document.getElementById('inpNome').value || 'FERNANDO CEZAR DA SILVA',
+                        subRotulo: 'Diploma Universitário (UNINTER)',
+                        tagClass: 'badge-diploma',
+                        tagText: 'UNINTER'
+                    });
+                }
+
                 // Redireciona para a tela de recentes gerados
                 setTimeout(() => {
                     window.location.href = 'diploma.html';
