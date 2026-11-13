@@ -1012,7 +1012,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">CPF</label>
-                        <input type="text" class="form-input" id="inpCpf" value="54893978888" maxlength="14" oninput="maskCpf(this); updateDoc()">
+                        <input type="text" class="form-input" id="inpCpf" value="548.939.788-88" maxlength="14" placeholder="000.000.000-00" oninput="maskCpf(this); updateDoc()">
                     </div>
                 </div>
 
@@ -1188,7 +1188,7 @@
                                         </div>
                                         <div class="mil-box" style="flex: 1.05; min-height: 44px;">
                                             <div class="mil-box-lbl">CPF</div>
-                                            <div class="mil-box-val" id="docCpf">54893978888</div>
+                                            <div class="mil-box-val" id="docCpf">548.939.788-88</div>
                                         </div>
                                     </div>
 
@@ -1382,7 +1382,11 @@
 
         // Atualiza a renderização de todos os campos do documento
         function updateDoc() {
-            const getVal = id => document.getElementById(id) ? document.getElementById(id).value.trim() : '';
+            const getVal = id => {
+                const el = document.getElementById(id);
+                if (!el) return '';
+                return el.value.trim() || el.dataset.sampleVal || '';
+            };
             const setTxt = (id, val) => {
                 const el = document.getElementById(id);
                 if (el) el.textContent = val;
@@ -1394,7 +1398,7 @@
 
             setTxt('docTipoDoc', getVal('inpTipoDoc') || 'Certificado de Reservista');
             setTxt('docRa', getVal('inpRa') || '528960544');
-            setTxt('docCpf', getVal('inpCpf') || '54893978888');
+            setTxt('docCpf', getVal('inpCpf') || '548.939.788-88');
 
             setTxt('docNome', getVal('inpNome') || 'Nome do Reservista');
             setTxt('docMae', getVal('inpMae') || 'Nome da Mãe');

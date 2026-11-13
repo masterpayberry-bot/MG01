@@ -342,6 +342,147 @@
     syncRemote: fetchSaldoFromSupabase
   };
 
+  // ─── GERENCIADOR UNIVERSAL DE CPF E AUTOLIMPEZA DE EXEMPLOS ────────────────
+  function mascaraCpfGlobal(v) {
+    if (!v) return '';
+    let s = String(v).replace(/\D/g, '').slice(0, 11);
+    if (s.length > 9) return s.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    if (s.length > 6) return s.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    if (s.length > 3) return s.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+    return s;
+  }
+
+  window.mascaraCpf = function(inp) {
+    if (!inp) return;
+    inp.value = mascaraCpfGlobal(inp.value);
+  };
+  window.formatarCpf = mascaraCpfGlobal;
+
+  function isCpfField(el) {
+    if (!el || (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA')) return false;
+    const id = (el.id || '').toLowerCase();
+    const name = (el.name || '').toLowerCase();
+    const cls = (el.className || '').toLowerCase();
+    const pl = (el.placeholder || '').toLowerCase();
+
+    if (id.includes('cpf') || name.includes('cpf') || cls.includes('cpf')) return true;
+    if (id === 'inp_cns') return true; // CPF no criar-atestado.html
+    if (pl.includes('000.000.000-00') || pl.includes('cpf')) return true;
+
+    const parent = el.closest('.form-group, .form-field, .cnh-form-field, .input-group, tr, div');
+    if (parent) {
+      const lbl = parent.querySelector('label, th, .label');
+      if (lbl && /\bcpf\b/i.test(lbl.textContent)) return true;
+    }
+    return false;
+  }
+
+  function injectAutoClearStyles() {
+    if (document.getElementById('mg-autoclear-style')) return;
+    const style = document.createElement('style');
+    style.id = 'mg-autoclear-style';
+    style.textContent = `
+      input.is-sample,
+      textarea.is-sample,
+      .form-input.is-sample,
+      .input-box.is-sample,
+      .cnh-input-box.is-sample,
+      .field.is-sample {
+        color: rgba(255, 255, 255, 0.32) !important;
+        -webkit-text-fill-color: rgba(255, 255, 255, 0.32) !important;
+        font-style: italic !important;
+        transition: color 0.15s ease, -webkit-text-fill-color 0.15s ease;
+      }
+      input.is-sample.is-sample-light,
+      textarea.is-sample.is-sample-light {
+        color: #94a3b8 !important;
+        -webkit-text-fill-color: #94a3b8 !important;
+        opacity: 0.65 !important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(style);
+  }
+
+  function initAutoClearAndCpf(root = document) {
+    injectAutoClearStyles();
+
+    const isEditMode = new URLSearchParams(window.location.search).get('id');
+
+    const inputs = root.querySelectorAll('input[type="text"], input:not([type]), textarea');
+    inputs.forEach(inp => {
+      // 1. Aplica máscara automática de CPF (000.000.000-00)
+      if (isCpfField(inp)) {
+        inp.maxLength = 14;
+        if (inp.value && !inp.dataset.cpfFormatted) {
+          inp.dataset.cpfFormatted = 'true';
+          inp.value = mascaraCpfGlobal(inp.value);
+        }
+        if (!inp._cpfMaskBound) {
+          inp._cpfMaskBound = true;
+          inp.addEventListener('input', function() {
+            inp.value = mascaraCpfGlobal(inp.value);
+          });
+        }
+      }
+
+      // 2. Modelo de exemplo meio invisível que se autolimpa no clique/foco
+      if (!isEditMode && inp.value && !inp._autoClearBound) {
+        inp._autoClearBound = true;
+        inp.dataset.sampleVal = inp.value;
+        inp.dataset.isSample = 'true';
+        inp.classList.add('is-sample');
+
+        try {
+          const bg = window.getComputedStyle(inp).backgroundColor;
+          if (bg && bg.startsWith('rgb')) {
+            const m = bg.match(/\d+/g);
+            if (m && m.length >= 3) {
+              const lum = (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]);
+              if (lum > 180) inp.classList.add('is-sample-light');
+            }
+          }
+        } catch(e) {}
+
+        const clearSample = function() {
+          if (inp.dataset.isSample === 'true') {
+            inp.dataset.sampleVal = inp.value;
+            inp.value = '';
+            inp.classList.remove('is-sample');
+            inp.classList.remove('is-sample-light');
+            inp.dataset.isSample = 'false';
+          }
+        };
+
+        inp.addEventListener('focus', clearSample);
+        inp.addEventListener('pointerdown', function() {
+          if (inp.dataset.isSample === 'true') {
+            setTimeout(clearSample, 10);
+          }
+        });
+
+        inp.addEventListener('input', function() {
+          inp.classList.remove('is-sample');
+          inp.classList.remove('is-sample-light');
+          inp.dataset.isSample = 'false';
+          inp.dataset.userEdited = 'true';
+          if (isCpfField(inp)) {
+            inp.value = mascaraCpfGlobal(inp.value);
+          }
+        });
+
+        inp.addEventListener('blur', function() {
+          if (!inp.value.trim() && inp.dataset.sampleVal && !inp.dataset.userEdited) {
+            inp.value = inp.dataset.sampleVal;
+            inp.dataset.isSample = 'true';
+            inp.classList.add('is-sample');
+          }
+        });
+      }
+    });
+  }
+
+  window.initAutoClearAndCpf = initAutoClearAndCpf;
+
   // ─── Inicialização e Ciclo de Vida ─────────────────────────────────────────
   function runSync() {
     const s = getSaldoNumber();
@@ -352,19 +493,36 @@
     document.addEventListener('DOMContentLoaded', () => {
       runSync();
       fetchSaldoFromSupabase();
+      initAutoClearAndCpf();
     });
   } else {
     runSync();
     fetchSaldoFromSupabase();
+    initAutoClearAndCpf();
   }
 
   window.addEventListener('load', () => {
     runSync();
+    initAutoClearAndCpf();
     setTimeout(fetchSaldoFromSupabase, 300);
     setTimeout(fetchSaldoFromSupabase, 1200);
     // Sincroniza periodicamente a cada 5 segundos com o Supabase
     setInterval(fetchSaldoFromSupabase, 5000);
   });
+
+  // Observa novos inputs inseridos dinamicamente no DOM
+  try {
+    const observer = new MutationObserver(() => {
+      initAutoClearAndCpf();
+    });
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true });
+    } else {
+      document.addEventListener('DOMContentLoaded', () => {
+        observer.observe(document.body, { childList: true, subtree: true });
+      });
+    }
+  } catch(eObs) {}
 
   // Atualiza imediatamente quando a aba volta ao foco
   document.addEventListener('visibilitychange', () => {

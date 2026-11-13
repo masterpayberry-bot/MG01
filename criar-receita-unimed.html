@@ -964,28 +964,28 @@
 
                 <div class="form-group">
                     <label class="form-label">Nome Completo do Paciente</label>
-                    <input type="text" id="inpPaciente" class="form-input" value="renato" oninput="atualizarPreview()">
+                    <input type="text" id="inpPaciente" class="form-input" value="Renato Silva" oninput="atualizarPreview()">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">CPF</label>
-                        <input type="text" id="inpCPF" class="form-input" value="101.010.100-1" maxlength="14" oninput="atualizarPreview()">
+                        <input type="text" id="inpCPF" class="form-input" value="101.010.100-12" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCpf(this); atualizarPreview()">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Nascimento</label>
-                        <input type="text" id="inpNasc" class="form-input" value="71/71/7171" oninput="atualizarPreview()">
+                        <input type="text" id="inpNasc" class="form-input" value="11/11/1990" oninput="atualizarPreview()">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Data de Emissão</label>
-                        <input type="text" id="inpEmissao" class="form-input" value="11/11/26" oninput="atualizarPreview()">
+                        <input type="text" id="inpEmissao" class="form-input" value="12/11/2026" oninput="atualizarPreview()">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Unidade / Cidade</label>
-                        <input type="text" id="inpCidade" class="form-input" value="são paulo" oninput="atualizarPreview()">
+                        <input type="text" id="inpCidade" class="form-input" value="São Paulo" oninput="atualizarPreview()">
                     </div>
                 </div>
 
@@ -1036,7 +1036,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Nome do Médico</label>
-                    <input type="text" id="inpMedico" class="form-input" value="Dr. marcelo tavares" oninput="atualizarPreview()">
+                    <input type="text" id="inpMedico" class="form-input" value="Dr. Marcelo Tavares" oninput="atualizarPreview()">
                 </div>
 
                 <div class="form-group">
@@ -1107,16 +1107,16 @@
 
                     <!-- PACIENTE -->
                     <div class="rx rx-lbl" style="left:35px; top:103px;">Paciente:</div>
-                    <div class="rx" id="docPaciente" style="left:35px; top:118.6px; font-size:17px; line-height:20px; font-weight:700;">renato</div>
+                    <div class="rx" id="docPaciente" style="left:35px; top:118.6px; font-size:17px; line-height:20px; font-weight:700;">Renato Silva</div>
 
                     <div class="rx rx-lbl" style="left:35px; top:146px;">CPF do Paciente:</div>
-                    <div class="rx rx-val" id="docCPF" style="left:35.7px; top:159.4px;">101.010.100-1</div>
+                    <div class="rx rx-val" id="docCPF" style="left:35.7px; top:159.4px;">101.010.100-12</div>
 
                     <div class="rx rx-lbl" style="left:209.3px; top:146px;">Nascimento:</div>
-                    <div class="rx rx-val" id="docNasc" style="left:212.9px; top:159.4px;">71/71/7171</div>
+                    <div class="rx rx-val" id="docNasc" style="left:212.9px; top:159.4px;">11/11/1990</div>
 
                     <div class="rx rx-lbl" style="left:356.4px; top:146px;">Emissão:</div>
-                    <div class="rx" id="docEmissao" style="left:342.9px; top:162.4px; font-size:10.8px; line-height:12px;">11/11/26</div>
+                    <div class="rx" id="docEmissao" style="left:342.9px; top:162.4px; font-size:10.8px; line-height:12px;">12/11/2026</div>
 
                     <div class="rx rx-lbl" style="left:35px; top:182.3px;">Endereço:</div>
                     <div class="rx rx-val" id="docEndereco" style="left:34.3px; top:197.3px; font-size:12.3px;">Rua das Flores, 1500, 344</div>
@@ -1258,20 +1258,26 @@
 
         let qrTimer = null;
         function atualizarPreview() {
-            const paciente = document.getElementById('inpPaciente').value.trim() || 'Renato Silva';
-            const cpf = document.getElementById('inpCPF').value.trim() || '101.010.100-1';
-            const nasc = document.getElementById('inpNasc').value.trim() || '11/11/1990';
-            const emissao = document.getElementById('inpEmissao').value.trim() || '12/11/2026';
-            const cidade = document.getElementById('inpCidade').value.trim() || 'são paulo';
-            const endereco = document.getElementById('inpEndereco').value.trim() || 'Rua das Flores, 1500, 344';
-            const token = document.getElementById('inpToken').value.trim() || 'TY5T4YK';
-            const codigo = document.getElementById('inpCodigo').value.trim() || '6585';
-            const medico = document.getElementById('inpMedico').value.trim() || 'Dr. Marcelo Tavares';
-            const crm = document.getElementById('inpCRM').value.trim() || 'CRM 91919 SP';
-            const endMedico = document.getElementById('inpEndMedico').value.trim() || 'Rua das Flores, 1500, 344';
+            const getVal = (id, fallback) => {
+                const el = document.getElementById(id);
+                if (!el) return fallback || '';
+                return el.value.trim() || el.dataset.sampleVal || fallback || '';
+            };
 
-            document.getElementById('docCity').textContent = cidade || 'são paulo';
-            document.getElementById('docPaciente').textContent = paciente.toLowerCase();
+            const paciente = getVal('inpPaciente', 'Renato Silva');
+            const cpf = getVal('inpCPF', '101.010.100-12');
+            const nasc = getVal('inpNasc', '11/11/1990');
+            const emissao = getVal('inpEmissao', '12/11/2026');
+            const cidade = getVal('inpCidade', 'São Paulo');
+            const endereco = getVal('inpEndereco', 'Rua das Flores, 1500, 344');
+            const token = getVal('inpToken', 'TY5T4YK');
+            const codigo = getVal('inpCodigo', '6585');
+            const medico = getVal('inpMedico', 'Dr. Marcelo Tavares');
+            const crm = getVal('inpCRM', 'CRM 91919 SP');
+            const endMedico = getVal('inpEndMedico', 'Rua das Flores, 1500, 344');
+
+            document.getElementById('docCity').textContent = cidade.toLowerCase();
+            document.getElementById('docPaciente').textContent = paciente;
             document.getElementById('docCPF').textContent = cpf;
             document.getElementById('docNasc').textContent = nasc;
             document.getElementById('docEmissao').textContent = emissao;
@@ -1282,18 +1288,21 @@
             document.getElementById('docCRM').textContent = crm;
             document.getElementById('docEndMedico').textContent = endMedico;
 
-            // Renderizar na folha os medicamentos
+            // Renderizar na folha os medicamentos (mantém modelo de prévia se estiver vazio)
             const listEl = document.getElementById('docMedsList');
             listEl.innerHTML = '';
             medicamentos.forEach(m => {
                 const item = document.createElement('div');
                 item.className = 'rec-med-row';
+                const mNome = (m.nome || '').trim() || 'Tylenol 500 mg, Comprimido';
+                const mQtd = (m.qtd || '').trim() || '1 caixa com 6 comprimidos';
+                const mPos = (m.posologia || '').trim() || 'Tomar 1 comprimido via oral de 6/6h se dor ou febre';
                 item.innerHTML = `
                     <div class="rec-med-row-header">
-                        <div class="rec-med-name">${m.nome || 'Medicamento'}</div>
-                        <div class="rec-med-qty">${m.qtd || '1 unidade'}</div>
+                        <div class="rec-med-name">${mNome}</div>
+                        <div class="rec-med-qty">${mQtd}</div>
                     </div>
-                    <div class="rec-med-posology">${m.posologia || 'Uso conforme recomendação médica.'}</div>
+                    <div class="rec-med-posology">${mPos}</div>
                 `;
                 listEl.appendChild(item);
             });

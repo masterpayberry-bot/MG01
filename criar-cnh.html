@@ -1688,7 +1688,7 @@
                 <div class="cnh-form-row">
                     <div class="cnh-form-field">
                         <label>CPF *</label>
-                        <input type="text" id="side_cpf" class="cnh-input-box" placeholder="000.000.000-00" oninput="syncCnhFromSidebar('cpf', this.value)" />
+                        <input type="text" id="side_cpf" class="cnh-input-box" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCpf(this); syncCnhFromSidebar('cpf', this.value)" />
                     </div>
                     <div class="cnh-form-field">
                         <label>Doc. Identidade (RG/Órgão/UF)</label>

@@ -824,16 +824,20 @@
         }
 
         function updateDiploma() {
-            const nome = document.getElementById('inpNome').value || 'FERNANDO CEZAR DA SILVA';
-            const nac = document.getElementById('inpNac').value || 'brasileiro';
-            const nat = document.getElementById('inpNat').value || 'Estado de CATANDUVA';
-            const nasc = document.getElementById('inpNasc').value || '4 DE OUTUBRO DE 1971';
-            const rg = document.getElementById('inpRg').value || 'SP- 21225232 / SSP/SP - SP';
-            const curso = document.getElementById('inpCurso').value || 'BACHARELADO EM FARMÁCIA';
-            const dataConc = document.getElementById('inpDataConc').value || '12 DE AGOSTO DE 2026';
-            const dataCol = document.getElementById('inpDataCol').value || '11 DE JANEIRO DE 2027';
-            const dataExp = document.getElementById('inpDataExp').value || 'SÃO PAULO, 18 DE MARÇO DE 2027';
-            const hash = document.getElementById('inpHash').value || '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17';
+            const g = (id, fallback) => {
+                const el = document.getElementById(id);
+                return el ? (el.value.trim() || el.dataset.sampleVal || fallback || '') : (fallback || '');
+            };
+            const nome = g('inpNome', 'FERNANDO CEZAR DA SILVA');
+            const nac = g('inpNac', 'brasileiro');
+            const nat = g('inpNat', 'Estado de CATANDUVA');
+            const nasc = g('inpNasc', '4 DE OUTUBRO DE 1971');
+            const rg = g('inpRg', 'SP- 21225232 / SSP/SP - SP');
+            const curso = g('inpCurso', 'BACHARELADO EM FARMÁCIA');
+            const dataConc = g('inpDataConc', '12 DE AGOSTO DE 2026');
+            const dataCol = g('inpDataCol', '11 DE JANEIRO DE 2027');
+            const dataExp = g('inpDataExp', 'SÃO PAULO, 18 DE MARÇO DE 2027');
+            const hash = g('inpHash', '4690.4690.307b7f437a202e7f8d6e7b8b8df7412a3cca666c1a1596a1d26b915fed3fde17');
             const url = 'https://diploma-uninter.vercel.app';
 
             // Frente

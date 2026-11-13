@@ -865,7 +865,7 @@
 
                 <div class="form-group">
                     <label>CPF ou CNPJ</label>
-                    <input type="text" class="input-box" id="inp_cpf_cnpj" value="046.660.515-38">
+                    <input type="text" class="input-box" id="inp_cpf_cnpj" value="046.660.515-38" maxlength="18" placeholder="000.000.000-00" oninput="mascaraCpf(this)">
                 </div>
 
                 <div class="form-row">
@@ -1149,7 +1149,8 @@
                 const inp = document.getElementById(inpId);
                 const view = document.getElementById(viewId);
                 if (inp && view) {
-                    view.textContent = transform(inp.value || '');
+                    const rawVal = inp.value.trim() || inp.dataset.sampleVal || '';
+                    view.textContent = transform(rawVal);
                 }
             });
 

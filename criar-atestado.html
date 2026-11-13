@@ -2203,15 +2203,19 @@
 
     // Sincroniza do Checkout para a Folha do Atestado
     function syncFromCheckout() {
-        const nome = (document.getElementById('inp_nome')?.value || '').toUpperCase();
-        const cns = document.getElementById('inp_cns')?.value || '';
-        const cid = document.getElementById('inp_cid')?.value || '';
-        const data = document.getElementById('inp_data')?.value || '';
-        const hora = document.getElementById('inp_hora')?.value || '';
-        const unidade = document.getElementById('inp_unidade')?.value || '';
-        const medico = (document.getElementById('inp_medico')?.value || '').trim();
-        const medicoEsp = (document.getElementById('inp_medico_esp')?.value || '').trim();
-        const crm = (document.getElementById('inp_crm')?.value || '').trim();
+        const getV = (id, fallback) => {
+            const el = document.getElementById(id);
+            return el ? (el.value.trim() || el.dataset.sampleVal || fallback || '') : (fallback || '');
+        };
+        const nome = getV('inp_nome', 'TATIANI RODRIGUES MOR').toUpperCase();
+        const cns = getV('inp_cns', '458.912.873-44');
+        const cid = getV('inp_cid', 'A09');
+        const data = getV('inp_data', '04/11/2023');
+        const hora = getV('inp_hora', '08:12:23');
+        const unidade = getV('inp_unidade', 'UPA 24h Itaquera - Consultórios');
+        const medico = getV('inp_medico', 'Jair Dacas').trim();
+        const medicoEsp = getV('inp_medico_esp', 'Médica Clínica').trim();
+        const crm = getV('inp_crm', '29022 RS').trim();
 
         // Atualiza campos estáticos na folha (preview 100% fiel e limpo)
         // Sincroniza endereço da unidade no cabeçalho da folha

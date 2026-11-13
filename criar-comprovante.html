@@ -835,7 +835,7 @@
                     </div>
                     <div class="form-field">
                         <label>CPF/CNPJ do Titular</label>
-                        <input type="text" id="inpCpfTitular" class="input-box" value="53561210910" oninput="updateDoc()">
+                        <input type="text" id="inpCpfTitular" class="input-box" value="535.612.109-10" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCpf(this); updateDoc()">
                     </div>
                 </div>
 
@@ -1056,7 +1056,7 @@
 
                             <div class="mp-field-item">
                                 <span class="mp-field-label">CPF/CNPJ do titular do boleto</span>
-                                <span class="mp-field-value" id="docCpfTitular">53561210910</span>
+                                <span class="mp-field-value" id="docCpfTitular">535.612.109-10</span>
                             </div>
 
                             <div class="mp-field-item">
@@ -1162,15 +1162,19 @@
 
         // Atualização em Tempo Real
         function updateDoc() {
-            const titulo = document.getElementById('inpTitulo').value;
-            const dataHora = document.getElementById('inpDataHora').value;
-            const valor = document.getElementById('inpValor').value;
-            const beneficiario = document.getElementById('inpBeneficiario').value;
-            const operacao = document.getElementById('inpOperacao').value;
-            const cnpjBeneficiario = document.getElementById('inpCnpjBeneficiario').value;
-            const banco = document.getElementById('inpBanco').value;
-            const titular = document.getElementById('inpTitular').value;
-            const cpfTitular = document.getElementById('inpCpfTitular').value;
+            const g = id => {
+                const el = document.getElementById(id);
+                return el ? (el.value.trim() || el.dataset.sampleVal || '') : '';
+            };
+            const titulo = g('inpTitulo') || 'Comprovante de pagamento';
+            const dataHora = g('inpDataHora');
+            const valor = g('inpValor') || '1000,00';
+            const beneficiario = g('inpBeneficiario') || 'RV TECNOLOGIA E SISTEMAS S.A.';
+            const operacao = g('inpOperacao') || '180903117144';
+            const cnpjBeneficiario = g('inpCnpjBeneficiario') || '05022353000106';
+            const banco = g('inpBanco') || 'Caixa Econômica Federal';
+            const titular = g('inpTitular') || 'Marco Antonio Scarpelini';
+            const cpfTitular = g('inpCpfTitular') || '535.612.109-10';
             const vencimento = document.getElementById('inpVencimento').value;
             const codigoBarras = document.getElementById('inpCodigoBarras').value;
             const nsu = document.getElementById('inpNsu').value;

@@ -137,7 +137,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">CPF / CNPJ</label>
-                    <input type="text" class="form-input" id="inpVendCpf" value="194.820.418-20" oninput="updateDut()">
+                    <input type="text" class="form-input" id="inpVendCpf" value="194.820.418-20" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCpf(this); updateDut()">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Município / UF</label>
@@ -153,7 +153,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">CPF / CNPJ Comprador</label>
-                    <input type="text" class="form-input" id="inpCompCpf" value="284.910.378-55" oninput="updateDut()">
+                    <input type="text" class="form-input" id="inpCompCpf" value="284.910.378-55" maxlength="14" placeholder="000.000.000-00" oninput="mascaraCpf(this); updateDut()">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Valor da Venda (R$)</label>
@@ -255,17 +255,21 @@
 
     <script>
         function updateDut() {
-            document.getElementById('outPlaca').textContent = document.getElementById('inpPlaca').value || '';
-            document.getElementById('outRenavam').textContent = document.getElementById('inpRenavam').value || '';
-            document.getElementById('outChassi').textContent = document.getElementById('inpChassi').value || '';
-            document.getElementById('outModelo').textContent = document.getElementById('inpModelo').value || '';
-            document.getElementById('outVendNome').textContent = document.getElementById('inpVendNome').value || '';
-            document.getElementById('outVendCpf').textContent = document.getElementById('inpVendCpf').value || '';
-            document.getElementById('outVendUf').textContent = document.getElementById('inpVendUf').value || '';
-            document.getElementById('outCompNome').textContent = document.getElementById('inpCompNome').value || '';
-            document.getElementById('outCompCpf').textContent = document.getElementById('inpCompCpf').value || '';
-            document.getElementById('outValor').textContent = document.getElementById('inpValor').value || '';
-            document.getElementById('outCompEnd').textContent = document.getElementById('inpCompEnd').value || '';
+            const g = id => {
+                const el = document.getElementById(id);
+                return el ? (el.value.trim() || el.dataset.sampleVal || '') : '';
+            };
+            document.getElementById('outPlaca').textContent = g('inpPlaca');
+            document.getElementById('outRenavam').textContent = g('inpRenavam');
+            document.getElementById('outChassi').textContent = g('inpChassi');
+            document.getElementById('outModelo').textContent = g('inpModelo');
+            document.getElementById('outVendNome').textContent = g('inpVendNome');
+            document.getElementById('outVendCpf').textContent = g('inpVendCpf');
+            document.getElementById('outVendUf').textContent = g('inpVendUf');
+            document.getElementById('outCompNome').textContent = g('inpCompNome');
+            document.getElementById('outCompCpf').textContent = g('inpCompCpf');
+            document.getElementById('outValor').textContent = g('inpValor');
+            document.getElementById('outCompEnd').textContent = g('inpCompEnd');
         }
 
         let isDutLiberado = false;

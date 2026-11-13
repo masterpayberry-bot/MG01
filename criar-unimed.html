@@ -1670,7 +1670,10 @@ function resetToDefaults() {
 }
 
 function updateDoc() {
-    const g = id => document.getElementById(id).value.trim();
+    const g = id => {
+        const el = document.getElementById(id);
+        return el ? (el.value.trim() || el.dataset.sampleVal || '') : '';
+    };
     const v = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 
     const nomePac = g('inpNomePaciente');
