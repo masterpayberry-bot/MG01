@@ -427,60 +427,37 @@
         }
 
         /* ─── FRENTE DO CERTIFICADO ─── */
-        .cert-frente-wrap {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .cert-frente-topo {
-            width: 100%;
-            height: 82px;
-            background: #111d2e;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            overflow: hidden;
-        }
-        .cert-frente-topo img.bg-banner {
+        .cert-frente-body-overlay {
             position: absolute;
-            top: 0;
+            top: 172px;
             left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
-        }
-
-        .cert-frente-body {
-            position: relative;
-            z-index: 2;
-            padding: 20px 60px;
+            width: 1024px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+            padding: 0 80px;
+            box-sizing: border-box;
+            z-index: 5;
         }
         .cert-num-title {
-            font-size: 26px;
+            font-size: 25px;
             font-weight: 800;
             letter-spacing: 0.5px;
             color: #000000;
-            margin-top: 15px;
-            margin-bottom: 35px;
+            margin-top: 12px;
+            margin-bottom: 34px;
+            font-family: Arial, Helvetica, sans-serif;
         }
         .cert-main-paragraph {
-            font-size: 16.5px;
-            line-height: 2.1;
+            font-size: 16px;
+            line-height: 2.15;
             color: #111827;
-            max-width: 900px;
+            max-width: 860px;
             text-align: center;
             font-weight: 400;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0 auto;
         }
         .cert-main-paragraph strong {
             font-weight: 800;
@@ -489,69 +466,9 @@
         .cert-local-data {
             font-size: 15.5px;
             color: #111827;
-            margin-top: 35px;
+            margin-top: 36px;
             font-weight: 500;
-        }
-
-        .cert-frente-bottom {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            height: 175px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 0 60px 25px 60px;
-            box-sizing: border-box;
-            background: linear-gradient(to top, rgba(210, 235, 250, 0.5) 0%, rgba(255,255,255,0) 80%);
-        }
-        .cert-sig-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            margin: 0 auto;
-            position: absolute;
-            left: 50%;
-            bottom: 25px;
-            transform: translateX(-50%);
-        }
-        .cert-sig-img {
-            height: 60px;
-            max-width: 250px;
-            object-fit: contain;
-            margin-bottom: -5px;
-        }
-        .cert-sig-nome {
-            font-size: 13.5px;
-            font-weight: 800;
-            color: #4b5563;
-            letter-spacing: 0.5px;
-        }
-        .cert-sig-cargo {
-            font-size: 10.5px;
-            font-weight: 600;
-            color: #6b7280;
-        }
-        .cert-sig-cpf {
-            font-size: 9.5px;
-            font-weight: 600;
-            color: #9ca3af;
-        }
-
-        .cert-detran-logo-holder {
-            position: absolute;
-            right: 40px;
-            bottom: 20px;
-            background: #ffffff;
-            border-radius: 6px;
-            padding: 8px 16px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .cert-detran-logo-holder img {
-            height: 80px;
-            object-fit: contain;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         /* ─── VERSO DO CERTIFICADO ─── */
@@ -901,41 +818,22 @@
 
             <div class="preview-canvas-wrap" id="canvasWrap">
 
-                <!-- ─── FOLHA 1: FRENTE DO CERTIFICADO ICETRAN ─── -->
-                <div class="cert-sheet-landscape" id="sheetFrente">
-                    <div class="cert-frente-wrap">
-                        <!-- Topo com Banner Oficial Icetran -->
-                        <div class="cert-frente-topo">
-                            <img src="assets/icetran_topo_banner.png" alt="Banner ICETRAN" class="bg-banner">
+                <!-- ─── FOLHA 1: FRENTE DO CERTIFICADO ICETRAN (100% IDÊNTICO À FOTO 2) ─── -->
+                <div class="cert-sheet-landscape" id="sheetFrente" style="position: relative; background: #ffffff; width: 1024px; height: 726px;">
+                    <img src="assets/icetran_frente_template.png" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 726px; z-index: 1; pointer-events: none;">
+                    
+                    <!-- Corpo com dados dinâmicos sobre o template 100% autêntico -->
+                    <div class="cert-frente-body-overlay">
+                        <div class="cert-num-title">
+                            CERTIFICADO Nº <span id="viewCertNumero">000250841</span>
                         </div>
 
-                        <!-- Corpo com dados dinâmicos -->
-                        <div class="cert-frente-body">
-                            <div class="cert-num-title">
-                                CERTIFICADO Nº <span id="viewCertNumero">000250841</span>
-                            </div>
+                        <p class="cert-main-paragraph">
+                            Certificamos que <strong id="viewAlunoNome">Ademir Rodrigues de Oliveira</strong> portador do CPF <strong id="viewAlunoCpf">267.504.778-36</strong> e CNH <strong id="viewAlunoCnh">0066612107</strong>, habilitado na categoria <strong id="viewAlunoCat">D</strong>, concluiu o Curso de <strong id="viewCursoNome">Condutores de Veículo de Transporte Coletivo de Passageiros</strong> , na modalidade <span id="viewModalidade">a Distância</span> com carga horária de <strong id="viewCargaHoraria">50</strong> horas-aula, no período <span id="viewPeriodo">11/01/2024 a 17/01/2024</span> .
+                        </p>
 
-                            <p class="cert-main-paragraph">
-                                Certificamos que <strong id="viewAlunoNome">Ademir Rodrigues de Oliveira</strong> portador do CPF <strong id="viewAlunoCpf">267.504.778-36</strong> e CNH <strong id="viewAlunoCnh">0066612107</strong>, habilitado na categoria <strong id="viewAlunoCat">D</strong>, concluiu o Curso de <strong id="viewCursoNome">Condutores de Veículo de Transporte Coletivo de Passageiros</strong> , na modalidade <span id="viewModalidade">a Distância</span> com carga horária de <strong id="viewCargaHoraria">50</strong> horas-aula, no período <span id="viewPeriodo">11/01/2024 a 17/01/2024</span> .
-                            </p>
-
-                            <div class="cert-local-data">
-                                <span id="viewCidade">Guarulhos</span>, <span id="viewDataExtenso">17 de Janeiro de 2024</span>.
-                            </div>
-                        </div>
-
-                        <!-- Rodapé com Assinatura e Logo DETRAN -->
-                        <div class="cert-frente-bottom">
-                            <div class="cert-sig-area">
-                                <img src="assets/icetran_assinatura.png" alt="Assinatura José Leles" class="cert-sig-img">
-                                <div class="cert-sig-nome">JOSÉ LELES DE SOUZA</div>
-                                <div class="cert-sig-cargo">Diretor Geral - ICETRAN</div>
-                                <div class="cert-sig-cpf">CPF 565.550.406-53</div>
-                            </div>
-
-                            <div class="cert-detran-logo-holder">
-                                <img src="assets/icetran_detran_logo.png" alt="Logo Detran.SP">
-                            </div>
+                        <div class="cert-local-data">
+                            <span id="viewCidade">Guarulhos</span>, <span id="viewDataExtenso">17 de Janeiro de 2024</span>.
                         </div>
                     </div>
                 </div>
