@@ -388,6 +388,64 @@
             box-shadow: 0 0 8px #10b981;
         }
 
+        /* ─── CONTROLES DE ZOOM / APROXIMAÇÃO ─── */
+        .zoom-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #141718;
+            border: 1px solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
+        .btn-zoom {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid #282d30;
+            color: #9aa2a6;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 800;
+            transition: all 0.15s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+        }
+
+        .btn-zoom:hover {
+            color: #ffffff;
+            background: rgba(0, 153, 93, 0.25);
+            border-color: #00995D;
+        }
+
+        .btn-zoom-reset {
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            color: #34d399;
+        }
+
+        #zoomDisp {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+            min-width: 44px;
+            text-align: center;
+            font-family: var(--font-mono);
+        }
+
+        .recipe-viewport-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: auto;
+            padding: 10px 0 40px;
+        }
+
         /* ─── FOLHA DA RECEITA UNIMED (FIDELIDADE MÁXIMA À REFERÊNCIA) ─── */
         .recipe-sheet-wrapper {
             position: relative;
@@ -395,6 +453,8 @@
             border-radius: 4px;
             overflow: hidden;
             background: #ffffff;
+            transform-origin: top center;
+            transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         #recipeDoc {
@@ -882,13 +942,18 @@
                     <span class="preview-badge-status"></span>
                     Pré-visualização Oficial Unimed (A4)
                 </div>
-                <div style="font-size: 12px; color: var(--text-muted);">
-                    Marca d'água removida após a emissão
+                <div class="zoom-wrap">
+                    <button type="button" class="btn-zoom" onclick="changeZoom(-0.05)" title="Afastar (−)">−</button>
+                    <span id="zoomDisp">100%</span>
+                    <button type="button" class="btn-zoom" onclick="changeZoom(0.05)" title="Aproximar (+)">+</button>
+                    <button type="button" class="btn-zoom btn-zoom-reset" onclick="resetZoom()" title="Tamanho Real 100%">100%</button>
                 </div>
             </div>
 
-            <!-- ENVOLTÓRIO DA FOLHA -->
-            <div class="recipe-sheet-wrapper">
+            <!-- VIEWPORT CONTAINER DE APROXIMAÇÃO -->
+            <div class="recipe-viewport-container">
+                <!-- ENVOLTÓRIO DA FOLHA -->
+                <div class="recipe-sheet-wrapper" id="zoomSheetWrapper">
                 
                 <!-- MARCA D'ÁGUA DE PRÉVIA -->
                 <div class="recipe-watermark-overlay" id="recipeWatermark" aria-hidden="true">
@@ -1009,12 +1074,38 @@
                     </div>
 
                 </div>
+                </div>
             </div>
         </section>
 
     </main>
 
     <script>
+        
+        // Controles de aproximação / afastamento (Zoom)
+        let currentZoom = 1.0;
+
+        function applyZoom() {
+            const wrapper = document.getElementById('zoomSheetWrapper');
+            if (wrapper) {
+                wrapper.style.transform = `scale(${currentZoom})`;
+            }
+            const disp = document.getElementById('zoomDisp');
+            if (disp) {
+                disp.textContent = `${Math.round(currentZoom * 100)}%`;
+            }
+        }
+
+        function changeZoom(delta) {
+            currentZoom = Math.min(Math.max(0.4, currentZoom + delta), 2.0);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1.0;
+            applyZoom();
+        }
+
         // Lista dinâmica de medicamentos
         let medicamentos = [
             {
@@ -1270,6 +1361,10 @@
             const docEl = document.getElementById('recipeDoc');
             if (!docEl) return;
 
+            const wrapper = document.getElementById('zoomSheetWrapper');
+            const prevTransform = wrapper ? wrapper.style.transform : '';
+            if (wrapper) wrapper.style.transform = 'scale(1)';
+
             docEl.classList.add('generating');
 
             if (window.showToast) {
@@ -1285,6 +1380,7 @@
                 });
 
                 docEl.classList.remove('generating');
+                if (wrapper) wrapper.style.transform = prevTransform;
 
                 const imgData = canvas.toDataURL('image/png');
                 const { jsPDF } = window.jspdf;
@@ -1315,6 +1411,7 @@
 
             } catch(err) {
                 docEl.classList.remove('generating');
+                if (wrapper) wrapper.style.transform = prevTransform;
                 console.error('Erro ao gerar PDF da receita:', err);
                 if (window.showToast) {
                     showToast('Ocorreu um erro ao gerar o PDF. Tente novamente.', 'error');
