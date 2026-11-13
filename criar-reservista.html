@@ -642,6 +642,82 @@
             display: block;
             image-rendering: pixelated;
         }
+
+        /* QR CODE BLOQUEADO NA PRÉVIA */
+        .qr-locked-box {
+            width: 100%;
+            height: 100%;
+            background: #fff8f8;
+            border: 1.5px dashed #ef4444;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2px;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+        .qr-locked-box::before {
+            content: 'PRÉVIA';
+            position: absolute;
+            font-size: 11px;
+            font-weight: 900;
+            color: rgba(239, 68, 68, 0.16);
+            transform: rotate(-35deg);
+            letter-spacing: 1.5px;
+            pointer-events: none;
+        }
+        .qr-locked-box svg {
+            color: #ef4444;
+            margin-bottom: 2px;
+            filter: drop-shadow(0 1px 2px rgba(239,68,68,0.25));
+        }
+        .qr-locked-title {
+            font-size: 7.5px;
+            font-weight: 900;
+            color: #b91c1c;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            line-height: 1.1;
+        }
+        .qr-locked-sub {
+            font-size: 6px;
+            font-weight: 700;
+            color: #ef4444;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-top: 1px;
+        }
+
+        /* MARCA D'ÁGUA DIAGONAL DE PRÉVIA */
+        .mil-preview-wm-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 70px;
+            overflow: hidden;
+        }
+        .mil-preview-wm-band {
+            font-size: 32px;
+            font-weight: 900;
+            color: rgba(239, 68, 68, 0.20);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            transform: rotate(-25deg);
+            white-space: nowrap;
+            user-select: none;
+            border: 2px dashed rgba(239, 68, 68, 0.24);
+            padding: 8px 36px;
+            border-radius: 8px;
+        }
         .mil-header-center {
             text-align: center;
             flex: 1;
@@ -1071,6 +1147,11 @@
                     <!-- PÁGINA 1: FRENTE DO CERTIFICADO MILITAR   -->
                     <!-- ========================================== -->
                     <div class="mil-doc-sheet" id="sheetFrente">
+                        <!-- MARCA D'ÁGUA DE PRÉVIA -->
+                        <div class="mil-preview-wm-overlay" id="wmFrente">
+                            <div class="mil-preview-wm-band">PRÉVIA • NÃO VÁLIDO</div>
+                            <div class="mil-preview-wm-band">DOCUMENTO PENDENTE</div>
+                        </div>
                         <div class="mil-frame-outer">
                             <div class="mil-frame-inner">
                                 <!-- MARCA D'ÁGUA BRASÃO DA REPÚBLICA -->
@@ -1171,6 +1252,11 @@
                     <!-- PÁGINA 2: VERSO DO CERTIFICADO MILITAR    -->
                     <!-- ========================================== -->
                     <div class="mil-doc-sheet" id="sheetVerso">
+                        <!-- MARCA D'ÁGUA DE PRÉVIA -->
+                        <div class="mil-preview-wm-overlay" id="wmVerso">
+                            <div class="mil-preview-wm-band">PRÉVIA • NÃO VÁLIDO</div>
+                            <div class="mil-preview-wm-band">DOCUMENTO PENDENTE</div>
+                        </div>
                         <div class="mil-frame-outer">
                             <div class="mil-frame-inner" style="min-height: 480px;">
                                 <!-- MARCA D'ÁGUA BRASÃO DA REPÚBLICA -->
@@ -1333,17 +1419,33 @@
             agendarQrCode();
         }
 
+        let isDocLiberado = false;
         let qrTimer = null;
         function agendarQrCode() {
             clearTimeout(qrTimer);
             qrTimer = setTimeout(updateQrCode, 150);
         }
 
-        // Gera QR Code nítido e oficial
-        function updateQrCode() {
+        // Gera QR Code nítido e oficial (bloqueado na prévia até emissão e desconto do saldo)
+        function updateQrCode(forceReal = false) {
             const qrBox = document.getElementById('docQrCodeBox');
             if (!qrBox) return;
             qrBox.innerHTML = '';
+
+            // Se ainda não foi emitido e pago, exibe o QR Code bloqueado com marca d'água
+            if (!isDocLiberado && !forceReal) {
+                qrBox.innerHTML = `
+                    <div class="qr-locked-box" title="QR Code bloqueado na prévia. Será liberado após emitir o PDF e debitar o saldo.">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        <span class="qr-locked-title">QR BLOQUEADO</span>
+                        <span class="qr-locked-sub">LIBERA AO EMITIR</span>
+                    </div>
+                `;
+                return;
+            }
 
             const hash = document.getElementById('inpHash') ? document.getElementById('inpHash').value.trim() : '85492302167E84784F0C488035D6222D';
             const ra = document.getElementById('inpRA') ? document.getElementById('inpRA').value.trim() : '041505325879';
@@ -1502,6 +1604,17 @@
 
         // Exportação de PDF Completo (Frente e Verso em 2 páginas ou página única)
         async function exportarPdf() {
+            const valorDoc = getValorDocumento();
+            let loggedUser = null;
+            try { loggedUser = JSON.parse(localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user') || '{}'); } catch(e){}
+            let userSaldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
+
+            if (userSaldo < valorDoc) {
+                alert(`⚠️ Saldo insuficiente! Você possui R$ ${userSaldo.toFixed(2).replace('.', ',')} e a emissão do Certificado de Reservista custa R$ ${valorDoc.toFixed(2).replace('.', ',')}.\n\nRedirecionando para recargas...`);
+                window.location.href = 'recargas.html';
+                return;
+            }
+
             const btn = document.getElementById('btnExportPdf');
             const origText = btn.innerHTML;
             btn.innerHTML = '<span>⏳ Processando e Renderizando PDF...</span>';
@@ -1510,6 +1623,11 @@
             const zoomWrapper = document.getElementById('docZoomWrapper');
             const origTransform = zoomWrapper.style.transform;
             zoomWrapper.style.transform = 'scale(1)';
+
+            // Libera QR Code oficial sem marca d'água para impressão no PDF
+            isDocLiberado = true;
+            updateQrCode(true);
+            await new Promise(r => setTimeout(r, 120));
 
             // Força exibição de ambas as folhas para renderização
             const fEl = document.getElementById('sheetFrente');
@@ -1744,6 +1862,18 @@
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const qId = new URLSearchParams(window.location.search).get('id');
+                if (qId) {
+                    let uEmail = 'cliente';
+                    try { uEmail = (JSON.parse(localStorage.getItem('happynation_user')||'{}').email||'cliente').toLowerCase().trim(); } catch(e){}
+                    const rList = JSON.parse(localStorage.getItem('happynation_reservistas_' + uEmail) || '[]');
+                    if (rList.some(r => r.id === qId)) {
+                        isDocLiberado = true;
+                    }
+                }
+            } catch(e) {}
+
             prepararMarcaDagua();
             updateDoc();
             fitZoom();

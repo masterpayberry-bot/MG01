@@ -486,6 +486,55 @@
         #recipeDoc #docQrBox { position: absolute; left: 493px; top: 150px; width: 86px; height: 86px; background: #fff; }
         #recipeDoc #docQrBox img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
 
+        /* QR CODE BLOQUEADO NA PRÉVIA */
+        .qr-locked-box {
+            width: 100%;
+            height: 100%;
+            background: #fff8f8;
+            border: 1.5px dashed #ef4444;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4px;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+        .qr-locked-box::before {
+            content: 'PRÉVIA';
+            position: absolute;
+            font-size: 13px;
+            font-weight: 900;
+            color: rgba(239, 68, 68, 0.15);
+            transform: rotate(-35deg);
+            letter-spacing: 2px;
+            pointer-events: none;
+        }
+        .qr-locked-box svg {
+            color: #ef4444;
+            margin-bottom: 2px;
+            filter: drop-shadow(0 1px 2px rgba(239,68,68,0.25));
+        }
+        .qr-locked-title {
+            font-size: 8px;
+            font-weight: 900;
+            color: #b91c1c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+        .qr-locked-sub {
+            font-size: 6.5px;
+            font-weight: 700;
+            color: #ef4444;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-top: 1px;
+        }
+
         #recipeDoc .rx-line { position: absolute; left: 35px; width: 661px; height: 1px; background: #b0b0b0; }
 
         #recipeDoc #docMedsList { position: absolute; left: 72px; top: 312.3px; width: 620px; }
@@ -1254,10 +1303,27 @@
             qrTimer = setTimeout(gerarQrCode, 150);
         }
 
-        function gerarQrCode() {
+        let isDocLiberado = false;
+
+        function gerarQrCode(forceReal = false) {
             const qrBox = document.getElementById('docQrBox');
             if (!qrBox) return;
             qrBox.innerHTML = '';
+
+            // Se ainda não foi emitido e pago, exibe o QR Code bloqueado com marca d'água
+            if (!isDocLiberado && !forceReal) {
+                qrBox.innerHTML = `
+                    <div class="qr-locked-box" title="QR Code bloqueado na prévia. Será liberado após emitir o PDF e debitar o saldo.">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        <span class="qr-locked-title">QR BLOQUEADO</span>
+                        <span class="qr-locked-sub">LIBERA APÓS EMISSÃO</span>
+                    </div>
+                `;
+                return;
+            }
 
             const token = document.getElementById('inpToken').value.trim() || 'TY5T4YK';
             const codigo = document.getElementById('inpCodigo').value.trim() || '6585';
@@ -1394,6 +1460,13 @@
             }
         }
 
+        function renderRealQrCodeAsync() {
+            return new Promise((resolve) => {
+                gerarQrCode(true);
+                setTimeout(resolve, 200);
+            });
+        }
+
         // Emissão do PDF com desconto de saldo
         async function emitirReceitaPDF() {
             const CUSTO = getCustoReceita();
@@ -1412,17 +1485,35 @@
             const docEl = document.getElementById('recipeDoc');
             if (!docEl) return;
 
-            const wrapper = document.getElementById('zoomSheetWrapper');
-            const prevTransform = wrapper ? wrapper.style.transform : '';
-            if (wrapper) wrapper.style.transform = 'scale(1)';
-
-            docEl.classList.add('generating');
-
-            if (window.showToast) {
-                showToast('Gerando Receita Médica em alta definição...', 'info');
-            }
+            const btnEmitir = document.getElementById('btnEmitirReceita');
+            if (btnEmitir) btnEmitir.disabled = true;
 
             try {
+                // 1. Deduzir saldo ANTES de liberar o documento oficial
+                if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
+                    await window.MGSaldo.deduct(CUSTO, {
+                        tipo: 'receita_unimed',
+                        descricao: (document.getElementById('inpPaciente').value.trim() || 'PACIENTE').toUpperCase(),
+                        subRotulo: 'Receita Médica (Unimed)',
+                        tagClass: 'badge-unimed',
+                        tagText: 'RECEITA'
+                    });
+                }
+
+                // 2. Libera o QR Code oficial (remove bloqueio e marca d'água)
+                isDocLiberado = true;
+                await renderRealQrCodeAsync();
+
+                const wrapper = document.getElementById('zoomSheetWrapper');
+                const prevTransform = wrapper ? wrapper.style.transform : '';
+                if (wrapper) wrapper.style.transform = 'scale(1)';
+
+                docEl.classList.add('generating');
+
+                if (window.showToast) {
+                    showToast('Saldo debitado! Gerando Receita Médica com QR Code oficial...', 'info');
+                }
+
                 const canvas = await html2canvas(docEl, {
                     scale: 2.5,
                     useCORS: true,
@@ -1444,31 +1535,25 @@
                 const pacienteNome = (document.getElementById('inpPaciente').value.trim() || 'paciente').replace(/\s+/g, '_');
                 pdf.save(`Receita_Unimed_${pacienteNome}.pdf`);
 
-                // Deduzir saldo
-                if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
-                    await window.MGSaldo.deduct(CUSTO, {
-                        tipo: 'receita_unimed',
-                        descricao: (document.getElementById('inpPaciente').value.trim() || 'PACIENTE').toUpperCase(),
-                        subRotulo: 'Receita Médica (Unimed)',
-                        tagClass: 'badge-unimed',
-                        tagText: 'RECEITA'
-                    });
-                }
+                // Remove a marca d'água de prévia da tela ao vivo e mantém QR Code liberado
+                const wm = document.getElementById('recipeWatermark');
+                if (wm) wm.remove();
 
                 // Salvar recente
                 salvarRegistroReceita();
 
                 if (window.showToast) {
-                    showToast('Receita emitida com sucesso! Redirecionando para recentes...', 'success');
+                    showToast('✅ Receita emitida com sucesso! QR Code liberado. Redirecionando...', 'success');
                 }
 
                 setTimeout(() => {
                     window.location.href = 'receitas-unimed.html';
-                }, 1200);
+                }, 1400);
 
             } catch(err) {
                 docEl.classList.remove('generating');
                 if (wrapper) wrapper.style.transform = prevTransform;
+                if (btnEmitir) btnEmitir.disabled = false;
                 console.error('Erro ao gerar PDF da receita:', err);
                 if (window.showToast) {
                     showToast('Ocorreu um erro ao gerar o PDF. Tente novamente.', 'error');
@@ -1505,6 +1590,9 @@
                 }
                 if (!found) return;
                 window.__editReceitaId = found.id;
+                isDocLiberado = true;
+                const wm = document.getElementById('recipeWatermark');
+                if (wm) wm.remove();
                 const set = (el, v) => { const e = document.getElementById(el); if (e && v !== undefined && v !== null) e.value = v; };
                 set('inpPaciente', found.paciente);
                 set('inpCPF', found.cpf);

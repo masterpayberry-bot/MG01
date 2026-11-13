@@ -268,19 +268,57 @@
             document.getElementById('outCompEnd').textContent = document.getElementById('inpCompEnd').value || '';
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        let isDutLiberado = false;
+
+        function updateDutQr(forceReal = false) {
             const qrEl = document.getElementById('dutQrCode');
-            if (qrEl && typeof QRCode !== 'undefined') {
-                qrEl.innerHTML = '';
-                new QRCode(qrEl, {
-                    text: 'https://portalsenatran.serpro.gov.br/atpve/valida?doc=' + Math.random().toString(36).substring(2, 12).toUpperCase(),
-                    width: 76,
-                    height: 76,
-                    colorDark: '#000000',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.M
-                });
+            if (!qrEl || typeof QRCode === 'undefined') return;
+            qrEl.innerHTML = '';
+            qrEl.style.position = 'relative';
+
+            const shouldLock = !isDutLiberado && !forceReal;
+
+            const qrWrap = document.createElement('div');
+            qrWrap.style.width = '76px';
+            qrWrap.style.height = '76px';
+            qrWrap.style.display = 'flex';
+            qrWrap.style.alignItems = 'center';
+            qrWrap.style.justifyContent = 'center';
+
+            new QRCode(qrWrap, {
+                text: 'https://portalsenatran.serpro.gov.br/atpve/valida?doc=' + Math.random().toString(36).substring(2, 12).toUpperCase(),
+                width: 76,
+                height: 76,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            if (shouldLock) {
+                qrWrap.style.filter = 'blur(3.5px)';
+                qrWrap.style.opacity = '0.38';
+                qrWrap.style.pointerEvents = 'none';
+
+                const wmOverlay = document.createElement('div');
+                wmOverlay.className = 'qr-lock-overlay';
+                wmOverlay.style.cssText = 'position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,0.45); pointer-events:none; z-index:10;';
+                wmOverlay.innerHTML = `
+                    <div style="background:#ffffff; border:1px solid #ef4444; border-radius:6px; padding:2px 4px; box-shadow:0 2px 8px rgba(239,68,68,0.22); display:flex; flex-direction:column; align-items:center; gap:1px; text-align:center;">
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span style="font-size:6px; font-weight:900; color:#dc2626; text-transform:uppercase; line-height:1;">BLOQUEADO</span>
+                    </div>
+                `;
+                qrEl.appendChild(qrWrap);
+                qrEl.appendChild(wmOverlay);
+            } else {
+                qrWrap.style.filter = 'none';
+                qrWrap.style.opacity = '1';
+                qrEl.appendChild(qrWrap);
             }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDutQr();
 
             try {
                 let user = JSON.parse(localStorage.getItem('happynation_user') || '{}');
@@ -291,12 +329,28 @@
         });
 
         async function exportDutPdf() {
+            let loggedUser = {};
+            try { loggedUser = JSON.parse(localStorage.getItem('happynation_user') || '{}'); } catch(e) {}
+            const precoDut = parseFloat(localStorage.getItem('happynation_dut_price')) || 25.00;
+            let userSaldo = (window.MGSaldo ? window.MGSaldo.get() : (loggedUser.saldo !== undefined ? parseFloat(loggedUser.saldo) : 0));
+
+            if (userSaldo < precoDut) {
+                alert(`⚠️ Saldo insuficiente! Você possui R$ ${userSaldo.toFixed(2).replace('.', ',')} e a emissão do DUT custa R$ ${precoDut.toFixed(2).replace('.', ',')}.\n\nRedirecionando para recargas...`);
+                window.location.href = 'recargas.html';
+                return;
+            }
+
             const btn = document.querySelector('.btn-export');
             const orig = btn.innerHTML;
             btn.innerHTML = '<span>⏳ Gerando DUT em PDF...</span>';
             btn.disabled = true;
 
             try {
+                // Libera QR Code oficial sem marca d'água para renderização no PDF
+                isDutLiberado = true;
+                updateDutQr(true);
+                await new Promise(r => setTimeout(r, 120));
+
                 const sheet = document.getElementById('dutSheet');
                 const canvas = await html2canvas(sheet, {
                     scale: 3,
