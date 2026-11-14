@@ -853,6 +853,58 @@
             box-shadow: 0 6px 24px rgba(0, 220, 130, 0.35);
         }
 
+    
+        /* ─── BLOCO DE ASSINATURA & DIRETORIA VETORIAL NÍTIDA ─── */
+        .cert-signature-block {
+            position: absolute;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+            width: 440px;
+        }
+        .cert-signature-img {
+            height: 52px;
+            width: auto;
+            max-width: 380px;
+            object-fit: contain;
+            margin-bottom: -4px;
+            filter: contrast(1.1);
+        }
+        .cert-sig-name {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #111827;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-top: 1px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .cert-sig-cargo {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            font-weight: 400;
+            color: #374151;
+            letter-spacing: 0.2px;
+            margin-top: 1px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .cert-sig-cpf {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 9.8px;
+            font-weight: 400;
+            color: #4b5563;
+            letter-spacing: 0.4px;
+            margin-top: 1px;
+            -webkit-font-smoothing: antialiased;
+        }
+
     </style>
 
 <script>
@@ -879,6 +931,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="brand-logo">
                     <img src="logo-icone.png" alt="MG Logo" class="brand-icon-img">
                 </div>
+
+                        <!-- ASSINATURA & DIRETORIA COM TIPOGRAFIA VETORIAL FINA E NÍTIDA (EDITÁVEL) -->
+                        <div class="cert-signature-block">
+                            <img src="assets/icetran_assinatura_hd.png" class="cert-signature-img" alt="Assinatura Diretor">
+                            <div class="cert-sig-name" id="viewDiretorNome">JOSÉ LELES DE SOUZA</div>
+                            <div class="cert-sig-cargo" id="viewDiretorCargo">Diretor Geral - ICETRAN</div>
+                            <div class="cert-sig-cpf" id="viewDiretorCpf">CPF 565.550.406-53</div>
+                        </div>
                 <span class="brand-text">MG Editáveis</span>
             </a>
 
@@ -1051,6 +1111,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
 
+            <!-- SEÇÃO 4: ASSINATURA & DIRETORIA (FRENTE) -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>4. ASSINATURA & DIRETORIA (FRENTE)</span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Nome do Diretor / Signatário</label>
+                        <input type="text" id="inpDiretorNome" value="JOSÉ LELES DE SOUZA" placeholder="Ex: JOSÉ LELES DE SOUZA" oninput="updateLiveCertificate()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Cargo do Signatário</label>
+                        <input type="text" id="inpDiretorCargo" value="Diretor Geral - ICETRAN" placeholder="Ex: Diretor Geral - ICETRAN" oninput="updateLiveCertificate()">
+                    </div>
+                    <div class="form-field">
+                        <label>CPF do Diretor</label>
+                        <input type="text" id="inpDiretorCpf" value="565.550.406-53" maxlength="14" placeholder="000.000.000-00" oninput="maskCpf(this); updateLiveCertificate()">
+                    </div>
+                </div>
+            </div>
+
             <!-- BOTÕES DE AÇÃO / CHECKOUT PADRÃO -->
             <div class="checkout-actions-card">
                 <div class="checkout-price-row">
@@ -1105,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <!-- ─── FOLHA 1: FRENTE DO CERTIFICADO ICETRAN (100% AUTÊNTICO) ─── -->
                     <div class="cert-sheet-landscape" id="sheetFrente" style="position: relative; background: #ffffff; width: 1024px; height: 726px;">
-                        <img src="assets/icetran_frente_template.png?v=3" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 726px; z-index: 1; pointer-events: none;">
+                        <img src="assets/icetran_frente_template.png?v=4" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 726px; z-index: 1; pointer-events: none;">
                         
                         <!-- Corpo com dados dinâmicos sobre o template oficial -->
                         <div class="cert-frente-body-overlay">
@@ -1302,7 +1388,10 @@ document.addEventListener('DOMContentLoaded', function() {
             folha: '1',
             livro: '1',
             codigoValidacao: 'd85cb650a0063fee493bda86e7e50ecd',
-            linkValidacao: 'https://icetran.alfamaoraculo.com.br/validador'
+            linkValidacao: 'https://icetran.alfamaoraculo.com.br/validador',
+            diretorNome: 'JOSÉ LELES DE SOUZA',
+            diretorCargo: 'Diretor Geral - ICETRAN',
+            diretorCpf: '565.550.406-53'
         };
 
         // Máscara de CPF
@@ -1366,6 +1455,23 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('viewLinkValidacao').textContent = linkVal;
             document.getElementById('viewCodigoValidacao').textContent = codVal;
 
+            // Assinatura e Diretoria (Tipografia Vetorial Nítida e Fina)
+            const dirNome = (document.getElementById('inpDiretorNome') ? document.getElementById('inpDiretorNome').value.trim() : '') || DEFAULT_ADEMIR.diretorNome;
+            const dirCargo = (document.getElementById('inpDiretorCargo') ? document.getElementById('inpDiretorCargo').value.trim() : '') || DEFAULT_ADEMIR.diretorCargo;
+            const dirCpf = (document.getElementById('inpDiretorCpf') ? document.getElementById('inpDiretorCpf').value.trim() : '') || DEFAULT_ADEMIR.diretorCpf;
+
+            const vDirNome = document.getElementById('viewDiretorNome');
+            if (vDirNome) vDirNome.textContent = dirNome.toUpperCase();
+
+            const vDirCargo = document.getElementById('viewDiretorCargo');
+            if (vDirCargo) vDirCargo.textContent = dirCargo;
+
+            const vDirCpf = document.getElementById('viewDiretorCpf');
+            if (vDirCpf) {
+                const cleanCpf = dirCpf.replace(/^CPF\s*:?\s*/i, '');
+                vDirCpf.textContent = 'CPF ' + cleanCpf;
+            }
+
             // Se o CPF ou Registro mudou, gera QR Code dinamicamente
             if (cpf !== DEFAULT_ADEMIR.alunoCpf || num !== DEFAULT_ADEMIR.certNumero) {
                 renderDynamicQrCode(`${linkVal}?reg=${encodeURIComponent(num)}&cpf=${encodeURIComponent(cpf)}`);
@@ -1408,6 +1514,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('inpLivro').value = DEFAULT_ADEMIR.livro;
             document.getElementById('inpCodigoValidacao').value = DEFAULT_ADEMIR.codigoValidacao;
             document.getElementById('inpLinkValidacao').value = DEFAULT_ADEMIR.linkValidacao;
+            if (document.getElementById('inpDiretorNome')) document.getElementById('inpDiretorNome').value = DEFAULT_ADEMIR.diretorNome;
+            if (document.getElementById('inpDiretorCargo')) document.getElementById('inpDiretorCargo').value = DEFAULT_ADEMIR.diretorCargo;
+            if (document.getElementById('inpDiretorCpf')) document.getElementById('inpDiretorCpf').value = DEFAULT_ADEMIR.diretorCpf;
 
             const qrContainer = document.getElementById('versoQrContainer');
             if (qrContainer) {
