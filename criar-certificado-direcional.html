@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/security-guard.js"></script>
+    <script src="js/auth-guard.js"></script>
+
+    <!-- Verificação de Autenticação -->
+    <script>
+        window.isAdminUser = false;
+        (function() {
+            try {
+                if (localStorage.getItem('happynation_admin_auth') === 'true' || sessionStorage.getItem('happynation_admin_auth') === 'true') {
+                    window.isAdminUser = true;
+                }
+                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                if (uStr) {
+                    const u = JSON.parse(uStr);
+                    if (u && (u.role === 'admin' || u.isAdmin === true || (u.email && u.email.toLowerCase().includes('admin')))) {
+                        window.isAdminUser = true;
+                    }
+                }
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('admin') === '1' || params.get('adm') === '1' || params.get('dev') === '1') {
+                    window.isAdminUser = true;
+                }
+            } catch(e) {}
+        })();
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Editáveis | Certificado de Treinamento Direcional (DETRAN-PA)</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Bibliotecas de Renderização e Exportação -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="saldo-sync.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;700&display=swap');
+
+        :root {
+            --bg-color: #0b0d0e;
+            --surface: #141718;
+            --surface-card: #181c1d;
+            --surface-hover: #1f2325;
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.35);
+            --border: #232729;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-gold: #d4af37;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* TOPO / NAVBAR */
+        .top-nav {
+            background: rgba(20, 23, 24, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .nav-brand-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
+
+        .nav-brand-title {
+            font-weight: 800;
+            font-size: 16px;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-brand-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .nav-badge-dev {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-voltar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-voltar:hover {
+            background: var(--surface-hover);
+            border-color: #374151;
+            transform: translateX(-2px);
+        }
+
+        /* LAYOUT PRINCIPAL: 2 COLUNAS */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            gap: 24px;
+            padding: 24px;
+            max-width: 1700px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        @media (max-width: 1180px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* COLUNA ESQUERDA: FORMULÁRIO */
+        .form-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .form-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #60a5fa;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            background: #0f1113;
+            border: 1px solid #272d31;
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            outline: none;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            background: #14171a;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* BOTÕES DE AÇÃO */
+        .actions-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-action-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: none;
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.45);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(37, 99, 235, 0.6);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .btn-action-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-actions-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-action-secondary {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: #d1d5db;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-secondary:hover {
+            background: var(--surface-hover);
+            border-color: #4b5563;
+            color: #fff;
+        }
+
+        /* COLUNA DIREITA: PREVIEW AO VIVO */
+        .preview-column {
+            background: #08090a;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            min-height: 800px;
+            position: relative;
+        }
+
+        .preview-toolbar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #1a1e20;
+        }
+
+        .preview-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preview-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #121517;
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid #232729;
+        }
+
+        .btn-zoom {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .btn-zoom:hover {
+            color: #fff;
+            background: #1f2327;
+        }
+
+        .zoom-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: #cbd5e1;
+            min-width: 44px;
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .preview-scroll-viewport {
+            width: 100%;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            padding: 16px 0;
+        }
+
+        /* WRAPPER DA FOLHA ÚNICA (FRENTE E VERSO VERTICAIS NA MESMA FOTO / A4) */
+        #singleSheetWrapper {
+            width: 1024px;
+            background: #ffffff;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+            border-radius: 4px;
+            overflow: hidden;
+            transform-origin: top center;
+            transition: transform 0.2s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── FRENTE ─── */
+        .sheet-frente {
+            width: 1024px;
+            height: 730px;
+            position: relative;
+            background-color: #ffffff;
+            background-image: url('assets/direcional_frente_template.png');
+            background-size: 1024px 730px;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: #000;
+            overflow: hidden;
+        }
+
+        /* Aluno */
+        .frente-aluno-nome {
+            position: absolute;
+            top: 228px;
+            left: 36px;
+            right: 36px;
+            text-align: center;
+            font-family: 'Times New Roman', Georgia, serif;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 31px;
+            line-height: 1.1;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Renach e Categoria */
+        .frente-aluno-renach {
+            position: absolute;
+            top: 268px;
+            left: 36px;
+            right: 36px;
+            text-align: center;
+            font-family: 'Times New Roman', Georgia, serif;
+            font-style: italic;
+            font-weight: 600;
+            font-size: 16px;
+            color: #000;
+        }
+
+        /* Parágrafo do Certificado */
+        .frente-paragrafo {
+            position: absolute;
+            top: 308px;
+            left: 42px;
+            right: 42px;
+            text-align: justify;
+            font-family: 'Times New Roman', Georgia, serif;
+            font-style: italic;
+            font-size: 14.2px;
+            line-height: 1.62;
+            color: #000;
+        }
+
+        /* Data por Extenso */
+        .frente-data {
+            position: absolute;
+            top: 456px;
+            left: 36px;
+            right: 36px;
+            text-align: center;
+            font-family: 'Times New Roman', Georgia, serif;
+            font-style: italic;
+            font-size: 15px;
+            color: #000;
+        }
+
+        /* DIVISÓRIA SUTIL: FRENTE E VERSO NA MESMA FOTO */
+        .sheet-divider {
+            width: 100%;
+            height: 28px;
+            background: #f8fafc;
+            border-top: 1px dashed #94a3b8;
+            border-bottom: 1px dashed #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #64748b;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ─── VERSO ─── */
+        .sheet-verso {
+            width: 1024px;
+            height: 726px;
+            position: relative;
+            background-color: #ffffff;
+            color: #000;
+            padding: 20px 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Topo do verso com logotipo Direcional */
+        .verso-top-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 10px;
+            height: 90px;
+        }
+
+        .verso-logo-img {
+            height: 85px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Tabela Principal do Verso */
+        .verso-main-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #000;
+            margin-top: 4px;
+        }
+
+        .verso-table-header-title {
+            border-bottom: 2px solid #000;
+            padding: 6px 10px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 900;
+            font-size: 14px;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+
+        .verso-col-header th {
+            border-bottom: 2px solid #000;
+            border-right: 2px solid #000;
+            padding: 6px 4px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 900;
+            font-size: 14px;
+            text-align: center;
+            letter-spacing: 0.2px;
+        }
+
+        .verso-col-header th:last-child {
+            border-right: none;
+        }
+
+        .verso-row td {
+            border-bottom: 1.5px solid #000;
+            border-right: 2px solid #000;
+            padding: 8px 8px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+        }
+
+        .verso-row td:last-child {
+            border-right: none;
+        }
+
+        .td-center {
+            text-align: center;
+        }
+
+        .td-bold-ch {
+            text-align: center;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .td-aprovado {
+            text-align: center;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .td-instrutor {
+            text-align: center;
+            font-weight: 700;
+            font-size: 12.5px;
+            text-transform: uppercase;
+        }
+
+        .verso-summary-row td {
+            border-right: 2px solid #000;
+            padding: 6px 8px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .verso-summary-row td:last-child {
+            border-right: none;
+        }
+
+        /* Caixas Inferiores (Registro e Credenciamento) */
+        .verso-bottom-boxes {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .box-registro {
+            width: 44%;
+            border: 1.8px solid #000;
+            padding: 8px 12px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .box-registro-title {
+            font-weight: 900;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        .box-registro-item {
+            font-weight: 800;
+        }
+
+        .box-credenciamento {
+            width: 54%;
+            border: 1.8px solid #000;
+            padding: 10px 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 900;
+            font-size: 12.5px;
+            line-height: 1.35;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Rodapé com Proibido Plastificar e Cód Turma */
+        .verso-footer-labels {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 8px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 900;
+            font-size: 12px;
+            color: #000;
+        }
+
+        /* Estilo da animação de loading */
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR TOPO -->
+    <header class="top-nav">
+        <a href="editaveis.html" class="nav-brand">
+            <div class="nav-brand-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <div>
+                <div class="nav-brand-title">MG Editáveis</div>
+                <div class="nav-brand-sub">Certificado de Treinamento em Transporte (DETRAN-PA)</div>
+            </div>
+        </a>
+
+        <div style="display:flex; align-items:center; gap:14px;">
+            <span class="nav-badge-dev">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Modelo Direcional PA
+            </span>
+            <a href="editaveis.html" class="btn-voltar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                <span>Voltar ao Catálogo</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- WORKSPACE 2 COLUNAS -->
+    <main class="workspace-grid">
+
+        <!-- COLUNA ESQUERDA: FORMULÁRIO RÁPIDO -->
+        <section class="form-column">
+            
+            <!-- 1. DADOS DO ALUNO -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <span class="form-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        1. Dados do Aluno (Frente)
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nome Completo do Aluno</label>
+                    <input type="text" id="inpNomeAluno" class="form-control" value="WARLERSOM DA CONCEICAO COSTA" oninput="updateCertificado()">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Renach</label>
+                        <input type="text" id="inpRenach" class="form-control" value="52034171034" oninput="updateCertificado()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria CNH</label>
+                        <input type="text" id="inpCategoria" class="form-control" value="Cat. AD" oninput="updateCertificado()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. DADOS DO CURSO E LOCAL -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <span class="form-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        2. Curso e Localização
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nome do Curso Especializado</label>
+                    <input type="text" id="inpNomeCurso" class="form-control" value="ESPECIALIZADO PARA CONDUTORES DE VEÍCULO DE TRANSPORTE COLETIVO DE PASSAGEIROS" oninput="updateCertificado()">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Cidade / Estado</label>
+                        <input type="text" id="inpCidade" class="form-control" value="Parauapebas-Pará" oninput="updateCertificado()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Carga Horária</label>
+                        <input type="text" id="inpCargaHoraria" class="form-control" value="50(cinquenta horas/aula)" oninput="updateCertificado()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nome do Centro de Formação</label>
+                    <input type="text" id="inpCentro" class="form-control" value="CENTRO DE TRÂNSITO E TRANSPORTE DIRECIONAL - LTDA" oninput="updateCertificado()">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Período de Realização</label>
+                        <input type="text" id="inpPeriodo" class="form-control" value="15 de abril de 2023 a 19 de abril de 2023" oninput="updateCertificado()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Validade do Certificado</label>
+                        <input type="text" id="inpValidade" class="form-control" value="19 de abril de 2028" oninput="updateCertificado()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Data da Emissão por Extenso (Frente)</label>
+                    <input type="text" id="inpDataExtenso" class="form-control" value="Parauapebas, 19 de abril de 2024." oninput="updateCertificado()">
+                </div>
+            </div>
+
+            <!-- 3. DADOS DE REGISTRO, LIVRO E VERSO -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <span class="form-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        3. Registro e Turma (Verso)
+                    </span>
+                </div>
+
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label class="form-label">Registro Nº</label>
+                        <input type="text" id="inpRegSob" class="form-control" value="Pa1101" oninput="updateCertificado()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Livro</label>
+                        <input type="text" id="inpLivro" class="form-control" value="006/2023" oninput="updateCertificado()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Folha (Fls.)</label>
+                        <input type="text" id="inpFolha" class="form-control" value="003" oninput="updateCertificado()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Data do Registro</label>
+                        <input type="text" id="inpDataReg" class="form-control" value="19 de abril de 2023" oninput="updateCertificado()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cód. Turma</label>
+                        <input type="text" id="inpCodTurma" class="form-control" value="PGM - 185 - PASSAGEIRO TURNO INTENSIVO." oninput="updateCertificado()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Instrutor</label>
+                        <input type="text" id="inpNomeInstrutor" class="form-control" value="JOSE ADELSON F. DE SOUSA" oninput="updateCertificado()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CPF do Instrutor</label>
+                        <input type="text" id="inpCpfInstrutor" class="form-control" value="709.112.662-93" oninput="updateCertificado()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Portaria DETRAN-PA</label>
+                    <input type="text" id="inpPortaria" class="form-control" value="4676/2021-DG/DHCRV/CHC/GCCFF" oninput="updateCertificado()">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Diário Oficial</label>
+                    <input type="text" id="inpDiarioOficial" class="form-control" value="20/12/2021 Nº 2297768" oninput="updateCertificado()">
+                </div>
+            </div>
+
+            <!-- PAINEL DE AÇÕES DE DOWNLOAD -->
+            <div class="actions-panel">
+                <button type="button" class="btn-action-primary" id="btnDownloadPdf" onclick="downloadPdfCertificado()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span id="btnGerarTxt">Baixar PDF — Frente e Verso (Folha Única A4)</span>
+                </button>
+
+                <div class="secondary-actions-row">
+                    <button type="button" class="btn-action-secondary" id="btnDownloadImg" onclick="downloadImagemCompleta()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <span>Baixar Foto Única (PNG)</span>
+                    </button>
+                    <button type="button" class="btn-action-secondary" onclick="imprimirCertificado()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        <span>Imprimir A4</span>
+                    </button>
+                </div>
+
+                <div class="secondary-actions-row">
+                    <button type="button" class="btn-action-secondary" onclick="restaurarModeloOriginal()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+                        <span>Dados Originais (Warlersom)</span>
+                    </button>
+                    <button type="button" class="btn-action-secondary" onclick="limparFormulario()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span>Limpar Campos</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLUNA DIREITA: PREVIEW AO VIVO DA FOTO / FOLHA COM FRENTE E VERSO JUNTOS -->
+        <section class="preview-column">
+            <div class="preview-toolbar">
+                <div class="preview-title-group">
+                    <span class="preview-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Prévia ao Vivo (Frente e Verso na Mesma Foto)
+                    </span>
+                </div>
+
+                <div class="preview-zoom-controls">
+                    <button type="button" class="btn-zoom" onclick="changeZoom(-0.08)" title="Diminuir Zoom">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <span id="zoomLabel" class="zoom-text">65%</span>
+                    <button type="button" class="btn-zoom" onclick="changeZoom(0.08)" title="Aumentar Zoom">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button type="button" class="btn-zoom" onclick="resetZoom()" title="Ajustar à Tela">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-scroll-viewport">
+                <!-- WRAPPER QUE CONTÉM FRENTE E VERSO VERTICAIS -->
+                <div id="singleSheetWrapper">
+                    
+                    <!-- FRENTE -->
+                    <div id="sheetFrente" class="sheet-frente">
+                        <!-- Nome do Aluno -->
+                        <div id="prevNomeAluno" class="frente-aluno-nome">WARLERSOM DA CONCEICAO COSTA</div>
+
+                        <!-- Renach e Categoria -->
+                        <div id="prevRenachCat" class="frente-aluno-renach">Renach:52034171034 Cat. AD</div>
+
+                        <!-- Texto do Parágrafo -->
+                        <div id="prevParagrafo" class="frente-paragrafo">
+                            Participou do Curso ESPECIALIZADO PARA CONDUTORES DE VEÍCULO DE TRANSPORTE COLETIVO DE PASSAGEIROS, realizado na cidade de Parauapebas-Pará, no CENTRO DE TRÂNSITO E TRANSPORTE DIRECIONAL - LTDA, no período de 15 de abril de 2023 a 19 de abril de 2023, perfazendo a carga horária total de 50(cinquenta horas/aula), com validade até 19 de abril de 2028. O presente certificado a fim de que possa gozar de todos os direitos e prerrogativas legais.
+                        </div>
+
+                        <!-- Data Extenso -->
+                        <div id="prevDataExtenso" class="frente-data">Parauapebas, 19 de abril de 2024.</div>
+                    </div>
+
+                    <!-- DIVISÓRIA SUTIL DE CORTE OU DOBRA -->
+                    <div id="sheetDivider" class="sheet-divider">
+                        <span>✂ Corte ou Dobra aqui (Frente acima / Verso abaixo)</span>
+                    </div>
+
+                    <!-- VERSO -->
+                    <div id="sheetVerso" class="sheet-verso">
+                        <!-- Topo com Logo Direcional -->
+                        <div class="verso-top-bar">
+                            <img src="assets/direcional_logo.png" alt="Direcional" class="verso-logo-img">
+                        </div>
+
+                        <!-- Tabela Principal -->
+                        <table class="verso-main-table">
+                            <thead>
+                                <tr>
+                                    <th colspan="4" class="verso-table-header-title">
+                                        CURSO: <span id="vCursoTitle">ESPECIALIZADO PARA CONDUTORES DE VEÍCULOS DE TRANSPORTE COLETIVO DE PASSAGEIROS</span>
+                                    </th>
+                                </tr>
+                                <tr class="verso-col-header">
+                                    <th style="width: 38%;">CONTEÚDO PROGRAMÁTICO</th>
+                                    <th style="width: 8%;">CH</th>
+                                    <th style="width: 24%;">APROVEITAMENTO</th>
+                                    <th style="width: 30%;">INSTRUTOR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="verso-row">
+                                    <td>Módulo I - Legislação de trânsito</td>
+                                    <td class="td-bold-ch">10</td>
+                                    <td class="td-aprovado">APROVADO</td>
+                                    <td class="td-instrutor vInstrutorSpan">JOSE ADELSON F. DE SOUSA</td>
+                                </tr>
+                                <tr class="verso-row">
+                                    <td>Módulo II - Direção Defensiva</td>
+                                    <td class="td-bold-ch">15</td>
+                                    <td class="td-aprovado">APROVADO</td>
+                                    <td class="td-instrutor vInstrutorSpan">JOSE ADELSON F. DE SOUSA</td>
+                                </tr>
+                                <tr class="verso-row">
+                                    <td>Módulo III - Noções de Primeiros Socorros, Respeito ao Meio Ambiente e Convívio Social.</td>
+                                    <td class="td-bold-ch">10</td>
+                                    <td class="td-aprovado">APROVADO</td>
+                                    <td class="td-instrutor vInstrutorSpan">JOSE ADELSON F. DE SOUSA</td>
+                                </tr>
+                                <tr class="verso-row">
+                                    <td>Módulo IV - Relacionamento Interpessoal</td>
+                                    <td class="td-bold-ch">15</td>
+                                    <td class="td-aprovado">APROVADO</td>
+                                    <td class="td-instrutor vInstrutorSpan">JOSE ADELSON F. DE SOUSA</td>
+                                </tr>
+                                <tr class="verso-summary-row">
+                                    <td class="td-center" style="font-weight:900; font-size:16px; padding:10px 4px;">CARGA HORÁRIA</td>
+                                    <td class="td-center" style="font-weight:900; font-size:16px;">50H</td>
+                                    <td></td>
+                                    <td class="td-center" style="font-weight:900; font-size:12px; line-height:1.3; padding:6px 4px;">
+                                        CPF DO INSTRUTOR<br>
+                                        <span id="vCpfInstrutorText">709.112.662-93</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Caixas Inferiores -->
+                        <div class="verso-bottom-boxes">
+                            <div class="box-registro">
+                                <div class="box-registro-title">CENTRO DE EDUCAÇÃO DE TRÂNSITO E TRANSPORTE DIRECIONAL - LTDA</div>
+                                <div class="box-registro-item">CERTIFICADO REGISTRADO SOB Nº <span id="vRegSobText">Pa1101</span></div>
+                                <div class="box-registro-item">LIVRO: <span id="vLivroText">006/2023</span></div>
+                                <div class="box-registro-item">FLS.: Nº <span id="vFolhaText">003</span></div>
+                                <div class="box-registro-item">EM: <span id="vDataRegText">19 de abril de 2023</span></div>
+                            </div>
+
+                            <div class="box-credenciamento">
+                                CREDENCIAMENTO DETRAN PA PORTARIA Nº <span id="vPortariaText">4676/2021-DG/DHCRV/CHC/GCCFF</span>, PUBLICADO NO DIÁRIO OFICIAL DE <span id="vDiarioOficialText">20/12/2021 Nº 2297768</span>.
+                            </div>
+                        </div>
+
+                        <!-- Rodapé -->
+                        <div class="verso-footer-labels">
+                            <div>Proibido plastificar</div>
+                            <div>CÓD. TURMA <span id="vCodTurmaText">PGM - 185 - PASSAGEIRO TURNO INTENSIVO.</span></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCRIPTS DE ATUALIZAÇÃO E DOWNLOAD -->
+    <script>
+        let currentZoom = 0.65;
+
+        function setZoom(val) {
+            currentZoom = Math.max(0.3, Math.min(1.4, val));
+            const wrapper = document.getElementById('singleSheetWrapper');
+            const label = document.getElementById('zoomLabel');
+            if (wrapper) {
+                wrapper.style.transform = `scale(${currentZoom})`;
+            }
+            if (label) {
+                label.innerText = Math.round(currentZoom * 100) + '%';
+            }
+        }
+
+        function changeZoom(delta) {
+            setZoom(currentZoom + delta);
+        }
+
+        function resetZoom() {
+            setZoom(0.65);
+        }
+
+        // Atualização em Tempo Real da Prévia
+        function updateCertificado() {
+            const nomeAluno = (document.getElementById('inpNomeAluno').value || '').toUpperCase();
+            const renach = document.getElementById('inpRenach').value || '';
+            const categoria = document.getElementById('inpCategoria').value || '';
+            const nomeCurso = document.getElementById('inpNomeCurso').value || '';
+            const cidade = document.getElementById('inpCidade').value || '';
+            const centro = document.getElementById('inpCentro').value || '';
+            const periodo = document.getElementById('inpPeriodo').value || '';
+            const cargaHoraria = document.getElementById('inpCargaHoraria').value || '';
+            const validade = document.getElementById('inpValidade').value || '';
+            const dataExtenso = document.getElementById('inpDataExtenso').value || '';
+
+            const regSob = document.getElementById('inpRegSob').value || '';
+            const livro = document.getElementById('inpLivro').value || '';
+            const folha = document.getElementById('inpFolha').value || '';
+            const dataReg = document.getElementById('inpDataReg').value || '';
+            const codTurma = document.getElementById('inpCodTurma').value || '';
+            const nomeInstrutor = (document.getElementById('inpNomeInstrutor').value || '').toUpperCase();
+            const cpfInstrutor = document.getElementById('inpCpfInstrutor').value || '';
+            const portaria = document.getElementById('inpPortaria').value || '';
+            const diarioOficial = document.getElementById('inpDiarioOficial').value || '';
+
+            // Frente
+            document.getElementById('prevNomeAluno').innerText = nomeAluno;
+            document.getElementById('prevRenachCat').innerText = `Renach:${renach} ${categoria}`;
+            document.getElementById('prevParagrafo').innerHTML = `Participou do Curso ${nomeCurso}, realizado na cidade de ${cidade}, no ${centro}, no período de ${periodo}, perfazendo a carga horária total de ${cargaHoraria}, com validade até ${validade}. O presente certificado a fim de que possa gozar de todos os direitos e prerrogativas legais.`;
+            document.getElementById('prevDataExtenso').innerText = dataExtenso;
+
+            // Verso
+            document.getElementById('vCursoTitle').innerText = nomeCurso;
+            document.querySelectorAll('.vInstrutorSpan').forEach(el => el.innerText = nomeInstrutor);
+            document.getElementById('vCpfInstrutorText').innerText = cpfInstrutor;
+            document.getElementById('vRegSobText').innerText = regSob;
+            document.getElementById('vLivroText').innerText = livro;
+            document.getElementById('vFolhaText').innerText = folha;
+            document.getElementById('vDataRegText').innerText = dataReg;
+            document.getElementById('vPortariaText').innerText = portaria;
+            document.getElementById('vDiarioOficialText').innerText = diarioOficial;
+            document.getElementById('vCodTurmaText').innerText = codTurma;
+        }
+
+        // Restaura dados do modelo original
+        function restaurarModeloOriginal() {
+            document.getElementById('inpNomeAluno').value = "WARLERSOM DA CONCEICAO COSTA";
+            document.getElementById('inpRenach').value = "52034171034";
+            document.getElementById('inpCategoria').value = "Cat. AD";
+            document.getElementById('inpNomeCurso').value = "ESPECIALIZADO PARA CONDUTORES DE VEÍCULO DE TRANSPORTE COLETIVO DE PASSAGEIROS";
+            document.getElementById('inpCidade').value = "Parauapebas-Pará";
+            document.getElementById('inpCentro').value = "CENTRO DE TRÂNSITO E TRANSPORTE DIRECIONAL - LTDA";
+            document.getElementById('inpPeriodo').value = "15 de abril de 2023 a 19 de abril de 2023";
+            document.getElementById('inpCargaHoraria').value = "50(cinquenta horas/aula)";
+            document.getElementById('inpValidade').value = "19 de abril de 2028";
+            document.getElementById('inpDataExtenso').value = "Parauapebas, 19 de abril de 2024.";
+
+            document.getElementById('inpRegSob').value = "Pa1101";
+            document.getElementById('inpLivro').value = "006/2023";
+            document.getElementById('inpFolha').value = "003";
+            document.getElementById('inpDataReg').value = "19 de abril de 2023";
+            document.getElementById('inpCodTurma').value = "PGM - 185 - PASSAGEIRO TURNO INTENSIVO.";
+            document.getElementById('inpNomeInstrutor').value = "JOSE ADELSON F. DE SOUSA";
+            document.getElementById('inpCpfInstrutor').value = "709.112.662-93";
+            document.getElementById('inpPortaria').value = "4676/2021-DG/DHCRV/CHC/GCCFF";
+            document.getElementById('inpDiarioOficial').value = "20/12/2021 Nº 2297768";
+
+            updateCertificado();
+        }
+
+        function limparFormulario() {
+            document.getElementById('inpNomeAluno').value = "";
+            document.getElementById('inpRenach').value = "";
+            document.getElementById('inpCategoria').value = "";
+            updateCertificado();
+        }
+
+        // Download em Imagem Única (PNG com Frente e Verso na mesma foto)
+        async function downloadImagemCompleta() {
+            const btn = document.getElementById('btnDownloadImg');
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="animate-spin"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"/></svg> Gerando Foto...`;
+            btn.disabled = true;
+
+            try {
+                const wrapper = document.getElementById('singleSheetWrapper');
+                const prevTransform = wrapper.style.transform;
+                wrapper.style.transform = 'scale(1)';
+
+                const canvas = await html2canvas(wrapper, {
+                    scale: 2.2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                wrapper.style.transform = prevTransform;
+
+                const link = document.createElement('a');
+                const nomeAluno = (document.getElementById('inpNomeAluno').value || 'certificado').replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+                link.download = `certificado_direcional_${nomeAluno}_frente_verso.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error(err);
+                alert('Erro ao gerar foto: ' + err.message);
+            } finally {
+                btn.innerHTML = origHtml;
+                btn.disabled = false;
+            }
+        }
+
+        // Download do PDF Oficial em Folha Única A4 (Frente e Verso)
+        async function downloadPdfCertificado() {
+            const btn = document.getElementById('btnDownloadPdf');
+            const origTxt = document.getElementById('btnGerarTxt').innerText;
+            btn.disabled = true;
+            btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="animate-spin"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"/></svg> Gerando PDF A4 (Frente e Verso)...`;
+
+            try {
+                const s1 = document.getElementById('sheetFrente');
+                const s2 = document.getElementById('sheetVerso');
+                const wrapper = document.getElementById('singleSheetWrapper');
+
+                const prevTransform = wrapper.style.transform;
+                wrapper.style.transform = 'scale(1)';
+
+                // Captura Frente
+                const canvasFrente = await html2canvas(s1, {
+                    scale: 2.4,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                // Captura Verso
+                const canvasVerso = await html2canvas(s2, {
+                    scale: 2.4,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                wrapper.style.transform = prevTransform;
+
+                const { jsPDF } = window.jspdf;
+                // Folha A4 Retrato (210 x 297 mm)
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const a4W = 210;
+                const a4H = 297;
+
+                // Dimensões proporcionais
+                const marginX = 12; // 12mm
+                const renderW = a4W - (marginX * 2); // 186mm
+                const aspectF = canvasFrente.width / canvasFrente.height;
+                const renderHF = renderW / aspectF;
+
+                const aspectV = canvasVerso.width / canvasVerso.height;
+                const renderHV = renderW / aspectV;
+
+                const gap = 8; // 8mm
+                const totalH = renderHF + gap + renderHV;
+                const startY = Math.max(8, (a4H - totalH) / 2);
+
+                const posX = marginX;
+                const posYF = startY;
+                const posYV = startY + renderHF + gap;
+
+                // Adiciona Frente
+                const imgFrente = canvasFrente.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgFrente, 'JPEG', posX, posYF, renderW, renderHF);
+
+                // Linha de corte ou dobra tracejada
+                pdf.setDrawColor(180, 190, 205);
+                pdf.setLineWidth(0.3);
+                pdf.setLineDashPattern([2, 2], 0);
+                pdf.line(marginX, startY + renderHF + (gap / 2), a4W - marginX, startY + renderHF + (gap / 2));
+                pdf.setLineDashPattern([], 0);
+
+                // Adiciona Verso
+                const imgVerso = canvasVerso.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgVerso, 'JPEG', posX, posYV, renderW, renderHV);
+
+                const nomeAluno = (document.getElementById('inpNomeAluno').value || 'aluno').replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+                pdf.save(`certificado_direcional_${nomeAluno}.pdf`);
+
+            } catch (err) {
+                console.error(err);
+                alert('Erro ao gerar PDF: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> <span>${origTxt}</span>`;
+            }
+        }
+
+        // Impressão Nativa A4
+        function imprimirCertificado() {
+            window.print();
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCertificado();
+            resetZoom();
+        });
+    </script>
+</body>
+</html>

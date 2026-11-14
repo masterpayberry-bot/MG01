@@ -1851,6 +1851,66 @@
                 </div>
             </article>
 
+            <!-- CERTIFICADO DE CONDUTOR (DIRECIONAL - DETRAN-PA) [EM DESENVOLVIMENTO / DESATIVADO] -->
+            <article class="doc-card card-crlv-em-desenvolvimento" data-category="transito" data-name="certificado direcional detran pa condutor transporte coletivo passageiros escolar carga horaria 50h" onclick="handleCertificadoDirecionalEmBreve(event)" style="--card-accent:#d97706; --card-glow:rgba(217,119,6,0.15);">
+                <div>
+                    <div class="card-top">
+                        <div class="card-icon-box" style="color:#d97706; background:rgba(217,119,6,0.1); border-color:rgba(217,119,6,0.25);">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/><path d="m9 11 2 2 4-4"/></svg>
+                        </div>
+                        <span class="card-badge-pill" style="color:#f59e0b; border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.1);">🔧 EM DESENVOLVIMENTO</span>
+                    </div>
+
+                    <div class="card-title-group">
+                        <div class="card-category-lbl">DIRECIONAL • DETRAN-PA</div>
+                        <h2 class="card-title">Certificado de Condutor (Direcional PA)</h2>
+                    </div>
+
+                    <p class="card-desc">
+                        Certificado oficial de Conclusão de Curso Especializado de Transporte Coletivo e Condutores credenciado ao DETRAN-PA com folha única frente e verso, grade curricular e registro.
+                    </p>
+
+                    <ul class="card-features">
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Frente com Renach, dados do condutor, chancelas e moldura dourada oficial</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Verso com 4 módulos de treinamento, instrutor, livro, folha e portaria DETRAN-PA</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Frente e Verso na mesma foto em folha única A4 com linha guia de corte</span>
+                        </li>
+                        <li class="feature-item">
+                            <svg class="feature-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Exportação ultrarrápida em PDF A4 e Imagem PNG de alta resolução</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-footer">
+                    <div class="card-price-group">
+                        <span class="price-lbl">VALOR UNITÁRIO</span>
+                        <div class="price-val">
+                            <span class="price-currency">R$</span>
+                            <span class="price-amount">20,00</span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions-group">
+                        <button type="button" class="btn-card-emitir" onclick="handleCertificadoDirecionalEmBreve(event)" style="opacity:0.7;">
+                            <span>Em Breve</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+                        </button>
+                        <button type="button" class="btn-card-preview" onclick="openDocModal('direcional')" title="Ver detalhes do Certificado Direcional">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
         </div>
 
     </main>
@@ -2480,6 +2540,36 @@
                     </div>
                 `
             },
+            direcional: {
+                category: 'DIRECIONAL • DETRAN-PA',
+                title: 'Certificado de Condutor Direcional (DETRAN-PA)',
+                accent: '#d97706',
+                link: 'criar-certificado-direcional.html',
+                devLink: 'criar-certificado-direcional.html',
+                btnText: 'Em Desenvolvimento',
+                isDev: true,
+                html: `
+                    <div class="doc-modal-intro">
+                        O <strong>Certificado Direcional (DETRAN-PA)</strong> é emitido pelo Centro de Treinamentos em Transporte Direcional credenciado pela Portaria DETRAN-PA 4676/2021 para cursos especializados de condutores.
+                    </div>
+                    <div class="doc-modal-box" style="--accent:#d97706;">
+                        <div class="doc-modal-box-header" style="color:#d97706;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                            <span>Destaques Técnicos</span>
+                        </div>
+                        <ul class="doc-modal-list">
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Frente com moldura dourada e selo credenciado DETRAN-PA</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Verso com grade dos 4 módulos, aproveitamento e dados de registro</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Frente e Verso na mesma foto em folha única A4</span></li>
+                            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><span>Exportação ultrarrápida em PDF e Imagem</span></li>
+                        </ul>
+                    </div>
+                    <div class="doc-modal-note">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                        <span>Documento em fase final de homologação técnica.</span>
+                    </div>
+                `
+            },
             reservista: {
                 category: 'MINISTÉRIO DA DEFESA • EXÉRCITO',
                 title: 'Certificado de Reservista Militar (Exército Brasileiro)',
@@ -2661,7 +2751,8 @@
                 { match: 'unimed', link: 'criar-unimed.html', name: 'Atestado Unimed', accent: '#00995D' },
                 { match: 'atpv', link: 'criar-dut.html', name: 'DUT ATPV-e', accent: '#f97316' },
                 { match: 'comprovante', link: 'criar-comprovante.html', name: 'Comprovante MP', accent: '#009ee3' },
-                { match: 'reservista', link: 'criar-reservista.html', name: 'Reservista Militar', accent: '#16a34a' }
+                { match: 'reservista', link: 'criar-reservista.html', name: 'Reservista Militar', accent: '#16a34a' },
+                { match: 'direcional', link: 'criar-certificado-direcional.html', name: 'Certificado Direcional (DETRAN-PA)', accent: '#d97706' }
             ];
 
             devCards.forEach(item => {
@@ -2778,6 +2869,16 @@
                 e.stopPropagation();
             }
             showToastDev('Certificado de Condutor (ICETRAN)', 'A emissão de Certificado de Condutor especializado ICETRAN está em desenvolvimento e estará disponível em breve.');
+            return false;
+        }
+
+        // Ação para o Certificado Direcional (DETRAN-PA) em desenvolvimento
+        function handleCertificadoDirecionalEmBreve(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            showToastDev('Certificado Direcional (DETRAN-PA)', 'A emissão do Certificado de Condutor Direcional DETRAN-PA está em desenvolvimento e estará disponível em breve.');
             return false;
         }
 
