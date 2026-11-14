@@ -29,7 +29,7 @@
     <script src="assets/sig_original_b64.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cedarville+Cursive&family=Dancing+Script:wght@600;700&family=Caveat:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Alex+Brush&family=Allura&family=Caveat:wght@600;700&family=Cedarville+Cursive&family=Dancing+Script:wght@600;700&display=swap');
 
         :root {
             --bg-color: #0b0d0e;
@@ -357,6 +357,135 @@
         }
 
         /* Presets de dias no formulário */
+        
+        /* Seletor de Estilos de Assinatura Feita à Mão */
+        .sig-selector-wrapper {
+            background: #111415;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+        body.light-theme .sig-selector-wrapper {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-sig-variation {
+            background: rgba(0, 220, 130, 0.12);
+            border: 1px solid rgba(0, 220, 130, 0.35);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.15s ease;
+        }
+        .btn-sig-variation:hover {
+            background: var(--primary);
+            color: #0b0d0e;
+        }
+
+        .sig-styles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .sig-style-card {
+            background: var(--surface-card);
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            padding: 8px 6px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+            user-select: none;
+        }
+        body.light-theme .sig-style-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        .sig-style-card:hover {
+            border-color: rgba(0, 220, 130, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .sig-style-card.active {
+            border-color: var(--primary);
+            background: rgba(0, 220, 130, 0.08);
+            box-shadow: 0 0 0 1px var(--primary), 0 4px 14px rgba(0, 220, 130, 0.18);
+        }
+        body.light-theme .sig-style-card.active {
+            background: rgba(0, 220, 130, 0.12);
+        }
+
+        .sig-card-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 15px;
+            height: 15px;
+            background: var(--primary);
+            color: #0b0d0e;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 9.5px;
+            font-weight: 900;
+        }
+        .sig-style-card.active .sig-card-badge {
+            display: flex;
+        }
+
+        .sig-preview-box {
+            width: 100%;
+            height: 52px;
+            background: #ffffff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+            padding: 2px;
+        }
+
+        .sig-preview-box svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .sig-style-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+            line-height: 1.2;
+        }
+        body.light-theme .sig-style-title {
+            color: #1e293b;
+        }
+
+        .sig-style-sub {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1;
+        }
+
         .dias-chips-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -1637,10 +1766,29 @@
                     <div class="form-field">
                         <label>Cor da Tinta da Caneta</label>
                         <div style="display:flex; gap:10px; align-items:center; background:#111415; border:1px solid var(--border); border-radius:10px; padding:6px 14px; height:42px;">
-                            <button type="button" class="btn-cor-caneta" id="btnCorAzul" onclick="setCorCaneta('#1040cf', this)" style="background:#1040cf; width:26px; height:26px; border-radius:50%; border:2px solid #fff; cursor:pointer;" title="Azul"></button>
-                            <button type="button" class="btn-cor-caneta" id="btnCorPreto" onclick="setCorCaneta('#18181b', this)" style="background:#18181b; width:26px; height:26px; border-radius:50%; border:2px solid transparent; cursor:pointer;" title="Preta"></button>
-                            <span id="lblCorCaneta" style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left:4px;">Azul</span>
+                            <button type="button" class="btn-cor-caneta" id="btnCorAzul" onclick="setCorCaneta('#1040cf', this)" style="background:#1040cf; width:26px; height:26px; border-radius:50%; border:2px solid #fff; cursor:pointer;" title="Azul Caneta"></button>
+                            <button type="button" class="btn-cor-caneta" id="btnCorAzulMarinho" onclick="setCorCaneta('#002b80', this)" style="background:#002b80; width:26px; height:26px; border-radius:50%; border:2px solid transparent; cursor:pointer;" title="Azul Marinho"></button>
+                            <button type="button" class="btn-cor-caneta" id="btnCorPreto" onclick="setCorCaneta('#18181b', this)" style="background:#18181b; width:26px; height:26px; border-radius:50%; border:2px solid transparent; cursor:pointer;" title="Preto Tinta"></button>
+                            <span id="lblCorCaneta" style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left:4px;">Azul Caneta</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- SELETOR DE ESTILOS DE ASSINATURA FEITA À MÃO -->
+                <div class="sig-selector-wrapper" style="margin-top: 14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                            Opções de Assinatura Feita à Mão
+                        </label>
+                        <button type="button" class="btn-sig-variation" onclick="proximaVariacaoAssinatura()" title="Gerar novo traço manual com pequenas variações de caligrafia">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            <span>Variar Traço</span>
+                        </button>
+                    </div>
+
+                    <div class="sig-styles-grid" id="sigStylesGrid">
+                        <!-- Gerado dinamicamente com mini-previews com o nome do médico -->
                     </div>
                 </div>
             </div>
@@ -2325,10 +2473,16 @@
             document.getElementById('inp_crm').value = "CRM 29022 RS";
             currentDiasNum = 3;
             currentDiasExt = 'três';
+            currentSigStyleIndex = 0;
+            currentSigVariation = 0;
+            currentSigColor = '#1040cf';
 
             document.querySelectorAll('.dias-chip').forEach(b => b.classList.remove('active'));
             const c3 = document.getElementById('chipDia3');
             if (c3) c3.classList.add('active');
+
+            const btnAz = document.getElementById('btnCorAzul');
+            if (btnAz) setCorCaneta('#1040cf', btnAz);
 
             syncFromCheckout();
             generateQrCodes();
@@ -2336,7 +2490,17 @@
         }
     }
 
-    // ─── CONTROLADOR DE ASSINATURA À CANETA (AZUL E PRETA) ───
+    // ─── GERADOR INTELIGENTE DE ASSINATURAS MÉDICAS FEITAS À MÃO ───
+    const SIGNATURE_STYLES = [
+        { id: 0, name: "Rubrica Médica Ágil", desc: "Laço e oscilação rápida" },
+        { id: 1, name: "Cursiva Fluida", desc: "Nome por extenso fluído" },
+        { id: 2, name: "Traço com Paraph", desc: "Inicial + Sobrenome" },
+        { id: 3, name: "Plantão Emergência", desc: "Scribble veloz UPA" },
+        { id: 4, name: "Rubrica Circular", desc: "Laço envolvente 360°" }
+    ];
+
+    let currentSigStyleIndex = 0;
+    let currentSigVariation = 0;
     let currentSigColor = '#1040cf';
 
     function setCorCaneta(color, btn) {
@@ -2345,20 +2509,186 @@
         if (btn) btn.style.borderColor = '#fff';
         const lbl = document.getElementById('lblCorCaneta');
         if (lbl) {
-            lbl.textContent = (color === '#1040cf') ? 'Azul' : 'Preta';
+            if (color === '#1040cf') lbl.textContent = 'Azul Caneta';
+            else if (color === '#002b80') lbl.textContent = 'Azul Marinho';
+            else lbl.textContent = 'Preto Tinta';
         }
         renderAssinatura();
     }
 
-    function renderAssinatura() {
-        const layer = document.getElementById('carimboSigLayer');
-        if (!layer) return;
+    function cleanDoctorName(raw) {
+        let s = (raw || 'Dr. Jair Dacas').trim();
+        s = s.replace(/^(?:dr.|dra.|dr|dra|doutor|doutora)\s+/i, '');
+        const parts = s.split(/\s+/).filter(Boolean);
+        const first = parts[0] || 'Jair';
+        const last = parts.length > 1 ? parts[parts.length - 1] : first;
+        return { raw, clean: s, first, last, parts };
+    }
 
-        // Padrão 100% IDEM: Rubrica original da foto exatamente alinhada sobre o carimbo
-        layer.innerHTML = `
-            <path d="M 64 58 C 66 46, 81 35, 99 34 C 112 34, 122 43, 117 57 C 111 71, 100 81, 93 84 C 84 89, 71 99, 66 104 C 66 104, 80 92, 91 84 C 104 74, 119 65, 137 62 C 154 58, 163 58, 170 64 C 177 69, 191 68, 207 64" fill="none" stroke="${currentSigColor}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
-            <circle cx="162" cy="42" r="1.6" fill="${currentSigColor}" />
-        `;
+    function hashDoctorString(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = ((hash << 5) - hash) + str.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
+    }
+
+    function generateDoctorSignature(docName, styleIndex, color, variation) {
+        const { clean, first, last } = cleanDoctorName(docName);
+        const initialF = first.charAt(0).toUpperCase();
+        const initialL = last.charAt(0).toUpperCase();
+
+        const hash = hashDoctorString(clean) + (variation * 37);
+        const isDefaultJair = clean.toLowerCase() === 'jair dacas' && variation === 0;
+
+        let svgContent = '';
+
+        if (styleIndex === 0) {
+            // Estilo 0: Rubrica Médica Ágil
+            if (isDefaultJair) {
+                svgContent = `
+                    <path d="M 64 58 C 66 46, 81 35, 99 34 C 112 34, 122 43, 117 57 C 111 71, 100 81, 93 84 C 84 89, 71 99, 66 104 C 66 104, 80 92, 91 84 C 104 74, 119 65, 137 62 C 154 58, 163 58, 170 64 C 177 69, 191 68, 207 64" fill="none" stroke="${color}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="162" cy="42" r="1.6" fill="${color}" />
+                `;
+            } else {
+                const startX = 46 + (hash % 12);
+                const startY = 62 + ((hash >> 2) % 6);
+                const loopTopY = 28 + ((hash >> 4) % 9);
+                const loopWidth = 36 + ((hash >> 6) % 12);
+                const waveLen = Math.min(8, Math.max(4, last.length));
+                let wavePath = `M ${startX} ${startY} C ${startX + 2} ${loopTopY + 12}, ${startX + loopWidth * 0.4} ${loopTopY}, ${startX + loopWidth * 0.9} ${loopTopY + 2} C ${startX + loopWidth * 1.3} ${loopTopY + 2}, ${startX + loopWidth * 1.4} ${startY + 15}, ${startX + loopWidth} ${startY + 22}`;
+
+                let currX = startX + loopWidth * 0.8;
+                let currY = startY + 20;
+
+                for (let w = 0; w < waveLen; w++) {
+                    const charCode = last.charCodeAt(w % last.length) || 100;
+                    const waveH = 10 + (charCode % 12);
+                    const stepX = 8 + (charCode % 5);
+                    const cpY1 = currY - waveH;
+                    const cpY2 = currY + waveH * 0.6;
+                    wavePath += ` Q ${currX + stepX * 0.5} ${cpY1}, ${currX + stepX} ${currY - 2} Q ${currX + stepX * 1.5} ${cpY2}, ${currX + stepX * 2} ${currY}`;
+                    currX += stepX * 2;
+                }
+
+                const endX = Math.min(215, currX + 22);
+                const endY = currY - 6;
+                wavePath += ` C ${currX + 8} ${currY + 8}, ${endX - 10} ${endY + 12}, ${endX} ${endY}`;
+
+                const dotX = endX - 8;
+                const dotY = endY - 18;
+
+                svgContent = `
+                    <path d="${wavePath}" fill="none" stroke="${color}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="${dotX}" cy="${dotY}" r="1.6" fill="${color}" />
+                `;
+            }
+        } else if (styleIndex === 1) {
+            // Estilo 1: Cursiva Fluida por Extenso
+            const displayTxt = clean;
+            let fontSize = 28;
+            if (displayTxt.length > 22) fontSize = 21;
+            else if (displayTxt.length > 16) fontSize = 24;
+
+            const rot = -5 + (hash % 4);
+            const underlineY = 74;
+            svgContent = `
+                <g transform="rotate(${rot}, 95, 58)">
+                    <text x="32" y="60" font-family="'Cedarville Cursive', 'Caveat', cursive" font-size="${fontSize}" font-weight="600" fill="${color}" letter-spacing="0.3">${displayTxt}</text>
+                    <path d="M 34 ${underlineY} C 75 ${underlineY + 5}, 130 ${underlineY - 4}, 185 ${underlineY + 2} Q 195 ${underlineY + 3}, 205 ${underlineY - 2}" fill="none" stroke="${color}" stroke-width="2.0" stroke-linecap="round" />
+                    <circle cx="208" cy="${underlineY - 3}" r="1.5" fill="${color}" />
+                </g>
+            `;
+        } else if (styleIndex === 2) {
+            // Estilo 2: Traço com Paraph (Inicial + Sobrenome)
+            const shortName = `${initialF}. ${last}`;
+            let fontSize = 32;
+            if (shortName.length > 18) fontSize = 26;
+
+            svgContent = `
+                <g transform="rotate(-4, 95, 56)">
+                    <text x="38" y="54" font-family="'Alex Brush', 'Allura', cursive" font-size="${fontSize}" font-weight="700" fill="${color}" letter-spacing="1">${shortName}</text>
+                    <path d="M 36 68 C 80 62, 130 64, 180 60 C 195 59, 175 74, 140 76 C 100 78, 60 76, 45 74" fill="none" stroke="${color}" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="188" cy="58" r="1.7" fill="${color}" />
+                </g>
+            `;
+        } else if (styleIndex === 3) {
+            // Estilo 3: Plantão de Emergência UPA
+            const startX = 40 + (hash % 10);
+            const peakY = 28 + ((hash >> 2) % 8);
+            const valleyY = 88 + ((hash >> 4) % 6);
+            const waveCount = 5 + (hash % 4);
+            let p = `M ${startX} 68 C ${startX + 5} 45, ${startX + 18} ${peakY}, ${startX + 28} ${peakY + 6} C ${startX + 38} ${peakY + 12}, ${startX + 32} ${valleyY}, ${startX + 44} ${valleyY - 6}`;
+
+            let cx = startX + 44;
+            let cy = valleyY - 6;
+            for (let i = 0; i < waveCount; i++) {
+                const h = 8 + (i % 3) * 4;
+                p += ` L ${cx + 8} ${cy - h} L ${cx + 16} ${cy + 2}`;
+                cx += 16;
+            }
+            p += ` C ${cx + 10} ${cy - 8}, ${cx + 26} ${cy - 12}, ${Math.min(215, cx + 38)} ${cy - 6}`;
+
+            svgContent = `
+                <path d="${p}" fill="none" stroke="${color}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="${startX + 26}" cy="${peakY + 2}" r="1.6" fill="${color}" />
+            `;
+        } else if (styleIndex === 4) {
+            // Estilo 4: Rubrica Circular Envolvente
+            const rot = -5 + (hash % 4);
+            svgContent = `
+                <g transform="rotate(${rot}, 95, 58)">
+                    <text x="65" y="58" font-family="'Caveat', cursive" font-size="28" font-weight="700" fill="${color}">${first}</text>
+                    <path d="M 45 62 C 35 38, 75 22, 130 24 C 185 26, 205 50, 195 72 C 185 92, 110 96, 55 86 C 30 81, 35 68, 65 65 L 195 62" fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="198" cy="62" r="1.6" fill="${color}" />
+                </g>
+            `;
+        }
+
+        return svgContent;
+    }
+
+    function selectSigStyle(idx) {
+        currentSigStyleIndex = idx;
+        renderAssinatura();
+    }
+
+    function proximaVariacaoAssinatura() {
+        currentSigVariation++;
+        renderAssinatura();
+        showToast('Traço de assinatura variado!');
+    }
+
+    function renderAssinatura() {
+        const docName = document.getElementById('inp_medico')?.value || 'Dr. Jair Dacas';
+        const layer = document.getElementById('carimboSigLayer');
+        if (layer) {
+            layer.innerHTML = generateDoctorSignature(docName, currentSigStyleIndex, currentSigColor, currentSigVariation);
+        }
+        updateSigOptionsGrid(docName);
+    }
+
+    function updateSigOptionsGrid(docName) {
+        const grid = document.getElementById('sigStylesGrid');
+        if (!grid) return;
+
+        grid.innerHTML = SIGNATURE_STYLES.map((style) => {
+            const isActive = (style.id === currentSigStyleIndex);
+            const previewSvg = generateDoctorSignature(docName, style.id, currentSigColor, currentSigVariation);
+            return `
+                <div class="sig-style-card ${isActive ? 'active' : ''}" onclick="selectSigStyle(${style.id})" title="${style.name} - ${style.desc}">
+                    <span class="sig-card-badge">✓</span>
+                    <div class="sig-preview-box">
+                        <svg viewBox="20 18 200 90" preserveAspectRatio="xMidYMid meet">
+                            ${previewSvg}
+                        </svg>
+                    </div>
+                    <div class="sig-style-title">${style.name}</div>
+                    <div class="sig-style-sub">${style.desc}</div>
+                </div>
+            `;
+        }).join('');
     }
 
     function handleSigUpload(input) {
