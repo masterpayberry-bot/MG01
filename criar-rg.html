@@ -433,10 +433,10 @@
             padding: 10px 0 30px 0;
         }
 
-        /* ─── FOLHA A4 OFICIAL CARTEIRA DE IDENTIDADE (794px × 1123px) ─── */
+        /* ─── FOLHA A4 OFICIAL CARTEIRA DE IDENTIDADE (742px × 1024px) ─── */
         .sheet-a4 {
-            width: 794px;
-            height: 1123px;
+            width: 742px;
+            height: 1024px;
             background: #ffffff;
             color: #0f172a;
             box-sizing: border-box;
@@ -465,7 +465,7 @@
             display: block;
         }
 
-        /* CAMADA DE OVERLAYS DINÂMICOS (ACIONADA APENAS QUANDO O USUÁRIO EDITAR) */
+        /* CAMADA DE OVERLAYS DINÂMICOS */
         .dynamic-overlay-layer {
             position: absolute;
             top: 0;
@@ -476,39 +476,42 @@
             pointer-events: none;
         }
 
-        /* ELEMENTOS DINÂMICOS COM NÍTIDEZ TOTAL (ZERO BORRÃO, ZERO PATCH, BACKGROUND TRANSPARENTE) */
+        /* ELEMENTOS DINÂMICOS COM NÍTIDEZ TOTAL (ZERO BORRÃO, ALINHAMENTO 1:1) */
         .dyn-box {
             position: absolute;
-            display: flex;
+            display: none;
             align-items: center;
             box-sizing: border-box;
             font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-            color: #0f172a;
-            background: transparent !important;
-            border: none !important;
-            padding: 0 !important;
+            color: #000000;
+            padding: 0 2px !important;
             margin: 0 !important;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: 1;
+            z-index: 6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
         }
 
+        .fundo-frente { background: #edebe2 !important; }
+        .fundo-verso { background: #eae7c8 !important; }
+        .fundo-mrz { background: #ffffff !important; }
+
         /* Foto Dinâmica 3x4 */
         #dynPhotoHolder {
-            top: 18.2%;
-            left: 8.7%;
-            width: 14.5%;
-            height: 14.8%;
-            border-radius: 4px;
+            top: 208px;
+            left: 79px;
+            width: 95px;
+            height: 118px;
+            border-radius: 2px;
             overflow: hidden;
             box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
             background: #e2e8f0;
             z-index: 6;
-            display: block;
+            display: none;
         }
         #dynPhotoHolder img {
             width: 100%;
@@ -519,14 +522,13 @@
 
         /* Assinatura Dinâmica do Titular */
         #dynSigHolder {
-            top: 35.8%;
-            left: 23.8%;
-            width: 35%;
-            height: 2.8%;
+            top: 336px;
+            left: 184px;
+            width: 250px;
+            height: 24px;
             z-index: 6;
-            background: transparent !important;
-            border: none !important;
-            display: flex;
+            background: #f6faf3 !important;
+            display: none;
             align-items: center;
             justify-content: flex-start;
         }
@@ -539,33 +541,33 @@
         #dynSigText {
             display: none;
             font-family: 'Homemade Apple', 'Cedarville Cursive', cursive;
-            font-size: 14px;
-            color: #1e293b;
+            font-size: 13px;
+            color: #000000;
             font-weight: 600;
         }
 
-        /* Textos Dinâmicos da Frente (Alinhamento Preciso sob os Rótulos Oficiais) */
-        #dynNome { top: 22.3%; left: 23.8%; width: 36%; height: 18px; font-size: 11px; font-weight: 700; color: #0f172a; }
-        #dynCpf { top: 27.2%; left: 23.8%; width: 17.5%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
-        #dynSexo { top: 27.2%; left: 42.2%; width: 12%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
-        #dynNasc { top: 30.7%; left: 23.8%; width: 17.5%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
-        #dynNac { top: 30.7%; left: 42.2%; width: 12%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
-        #dynNat { top: 33.9%; left: 23.8%; width: 17.5%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
-        #dynVal { top: 33.9%; left: 42.2%; width: 14%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
+        /* Textos Dinâmicos da Frente (Alinhamento Cirúrgico sob os Rótulos Oficiais) */
+        #dynNome { top: 213px; left: 184px; width: 280px; height: 16px; font-size: 11px; font-weight: 700; color: #000000; }
+        #dynCpf { top: 269px; left: 184px; width: 135px; height: 15px; font-size: 10px; font-weight: 700; color: #000000; }
+        #dynSexo { top: 269px; left: 326px; width: 95px; height: 15px; font-size: 10px; font-weight: 700; color: #000000; }
+        #dynNasc { top: 291px; left: 184px; width: 135px; height: 15px; font-size: 10px; font-weight: 700; color: #000000; }
+        #dynNac { top: 291px; left: 326px; width: 95px; height: 15px; font-size: 10px; font-weight: 700; color: #000000; }
+        #dynNat { top: 323px; left: 184px; width: 135px; height: 15px; font-size: 10px; font-weight: 700; color: #000000; }
+        #dynVal { top: 323px; left: 326px; width: 95px; height: 15px; font-size: 10px; font-weight: 700; color: #000000; }
 
         /* Textos Dinâmicos do Verso (Filiação e Emissão) */
-        #dynPai { top: 45.0%; left: 22.3%; width: 37%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
-        #dynMae { top: 46.2%; left: 22.3%; width: 37%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
-        #dynOrgao { top: 51.9%; left: 22.3%; width: 18%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
-        #dynLocal { top: 57.2%; left: 22.3%; width: 17%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
-        #dynEmissao { top: 57.2%; left: 40.5%; width: 14%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
+        #dynPai { top: 455px; left: 184px; width: 250px; height: 13px; font-size: 9.5px; font-weight: 700; color: #000000; text-transform: uppercase; }
+        #dynMae { top: 471px; left: 184px; width: 250px; height: 13px; font-size: 9.5px; font-weight: 700; color: #000000; text-transform: uppercase; }
+        #dynOrgao { top: 531px; left: 184px; width: 150px; height: 15px; font-size: 9.5px; font-weight: 700; color: #000000; }
+        #dynLocal { top: 584px; left: 184px; width: 140px; height: 15px; font-size: 9.5px; font-weight: 700; color: #000000; text-transform: uppercase; }
+        #dynEmissao { top: 584px; left: 348px; width: 100px; height: 15px; font-size: 9.5px; font-weight: 700; color: #000000; }
 
         /* MRZ (3 Linhas no Verso) */
         #dynMrz {
-            top: 65.6%;
-            left: 4.1%;
-            width: 58%;
-            height: 52px;
+            top: 679px;
+            left: 72px;
+            width: 410px;
+            height: 48px;
             font-family: 'Share Tech Mono', 'Courier New', monospace;
             font-size: 10.5px;
             line-height: 1.25;
@@ -574,18 +576,19 @@
             color: #000000;
             white-space: pre;
             align-items: flex-start;
-            background: transparent !important;
+            background: #ffffff !important;
+            padding: 2px 4px !important;
         }
 
         /* Tabela Inferior Dinâmica */
-        #dynDni { top: 97.4%; left: 10.4%; width: 22%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; background: transparent !important; }
+        #dynDni { top: 945px; left: 50px; width: 130px; height: 14px; font-size: 9.5px; font-weight: 700; color: #000000; background: #ffffff !important; }
 
         /* QR Code Vio Dinâmico (Lado Direito) */
         #dynQrVioBox {
-            top: 13.5%;
-            left: 72.0%;
-            width: 17.5%;
-            height: 13.5%;
+            top: 132px;
+            left: 532px;
+            width: 145px;
+            height: 145px;
             background: #ffffff;
             display: none;
             align-items: center;
@@ -973,26 +976,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
 
                         <!-- Textos Frente -->
-                        <div id="dynNome" class="dyn-box"></div>
-                        <div id="dynCpf" class="dyn-box"></div>
-                        <div id="dynSexo" class="dyn-box"></div>
-                        <div id="dynNasc" class="dyn-box"></div>
-                        <div id="dynNac" class="dyn-box"></div>
-                        <div id="dynNat" class="dyn-box"></div>
-                        <div id="dynVal" class="dyn-box"></div>
+                        <div id="dynNome" class="dyn-box fundo-frente"></div>
+                        <div id="dynCpf" class="dyn-box fundo-frente"></div>
+                        <div id="dynSexo" class="dyn-box fundo-frente"></div>
+                        <div id="dynNasc" class="dyn-box fundo-frente"></div>
+                        <div id="dynNac" class="dyn-box fundo-frente"></div>
+                        <div id="dynNat" class="dyn-box fundo-frente"></div>
+                        <div id="dynVal" class="dyn-box fundo-frente"></div>
 
                         <!-- Textos Verso -->
-                        <div id="dynPai" class="dyn-box"></div>
-                        <div id="dynMae" class="dyn-box"></div>
-                        <div id="dynOrgao" class="dyn-box"></div>
-                        <div id="dynLocal" class="dyn-box"></div>
-                        <div id="dynEmissao" class="dyn-box"></div>
+                        <div id="dynPai" class="dyn-box fundo-verso"></div>
+                        <div id="dynMae" class="dyn-box fundo-verso"></div>
+                        <div id="dynOrgao" class="dyn-box fundo-verso"></div>
+                        <div id="dynLocal" class="dyn-box fundo-verso"></div>
+                        <div id="dynEmissao" class="dyn-box fundo-verso"></div>
 
                         <!-- MRZ 3 Linhas Verso -->
-                        <div id="dynMrz" class="dyn-box"></div>
+                        <div id="dynMrz" class="dyn-box fundo-mrz"></div>
 
                         <!-- DNI Tabela -->
-                        <div id="dynDni" class="dyn-box"></div>
+                        <div id="dynDni" class="dyn-box fundo-mrz"></div>
 
                         <!-- QR Code Vio Dinâmico -->
                         <div id="dynQrVioBox" class="dyn-box">
@@ -1112,28 +1115,35 @@ document.addEventListener('DOMContentLoaded', function() {
             return `${line1}\n${line2}\n${line3}`;
         }
 
-        function setFieldText(id, value) {
+        function updateFieldOverlay(id, currentVal, defaultVal) {
             const el = document.getElementById(id);
             if (!el) return;
-            el.textContent = value;
-            el.style.display = 'flex';
+            const isModified = (currentVal || '').trim().toUpperCase() !== (defaultVal || '').trim().toUpperCase();
+            if (isModified) {
+                el.textContent = currentVal;
+                el.style.display = 'flex';
+            } else {
+                el.textContent = '';
+                el.style.display = 'none';
+            }
         }
 
         function updateTitularSignature(nome) {
+            const sigHolder = document.getElementById('dynSigHolder');
             const sigImg = document.getElementById('dynSigImg');
             const sigText = document.getElementById('dynSigText');
             if (isCustomSig) {
+                if (sigHolder) sigHolder.style.display = 'flex';
                 if (sigImg) sigImg.style.display = 'block';
                 if (sigText) sigText.style.display = 'none';
                 return;
             }
             if (!nome || nome.toUpperCase() === DEFAULT_MELLYSSA.nome.toUpperCase()) {
-                if (sigImg) {
-                    sigImg.src = 'assets/mellyssa_sig.png';
-                    sigImg.style.display = 'block';
-                }
+                if (sigHolder) sigHolder.style.display = 'none';
+                if (sigImg) sigImg.style.display = 'none';
                 if (sigText) sigText.style.display = 'none';
             } else {
+                if (sigHolder) sigHolder.style.display = 'flex';
                 if (sigImg) sigImg.style.display = 'none';
                 if (sigText) {
                     sigText.textContent = toTitleCase(nome);
@@ -1157,26 +1167,36 @@ document.addEventListener('DOMContentLoaded', function() {
             const orgao = (document.getElementById('inpOrgao').value || '').trim() || DEFAULT_MELLYSSA.orgao;
             const local = (document.getElementById('inpLocal').value || '').trim() || DEFAULT_MELLYSSA.local;
             const emissao = (document.getElementById('inpEmissao').value || '').trim() || DEFAULT_MELLYSSA.emissao;
-            const dni = (document.getElementById('inpDni').value || '').trim() || cpf;
+            const dni = (document.getElementById('inpDni').value || '').trim() || DEFAULT_MELLYSSA.dni;
 
-            // Renderiza os valores diretamente nas linhas oficiais com nitidez máxima
-            setFieldText('dynNome', nome);
-            setFieldText('dynCpf', cpf);
-            setFieldText('dynSexo', sexo);
-            setFieldText('dynNasc', nasc);
-            setFieldText('dynNac', nac);
-            setFieldText('dynNat', nat);
-            setFieldText('dynVal', val);
+            // Ativa overlay cirúrgico apenas nos campos alterados (evitando duplicação/fantasmas)
+            updateFieldOverlay('dynNome', nome, DEFAULT_MELLYSSA.nome);
+            updateFieldOverlay('dynCpf', cpf, DEFAULT_MELLYSSA.cpf);
+            updateFieldOverlay('dynSexo', sexo, DEFAULT_MELLYSSA.sexo);
+            updateFieldOverlay('dynNasc', nasc, DEFAULT_MELLYSSA.nasc);
+            updateFieldOverlay('dynNac', nac, DEFAULT_MELLYSSA.nac);
+            updateFieldOverlay('dynNat', nat, DEFAULT_MELLYSSA.nat);
+            updateFieldOverlay('dynVal', val, DEFAULT_MELLYSSA.val);
 
-            setFieldText('dynPai', pai);
-            setFieldText('dynMae', mae);
-            setFieldText('dynOrgao', orgao);
-            setFieldText('dynLocal', local);
-            setFieldText('dynEmissao', emissao);
-            setFieldText('dynDni', dni);
+            updateFieldOverlay('dynPai', pai, DEFAULT_MELLYSSA.pai);
+            updateFieldOverlay('dynMae', mae, DEFAULT_MELLYSSA.mae);
+            updateFieldOverlay('dynOrgao', orgao, DEFAULT_MELLYSSA.orgao);
+            updateFieldOverlay('dynLocal', local, DEFAULT_MELLYSSA.local);
+            updateFieldOverlay('dynEmissao', emissao, DEFAULT_MELLYSSA.emissao);
+            updateFieldOverlay('dynDni', dni, DEFAULT_MELLYSSA.dni);
 
             // MRZ 3 Linhas Dinâmicas no Verso
-            setFieldText('dynMrz', generateMrzLines(cpf, nome, nasc, sexo, val));
+            const mrzModified = (cpf !== DEFAULT_MELLYSSA.cpf || nome.toUpperCase() !== DEFAULT_MELLYSSA.nome.toUpperCase() || nasc !== DEFAULT_MELLYSSA.nasc || sexo !== DEFAULT_MELLYSSA.sexo || val !== DEFAULT_MELLYSSA.val);
+            const dynMrz = document.getElementById('dynMrz');
+            if (dynMrz) {
+                if (mrzModified) {
+                    dynMrz.textContent = generateMrzLines(cpf, nome, nasc, sexo, val);
+                    dynMrz.style.display = 'flex';
+                } else {
+                    dynMrz.textContent = '';
+                    dynMrz.style.display = 'none';
+                }
+            }
 
             // Assinatura do Titular
             updateTitularSignature(nome);
@@ -1273,13 +1293,11 @@ document.addEventListener('DOMContentLoaded', function() {
             isCustomPhoto = false;
             isCustomSig = false;
 
-            const photoImg = document.getElementById('dynPhotoImg');
-            if (photoImg) photoImg.src = 'assets/mellyssa_foto.png';
-            const sigImg = document.getElementById('dynSigImg');
-            if (sigImg) sigImg.src = 'assets/mellyssa_sig.png';
-            const sigText = document.getElementById('dynSigText');
-            if (sigText) sigText.style.display = 'none';
-            if (sigImg) sigImg.style.display = 'block';
+            const photoHolder = document.getElementById('dynPhotoHolder');
+            if (photoHolder) photoHolder.style.display = 'none';
+
+            const sigHolder = document.getElementById('dynSigHolder');
+            if (sigHolder) sigHolder.style.display = 'none';
 
             handleFieldChange();
         }
