@@ -4384,7 +4384,16 @@
     <script>
         // ─── DADOS INICIAIS DE USUÁRIOS E SINCRONIZAÇÃO ───
         let deletedUsersInit = [];
-        try { deletedUsersInit = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]'); } catch(e){}
+        try {
+            deletedUsersInit = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]');
+            if (Array.isArray(deletedUsersInit)) {
+                const cleanList = deletedUsersInit.filter(d => !String(d).includes('@'));
+                if (cleanList.length !== deletedUsersInit.length) {
+                    deletedUsersInit = cleanList;
+                    localStorage.setItem('happynation_deleted_users', JSON.stringify(deletedUsersInit));
+                }
+            }
+        } catch(e){}
         let rawStoredUsers = null;
         try { rawStoredUsers = JSON.parse(localStorage.getItem('happynation_admin_users')); } catch(e){}
         let usersData = Array.isArray(rawStoredUsers) ? rawStoredUsers : [
@@ -4393,7 +4402,7 @@
             { id: 3, nome: "Lucas Francisco", email: "lucas.francisco@gmail.com", phone: "(21) 98712-4410", saldo: 0, cnhsCount: 0, status: "approved" }
         ];
         if (deletedUsersInit.length > 0) {
-            usersData = usersData.filter(u => !deletedUsersInit.includes(String(u.id)) && !deletedUsersInit.includes((u.email||'').toLowerCase().trim()));
+            usersData = usersData.filter(u => !deletedUsersInit.includes(String(u.id)));
         }
 
         let recargasData = JSON.parse(localStorage.getItem('happynation_admin_recargas')) || [];
@@ -4571,13 +4580,21 @@
 
                 if (!errUsers && Array.isArray(sUsers)) {
                     let deletedUsers = [];
-                    try { deletedUsers = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]'); } catch(e){}
+                    try {
+                        deletedUsers = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]');
+                        if (Array.isArray(deletedUsers)) {
+                            const cleanDel = deletedUsers.filter(d => !String(d).includes('@'));
+                            if (cleanDel.length !== deletedUsers.length) {
+                                deletedUsers = cleanDel;
+                                localStorage.setItem('happynation_deleted_users', JSON.stringify(deletedUsers));
+                            }
+                        }
+                    } catch(e){}
 
                     usersData = sUsers
                         .filter(u => {
                             const uIdStr = String(u.id);
-                            const uEmail = (u.email || '').toLowerCase().trim();
-                            return !deletedUsers.includes(uIdStr) && !deletedUsers.includes(uEmail);
+                            return !deletedUsers.includes(uIdStr);
                         })
                         .map(u => ({
                             id: u.id,
@@ -6353,7 +6370,7 @@ function updateDashboardMetrics() {
                 try {
                     let delList = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]');
                     if (!delList.includes(uIdStr)) delList.push(uIdStr);
-                    if (uEmail && !delList.includes(uEmail)) delList.push(uEmail);
+                    delList = delList.filter(d => d !== uEmail);
                     localStorage.setItem('happynation_deleted_users', JSON.stringify(delList));
                 } catch(eDel) {}
 
@@ -6393,7 +6410,7 @@ function updateDashboardMetrics() {
                 try {
                     let delList = JSON.parse(localStorage.getItem('happynation_deleted_users') || '[]');
                     if (!delList.includes(uIdStr)) delList.push(uIdStr);
-                    if (uEmail && !delList.includes(uEmail)) delList.push(uEmail);
+                    delList = delList.filter(d => d !== uEmail);
                     localStorage.setItem('happynation_deleted_users', JSON.stringify(delList));
                 } catch(eDel) {}
 
