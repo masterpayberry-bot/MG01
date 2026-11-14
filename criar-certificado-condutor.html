@@ -243,12 +243,12 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 24px;
+            padding: 22px;
+            height: calc(100vh - 104px);
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
+            gap: 16px;
         }
         .form-header {
             display: flex;
@@ -398,9 +398,15 @@
 
         /* COLUNA DIREITA: PREVIEW */
         .preview-column {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            height: calc(100vh - 104px);
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
             min-width: 0;
         }
         .preview-toolbar {
@@ -1079,9 +1085,10 @@ document.addEventListener('DOMContentLoaded', function() {
         <!-- COLUNA DIREITA: PREVIEW AO VIVO DA FOLHA A4 -->
         <section class="preview-column">
             <div class="preview-toolbar">
-                <div class="preview-live-badge">
-                    <span class="pulse-dot"></span>
-                    <span>Visualização ao Vivo — Frente e Verso (Folha Única A4)</span>
+                <div class="view-tabs">
+                    <button type="button" class="view-tab active" id="tabAmbos" onclick="setViewMode('ambos')">Folha Completa (Frente e Verso)</button>
+                    <button type="button" class="view-tab" id="tabFrente" onclick="setViewMode('frente')">Página 1 (Frente)</button>
+                    <button type="button" class="view-tab" id="tabVerso" onclick="setViewMode('verso')">Página 2 (Verso)</button>
                 </div>
 
                 <div class="zoom-group">
@@ -1096,19 +1103,15 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="doc-viewport" id="docViewport">
                 <div class="doc-zoom-wrapper" id="docZoomWrapper">
 
-                    <!-- FAIXA DE IDENTIFICAÇÃO: FRENTE -->
-                    <div class="sheet-section-header">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
-                        <span>FRENTE DO CERTIFICADO (ICETRAN)</span>
-                    </div>
-
-                    <!-- ─── FOLHA 1: FRENTE DO CERTIFICADO ICETRAN (100% IDÊNTICO À FOTO 2) ─── -->
+                    <!-- ─── FOLHA 1: FRENTE DO CERTIFICADO ICETRAN (100% AUTÊNTICO) ─── -->
                     <div class="cert-sheet-landscape" id="sheetFrente" style="position: relative; background: #ffffff; width: 1024px; height: 726px;">
-                        <img src="assets/icetran_frente_template.png?v=2" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 726px; z-index: 1; pointer-events: none;">
+                        <img src="assets/icetran_frente_template.png?v=3" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 726px; z-index: 1; pointer-events: none;">
                         
-                        <!-- Corpo com dados dinâmicos sobre o template 100% autêntico -->
+                        <!-- Corpo com dados dinâmicos sobre o template oficial -->
                         <div class="cert-frente-body-overlay">
-                            <div class="cert-num-title" id="viewCertNumero">CERTIFICADO Nº 000250841</div>
+                            <div class="cert-num-title">
+                                CERTIFICADO Nº <span id="viewCertNumero">000250841</span>
+                            </div>
                             <div class="cert-main-paragraph">
                                 Certificamos que <strong id="viewAlunoNome">Ademir Rodrigues de Oliveira</strong> portador do CPF <strong id="viewAlunoCpf">267.504.778-36</strong> e CNH <strong id="viewAlunoCnh">0066612107</strong>, habilitado na categoria <strong id="viewAlunoCategoria">D</strong>, concluiu o <strong>Curso de <span id="viewCursoNome">Condutores de Veículo de Transporte Coletivo de Passageiros</span></strong>, na modalidade a Distância com carga horária de <strong id="viewCargaHoraria">50</strong> horas-aula, no período <strong id="viewPeriodoData">13/01/2024 a 17/01/2024</strong>.
                             </div>
@@ -1118,14 +1121,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
 
-                    <!-- DIVISOR ELEGANTE / GUIA DE DOBRA OU CORTE -->
-                    <div class="sheet-divider-guide">
-                        <div class="divider-line"></div>
-                        <div class="divider-badge">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                            <span>VERSO DO CERTIFICADO (REGISTRO, CONTEÚDO PROGRAMÁTICO & VALIDAÇÃO)</span>
-                        </div>
-                        <div class="divider-line"></div>
+                    <!-- GUIA SUTIL DE DOBRA / CORTE NA FOLHA A4 -->
+                    <div class="sheet-fold-guide" id="sheetFoldGuide">
+                        <span class="fold-line"></span>
+                        <span class="fold-text">✂ Linha de Corte / Dobra da Folha A4</span>
+                        <span class="fold-line"></span>
                     </div>
 
                     <!-- ─── FOLHA 2: VERSO DO CERTIFICADO ICETRAN ─── -->
@@ -1213,6 +1213,336 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
 
+            </div>
+        </section>
+    </main>
+
+    <!-- LÓGICA JAVASCRIPT: CONTROLE, ZOOM, ATUALIZAÇÃO E EXPORTAÇÃO A4 -->
+    <script>
+        // Visualização e Zoom do Certificado
+        let currentZoom = 0.58;
+        let currentViewMode = 'ambos'; // Padrão: mostra Frente e Verso na mesma tela!
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            const tabAmbos = document.getElementById('tabAmbos');
+            const tabFrente = document.getElementById('tabFrente');
+            const tabVerso = document.getElementById('tabVerso');
+            const s1 = document.getElementById('sheetFrente');
+            const s2 = document.getElementById('sheetVerso');
+            const guide = document.getElementById('sheetFoldGuide');
+
+            [tabAmbos, tabFrente, tabVerso].forEach(t => t && t.classList.remove('active'));
+
+            if (mode === 'frente') {
+                if (tabFrente) tabFrente.classList.add('active');
+                if (s1) s1.style.display = 'block';
+                if (s2) s2.style.display = 'none';
+                if (guide) guide.style.display = 'none';
+            } else if (mode === 'verso') {
+                if (tabVerso) tabVerso.classList.add('active');
+                if (s1) s1.style.display = 'none';
+                if (s2) s2.style.display = 'block';
+                if (guide) guide.style.display = 'none';
+            } else {
+                if (tabAmbos) tabAmbos.classList.add('active');
+                if (s1) s1.style.display = 'block';
+                if (s2) s2.style.display = 'block';
+                if (guide) guide.style.display = 'flex';
+            }
+            setTimeout(fitZoom, 30);
+        }
+
+        function changeZoom(delta) {
+            currentZoom = Math.min(Math.max(0.35, currentZoom + delta), 1.6);
+            applyZoom();
+        }
+        function resetZoom() {
+            currentZoom = 1;
+            applyZoom();
+        }
+        function fitZoom() {
+            const viewport = document.getElementById('docViewport');
+            if (!viewport) return;
+            const availableW = viewport.clientWidth - 40;
+            currentZoom = Math.min(Math.max(0.38, Math.round((availableW / 1024) * 100) / 100), 1.0);
+            applyZoom();
+        }
+        function applyZoom() {
+            const wrapper = document.getElementById('docZoomWrapper');
+            if (wrapper) wrapper.style.transform = `scale(${currentZoom})`;
+            const txt = document.getElementById('zoomValText');
+            if (txt) txt.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+
+        function imprimirCertificado() {
+            const prevMode = currentViewMode;
+            setViewMode('ambos');
+            setTimeout(() => {
+                window.print();
+                if (prevMode !== 'ambos') setViewMode(prevMode);
+            }, 60);
+        }
+
+        // Padrão oficial Ademir (Foto 2 e Foto 3)
+        const DEFAULT_ADEMIR = {
+            alunoNome: 'Ademir Rodrigues de Oliveira',
+            alunoCpf: '267.504.778-36',
+            alunoCnh: '0066612107',
+            alunoCat: 'D',
+            renach: '004805343',
+            cursoNome: 'Condutores de Veículo de Transporte Coletivo de Passageiros',
+            certNumero: '000250841',
+            modalidade: 'a Distância',
+            cargaHoraria: '50',
+            periodo: '11/01/2024 a 17/01/2024',
+            cidade: 'Guarulhos',
+            dataExtenso: '17 de Janeiro de 2024',
+            matricula: '73170',
+            folha: '1',
+            livro: '1',
+            codigoValidacao: 'd85cb650a0063fee493bda86e7e50ecd',
+            linkValidacao: 'https://icetran.alfamaoraculo.com.br/validador'
+        };
+
+        // Máscara de CPF
+        function maskCpf(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.substring(0, 11);
+            if (v.length <= 11) {
+                v = v.replace(/(\d{3})(\d)/, '$1.$2');
+                v = v.replace(/(\d{3})(\d)/, '$1.$2');
+                v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            }
+            input.value = v;
+        }
+
+        // Atualização em Tempo Real de TODOS os campos digitados
+        function updateLiveCertificate() {
+            const nome = document.getElementById('inpAlunoNome').value.trim() || DEFAULT_ADEMIR.alunoNome;
+            const cpf = document.getElementById('inpAlunoCpf').value.trim() || DEFAULT_ADEMIR.alunoCpf;
+            const cnh = document.getElementById('inpAlunoCnh').value.trim() || DEFAULT_ADEMIR.alunoCnh;
+            const cat = document.getElementById('inpAlunoCat').value.trim() || DEFAULT_ADEMIR.alunoCat;
+            const renach = document.getElementById('inpRenach').value.trim() || DEFAULT_ADEMIR.renach;
+
+            const curso = document.getElementById('inpCursoNome').value.trim() || DEFAULT_ADEMIR.cursoNome;
+            const num = document.getElementById('inpCertNumero').value.trim() || DEFAULT_ADEMIR.certNumero;
+            const mod = document.getElementById('inpModalidade').value.trim() || DEFAULT_ADEMIR.modalidade;
+            const carga = document.getElementById('inpCargaHoraria').value.trim() || DEFAULT_ADEMIR.cargaHoraria;
+            const periodo = document.getElementById('inpPeriodo').value.trim() || DEFAULT_ADEMIR.periodo;
+            const cidade = document.getElementById('inpCidade').value.trim() || DEFAULT_ADEMIR.cidade;
+            const dataExt = document.getElementById('inpDataExtenso').value.trim() || DEFAULT_ADEMIR.dataExtenso;
+
+            const mat = document.getElementById('inpMatricula').value.trim() || DEFAULT_ADEMIR.matricula;
+            const folha = document.getElementById('inpFolha').value.trim() || DEFAULT_ADEMIR.folha;
+            const livro = document.getElementById('inpLivro').value.trim() || DEFAULT_ADEMIR.livro;
+            const codVal = document.getElementById('inpCodigoValidacao').value.trim() || DEFAULT_ADEMIR.codigoValidacao;
+            const linkVal = document.getElementById('inpLinkValidacao').value.trim() || DEFAULT_ADEMIR.linkValidacao;
+
+            // Frente
+            const vNum = document.getElementById('viewCertNumero');
+            if (vNum) vNum.textContent = num.replace(/^CERTIFICADO\s+N[ºo°]?\s*/i, '');
+            document.getElementById('viewAlunoNome').textContent = nome;
+            document.getElementById('viewAlunoCpf').textContent = cpf;
+            document.getElementById('viewAlunoCnh').textContent = cnh;
+            document.getElementById('viewAlunoCat').textContent = cat;
+            document.getElementById('viewCursoNome').textContent = curso;
+            document.getElementById('viewModalidade').textContent = mod;
+            document.getElementById('viewCargaHoraria').textContent = carga;
+            document.getElementById('viewPeriodo').textContent = periodo;
+            document.getElementById('viewCidade').textContent = cidade;
+            document.getElementById('viewDataExtenso').textContent = dataExt;
+
+            // Verso
+            document.getElementById('viewVersoCurso').textContent = curso;
+            document.getElementById('viewVersoCurso2').textContent = curso;
+            document.getElementById('viewVersoTotalHoras').textContent = carga;
+            document.getElementById('viewMatricula').textContent = mat;
+            document.getElementById('viewRegistro').textContent = num;
+            document.getElementById('viewFolha').textContent = folha;
+            document.getElementById('viewLivro').textContent = livro;
+            document.getElementById('viewVersoAluno').textContent = nome;
+            document.getElementById('viewRenach').textContent = renach;
+            document.getElementById('viewLinkValidacao').textContent = linkVal;
+            document.getElementById('viewCodigoValidacao').textContent = codVal;
+
+            // Se o CPF ou Registro mudou, gera QR Code dinamicamente
+            if (cpf !== DEFAULT_ADEMIR.alunoCpf || num !== DEFAULT_ADEMIR.certNumero) {
+                renderDynamicQrCode(`${linkVal}?reg=${encodeURIComponent(num)}&cpf=${encodeURIComponent(cpf)}`);
+            }
+        }
+
+        function renderDynamicQrCode(text) {
+            const container = document.getElementById('versoQrContainer');
+            if (container && window.QRCode) {
+                container.innerHTML = '';
+                new QRCode(container, {
+                    text: text,
+                    width: 110,
+                    height: 110,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+        }
+
+        // Restaura o Padrão Oficial Ademir (Fotos 2 e 3)
+        function restoreAdemirDefault() {
+            document.getElementById('inpAlunoNome').value = DEFAULT_ADEMIR.alunoNome;
+            document.getElementById('inpAlunoCpf').value = DEFAULT_ADEMIR.alunoCpf;
+            document.getElementById('inpAlunoCnh').value = DEFAULT_ADEMIR.alunoCnh;
+            document.getElementById('inpAlunoCat').value = DEFAULT_ADEMIR.alunoCat;
+            document.getElementById('inpRenach').value = DEFAULT_ADEMIR.renach;
+
+            document.getElementById('inpCursoNome').value = DEFAULT_ADEMIR.cursoNome;
+            document.getElementById('inpCertNumero').value = DEFAULT_ADEMIR.certNumero;
+            document.getElementById('inpModalidade').value = DEFAULT_ADEMIR.modalidade;
+            document.getElementById('inpCargaHoraria').value = DEFAULT_ADEMIR.cargaHoraria;
+            document.getElementById('inpPeriodo').value = DEFAULT_ADEMIR.periodo;
+            document.getElementById('inpCidade').value = DEFAULT_ADEMIR.cidade;
+            document.getElementById('inpDataExtenso').value = DEFAULT_ADEMIR.dataExtenso;
+
+            document.getElementById('inpMatricula').value = DEFAULT_ADEMIR.matricula;
+            document.getElementById('inpFolha').value = DEFAULT_ADEMIR.folha;
+            document.getElementById('inpLivro').value = DEFAULT_ADEMIR.livro;
+            document.getElementById('inpCodigoValidacao').value = DEFAULT_ADEMIR.codigoValidacao;
+            document.getElementById('inpLinkValidacao').value = DEFAULT_ADEMIR.linkValidacao;
+
+            const qrContainer = document.getElementById('versoQrContainer');
+            if (qrContainer) {
+                qrContainer.innerHTML = '<img src="assets/icetran_qr_code.png" alt="QR Code">';
+            }
+
+            updateLiveCertificate();
+        }
+
+        // Download do PDF A4 Paisagem (Frente e Verso)
+        async function downloadPdfCertificado() {
+            const btn = document.getElementById('btnDownloadPdf');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="animate-spin"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"/></svg> Gerando PDF A4...`;
+            }
+
+            try {
+                const s1 = document.getElementById('sheetFrente');
+                const s2 = document.getElementById('sheetVerso');
+                const wrapper = document.getElementById('docZoomWrapper');
+
+                const prevWrapperTransform = wrapper ? wrapper.style.transform : '';
+                const prevS1Display = s1.style.display;
+                const prevS2Display = s2.style.display;
+                s1.style.display = 'block';
+                s2.style.display = 'block';
+                if (wrapper) wrapper.style.transform = 'scale(1)';
+
+                // Captura Frente em Alta Resolução
+                const canvasFrente = await html2canvas(s1, {
+                    scale: 2.4,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                // Captura Verso em Alta Resolução
+                const canvasVerso = await html2canvas(s2, {
+                    scale: 2.4,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                // Restaura o zoom e visualização da prévia
+                s1.style.display = prevS1Display;
+                s2.style.display = prevS2Display;
+                if (wrapper) wrapper.style.transform = prevWrapperTransform;
+
+                const { jsPDF } = window.jspdf;
+                // Folha A4 Retrato (210 x 297 mm) - Frente e Verso em UMA ÚNICA FOLHA
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const a4W = 210;
+                const a4H = 297;
+
+                // Dimensões para acomodar perfeitamente Frente e Verso na mesma folha
+                const marginX = 12; // 12mm margem lateral
+                const renderW = a4W - (marginX * 2); // 186mm largura
+                const aspectF = canvasFrente.width / canvasFrente.height;
+                const renderHF = renderW / aspectF;
+
+                const aspectV = canvasVerso.width / canvasVerso.height;
+                const renderHV = renderW / aspectV;
+
+                const gap = 8; // 8mm de espaçamento entre Frente e Verso
+                const totalH = renderHF + gap + renderHV;
+                const startY = Math.max(10, (a4H - totalH) / 2);
+
+                const posX = marginX;
+                const posYF = startY;
+                const posYV = startY + renderHF + gap;
+
+                // Renderiza Frente
+                const imgFrente = canvasFrente.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgFrente, 'JPEG', posX, posYF, renderW, renderHF);
+
+                // Linha divisória sutil de dobra ou corte
+                pdf.setDrawColor(200, 210, 220);
+                pdf.setLineWidth(0.3);
+                pdf.setLineDashPattern([2, 2], 0);
+                pdf.line(marginX, startY + renderHF + (gap / 2), a4W - marginX, startY + renderHF + (gap / 2));
+                pdf.setLineDashPattern([], 0);
+
+                // Renderiza Verso na mesma folha
+                const imgVerso = canvasVerso.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgVerso, 'JPEG', posX, posYV, renderW, renderHV);
+
+                const reg = (document.getElementById('inpCertNumero').value || '000250841').trim();
+                pdf.save(`Certificado_ICETRAN_${reg}.pdf`);
+            } catch(err) {
+                console.error('Erro ao gerar PDF do Certificado:', err);
+                alert('Erro ao gerar o PDF. Tente novamente ou utilize o botão Imprimir A4.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="btnGerarTxt">Gerar PDF — Certificado de Condutor</span>`;
+                }
+            }
+        }
+
+        // Salvar no Histórico Local
+        function salvarCertificadoNoHistorico() {
+            const nome = document.getElementById('inpAlunoNome').value || DEFAULT_ADEMIR.alunoNome;
+            const cpf = document.getElementById('inpAlunoCpf').value || DEFAULT_ADEMIR.alunoCpf;
+            const reg = document.getElementById('inpCertNumero').value || DEFAULT_ADEMIR.certNumero;
+            const curso = document.getElementById('inpCursoNome').value || DEFAULT_ADEMIR.cursoNome;
+            try {
+                const item = {
+                    id: reg,
+                    nome: nome,
+                    cpf: cpf,
+                    curso: curso,
+                    data: new Date().toLocaleString('pt-BR'),
+                    status: 'Aprovado'
+                };
+                const hist = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
+                hist.unshift(item);
+                localStorage.setItem('icetran_historico', JSON.stringify(hist));
+                alert('Certificado de Condutor salvo com sucesso no histórico!');
+            } catch(e) {
+                alert('Erro ao salvar no histórico.');
+            }
+        }
+
+        // Inicialização
+        window.addEventListener('DOMContentLoaded', () => {
+            restoreAdemirDefault();
+        });
+    </script>
+</body>
+</html>
+                    </div>
+
+                </div>
             </div>
         </section>
     </main>
