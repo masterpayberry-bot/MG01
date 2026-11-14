@@ -47,7 +47,7 @@
     <script src="saldo-sync.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;700&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;700&family=Share+Tech+Mono&family=Cedarville+Cursive&family=Homemade+Apple&display=swap');
 
         :root {
             --bg-color: #0b0d0e;
@@ -476,20 +476,31 @@
             pointer-events: none;
         }
 
-        /* ELEMENTOS DINÂMICOS COM FUNDO COMPATÍVEL */
+        /* ELEMENTOS DINÂMICOS COM NÍTIDEZ TOTAL (ZERO BORRÃO, ZERO PATCH, BACKGROUND TRANSPARENTE) */
         .dyn-box {
             position: absolute;
-            display: none; /* Só aparece quando modificado */
+            display: flex;
             align-items: center;
             box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #111827;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            color: #0f172a;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
 
         /* Foto Dinâmica 3x4 */
         #dynPhotoHolder {
             top: 18.2%;
-            left: 8.8%;
+            left: 8.7%;
             width: 14.5%;
             height: 14.8%;
             border-radius: 4px;
@@ -497,75 +508,84 @@
             box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
             background: #e2e8f0;
             z-index: 6;
+            display: block;
         }
         #dynPhotoHolder img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
         }
 
-        /* Assinatura Dinâmica */
+        /* Assinatura Dinâmica do Titular */
         #dynSigHolder {
-            top: 33.3%;
-            left: 20.2%;
-            width: 22.5%;
-            height: 3.5%;
+            top: 35.8%;
+            left: 23.8%;
+            width: 35%;
+            height: 2.8%;
             z-index: 6;
-            background: rgba(235, 246, 230, 0.95);
-            border-radius: 2px;
-            display: none;
+            background: transparent !important;
+            border: none !important;
+            display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
         }
         #dynSigHolder img {
-            max-width: 95%;
-            max-height: 90%;
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
+            display: block;
+        }
+        #dynSigText {
+            display: none;
+            font-family: 'Homemade Apple', 'Cedarville Cursive', cursive;
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 600;
         }
 
-        /* Textos Dinâmicos da Frente */
-        .dyn-text-patch {
-            background: #f1f8ee;
-            padding: 1px 4px;
-            border-radius: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.1;
-        }
-        #dynNome { top: 18.4%; left: 24.3%; width: 33%; font-size: 11px; font-weight: 800; }
-        #dynCpf { top: 23.9%; left: 24.3%; width: 17%; font-size: 10px; font-weight: 700; }
-        #dynSexo { top: 23.9%; left: 42.5%; width: 10%; font-size: 10px; font-weight: 700; }
-        #dynNasc { top: 26.8%; left: 24.3%; width: 17%; font-size: 10px; font-weight: 700; }
-        #dynNac { top: 26.8%; left: 42.5%; width: 10%; font-size: 10px; font-weight: 700; }
-        #dynNat { top: 29.7%; left: 24.3%; width: 17%; font-size: 10px; font-weight: 700; }
-        #dynVal { top: 29.7%; left: 42.5%; width: 14%; font-size: 10px; font-weight: 700; }
+        /* Textos Dinâmicos da Frente (Alinhamento Preciso sob os Rótulos Oficiais) */
+        #dynNome { top: 22.3%; left: 23.8%; width: 36%; height: 18px; font-size: 11px; font-weight: 700; color: #0f172a; }
+        #dynCpf { top: 27.2%; left: 23.8%; width: 17.5%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
+        #dynSexo { top: 27.2%; left: 42.2%; width: 12%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
+        #dynNasc { top: 30.7%; left: 23.8%; width: 17.5%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
+        #dynNac { top: 30.7%; left: 42.2%; width: 12%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
+        #dynNat { top: 33.9%; left: 23.8%; width: 17.5%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
+        #dynVal { top: 33.9%; left: 42.2%; width: 14%; height: 16px; font-size: 10px; font-weight: 700; color: #0f172a; }
 
-        /* Textos Dinâmicos do Verso */
-        .dyn-verso-patch {
-            background: #f7f9f4;
-            padding: 1px 4px;
-            border-radius: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.1;
+        /* Textos Dinâmicos do Verso (Filiação e Emissão) */
+        #dynPai { top: 45.0%; left: 22.3%; width: 37%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
+        #dynMae { top: 46.2%; left: 22.3%; width: 37%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
+        #dynOrgao { top: 51.9%; left: 22.3%; width: 18%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
+        #dynLocal { top: 57.2%; left: 22.3%; width: 17%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
+        #dynEmissao { top: 57.2%; left: 40.5%; width: 14%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; }
+
+        /* MRZ (3 Linhas no Verso) */
+        #dynMrz {
+            top: 65.6%;
+            left: 4.1%;
+            width: 58%;
+            height: 52px;
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            font-size: 10.5px;
+            line-height: 1.25;
+            letter-spacing: 2.2px;
+            font-weight: 700;
+            color: #000000;
+            white-space: pre;
+            align-items: flex-start;
+            background: transparent !important;
         }
-        #dynPai { top: 40.8%; left: 22.8%; width: 32%; font-size: 9.5px; font-weight: 800; }
-        #dynMae { top: 42.4%; left: 22.8%; width: 32%; font-size: 9.5px; font-weight: 800; }
-        #dynOrgao { top: 47.9%; left: 22.8%; width: 15%; font-size: 9.5px; font-weight: 800; }
-        #dynLocal { top: 52.8%; left: 22.8%; width: 16%; font-size: 9.5px; font-weight: 800; }
-        #dynEmissao { top: 52.8%; left: 40.8%; width: 14%; font-size: 9.5px; font-weight: 800; }
 
         /* Tabela Inferior Dinâmica */
-        #dynDni { top: 88.6%; left: 10.6%; width: 20%; font-size: 10px; font-weight: 700; background: #fff; }
+        #dynDni { top: 97.4%; left: 10.4%; width: 22%; height: 14px; font-size: 9.5px; font-weight: 700; color: #0f172a; background: transparent !important; }
 
         /* QR Code Vio Dinâmico (Lado Direito) */
         #dynQrVioBox {
-            top: 13.0%;
-            left: 64.9%;
-            width: 27.2%;
-            height: 19.8%;
+            top: 13.5%;
+            left: 72.0%;
+            width: 17.5%;
+            height: 13.5%;
             background: #ffffff;
             display: none;
             align-items: center;
@@ -949,26 +969,30 @@ document.addEventListener('DOMContentLoaded', function() {
                         <!-- Assinatura Dinâmica -->
                         <div id="dynSigHolder" class="dyn-box">
                             <img id="dynSigImg" src="assets/mellyssa_sig.png" alt="Assinatura">
+                            <span id="dynSigText"></span>
                         </div>
 
                         <!-- Textos Frente -->
-                        <div id="dynNome" class="dyn-box dyn-text-patch"></div>
-                        <div id="dynCpf" class="dyn-box dyn-text-patch"></div>
-                        <div id="dynSexo" class="dyn-box dyn-text-patch"></div>
-                        <div id="dynNasc" class="dyn-box dyn-text-patch"></div>
-                        <div id="dynNac" class="dyn-box dyn-text-patch"></div>
-                        <div id="dynNat" class="dyn-box dyn-text-patch"></div>
-                        <div id="dynVal" class="dyn-box dyn-text-patch"></div>
+                        <div id="dynNome" class="dyn-box"></div>
+                        <div id="dynCpf" class="dyn-box"></div>
+                        <div id="dynSexo" class="dyn-box"></div>
+                        <div id="dynNasc" class="dyn-box"></div>
+                        <div id="dynNac" class="dyn-box"></div>
+                        <div id="dynNat" class="dyn-box"></div>
+                        <div id="dynVal" class="dyn-box"></div>
 
                         <!-- Textos Verso -->
-                        <div id="dynPai" class="dyn-box dyn-verso-patch"></div>
-                        <div id="dynMae" class="dyn-box dyn-verso-patch"></div>
-                        <div id="dynOrgao" class="dyn-box dyn-verso-patch"></div>
-                        <div id="dynLocal" class="dyn-box dyn-verso-patch"></div>
-                        <div id="dynEmissao" class="dyn-box dyn-verso-patch"></div>
+                        <div id="dynPai" class="dyn-box"></div>
+                        <div id="dynMae" class="dyn-box"></div>
+                        <div id="dynOrgao" class="dyn-box"></div>
+                        <div id="dynLocal" class="dyn-box"></div>
+                        <div id="dynEmissao" class="dyn-box"></div>
+
+                        <!-- MRZ 3 Linhas Verso -->
+                        <div id="dynMrz" class="dyn-box"></div>
 
                         <!-- DNI Tabela -->
-                        <div id="dynDni" class="dyn-box dyn-text-patch"></div>
+                        <div id="dynDni" class="dyn-box"></div>
 
                         <!-- QR Code Vio Dinâmico -->
                         <div id="dynQrVioBox" class="dyn-box">
@@ -1046,72 +1070,123 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = v;
         }
 
-        // Manipulador de alterações nos campos do formulário
+        function toTitleCase(str) {
+            return (str || '').toLowerCase().replace(/(?:^|\s)\w/g, function(match) {
+                return match.toUpperCase();
+            });
+        }
+
+        // Gerador Dinâmico das 3 Linhas MRZ Oficiais (ICAO Doc 9303 / CIN Oficial)
+        function generateMrzLines(cpf, nome, nasc, sexo, validade) {
+            const cleanCpf = (cpf || '').replace(/\D/g, '').padEnd(11, '0');
+            
+            let nascMrz = '080312';
+            if (nasc && nasc.includes('/')) {
+                const p = nasc.split('/');
+                if (p.length === 3) nascMrz = p[2].slice(-2) + p[1].padStart(2, '0') + p[0].padStart(2, '0');
+            }
+
+            let valMrz = '351030';
+            if (validade && validade.includes('/')) {
+                const p = validade.split('/');
+                if (p.length === 3) valMrz = p[2].slice(-2) + p[1].padStart(2, '0') + p[0].padStart(2, '0');
+            }
+
+            const sexMrz = String(sexo || 'F').trim().toUpperCase().startsWith('M') ? 'M' : 'F';
+
+            const cleanNome = (nome || 'MELLYSSA DE JESUS MENINO')
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toUpperCase()
+                .replace(/[^A-Z\s]/g, '')
+                .trim()
+                .split(/\s+/)
+                .join('<');
+
+            // Linha 1: IDBRA + CPF + CPF + <<<
+            const line1 = `IDBRA ${cleanCpf} ${cleanCpf}<<<`;
+            // Linha 2: YYMMDD F YYMMDD BRA <<<<<<<<<<<<<
+            const line2 = `${nascMrz}${sexMrz}${valMrz}BRA<<<<<<<<<<<`;
+            // Linha 3: NOME <<<<<<<<<<<
+            const line3 = `${cleanNome.padEnd(30, '<')}`;
+
+            return `${line1}\n${line2}\n${line3}`;
+        }
+
+        function setFieldText(id, value) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = value;
+            el.style.display = 'flex';
+        }
+
+        function updateTitularSignature(nome) {
+            const sigImg = document.getElementById('dynSigImg');
+            const sigText = document.getElementById('dynSigText');
+            if (isCustomSig) {
+                if (sigImg) sigImg.style.display = 'block';
+                if (sigText) sigText.style.display = 'none';
+                return;
+            }
+            if (!nome || nome.toUpperCase() === DEFAULT_MELLYSSA.nome.toUpperCase()) {
+                if (sigImg) {
+                    sigImg.src = 'assets/mellyssa_sig.png';
+                    sigImg.style.display = 'block';
+                }
+                if (sigText) sigText.style.display = 'none';
+            } else {
+                if (sigImg) sigImg.style.display = 'none';
+                if (sigText) {
+                    sigText.textContent = toTitleCase(nome);
+                    sigText.style.display = 'block';
+                }
+            }
+        }
+
+        // Manipulador de alterações nos campos do formulário (100% NÍTIDO, SEM BORRÃO)
         function handleFieldChange() {
-            const nome = document.getElementById('inpNome').value.trim();
-            const cpf = document.getElementById('inpCpf').value.trim();
-            const sexo = document.getElementById('inpSexo').value;
-            const nasc = document.getElementById('inpNasc').value.trim();
-            const nac = document.getElementById('inpNacionalidade').value.trim();
-            const nat = document.getElementById('inpNaturalidade').value.trim();
-            const val = document.getElementById('inpValidade').value.trim();
+            const nome = (document.getElementById('inpNome').value || '').trim() || DEFAULT_MELLYSSA.nome;
+            const cpf = (document.getElementById('inpCpf').value || '').trim() || DEFAULT_MELLYSSA.cpf;
+            const sexo = document.getElementById('inpSexo').value || DEFAULT_MELLYSSA.sexo;
+            const nasc = (document.getElementById('inpNasc').value || '').trim() || DEFAULT_MELLYSSA.nasc;
+            const nac = (document.getElementById('inpNacionalidade').value || '').trim() || DEFAULT_MELLYSSA.nac;
+            const nat = (document.getElementById('inpNaturalidade').value || '').trim() || DEFAULT_MELLYSSA.nat;
+            const val = (document.getElementById('inpValidade').value || '').trim() || DEFAULT_MELLYSSA.val;
 
-            const pai = document.getElementById('inpPai').value.trim();
-            const mae = document.getElementById('inpMae').value.trim();
-            const orgao = document.getElementById('inpOrgao').value.trim();
-            const local = document.getElementById('inpLocal').value.trim();
-            const emissao = document.getElementById('inpEmissao').value.trim();
-            const dni = document.getElementById('inpDni').value.trim();
+            const pai = (document.getElementById('inpPai').value || '').trim() || DEFAULT_MELLYSSA.pai;
+            const mae = (document.getElementById('inpMae').value || '').trim() || DEFAULT_MELLYSSA.mae;
+            const orgao = (document.getElementById('inpOrgao').value || '').trim() || DEFAULT_MELLYSSA.orgao;
+            const local = (document.getElementById('inpLocal').value || '').trim() || DEFAULT_MELLYSSA.local;
+            const emissao = (document.getElementById('inpEmissao').value || '').trim() || DEFAULT_MELLYSSA.emissao;
+            const dni = (document.getElementById('inpDni').value || '').trim() || cpf;
 
-            // Verifica se difere do padrão Mellyssa
-            const isModifiedNome = nome !== DEFAULT_MELLYSSA.nome;
-            const isModifiedCpf = cpf !== DEFAULT_MELLYSSA.cpf;
-            const isModifiedSexo = sexo !== DEFAULT_MELLYSSA.sexo;
-            const isModifiedNasc = nasc !== DEFAULT_MELLYSSA.nasc;
-            const isModifiedNac = nac !== DEFAULT_MELLYSSA.nac;
-            const isModifiedNat = nat !== DEFAULT_MELLYSSA.nat;
-            const isModifiedVal = val !== DEFAULT_MELLYSSA.val;
+            // Renderiza os valores diretamente nas linhas oficiais com nitidez máxima
+            setFieldText('dynNome', nome);
+            setFieldText('dynCpf', cpf);
+            setFieldText('dynSexo', sexo);
+            setFieldText('dynNasc', nasc);
+            setFieldText('dynNac', nac);
+            setFieldText('dynNat', nat);
+            setFieldText('dynVal', val);
 
-            const isModifiedPai = pai !== DEFAULT_MELLYSSA.pai;
-            const isModifiedMae = mae !== DEFAULT_MELLYSSA.mae;
-            const isModifiedOrgao = orgao !== DEFAULT_MELLYSSA.orgao;
-            const isModifiedLocal = local !== DEFAULT_MELLYSSA.local;
-            const isModifiedEmissao = emissao !== DEFAULT_MELLYSSA.emissao;
-            const isModifiedDni = dni !== DEFAULT_MELLYSSA.dni;
+            setFieldText('dynPai', pai);
+            setFieldText('dynMae', mae);
+            setFieldText('dynOrgao', orgao);
+            setFieldText('dynLocal', local);
+            setFieldText('dynEmissao', emissao);
+            setFieldText('dynDni', dni);
 
-            // Atualiza cada elemento na camada de overlay
-            updateOverlayElem('dynNome', isModifiedNome, nome);
-            updateOverlayElem('dynCpf', isModifiedCpf, cpf);
-            updateOverlayElem('dynSexo', isModifiedSexo, sexo);
-            updateOverlayElem('dynNasc', isModifiedNasc, nasc);
-            updateOverlayElem('dynNac', isModifiedNac, nac);
-            updateOverlayElem('dynNat', isModifiedNat, nat);
-            updateOverlayElem('dynVal', isModifiedVal, val);
+            // MRZ 3 Linhas Dinâmicas no Verso
+            setFieldText('dynMrz', generateMrzLines(cpf, nome, nasc, sexo, val));
 
-            updateOverlayElem('dynPai', isModifiedPai, pai);
-            updateOverlayElem('dynMae', isModifiedMae, mae);
-            updateOverlayElem('dynOrgao', isModifiedOrgao, orgao);
-            updateOverlayElem('dynLocal', isModifiedLocal, local);
-            updateOverlayElem('dynEmissao', isModifiedEmissao, emissao);
-            updateOverlayElem('dynDni', isModifiedDni, dni);
+            // Assinatura do Titular
+            updateTitularSignature(nome);
 
             // Se o CPF mudou, regenera QR code
-            if (isModifiedCpf) {
+            if (cpf !== DEFAULT_MELLYSSA.cpf) {
                 renderDynamicQr(cpf);
             } else {
                 const qrBox = document.getElementById('dynQrVioBox');
                 if (qrBox) qrBox.style.display = 'none';
-            }
-        }
-
-        function updateOverlayElem(id, isModified, value) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if (isModified && value) {
-                el.textContent = value;
-                el.style.display = 'flex';
-            } else {
-                el.style.display = 'none';
             }
         }
 
@@ -1142,7 +1217,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('thumbSig').src = b64;
                 const dynSig = document.getElementById('dynSigHolder');
                 const dynImg = document.getElementById('dynSigImg');
+                const dynText = document.getElementById('dynSigText');
                 dynImg.src = b64;
+                dynImg.style.display = 'block';
+                if (dynText) dynText.style.display = 'none';
                 dynSig.style.display = 'flex';
                 isCustomSig = true;
             };
@@ -1195,8 +1273,15 @@ document.addEventListener('DOMContentLoaded', function() {
             isCustomPhoto = false;
             isCustomSig = false;
 
-            // Oculta todos os overlays dinâmicos
-            document.querySelectorAll('.dyn-box').forEach(el => el.style.display = 'none');
+            const photoImg = document.getElementById('dynPhotoImg');
+            if (photoImg) photoImg.src = 'assets/mellyssa_foto.png';
+            const sigImg = document.getElementById('dynSigImg');
+            if (sigImg) sigImg.src = 'assets/mellyssa_sig.png';
+            const sigText = document.getElementById('dynSigText');
+            if (sigText) sigText.style.display = 'none';
+            if (sigImg) sigImg.style.display = 'block';
+
+            handleFieldChange();
         }
 
         // Download do PDF A4
