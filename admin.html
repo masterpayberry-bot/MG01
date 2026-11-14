@@ -4221,6 +4221,15 @@
             </div>
 
             <div class="modal-field">
+                <label>Senha de Acesso (Login do Cliente)</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" class="modal-inp" id="editUserSenha" placeholder="Digite uma senha ou use 123456" style="flex:1;">
+                    <button type="button" class="btn-m-cancel" onclick="generateRandomPassAdmin()" style="width:auto; padding:0 12px; font-size:11px; white-space:nowrap;" title="Gerar senha automática">Gerar Senha</button>
+                </div>
+                <small style="font-size:10.5px; color:#94a3b8; margin-top:3px; display:block;">Essa é a senha que o cliente usará para entrar em login.html.</small>
+            </div>
+
+            <div class="modal-field">
                 <label>WhatsApp / Telefone</label>
                 <input type="text" class="modal-inp" id="editUserPhone" placeholder="Ex: (21) 99882-1029">
             </div>
@@ -4600,6 +4609,8 @@
                             id: u.id,
                             nome: u.nome || 'Sem Nome',
                             email: u.email || '',
+                            senha: u.senha || '',
+                            cpf: u.cpf || '',
                             phone: u.phone || '--',
                             saldo: parseFloat(u.saldo || 0),
                             cnhsCount: 0,
@@ -6741,11 +6752,20 @@ function updateDashboardMetrics() {
             showToast(`✅ CNH de ${nomeVal.toUpperCase()} (CPF: ${cpfVal}) cadastrada e ativada com sucesso!`);
         }
 
+        function generateRandomPassAdmin() {
+            const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let pass = '';
+            for (let i = 0; i < 8; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            const el = document.getElementById('editUserSenha');
+            if (el) el.value = pass;
+        }
+
         function openAddUserModal() {
             document.getElementById('modalUserTitle').textContent = 'Adicionar Novo Cliente';
             document.getElementById('editUserId').value = '';
             document.getElementById('editUserNome').value = '';
             document.getElementById('editUserEmail').value = '';
+            document.getElementById('editUserSenha').value = '123456';
             document.getElementById('editUserPhone').value = '';
             const cpfField = document.getElementById('editUserCpf');
             if (cpfField) cpfField.value = '';
@@ -6761,6 +6781,7 @@ function updateDashboardMetrics() {
             document.getElementById('editUserId').value = u.id;
             document.getElementById('editUserNome').value = u.nome || '';
             document.getElementById('editUserEmail').value = u.email || '';
+            document.getElementById('editUserSenha').value = u.senha || '';
             document.getElementById('editUserPhone').value = u.phone || '';
             const cpfField = document.getElementById('editUserCpf');
             if (cpfField) cpfField.value = u.cpf || '';
@@ -6773,6 +6794,7 @@ function updateDashboardMetrics() {
             const idVal = document.getElementById('editUserId').value;
             const nome = document.getElementById('editUserNome').value.trim();
             const email = document.getElementById('editUserEmail').value.trim();
+            const senhaVal = (document.getElementById('editUserSenha')?.value || '123456').trim();
             const phone = document.getElementById('editUserPhone').value.trim();
             const cpfVal = (document.getElementById('editUserCpf')?.value || '').trim();
             const cleanCpf = cpfVal.replace(/\D/g, '');
@@ -6804,7 +6826,8 @@ function updateDashboardMetrics() {
                 const u = usersData.find(item => String(item.id) === String(idVal));
                 if (u) {
                     u.nome = nome;
-                    u.email = email;
+                    u.email = cleanEmail;
+                    u.senha = senhaVal;
                     u.phone = phone;
                     u.cpf = cpfVal;
                     u.saldo = saldo;
@@ -6817,17 +6840,19 @@ function updateDashboardMetrics() {
                 const newUser = {
                     id: newId,
                     nome: nome,
-                    email: email,
+                    email: cleanEmail,
+                    senha: senhaVal,
                     phone: phone,
                     cpf: cpfVal,
                     saldo: saldo,
+                    role: 'client',
                     cnhsCount: 0,
                     status: status,
                     created_at: new Date().toISOString()
                 };
                 usersData.unshift(newUser);
                 savedObj = newUser;
-                showToast(`✅ Novo cliente "${nome}" adicionado com sucesso!`);
+                showToast(`✅ Cliente criado com sucesso! Senha: ${senhaVal}`);
             }
 
             // Se informou CPF com 11 dígitos, garante que está ativado na tabela cnhs do Supabase
@@ -6880,11 +6905,29 @@ function updateDashboardMetrics() {
             if (client) {
                 try {
                     if (idVal) {
-                        const { error } = await client.from('usuarios').update({ nome, email: cleanEmail, phone, saldo, status }).eq('id', idVal);
+                        const updatePayload = { nome, email: cleanEmail, phone, saldo, status };
+                        if (senhaVal) updatePayload.senha = senhaVal;
+                        const { error } = await client.from('usuarios').update(updatePayload).eq('id', idVal);
                         if (!error) savedDB = true;
                     } else {
-                        const { error } = await client.from('usuarios').insert([{ nome, email: cleanEmail, phone, saldo, status, senha: '123' }]);
-                        if (!error) savedDB = true;
+                        const insertPayload = {
+                            nome: nome,
+                            email: cleanEmail,
+                            senha: senhaVal,
+                            phone: phone || null,
+                            saldo: saldo,
+                            role: 'client',
+                            status: status || 'approved'
+                        };
+                        const { data: created, error } = await client.from('usuarios').insert([insertPayload]).select();
+                        if (!error && created && created[0]) {
+                            savedDB = true;
+                            if (savedObj && created[0].id) {
+                                savedObj.id = created[0].id;
+                                saveStorage();
+                                renderUsersTable();
+                            }
+                        }
                     }
                 } catch(err) {
                     console.error('[Admin] Erro SDK ao salvar cliente:', err);
@@ -6894,6 +6937,8 @@ function updateDashboardMetrics() {
             if (!savedDB) {
                 try {
                     if (idVal) {
+                        const patchPayload = { nome, email: cleanEmail, phone, saldo, status };
+                        if (senhaVal) patchPayload.senha = senhaVal;
                         await fetch(`${SUP_URL}/rest/v1/usuarios?id=eq.${encodeURIComponent(idVal)}`, {
                             method: 'PATCH',
                             headers: {
@@ -6901,20 +6946,39 @@ function updateDashboardMetrics() {
                                 'Authorization': `Bearer ${SUP_KEY}`,
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ nome, email: cleanEmail, phone, saldo, status })
+                            body: JSON.stringify(patchPayload)
                         });
                     } else {
-                        await fetch(`${SUP_URL}/rest/v1/usuarios`, {
+                        const postRes = await fetch(`${SUP_URL}/rest/v1/usuarios`, {
                             method: 'POST',
                             headers: {
                                 'apikey': SUP_KEY,
                                 'Authorization': `Bearer ${SUP_KEY}`,
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'Prefer': 'return=representation'
                             },
-                            body: JSON.stringify({ nome, email: cleanEmail, phone, saldo, status, senha: '123' })
+                            body: JSON.stringify({
+                                nome: nome,
+                                email: cleanEmail,
+                                senha: senhaVal,
+                                phone: phone || null,
+                                saldo: saldo,
+                                role: 'client',
+                                status: status || 'approved'
+                            })
                         });
+                        if (postRes.ok) {
+                            const postData = await postRes.json();
+                            if (Array.isArray(postData) && postData[0] && postData[0].id && savedObj) {
+                                savedObj.id = postData[0].id;
+                                saveStorage();
+                                renderUsersTable();
+                            }
+                        }
                     }
-                } catch(eREST) {}
+                } catch(eREST) {
+                    console.error('[Admin] Erro REST ao salvar cliente:', eREST);
+                }
             }
         }
 
