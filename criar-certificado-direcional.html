@@ -887,9 +887,41 @@
                 </div>
 
                 <div style="font-size:11.5px; color:#94a3b8; line-height:1.4;">
-                    Assinaturas autênticas de <strong>Antonio D. Barros Amorim</strong> (Coordenador Geral) e <strong>Jose Adelson Ferreira de Sousa</strong> (Instrutor) centralizadas exatamente sobre as linhas oficiais.
+                    Modelos distintos de assinaturas para <strong>Antonio D. Barros Amorim</strong> (Coordenador Geral) e <strong>Jose Adelson Ferreira de Sousa</strong> (Instrutor) com caligrafias autênticas e independentes.
                 </div>
 
+                <!-- COR DA TINTA DA CANETA -->
+                <div class="form-group" style="margin-top:6px;">
+                    <label class="form-label">Cor da Tinta das Canetas</label>
+                    <select id="selCorTinta" class="form-control" onchange="applySigModels()">
+                        <option value="azul">🔵 Azul Caneta Esferográfica Bic / Notarial</option>
+                        <option value="preto">⚫ Preto Tinta Documental Nanquim</option>
+                    </select>
+                </div>
+
+                <!-- SELEÇÃO INDIVIDUAL DE MODELOS -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Estilo Coord. (Antonio Amorim)</label>
+                        <select id="selSigCoordModel" class="form-control" onchange="applySigModels()">
+                            <option value="mod1">Modelo 1: Rúbrica Executiva Dinâmica</option>
+                            <option value="mod2">Modelo 2: Rúbrica Notarial (Laço Curto)</option>
+                            <option value="mod3">Modelo 3: Assinatura Tradicional com Iniciais</option>
+                            <option value="custom">-- Foto Própria (Upload) --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estilo Inst. (Jose Adelson)</label>
+                        <select id="selSigInstModel" class="form-control" onchange="applySigModels()">
+                            <option value="mod1">Modelo 1: Cursivo Fluido ('J' Descendente)</option>
+                            <option value="mod2">Modelo 2: Cursivo Formal Completo</option>
+                            <option value="mod3">Modelo 3: Rúbrica Técnica Notarial</option>
+                            <option value="custom">-- Foto Própria (Upload) --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- UPLOAD PERSONALIZADO -->
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Subir Foto Assinatura Coord.</label>
@@ -984,12 +1016,12 @@
 
                         <!-- Assinatura Coordenador Geral (Esquerda) -->
                         <div id="prevSigCoordContainer" class="frente-sig-container frente-sig-coord">
-                            <img id="viewSigCoord" src="assets/sig_antonio_amorim.png?v=3" class="sig-img-render" alt="Assinatura Antonio D. Barros Amorim">
+                            <img id="viewSigCoord" src="assets/sig_antonio_mod1.png?v=4" class="sig-img-render" alt="Assinatura Antonio D. Barros Amorim">
                         </div>
 
                         <!-- Assinatura Instrutor / Direcional (Direita) -->
                         <div id="prevSigInstContainer" class="frente-sig-container frente-sig-inst">
-                            <img id="viewSigInst" src="assets/sig_jose_adelson.png?v=3" class="sig-img-render" alt="Assinatura Jose Adelson Ferreira de Sousa">
+                            <img id="viewSigInst" src="assets/sig_jose_mod1.png?v=4" class="sig-img-render" alt="Assinatura Jose Adelson Ferreira de Sousa">
                         </div>
                     </div>
 
@@ -1109,7 +1141,7 @@
             setZoom(0.65);
         }
 
-        // Controle de Assinaturas
+        // Controle e Modelos de Assinaturas
         let customSigCoord = null;
         let customSigInst = null;
         let assinaturasVisiveis = true;
@@ -1122,6 +1154,31 @@
             if (c2) c2.style.display = show ? 'flex' : 'none';
         }
 
+        function applySigModels() {
+            const cor = document.getElementById('selCorTinta') ? document.getElementById('selCorTinta').value : 'azul';
+            const suf = cor === 'preto' ? '_preto' : '';
+
+            const mCoord = document.getElementById('selSigCoordModel') ? document.getElementById('selSigCoordModel').value : 'mod1';
+            const mInst = document.getElementById('selSigInstModel') ? document.getElementById('selSigInstModel').value : 'mod1';
+
+            const imgC = document.getElementById('viewSigCoord');
+            const imgI = document.getElementById('viewSigInst');
+
+            if (mCoord !== 'custom') {
+                customSigCoord = null;
+                if (imgC) imgC.src = `assets/sig_antonio_${mCoord}${suf}.png?v=4`;
+            } else if (customSigCoord && imgC) {
+                imgC.src = customSigCoord;
+            }
+
+            if (mInst !== 'custom') {
+                customSigInst = null;
+                if (imgI) imgI.src = `assets/sig_jose_${mInst}${suf}.png?v=4`;
+            } else if (customSigInst && imgI) {
+                imgI.src = customSigInst;
+            }
+        }
+
         function uploadCustomSig(event, role) {
             const file = event.target.files && event.target.files[0];
             if (!file) return;
@@ -1129,10 +1186,14 @@
             reader.onload = function(e) {
                 if (role === 'coord') {
                     customSigCoord = e.target.result;
+                    const sel = document.getElementById('selSigCoordModel');
+                    if (sel) sel.value = 'custom';
                     const img = document.getElementById('viewSigCoord');
                     if (img) img.src = customSigCoord;
                 } else {
                     customSigInst = e.target.result;
+                    const sel = document.getElementById('selSigInstModel');
+                    if (sel) sel.value = 'custom';
                     const img = document.getElementById('viewSigInst');
                     if (img) img.src = customSigInst;
                 }
@@ -1143,14 +1204,14 @@
         function resetDefaultSigs() {
             customSigCoord = null;
             customSigInst = null;
-            const imgC = document.getElementById('viewSigCoord');
-            const imgI = document.getElementById('viewSigInst');
-            if (imgC) imgC.src = 'assets/sig_antonio_amorim.png?v=3';
-            if (imgI) imgI.src = 'assets/sig_jose_adelson.png?v=3';
+            if (document.getElementById('selCorTinta')) document.getElementById('selCorTinta').value = 'azul';
+            if (document.getElementById('selSigCoordModel')) document.getElementById('selSigCoordModel').value = 'mod1';
+            if (document.getElementById('selSigInstModel')) document.getElementById('selSigInstModel').value = 'mod1';
             const f1 = document.getElementById('inpUploadSigCoord');
             const f2 = document.getElementById('inpUploadSigInst');
             if (f1) f1.value = '';
             if (f2) f2.value = '';
+            applySigModels();
         }
 
         function updateCertificado() {
