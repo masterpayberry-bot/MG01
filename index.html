@@ -2145,6 +2145,10 @@
                     link = 'reservistas.html';
                     badgeClass = 'cnh';
                     badgeText = '+1 RESERVISTA';
+                } else if (tipo === 'CERTIFICADO') {
+                    link = 'certificados-condutor.html';
+                    badgeClass = 'cnh';
+                    badgeText = '+1 CERTIFICADO';
                 }
 
                 activities.push({
@@ -2274,6 +2278,19 @@
                     if (k && k.startsWith('happynation_reservistas_')) {
                         const arr = JSON.parse(localStorage.getItem(k) || '[]');
                         if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'RESERVISTA'));
+                    }
+                }
+            } catch(e) {}
+
+            // 10. Carregar CERTIFICADOS DE CONDUTOR (ICETRAN)
+            try {
+                const histCerts = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
+                if (Array.isArray(histCerts)) histCerts.forEach(item => addAct(item, 'CERTIFICADO'));
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_certificados_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(item => addAct(item, 'CERTIFICADO'));
                     }
                 }
             } catch(e) {}

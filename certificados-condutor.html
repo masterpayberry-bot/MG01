@@ -44,251 +44,179 @@
             --accent-blue-light: rgba(59, 130, 246, 0.12);
             --accent-blue-border: rgba(59, 130, 246, 0.28);
 
-            --warning-bg: #fffbeb;
-            --warning-border: #fef08a;
-            --warning-text: #78350f;
-
             --text-primary: #ffffff;
-            --text-secondary: #9ca3af;
-            --text-muted: #6b7280;
-
-            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+
             --radius-sm: 8px;
             --radius-md: 12px;
-            --radius-lg: 14px;
+            --radius-lg: 16px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: var(--font);
             background-color: var(--bg-page);
             color: var(--text-primary);
+            font-family: var(--font);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
         ::-webkit-scrollbar-track { background: var(--bg-page); }
-        ::-webkit-scrollbar-thumb { background: #282c2d; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #252a2c; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #353b3c; }
 
         /* ─── LIGHT THEME OVERRIDES ─── */
         body.light-theme {
             --bg-page: #f6f8f7;
-            --bg-surface: #ffffff;
+            --bg-header: #ffffff;
             --bg-card: #ffffff;
-            --bg-input: #f8fafc;
+            --bg-card-hover: #f8fafc;
+            --bg-input: #f1f5f9;
             --border-color: #e2e8f0;
-            --border-subtle: #f1f5f9;
+            --border-subtle: #cbd5e1;
             --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
         }
-        body.light-theme .header {
-            background: #ffffff;
-            border-bottom-color: #e2e8f0;
+        body.light-theme thead th { background: #f8fafc !important; color: #64748b !important; }
+        body.light-theme tbody tr td { color: #334155 !important; }
+        body.light-theme .name-cell { color: #0f172a !important; }
+        body.light-theme .id-cell { color: #2563eb !important; }
+        body.light-theme .btn-edit-cnh { background: #f1f5f9; border-color: #cbd5e1; color: #0f172a; }
+        body.light-theme .btn-dots { background: #f1f5f9; border-color: #cbd5e1; color: #475569; }
+        body.light-theme .action-dropdown { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        body.light-theme .dropdown-item { color: #334155; }
+        body.light-theme .dropdown-item:hover { background: #f1f5f9; }
+        body.light-theme .status-pill-btn.active { background: #e2e8f0; color: #0f172a; }
+
+        /* ─── SOLID BACKGROUND SHIELD ─── */
+        .page-container {
+            position: relative !important;
+            z-index: 2 !important;
         }
-        body.light-theme .brand-text {
-            color: #0f172a;
+        .stat-card, .table-wrap, .filters-bar {
+            background-color: #191c1d !important;
+            border-color: #232729 !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 5 !important;
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
         }
-        body.light-theme .header-link,
-        body.light-theme .btn-voltar {
-            color: #475569;
-        }
-        body.light-theme .header-link:hover,
-        body.light-theme .btn-voltar:hover {
-            color: #0f172a;
-        }
-        body.light-theme .header-icon {
-            background: #f1f5f9;
-            border-color: #e2e8f0;
-            color: #475569;
-        }
-        body.light-theme .saldo-pill {
-            background: rgba(0, 220, 130, 0.12);
-            border-color: rgba(0, 220, 130, 0.35);
-            color: #059669;
-        }
-        body.light-theme .avatar-circle {
-            background: #e2e8f0;
-            border-color: #cbd5e1;
-            color: #0f172a;
-        }
-        body.light-theme .avatar-dropdown {
-            background: #ffffff;
-            border-color: #e2e8f0;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
-        }
-        body.light-theme .dropdown-header {
-            border-bottom-color: #e2e8f0;
-        }
-        body.light-theme .dropdown-name {
-            color: #0f172a;
-        }
-        body.light-theme .dropdown-item {
-            color: #334155;
-        }
-        body.light-theme .dropdown-item:hover {
-            background: #f1f5f9;
-            color: #0f172a;
-        }
-        body.light-theme .dropdown-divider {
-            background: #e2e8f0;
-        }
-        body.light-theme .card,
-        body.light-theme .table-wrap,
-        body.light-theme .filter-card,
-        body.light-theme .stat-card,
-        body.light-theme .filters-bar {
-            background: #ffffff;
-            border-color: #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        body.light-theme .stat-label {
-            color: #64748b;
-        }
-        body.light-theme .stat-value {
-            color: #0f172a;
-        }
-        body.light-theme .sec-title {
-            color: #0f172a;
-        }
-        body.light-theme .filter-label {
-            color: #475569;
-        }
-        body.light-theme .filter-input {
-            background: #f8fafc;
-            border-color: #e2e8f0;
-            color: #0f172a;
-        }
-        body.light-theme .status-pills {
-            background: #f1f5f9;
-            border-color: #e2e8f0;
-        }
-        body.light-theme .status-pill-btn {
-            color: #64748b;
-        }
-        body.light-theme .status-pill-btn.active {
-            background: #ffffff;
-            color: #0f172a;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-            font-weight: 700;
-        }
-        body.light-theme thead th {
-            background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-            color: #475569;
-        }
-        body.light-theme tbody td {
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
-        }
-        body.light-theme tbody tr:hover td {
-            background: #f8fafc;
-        }
-        body.light-theme .name-cell {
-            color: #0f172a;
-        }
-        body.light-theme .cpf-cell,
-        body.light-theme .id-cell {
-            color: #475569;
+        body.light-theme .stat-card, body.light-theme .table-wrap, body.light-theme .filters-bar {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08) !important;
         }
 
-        /* ─── HEADER PADRÃO (62px) ─── */
+        /* ─── CABEÇALHO OFICIAL 62px ─── */
         .header {
             height: 62px;
-            background: rgba(15, 18, 19, 0.95);
-            backdrop-filter: blur(12px);
+            background: var(--bg-header);
             border-bottom: 1px solid var(--border-color);
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 1000;
+            display: flex;
+            align-items: center;
         }
         .header-inner {
-            max-width: 1260px;
+            max-width: 1400px;
+            width: 100%;
             margin: 0 auto;
-            height: 100%;
-            padding: 0 20px;
+            padding: 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-
         .header-brand {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
-            color: #fff;
+            flex-shrink: 0;
         }
-
         .brand-logo {
-            width: 34px;
-            height: 34px;
-            background: var(--primary);
+            width: 32px;
+            height: 32px;
+            background: #00dc82;
             border-radius: 9px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 220, 130, 0.3);
-            flex-shrink: 0;
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.45);
             overflow: hidden;
         }
-
         .brand-icon-img {
-            width: 20px;
-            height: 20px;
-            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
-
         .brand-text {
+            font-size: 19px;
             font-weight: 800;
-            font-size: 18px;
-            letter-spacing: -0.4px;
             color: #ffffff;
+            letter-spacing: -0.4px;
             white-space: nowrap;
         }
+        body.light-theme .brand-text { color: #0f172a; }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 16px;
             position: relative;
         }
 
         .saldo-pill {
-            background: #141f1a;
-            border: 1px solid #1a3f2b;
-            color: var(--primary);
+            background: rgba(0, 220, 130, 0.08);
+            color: #00dc82;
+            border: 1px solid #00dc82;
             font-weight: 700;
-            font-size: 12.5px;
+            font-size: 13px;
             padding: 6px 14px;
             border-radius: 20px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
             cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
+            box-shadow: 0 0 10px rgba(0, 220, 130, 0.15);
         }
         .saldo-pill:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 12px rgba(0, 220, 130, 0.25);
+            background: rgba(0, 220, 130, 0.16);
+            box-shadow: 0 0 16px rgba(0, 220, 130, 0.35);
+            transform: translateY(-1px);
+        }
+        .saldo-pill svg {
+            width: 15px; height: 15px;
+            stroke: #00dc82; stroke-width: 2.2; flex-shrink: 0;
         }
 
         .header-link {
             color: var(--text-secondary);
             font-size: 13px;
+            font-weight: 600;
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
             transition: color 0.2s;
-            font-weight: 500;
             white-space: nowrap;
         }
         .header-link:hover { color: #ffffff; }
@@ -346,7 +274,7 @@
             width: 220px;
             display: none;
             flex-direction: column;
-            z-index: 1000;
+            z-index: 99999;
             overflow: hidden;
             animation: fadeInDrop 0.15s ease-out;
         }
@@ -456,34 +384,37 @@
         .stat-value {
             font-size: 26px;
             font-weight: 900;
-            color: #fff;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
         }
         .stat-value.green {
             color: var(--primary);
         }
-        .action-card {
-            background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0.05) 100%);
-            border: 1px solid rgba(59,130,246,0.3);
+        .stat-card.action-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
         }
         .btn-new-doc {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background: #3b82f6;
-            color: #fff;
+            background: var(--accent-blue);
+            color: #ffffff;
             padding: 11px 18px;
             border-radius: 10px;
             font-size: 13.5px;
-            font-weight: 700;
+            font-weight: 800;
             text-decoration: none;
             margin-top: 6px;
-            box-shadow: 0 4px 14px rgba(59,130,246,0.35);
-            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
         }
         .btn-new-doc:hover {
-            background: #2563eb;
+            background: var(--accent-blue-hover);
             transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.45);
         }
 
         /* ─── TÍTULO DA SEÇÃO ─── */
@@ -491,11 +422,11 @@
             font-size: 15px;
             font-weight: 700;
             color: #ffffff;
-            margin-top: 8px;
+            margin-top: 12px;
             margin-bottom: 2px;
         }
 
-        /* ─── BARRA DE FILTROS ─── */
+        /* ─── FILTERS TOOLBAR ─── */
         .filters-bar {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -568,12 +499,12 @@
         }
         .btn-clear-filters:hover { color: #ffffff; }
 
-        /* ─── TABELA DE DADOS ─── */
+        /* ─── TABELA DE DADOS (PIXEL PERFECT COM CNH/RG) ─── */
         .table-wrap {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            overflow: hidden;
+            overflow: visible;
         }
         .table-responsive {
             width: 100%;
@@ -607,13 +538,19 @@
         .id-cell {
             font-family: var(--font-mono);
             color: #60a5fa;
-            font-weight: 700;
             font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
         }
         .name-cell {
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
+            cursor: pointer;
+        }
+        .name-cell:hover {
+            color: var(--primary);
+            text-decoration: underline;
         }
         .cpf-cell {
             font-family: var(--font-mono);
@@ -621,57 +558,114 @@
             font-size: 12px;
             white-space: nowrap;
         }
-        .badge-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            font-size: 11.5px;
+        .curso-cell {
+            color: #cbd5e1;
+            font-size: 12px;
+            max-width: 230px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .status-cell {
+            color: var(--primary);
             font-weight: 700;
-            background: rgba(0, 220, 130, 0.12);
-            color: #00dc82;
-            border: 1px solid rgba(0, 220, 130, 0.25);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .date-cell {
+            font-size: 12px;
+            color: #94a3b8;
+            white-space: nowrap;
         }
 
+        /* ─── ACTIONS CELL COM DROPDOWN IDÊNTICO À CNH/RG ─── */
         .actions-cell {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
             gap: 8px;
+            position: relative;
         }
-        .btn-table-action {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 6px 10px;
+        .btn-edit-cnh {
+            background: #1e2224;
+            border: 1px solid #2a3032;
+            color: #ffffff;
+            padding: 5px 10px;
             border-radius: 6px;
             font-size: 11.5px;
             font-weight: 600;
-            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.15s;
+            font-family: var(--font);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-edit-cnh:hover {
+            border-color: #3a4042;
+            color: #ffffff;
+            background: #252b2d;
+        }
+        .btn-edit-cnh svg {
+            width: 12px; height: 12px; color: #9ca3af;
+        }
+        .btn-dots {
+            background: #1e2224;
+            border: 1px solid #2a3032;
+            color: var(--text-secondary);
+            padding: 5px 8px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
-        .btn-table-action:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.25);
+        .btn-dots:hover {
+            border-color: #3a4042;
+            color: #fff;
         }
-        .btn-table-action.danger {
-            color: #ef4444;
-            border-color: rgba(239, 68, 68, 0.3);
-            background: rgba(239, 68, 68, 0.08);
+        .action-dropdown {
+            position: absolute;
+            right: 0;
+            top: 34px;
+            width: 190px;
+            background: #181b1c;
+            border: 1px solid #2a3032;
+            border-radius: 8px;
+            padding: 5px;
+            z-index: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            gap: 2px;
         }
-        .btn-table-action.danger:hover {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: #ef4444;
+        .action-dropdown.show { display: flex; }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: background 0.15s;
         }
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+        .dropdown-item.danger { color: #f87171; }
+        .dropdown-item.danger:hover { background: rgba(239, 68, 68, 0.12); }
 
         /* ─── PAGINAÇÃO NO RODAPÉ ─── */
         .table-footer {
-            padding: 12px 18px;
+            padding: 14px 18px;
             border-top: 1px solid var(--border-color);
             display: flex;
             align-items: center;
@@ -682,19 +676,24 @@
         .pagination-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
         .btn-page {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 5px 10px;
+            background: #232728;
+            border: 1px solid #2d3334;
+            color: #cbd5e1;
+            padding: 5px 12px;
             border-radius: 6px;
             font-size: 11.5px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.15s;
+            font-family: var(--font);
         }
-        .btn-page:hover { border-color: var(--primary); }
+        .btn-page:hover {
+            background: #2b3032;
+            color: #fff;
+        }
         .btn-page:disabled {
             opacity: 0.4;
             cursor: not-allowed;
@@ -715,25 +714,24 @@
             position: fixed;
             bottom: 24px;
             right: 24px;
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: #fff;
+            background: var(--primary);
+            color: #062517;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 18px rgba(0, 220, 130, 0.4);
             z-index: 999;
-            transition: all 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         .fab-chat:hover {
-            transform: scale(1.08);
-            border-color: var(--primary);
+            transform: scale(1.06);
+            box-shadow: 0 6px 24px rgba(0, 220, 130, 0.6);
         }
-        .fab-chat svg { width: 18px; height: 18px; fill: currentColor; }
+        .fab-chat svg { width: 22px; height: 22px; fill: #062517; }
     </style>
 </head>
 <body>
@@ -743,7 +741,7 @@
     <!-- CABEÇALHO PADRÃO OFICIAL MG EDITÁVEIS (62px) -->
     <header class="header">
         <div class="header-inner">
-            <a href="editaveis.html" class="header-brand">
+            <a href="index.html" class="header-brand">
                 <div class="brand-logo">
                     <img src="logo-icone.png" alt="Logo" class="brand-icon-img">
                 </div>
@@ -756,8 +754,8 @@
                     <span id="userHeaderSaldo">Saldo R$ 0,00</span>
                 </a>
 
-                <a href="indicacoes.html" class="header-link" title="Indique e Ganhe">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <a href="indicacoes.html" class="header-link" style="display:inline-flex; align-items:center; gap:6px; color:#94a3b8; font-size:13px; font-weight:600; text-decoration:none; white-space:nowrap; flex-shrink:0;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px; height:15px; min-width:15px; min-height:15px; flex-shrink:0;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                     <span>Indique e Ganhe</span>
                 </a>
 
@@ -765,9 +763,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 </div>
 
-                <a href="editaveis.html" class="btn-voltar" title="Voltar ao Catálogo">
+                <!-- BOTAO VOLTAR PADRÃO IDENTICO A CNH -->
+                <a href="editaveis.html" class="btn-voltar" title="Voltar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                    <span>Voltar</span>
+                    Voltar
                 </a>
 
                 <div class="avatar-circle" id="userHeaderAvatar" onclick="toggleAvatarDropdown(event)" title="Meu Perfil">M</div>
@@ -801,31 +800,31 @@
     <!-- CONTAINER DA PÁGINA (980px PADRÃO CENTRALIZADO) -->
     <div class="page-container">
 
-        <!-- HEADER DA PÁGINA -->
-        <div class="page-header">
+        <!-- HEADER DA PÁGINA ESPECÍFICO CERTIFICADO -->
+        <div class="page-header" style="margin-bottom: 20px;">
             <div class="page-title-group">
-                <h1>
+                <h1 style="font-size: 22px; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 10px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     <span>Certificados de Condutor Emitidos</span>
                 </h1>
-                <p>Histórico completo de certificados de cursos especializados de trânsito (ICETRAN) gerados com validação por QR Code e registro Detran.</p>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Histórico completo de certificados de cursos especializados de trânsito (ICETRAN) gerados com validação por QR Code e registro Detran.</p>
             </div>
         </div>
 
-        <!-- 3 STATS KPI CARDS -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-label">Total Gerados</span>
-                <span class="stat-value" id="countTotal">1</span>
+        <!-- 3 CARDS KPI PADRÃO ORGANIZADO -->
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;">
+                <span class="stat-label" style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total Gerados</span>
+                <span class="stat-value" id="statTotalVal" style="font-size: 26px; font-weight: 900; color: #fff;">0</span>
             </div>
 
-            <div class="stat-card">
-                <span class="stat-label">Saldo Disponível</span>
-                <span class="stat-value green" id="statSaldo">R$ 0,00</span>
+            <div class="stat-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;">
+                <span class="stat-label" style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Saldo Disponível</span>
+                <span class="stat-value" id="statSaldo" style="font-size: 26px; font-weight: 900; color: #00dc82;">R$ 0,00</span>
             </div>
 
-            <div class="stat-card action-card">
-                <span class="stat-label" style="color:#60a5fa;">Novo Documento</span>
+            <div class="stat-card action-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0.05) 100%); border: 1px solid rgba(59,130,246,0.3); border-radius: var(--radius-md); padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;">
+                <span class="stat-label" style="font-size: 12px; font-weight: 700; color: #60a5fa; text-transform: uppercase; letter-spacing: 0.5px;">Novo Documento</span>
                 <a href="criar-certificado-condutor.html" class="btn-new-doc">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     <span>Emitir Novo Certificado ICETRAN</span>
@@ -836,16 +835,21 @@
         <!-- TÍTULO DA SEÇÃO -->
         <div class="sec-title">Certificados Gerados</div>
 
-        <!-- TOOLBAR DE FILTROS -->
+        <!-- FILTERS TOOLBAR -->
         <div class="filters-bar">
             <div class="filter-group">
                 <label class="filter-label">Nome</label>
-                <input type="text" class="filter-input" id="filterNome" placeholder="Buscar por nome" oninput="applyFilters()" style="width: 180px;">
+                <input type="text" class="filter-input" id="filterNome" placeholder="Buscar por nome" oninput="applyFilters()" style="width: 175px;">
             </div>
 
             <div class="filter-group">
                 <label class="filter-label">CPF</label>
                 <input type="text" class="filter-input" id="filterCpf" placeholder="000.000.000-00" oninput="applyFilters()" style="width: 155px;">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Data</label>
+                <input type="date" class="filter-input" id="filterData" onchange="applyFilters()" style="width: 145px; color-scheme:dark;">
             </div>
 
             <div class="filter-group">
@@ -857,36 +861,41 @@
             </div>
 
             <button class="btn-clear-filters" onclick="clearFilters()">Limpar Filtros</button>
+            <button id="btnBulkDelete" onclick="deleteSelectedCertificados()" style="display:none; align-items:center; gap:6px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#ef4444; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.25)'" onmouseout="this.style.background='rgba(239,68,68,0.15)'">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <span>Excluir Selecionados (<span id="bulkDeleteCount">0</span>)</span>
+            </button>
         </div>
 
-        <!-- TABELA WRAP -->
+        <!-- TABLE WRAP -->
         <div class="table-wrap">
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
-                            <th>Registro / ID</th>
-                            <th>Nome do Condutor</th>
+                            <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" style="accent-color:var(--primary); cursor:pointer;"></th>
+                            <th>ID</th>
+                            <th>Nome</th>
                             <th>CPF</th>
                             <th>Curso Especializado</th>
-                            <th>Data de Emissão</th>
-                            <th>Status</th>
-                            <th style="text-align:right;">Ações</th>
+                            <th>Certificado Status</th>
+                            <th>Data e Hora da Geração</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tblBody">
-                        <!-- Itens renderizados dinamicamente -->
+                        <!-- Preenchido via JavaScript -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- PAGINAÇÃO NO RODAPÉ -->
+            <!-- TABLE PAGINATION FOOTER -->
             <div class="table-footer">
-                <div id="paginationInfo">Mostrando 1 de 1 Certificados</div>
+                <div id="paginationInfo">Mostrando 0 de 0 Certificados</div>
                 <div class="pagination-controls">
-                    <span id="pageCurrentInfo">Página 1 de 1</span>
-                    <button class="btn-page" id="btnPrevPage" onclick="prevPage()">Anterior</button>
-                    <button class="btn-page" id="btnNextPage" onclick="nextPage()">Próxima</button>
+                    <span id="pageCurrentInfo">Página 0 de 0</span>
+                    <button class="btn-page" onclick="prevPage()">Anterior</button>
+                    <button class="btn-page" onclick="nextPage()">Próxima</button>
                 </div>
             </div>
         </div>
@@ -950,7 +959,7 @@
             alert(featureName || 'Notificações');
         }
 
-        // ─── DADOS E TABELA DE CERTIFICADOS ───
+        // ─── DADOS DO HISTÓRICO DE CERTIFICADOS ───
         const DEFAULT_ITEMS = [
             {
                 id: '0006MG00000900002',
@@ -961,65 +970,105 @@
                 status: 'Aprovado'
             },
             {
-                id: '000250841',
+                id: '000209941',
                 nome: 'ADEMIR RODRIGUES DE OLIVEIRA',
-                cpf: '267.504.778-36',
+                cpf: '247.604.778-34',
                 curso: 'Condutores de Veículo de Transporte Coletivo de Passageiros',
-                data: '17/01/2024 10:30',
+                data: '17/07/2024 15:30',
                 status: 'Aprovado'
             }
         ];
 
         let allCertificados = [];
         let filteredCertificados = [];
-        let currentFilterStatus = 'Todas';
         let currentPage = 1;
-        const ITEMS_PER_PAGE = 15;
+        const ITEMS_PER_PAGE = 10;
+        let currentFilterStatus = 'Todas';
 
         function loadLoggedUser() {
             try {
-                const uStr = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
-                const u = JSON.parse(uStr || '{}');
-                const name = u.nome || u.name || 'MG Editáveis';
-                const email = u.email || 'admin@mgeditaveis.com.br';
-                const initial = name.charAt(0).toUpperCase();
+                let user = null;
+                const userJson = localStorage.getItem('happynation_user') || sessionStorage.getItem('happynation_user');
+                if (userJson) user = JSON.parse(userJson);
 
-                const av = document.getElementById('userHeaderAvatar');
-                if (av) av.textContent = initial;
+                const nameEl = document.getElementById('dropUserName');
+                const emailEl = document.getElementById('dropUserEmail');
+                const avatarEl = document.getElementById('userHeaderAvatar');
 
-                const dn = document.getElementById('dropUserName');
-                if (dn) dn.textContent = name;
+                const name = user ? (user.name || user.nome || 'MG Editáveis') : 'MG Editáveis';
+                const email = user ? (user.email || 'admin@mgeditaveis.com.br') : 'admin@mgeditaveis.com.br';
 
-                const de = document.getElementById('dropUserEmail');
-                if (de) de.textContent = email;
+                if (nameEl) nameEl.textContent = name;
+                if (emailEl) emailEl.textContent = email;
+                if (avatarEl) avatarEl.textContent = name.trim().charAt(0).toUpperCase();
 
-                const saldo = (window.MGSaldo ? window.MGSaldo.get() : ((u && u.saldo !== undefined && u.saldo !== null) ? parseFloat(u.saldo) : 0));
-                const statSaldoEl = document.getElementById('statSaldo');
-                if (statSaldoEl) statSaldoEl.textContent = 'R$ ' + saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const saldo = (window.MGSaldo && typeof window.MGSaldo.get === 'function') 
+                    ? window.MGSaldo.get() 
+                    : (parseFloat(localStorage.getItem('happynation_saldo') || '7860.00'));
+                
                 const saldoHeader = document.getElementById('userHeaderSaldo');
                 if (saldoHeader) saldoHeader.textContent = `Saldo R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                
+                const statSaldo = document.getElementById('statSaldo');
+                if (statSaldo) statSaldo.textContent = `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
             } catch(e) {}
         }
 
         window.addEventListener('storage', loadLoggedUser);
 
         function loadCertificados() {
+            let items = [];
+            const seen = new Set();
+
+            function addIfValid(item) {
+                if (!item) return;
+                const id = String(item.id || item.codigo || item.certNumero || Math.random());
+                if (seen.has(id)) return;
+                seen.add(id);
+
+                items.push({
+                    id: id,
+                    nome: String(item.nome || item.alunoNome || item.condutor || 'CONDUTOR').toUpperCase(),
+                    cpf: item.cpf || item.alunoCpf || '000.000.000-00',
+                    curso: item.curso || item.cursoNome || 'Condutores de Veículos Especializados',
+                    data: item.data || item.created_at || new Date().toLocaleString('pt-BR'),
+                    status: item.status || 'Aprovado'
+                });
+            }
+
+            // 1. Carrega de icetran_historico
             try {
                 const stored = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
-                allCertificados = [...stored, ...DEFAULT_ITEMS];
-            } catch(e) {
-                allCertificados = [...DEFAULT_ITEMS];
-            }
+                if (Array.isArray(stored)) stored.forEach(addIfValid);
+            } catch(e) {}
+
+            // 2. Carrega de happynation_certificados_
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_certificados_')) {
+                        const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        if (Array.isArray(arr)) arr.forEach(addIfValid);
+                    }
+                }
+            } catch(e) {}
+
+            // 3. Fallbacks oficiais (Saulo e Ademir)
+            DEFAULT_ITEMS.forEach(addIfValid);
+
+            allCertificados = [...items];
             applyFilters();
         }
 
         function applyFilters() {
             const nomeQ = (document.getElementById('filterNome')?.value || '').toLowerCase().trim();
             const cpfQ = (document.getElementById('filterCpf')?.value || '').toLowerCase().trim();
+            const dataQ = (document.getElementById('filterData')?.value || '').trim();
 
             filteredCertificados = allCertificados.filter(c => {
                 if (nomeQ && !c.nome.toLowerCase().includes(nomeQ)) return false;
                 if (cpfQ && !c.cpf.toLowerCase().includes(cpfQ)) return false;
+                if (dataQ && c.data && !c.data.includes(dataQ)) return false;
                 if (currentFilterStatus !== 'Todas' && (c.status || 'Aprovado') !== currentFilterStatus) return false;
                 return true;
             });
@@ -1038,8 +1087,10 @@
         function clearFilters() {
             const inNome = document.getElementById('filterNome');
             const inCpf = document.getElementById('filterCpf');
+            const inData = document.getElementById('filterData');
             if (inNome) inNome.value = '';
             if (inCpf) inCpf.value = '';
+            if (inData) inData.value = '';
             currentFilterStatus = 'Todas';
             document.querySelectorAll('.status-pill-btn').forEach(b => b.classList.remove('active'));
             const bTodas = document.getElementById('btnStatusTodas');
@@ -1047,9 +1098,95 @@
             applyFilters();
         }
 
+        // ─── SELEÇÃO E BULK DELETE ───
+        function toggleSelectAll(master) {
+            document.querySelectorAll('#tblBody input.row-select-cb').forEach(cb => {
+                cb.checked = master.checked;
+            });
+            updateSelectCount();
+        }
+
+        function updateSelectCount() {
+            const selected = document.querySelectorAll('#tblBody input.row-select-cb:checked');
+            const total = document.querySelectorAll('#tblBody input.row-select-cb');
+            const master = document.getElementById('selectAllCheckbox');
+            if (master) {
+                master.checked = total.length > 0 && selected.length === total.length;
+                master.indeterminate = selected.length > 0 && selected.length < total.length;
+            }
+
+            const bulkBtn = document.getElementById('btnBulkDelete');
+            const bulkCount = document.getElementById('bulkDeleteCount');
+            if (bulkBtn && bulkCount) {
+                bulkCount.textContent = selected.length;
+                bulkBtn.style.display = selected.length > 0 ? 'inline-flex' : 'none';
+            }
+        }
+
+        function deleteSelectedCertificados() {
+            const selectedBoxes = Array.from(document.querySelectorAll('#tblBody input.row-select-cb:checked'));
+            const ids = selectedBoxes.map(cb => cb.value).filter(Boolean);
+            if (!ids.length) return;
+
+            if (!confirm(`Deseja realmente excluir ${ids.length} Certificado(s) selecionado(s) permanentemente?`)) {
+                return;
+            }
+
+            ids.forEach(id => {
+                deleteFromStorage(id);
+            });
+
+            loadCertificados();
+            updateSelectCount();
+        }
+
+        function deleteFromStorage(id) {
+            try {
+                let hist = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
+                hist = hist.filter(x => String(x.id || x.codigo) !== String(id));
+                localStorage.setItem('icetran_historico', JSON.stringify(hist));
+
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('happynation_certificados_')) {
+                        let arr = JSON.parse(localStorage.getItem(k) || '[]');
+                        arr = arr.filter(x => String(x.id || x.codigo) !== String(id));
+                        localStorage.setItem(k, JSON.stringify(arr));
+                    }
+                }
+            } catch(e) {}
+        }
+
+        function deleteCertificado(id) {
+            if (!confirm('Deseja realmente excluir este certificado do histórico?')) return;
+            deleteFromStorage(id);
+            loadCertificados();
+        }
+
+        function editarCertificado(id) {
+            window.location.href = 'criar-certificado-condutor.html?id=' + encodeURIComponent(id) + '&edit=true';
+        }
+
+        function verCertificado(id) {
+            window.location.href = 'criar-certificado-condutor.html?id=' + encodeURIComponent(id);
+        }
+
+        function toggleDropdown(e, btn) {
+            e.stopPropagation();
+            document.querySelectorAll('.action-dropdown').forEach(d => {
+                if (d !== btn.nextElementSibling) d.classList.remove('show');
+            });
+            const dropdown = btn.nextElementSibling;
+            if (dropdown) dropdown.classList.toggle('show');
+        }
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.action-dropdown').forEach(d => d.classList.remove('show'));
+        });
+
         function renderTable() {
             const tbody = document.getElementById('tblBody');
-            const totalEl = document.getElementById('countTotal');
+            const totalEl = document.getElementById('statTotalVal');
             if (totalEl) totalEl.textContent = allCertificados.length;
 
             const total = filteredCertificados.length;
@@ -1057,50 +1194,64 @@
             if (currentPage > totalPages) currentPage = totalPages;
 
             const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-            const pageItems = filteredCertificados.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+            const endIdx = startIdx + ITEMS_PER_PAGE;
+            const pageItems = filteredCertificados.slice(startIdx, endIdx);
 
-            if (pageItems.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:36px; color:var(--text-muted);">Nenhum certificado encontrado com os filtros aplicados.</td></tr>';
-            } else {
-                tbody.innerHTML = pageItems.map(item => `
-                    <tr>
-                        <td class="id-cell">${item.id || '—'}</td>
-                        <td class="name-cell">${item.nome || '—'}</td>
-                        <td class="cpf-cell">${item.cpf || '—'}</td>
-                        <td style="color:#cbd5e1; max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.curso || 'Curso de Trânsito'}</td>
-                        <td style="color:var(--text-muted); font-size:12px;">${item.data || '—'}</td>
-                        <td><span class="badge-status">✔ ${item.status || 'Aprovado'}</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="criar-certificado-condutor.html?id=${encodeURIComponent(item.id)}" class="btn-table-action" title="Editar Certificado">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                    <span>Editar</span>
-                                </a>
-                                <button type="button" class="btn-table-action danger" onclick="deleteCertificado('${item.id}')" title="Excluir do Histórico">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // Paginação info
             const pagInfo = document.getElementById('paginationInfo');
             if (pagInfo) {
-                const countShown = pageItems.length;
-                pagInfo.textContent = `Mostrando ${countShown} de ${total} Certificados`;
+                if (total === 0) {
+                    pagInfo.textContent = 'Mostrando 0 de 0 Certificados';
+                } else {
+                    pagInfo.textContent = `Mostrando ${startIdx + 1}-${Math.min(endIdx, total)} de ${total} Certificados`;
+                }
             }
 
             const pageCurrentInfo = document.getElementById('pageCurrentInfo');
             if (pageCurrentInfo) {
-                pageCurrentInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+                pageCurrentInfo.textContent = total === 0 ? 'Página 0 de 0' : `Página ${currentPage} de ${totalPages}`;
             }
 
-            const btnPrev = document.getElementById('btnPrevPage');
-            const btnNext = document.getElementById('btnNextPage');
-            if (btnPrev) btnPrev.disabled = (currentPage <= 1);
-            if (btnNext) btnNext.disabled = (currentPage >= totalPages);
+            if (pageItems.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:36px; color:var(--text-muted);">Nenhum certificado encontrado com os filtros aplicados.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            pageItems.forEach(item => {
+                html += `
+                    <tr>
+                        <td><input type="checkbox" class="row-select-cb" value="${item.id}" onchange="updateSelectCount()" style="accent-color:var(--primary); cursor:pointer;"></td>
+                        <td class="id-cell">${item.id || '—'}</td>
+                        <td class="name-cell" onclick="verCertificado('${item.id}')">${item.nome || '—'}</td>
+                        <td class="cpf-cell">${item.cpf || '—'}</td>
+                        <td class="curso-cell" title="${item.curso || ''}">${item.curso || 'Curso de Trânsito'}</td>
+                        <td class="status-cell" style="color:#00dc82 !important;">${item.status || 'Aprovado'}</td>
+                        <td class="date-cell">${item.data || '—'}</td>
+                        <td>
+                            <div class="actions-cell">
+                                <button class="btn-edit-cnh" onclick="editarCertificado('${item.id}')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    Emitir Certificado
+                                </button>
+                                <button class="btn-dots" onclick="toggleDropdown(event, this)">•••</button>
+                                <div class="action-dropdown">
+                                    <div class="dropdown-item" onclick="verCertificado('${item.id}')">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                        Ver Informações
+                                    </div>
+                                    <div class="dropdown-item danger" onclick="deleteCertificado('${item.id}')">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                        Excluir
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            updateSelectCount();
         }
 
         function prevPage() {
@@ -1118,65 +1269,62 @@
             }
         }
 
-        function deleteCertificado(id) {
-            if (!confirm('Deseja realmente remover este certificado do seu histórico?')) return;
-            allCertificados = allCertificados.filter(c => c.id !== id);
-            try {
-                const stored = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
-                const newStored = stored.filter(c => c.id !== id);
-                localStorage.setItem('icetran_historico', JSON.stringify(newStored));
-            } catch(e) {}
-            applyFilters();
-        }
-
-        // ─── ANIMAÇÃO DO CANVAS NEURAL ───
+        // ─── ANIMAÇÃO DO CANVAS NEURAL BACKGROUND ───
         (function initNeuralCanvas() {
             const canvas = document.getElementById('neuralCanvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            let w, h, points = [];
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 38;
 
             function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
             }
             window.addEventListener('resize', resize);
             resize();
 
-            const count = Math.min(30, Math.floor((w * h) / 35000));
-            for (let i = 0; i < count; i++) {
-                points.push({
-                    x: Math.random() * w,
-                    y: Math.random() * h,
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
                     vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 1.6 + 0.8
                 });
             }
 
             function draw() {
-                ctx.clearRect(0, 0, w, h);
-                ctx.fillStyle = 'rgba(0, 220, 130, 0.4)';
-                ctx.strokeStyle = 'rgba(0, 220, 130, 0.05)';
+                ctx.clearRect(0, 0, width, height);
 
-                for (let i = 0; i < points.length; i++) {
-                    const p = points[i];
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
                     p.x += p.vx;
                     p.y += p.vy;
 
-                    if (p.x < 0 || p.x > w) p.vx *= -1;
-                    if (p.y < 0 || p.y > h) p.vy *= -1;
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
 
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 220, 130, 0.45)';
                     ctx.fill();
 
-                    for (let j = i + 1; j < points.length; j++) {
-                        const p2 = points[j];
-                        const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-                        if (dist < 130) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 120) {
                             ctx.beginPath();
                             ctx.moveTo(p.x, p.y);
                             ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(0, 220, 130, ${0.18 * (1 - dist / 120)})`;
+                            ctx.lineWidth = 0.6;
                             ctx.stroke();
                         }
                     }
@@ -1187,10 +1335,9 @@
         })();
 
         // Inicialização
-        window.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             loadLoggedUser();
             loadCertificados();
-            updateThemeIcon();
         });
     </script>
 </body>

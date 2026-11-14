@@ -1341,10 +1341,14 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                     <span>Imprimir A4</span>
                 </button>
-                <button type="button" class="btn-action-secondary" onclick="salvarCertificadoNoHistorico()">
+                <button type="button" class="btn-action-secondary" onclick="salvarCertificadoNoHistorico(true)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     <span>Salvar no Histórico</span>
                 </button>
+                <a href="certificados-condutor.html" class="btn-action-secondary" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>Ver Recentes</span>
+                </a>
             </div>
         </section>
 
@@ -1872,6 +1876,20 @@
 
                 const reg = (document.getElementById('inpCertNumero').value || '0006MG').replace(/[^a-zA-Z0-9]/g, '_');
                 pdf.save(`Certificado_ICETRAN_${reg}.pdf`);
+
+                // Salva automaticamente no histórico de recentes
+                salvarCertificadoNoHistorico(false);
+
+                // Desconta saldo visual se disponível
+                if (window.MGSaldo && typeof window.MGSaldo.deduct === 'function') {
+                    window.MGSaldo.deduct(20.00, {
+                        tipo: 'certificado_condutor',
+                        descricao: String(document.getElementById('inpAlunoNome').value || DEFAULT_CERT.alunoNome).toUpperCase(),
+                        subRotulo: 'Certificado de Condutor (ICETRAN)',
+                        tagClass: 'badge-cnh',
+                        tagText: 'CERTIFICADO'
+                    });
+                }
             } catch(err) {
                 console.error('Erro ao gerar PDF do Certificado:', err);
                 alert('Erro ao gerar o PDF. Tente novamente ou utilize o botão Imprimir A4.');
@@ -1883,8 +1901,8 @@
             }
         }
 
-        // Salvar no Histórico Local
-        function salvarCertificadoNoHistorico() {
+        // Salvar no Histórico Local e Sincronizar com Recentes
+        function salvarCertificadoNoHistorico(showAlert = true) {
             const nome = document.getElementById('inpAlunoNome').value || DEFAULT_CERT.alunoNome;
             const cpf = document.getElementById('inpAlunoCpf').value || DEFAULT_CERT.alunoCpf;
             const reg = document.getElementById('inpCertNumero').value || DEFAULT_CERT.certNumero;
@@ -1896,14 +1914,28 @@
                     cpf: cpf,
                     curso: curso,
                     data: new Date().toLocaleString('pt-BR'),
+                    created_at: new Date().toISOString(),
                     status: 'Aprovado'
                 };
-                const hist = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
+
+                let hist = JSON.parse(localStorage.getItem('icetran_historico') || '[]');
+                hist = hist.filter(x => String(x.id || x.codigo) !== String(reg));
                 hist.unshift(item);
                 localStorage.setItem('icetran_historico', JSON.stringify(hist));
-                alert('Certificado de Condutor salvo com sucesso no histórico!');
+
+                let u = {};
+                try { u = JSON.parse(localStorage.getItem('happynation_user') || '{}'); } catch(e){}
+                const emailNorm = (u.email || 'admin@mgeditaveis.com.br').toLowerCase().trim();
+                let userHist = JSON.parse(localStorage.getItem('happynation_certificados_' + emailNorm) || '[]');
+                userHist = userHist.filter(x => String(x.id || x.codigo) !== String(reg));
+                userHist.unshift(item);
+                localStorage.setItem('happynation_certificados_' + emailNorm, JSON.stringify(userHist));
+
+                if (showAlert) {
+                    alert('Certificado de Condutor salvo com sucesso no histórico!');
+                }
             } catch(e) {
-                alert('Erro ao salvar no histórico.');
+                if (showAlert) alert('Erro ao salvar no histórico.');
             }
         }
 
