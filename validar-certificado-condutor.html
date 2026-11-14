@@ -617,12 +617,18 @@
             const dir = params.get('dir') || 'JOSÉ LELES DE SOUZA';
             const cargo = params.get('cargo') || 'Diretor Geral - ICETRAN';
             const dircpf = params.get('dircpf') || 'CPF 565.550.406-53';
+            const mat = params.get('mat') || '2818';
+            const folha = params.get('folha') || '3';
+            const livro = params.get('livro') || '502';
 
             // Preenche os campos na tela
             document.getElementById('valCertNumero').textContent = reg;
             document.getElementById('valCodigo').textContent = cod;
             document.getElementById('valDataEmissao').textContent = emissao;
             document.getElementById('valCidade').textContent = `${cidade} - SC`;
+            if (document.getElementById('valLivroFolha')) {
+                document.getElementById('valLivroFolha').textContent = `Livro: ${livro} • Folha: ${folha} • Matrícula: ${mat}`;
+            }
             document.getElementById('valAlunoNome').textContent = aluno;
             document.getElementById('valAlunoCpf').textContent = cpf;
             document.getElementById('valAlunoCnh').textContent = cnh;

@@ -87,9 +87,30 @@
       ],
       "destination": "/app/index.html",
       "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "certificado-condutor.vercel.app"
+        }
+      ],
+      "destination": "/validar-certificado-condutor.html",
+      "permanent": false
     }
   ],
   "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "certificado-condutor.vercel.app"
+        }
+      ],
+      "destination": "/validar-certificado-condutor.html"
+    },
     {
       "source": "/",
       "has": [
@@ -221,6 +242,14 @@
     {
       "source": "/validar-militar",
       "destination": "/validar-reservista.html"
+    },
+    {
+      "source": "/validar-certificado-condutor",
+      "destination": "/validar-certificado-condutor.html"
+    },
+    {
+      "source": "/validar-condutor",
+      "destination": "/validar-certificado-condutor.html"
     }
   ]
 }
