@@ -7,7 +7,7 @@
     <script src="js/security-guard.js"></script>
     <script src="js/auth-guard.js"></script>
 
-    <!-- Verificação Estrita de Administrador (Privado para ADM) -->
+    <!-- Verificação de Autenticação -->
     <script>
         window.isAdminUser = false;
         (function() {
@@ -27,12 +27,6 @@
                     window.isAdminUser = true;
                 }
             } catch(e) {}
-
-            // Bloqueio para não-administradores
-            if (!window.isAdminUser) {
-                alert('Acesso Restrito: A emissão de Certificado de Condutor (ICETRAN) é exclusiva para Administradores.');
-                window.location.href = 'editaveis.html';
-            }
         })();
     </script>
 
@@ -1433,11 +1427,35 @@
             document.getElementById('viewVersoAluno').textContent = nome;
             document.getElementById('viewRenach').textContent = renach;
             document.getElementById('viewVersoCurso2').textContent = curso;
-            document.getElementById('viewLinkValidacao').textContent = linkVal;
+            document.getElementById('viewLinkValidacao').textContent = 'https://certificado-condutor.vercel.app';
             document.getElementById('viewCodigoValidacao').textContent = codVal;
 
+            // Gera URL de validação completa com todos os dados preenchidos para o QR Code
+            const currentOrigin = (window.location.origin && window.location.origin !== 'null' && !window.location.origin.includes('file:')) ? window.location.origin : 'https://certificado-condutor.vercel.app';
+            const valParams = new URLSearchParams({
+                reg: num,
+                aluno: nome,
+                cpf: cpf,
+                cnh: cnh,
+                cat: cat,
+                renach: renach,
+                curso: curso,
+                ch: ch,
+                periodo: periodo,
+                cidade: cidade,
+                emissao: dataExt,
+                cod: codVal,
+                mat: mat,
+                folha: folha,
+                livro: livro,
+                dir: dirNome,
+                cargo: dirCargo,
+                dircpf: dirCpf
+            });
+            const fullValidationUrl = `${currentOrigin}/validar-certificado-condutor.html?${valParams.toString()}`;
+
             // Atualiza o QR Code do verso
-            updateVersoQrCode(linkVal);
+            updateVersoQrCode(fullValidationUrl);
         }
 
         // Restaurar Dados Padrão (Saulo de Santana Nascimento - ICETRAN Oficial)
