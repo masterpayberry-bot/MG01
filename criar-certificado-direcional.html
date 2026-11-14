@@ -495,10 +495,10 @@
         /* ─── ASSINATURAS MANUSCRITAS NA FRENTE ─── */
         .frente-sig-container {
             position: absolute;
-            top: 518px;
+            top: 512px;
             height: 94px;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
             pointer-events: none;
             user-select: none;
@@ -520,6 +520,7 @@
             height: 100%;
             max-height: 94px;
             object-fit: contain;
+            object-position: bottom center;
             display: block;
         }
 
@@ -681,20 +682,29 @@
             flex: 1;
             box-sizing: border-box;
             border: 1.8px solid #000;
-            padding: 8px 14px;
+            padding: 8px 12px;
             font-family: Arial, Helvetica, sans-serif;
             font-weight: 900;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 11px;
+            line-height: 1.35;
             text-transform: uppercase;
             display: flex;
             align-items: center;
         }
 
-        .box-credenciamento-inner {
+        .box-credenciamento-grid {
             width: 100%;
-            word-break: break-word;
-            overflow-wrap: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .cred-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            white-space: nowrap;
         }
 
         /* Rodapé com Proibido Plastificar e Cód Turma */
@@ -912,7 +922,7 @@
                     <div class="form-group">
                         <label class="form-label">Estilo Coord. (Antonio Amorim)</label>
                         <select id="selSigCoordModel" class="form-control" onchange="applySigModels()">
-                            <option value="mod1">Modelo 1: Rúbrica Executiva Dinâmica</option>
+                            <option value="mod1">Modelo 1: Oficial Autêntico (Original Detran-PA)</option>
                             <option value="mod2">Modelo 2: Rúbrica Notarial (Laço Curto)</option>
                             <option value="mod3">Modelo 3: Assinatura Tradicional com Iniciais</option>
                             <option value="custom">-- Foto Própria (Upload) --</option>
@@ -921,7 +931,7 @@
                     <div class="form-group">
                         <label class="form-label">Estilo Inst. (Jose Adelson)</label>
                         <select id="selSigInstModel" class="form-control" onchange="applySigModels()">
-                            <option value="mod1">Modelo 1: Cursivo Fluido ('J' Descendente)</option>
+                            <option value="mod1">Modelo 1: Oficial Autêntico (Original Detran-PA)</option>
                             <option value="mod2">Modelo 2: Cursivo Formal Completo</option>
                             <option value="mod3">Modelo 3: Rúbrica Técnica Notarial</option>
                             <option value="custom">-- Foto Própria (Upload) --</option>
@@ -1024,12 +1034,12 @@
 
                         <!-- Assinatura Coordenador Geral (Esquerda) -->
                         <div id="prevSigCoordContainer" class="frente-sig-container frente-sig-coord">
-                            <img id="viewSigCoord" src="assets/sig_antonio_mod1.png?v=4" class="sig-img-render" alt="Assinatura Antonio D. Barros Amorim">
+                            <img id="viewSigCoord" src="assets/sig_antonio_mod1.png?v=5" class="sig-img-render" alt="Assinatura Antonio D. Barros Amorim">
                         </div>
 
                         <!-- Assinatura Instrutor / Direcional (Direita) -->
                         <div id="prevSigInstContainer" class="frente-sig-container frente-sig-inst">
-                            <img id="viewSigInst" src="assets/sig_jose_mod1.png?v=4" class="sig-img-render" alt="Assinatura Jose Adelson Ferreira de Sousa">
+                            <img id="viewSigInst" src="assets/sig_jose_mod1.png?v=5" class="sig-img-render" alt="Assinatura Jose Adelson Ferreira de Sousa">
                         </div>
                     </div>
 
@@ -1108,8 +1118,25 @@
                             </div>
 
                             <div class="box-credenciamento">
-                                <div class="box-credenciamento-inner">
-                                    CREDENCIAMENTO DETRAN PA PORTARIA Nº <span id="vPortariaText">4676/2021-DG/DHCRV/CHC/GCCFF</span>, PUBLICADO NO DIÁRIO OFICIAL DE <span id="vDiarioOficialText">20/12/2021 Nº 2297768</span>.
+                                <div class="box-credenciamento-grid">
+                                    <div class="cred-col">
+                                        <div>CREDENCIAMENTO</div>
+                                        <div>DETRAN PA</div>
+                                        <div>PORTARIA Nº</div>
+                                    </div>
+                                    <div class="cred-col">
+                                        <div id="vPortariaL1">4676/2021-</div>
+                                        <div id="vPortariaL2">DG/DHCRV/CHC/GCCFF</div>
+                                    </div>
+                                    <div class="cred-col">
+                                        <div>, PUBLICADO NO</div>
+                                        <div>DIÁRIO OFICIAL</div>
+                                        <div>DE</div>
+                                    </div>
+                                    <div class="cred-col">
+                                        <div id="vDiarioL1">20/12/2021</div>
+                                        <div id="vDiarioL2">Nº 2297768</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1176,14 +1203,14 @@
 
             if (mCoord !== 'custom') {
                 customSigCoord = null;
-                if (imgC) imgC.src = `assets/sig_antonio_${mCoord}${suf}.png?v=4`;
+                if (imgC) imgC.src = `assets/sig_antonio_${mCoord}${suf}.png?v=5`;
             } else if (customSigCoord && imgC) {
                 imgC.src = customSigCoord;
             }
 
             if (mInst !== 'custom') {
                 customSigInst = null;
-                if (imgI) imgI.src = `assets/sig_jose_${mInst}${suf}.png?v=4`;
+                if (imgI) imgI.src = `assets/sig_jose_${mInst}${suf}.png?v=5`;
             } else if (customSigInst && imgI) {
                 imgI.src = customSigInst;
             }
@@ -1260,8 +1287,39 @@
             document.getElementById('vLivroText').innerText = livro;
             document.getElementById('vFolhaText').innerText = folha;
             document.getElementById('vDataRegText').innerText = dataReg;
-            document.getElementById('vPortariaText').innerText = portaria;
-            document.getElementById('vDiarioOficialText').innerText = diarioOficial;
+
+            // Portaria em 2 linhas (ex: 4676/2021- e DG/DHCRV/CHC/GCCFF)
+            const vPortariaL1 = document.getElementById('vPortariaL1');
+            const vPortariaL2 = document.getElementById('vPortariaL2');
+            if (vPortariaL1 && vPortariaL2) {
+                if (portaria.includes('-')) {
+                    const idx = portaria.indexOf('-');
+                    vPortariaL1.innerText = portaria.substring(0, idx + 1);
+                    vPortariaL2.innerText = portaria.substring(idx + 1);
+                } else {
+                    vPortariaL1.innerText = portaria;
+                    vPortariaL2.innerText = '';
+                }
+            } else if (document.getElementById('vPortariaText')) {
+                document.getElementById('vPortariaText').innerText = portaria;
+            }
+
+            // Diário Oficial em 2 linhas (ex: 20/12/2021 e Nº 2297768)
+            const vDiarioL1 = document.getElementById('vDiarioL1');
+            const vDiarioL2 = document.getElementById('vDiarioL2');
+            if (vDiarioL1 && vDiarioL2) {
+                const parts = diarioOficial.split(/\s+(?=N[°º])/i);
+                if (parts.length >= 2) {
+                    vDiarioL1.innerText = parts[0];
+                    vDiarioL2.innerText = parts.slice(1).join(' ');
+                } else {
+                    vDiarioL1.innerText = diarioOficial;
+                    vDiarioL2.innerText = '';
+                }
+            } else if (document.getElementById('vDiarioOficialText')) {
+                document.getElementById('vDiarioOficialText').innerText = diarioOficial;
+            }
+
             document.getElementById('vCodTurmaText').innerText = codTurma;
         }
 
