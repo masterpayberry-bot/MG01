@@ -595,16 +595,25 @@
         }
 
         /* ─── TEXTO DA ASSINATURA & DIRETORIA (FINO, NÍTIDO, DIGITÁVEL) ─── */
-        .cert-sig-text-block {
+        .cert-signature-block {
             position: absolute;
-            top: 628px;
+            top: 536px;
             left: 495px;
             transform: translateX(-50%);
             width: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
             z-index: 10;
             pointer-events: none;
             font-family: Arial, Helvetica, sans-serif;
+        }
+        .cert-signature-img {
+            width: 380px;
+            height: 95px;
+            object-fit: contain;
+            display: block;
         }
         .cert-sig-name {
             font-size: 13px;
@@ -613,6 +622,7 @@
             letter-spacing: 0.6px;
             text-transform: uppercase;
             line-height: 1.25;
+            margin-top: -2px;
         }
         .cert-sig-cargo {
             font-size: 11px;
@@ -1073,6 +1083,21 @@
 
                 <div class="form-row single">
                     <div class="form-field">
+                        <label>Selecione um Diretor / Signatário Predefinido (Assinatura e CPF Reais)</label>
+                        <select id="selDiretorPredefinido" onchange="applyDirectorPreset(this.value)">
+                            <option value="jose_leles">José Leles de Souza (Diretor Geral - ICETRAN)</option>
+                            <option value="sidnei_schmidt">Sidnei Schmidt (Diretor de Ensino - ICETRAN)</option>
+                            <option value="marcia_schmidt">Márcia Peirão Schmidt (Coordenadora Pedagógica - ICETRAN)</option>
+                            <option value="pedro_cruz">Pedro Paulo da Cruz (Diretor Técnico - ICETRAN)</option>
+                            <option value="marlos_schmidt">Marlos Schmidt (Diretor Executivo - ICETRAN)</option>
+                            <option value="carlos_souza">Carlos Alberto de Souza (Diretor Operacional - ICETRAN)</option>
+                            <option value="custom">-- Personalizado (Digitação Manual) --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row single">
+                    <div class="form-field">
                         <label>Nome do Diretor / Signatário</label>
                         <input type="text" id="inpDiretorNome" value="JOSÉ LELES DE SOUZA" placeholder="Ex: JOSÉ LELES DE SOUZA" oninput="updateLiveCertificate()">
                     </div>
@@ -1170,7 +1195,7 @@
                     <!-- ─── FOLHA 1: FRENTE DO CERTIFICADO ICETRAN (100% AUTÊNTICO) ─── -->
                     <div class="cert-sheet-landscape" id="sheetFrente">
                         <!-- Imagem do Template Oficial com Faixa Navy/Amarela, Assinatura e Logo DETRANMG -->
-                        <img src="assets/icetran_frente_template.png?v=6" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 730px; z-index: 1; pointer-events: none;">
+                        <img src="assets/icetran_frente_template.png?v=7" alt="Template Frente ICETRAN" style="position: absolute; top: 0; left: 0; width: 1024px; height: 730px; z-index: 1; pointer-events: none;">
                         
                         <!-- Corpo com dados dinâmicos sobre o template oficial -->
                         <div class="cert-frente-body-overlay">
@@ -1185,8 +1210,9 @@
                             </div>
                         </div>
 
-                        <!-- TEXTO DA ASSINATURA & DIRETORIA (100% VISÍVEL, FINO, NÍTIDO E DIGITÁVEL) -->
-                        <div class="cert-sig-text-block">
+                        <!-- BLOCO DE ASSINATURA & DIRETORIA (100% VISÍVEL, FINO, NÍTIDO E DIGITÁVEL) -->
+                        <div class="cert-signature-block">
+                            <img id="viewSigImg" src="assets/sig_jose_leles.png" class="cert-signature-img" alt="Assinatura Diretor">
                             <div class="cert-sig-name" id="viewDiretorNome">JOSÉ LELES DE SOUZA</div>
                             <div class="cert-sig-cargo" id="viewDiretorCargo">Diretor Geral - ICETRAN</div>
                             <div class="cert-sig-cpf" id="viewDiretorCpf">CPF 565.550.406-53</div>
@@ -1454,6 +1480,62 @@
         // Restaurar Dados Padrão (Saulo de Santana Nascimento - ICETRAN Oficial)
         
         // Gerenciamento e Upload Dinâmico do Logo do DETRAN
+        
+        // Presets Oficiais de Diretores e Instrutores do ICETRAN (Assinatura e CPF Reais)
+        const DIRECTOR_PRESETS = {
+            jose_leles: {
+                nome: 'JOSÉ LELES DE SOUZA',
+                cargo: 'Diretor Geral - ICETRAN',
+                cpf: '565.550.406-53',
+                sigImg: 'assets/sig_jose_leles.png'
+            },
+            sidnei_schmidt: {
+                nome: 'SIDNEI SCHMIDT',
+                cargo: 'Diretor de Ensino - ICETRAN',
+                cpf: '540.844.669-72',
+                sigImg: 'assets/sig_sidnei_schmidt.png'
+            },
+            marcia_schmidt: {
+                nome: 'MÁRCIA PEIRÃO SCHMIDT',
+                cargo: 'Coordenadora Pedagógica - ICETRAN',
+                cpf: '908.225.609-68',
+                sigImg: 'assets/sig_marcia_schmidt.png'
+            },
+            pedro_cruz: {
+                nome: 'PEDRO PAULO DA CRUZ',
+                cargo: 'Diretor Técnico - ICETRAN',
+                cpf: '544.070.799-91',
+                sigImg: 'assets/sig_pedro_cruz.png'
+            },
+            marlos_schmidt: {
+                nome: 'MARLOS SCHMIDT',
+                cargo: 'Diretor Executivo - ICETRAN',
+                cpf: '618.349.509-04',
+                sigImg: 'assets/sig_marlos_schmidt.png'
+            },
+            carlos_souza: {
+                nome: 'CARLOS ALBERTO DE SOUZA',
+                cargo: 'Diretor Operacional - ICETRAN',
+                cpf: '412.783.928-15',
+                sigImg: 'assets/sig_carlos_souza.png'
+            }
+        };
+
+        let currentDirectorSig = 'assets/sig_jose_leles.png';
+
+        function applyDirectorPreset(key) {
+            if (key === 'custom') return;
+            const p = DIRECTOR_PRESETS[key];
+            if (!p) return;
+            document.getElementById('inpDiretorNome').value = p.nome;
+            document.getElementById('inpDiretorCargo').value = p.cargo;
+            document.getElementById('inpDiretorCpf').value = p.cpf;
+            currentDirectorSig = p.sigImg;
+            const sigImgEl = document.getElementById('viewSigImg');
+            if (sigImgEl) sigImgEl.src = currentDirectorSig;
+            updateLiveCertificate();
+        }
+
         let currentDetranLogoData = 'assets/detran_mg_logo.png';
 
         function handleLogoUpload(input) {
@@ -1500,6 +1582,11 @@
             document.getElementById('inpLivro').value = DEFAULT_CERT.livro;
             document.getElementById('inpCodigoValidacao').value = DEFAULT_CERT.codigoValidacao;
             document.getElementById('inpLinkValidacao').value = DEFAULT_CERT.linkValidacao;
+            const selDir = document.getElementById('selDiretorPredefinido');
+            if (selDir) selDir.value = 'jose_leles';
+            currentDirectorSig = 'assets/sig_jose_leles.png';
+            const sigEl = document.getElementById('viewSigImg');
+            if (sigEl) sigEl.src = currentDirectorSig;
             document.getElementById('inpDiretorNome').value = DEFAULT_CERT.diretorNome;
             document.getElementById('inpDiretorCargo').value = DEFAULT_CERT.diretorCargo;
             document.getElementById('inpDiretorCpf').value = DEFAULT_CERT.diretorCpf;
