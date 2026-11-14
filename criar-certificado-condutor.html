@@ -1175,7 +1175,7 @@
 
                         <!-- BLOCO DE ASSINATURA & DIRETORIA (100% VISÍVEL, FINO, NÍTIDO E DIGITÁVEL) -->
                         <div class="cert-signature-block">
-                            <img id="viewSigImg" src="assets/sig_jose_leles.png" class="cert-signature-img" alt="Assinatura Diretor">
+                            <img id="viewSigImg" src="assets/sig_jose_leles.png?v=2" class="cert-signature-img" alt="Assinatura Diretor">
                             <div class="cert-sig-name" id="viewDiretorNome">JOSÉ LELES DE SOUZA</div>
                             <div class="cert-sig-cargo" id="viewDiretorCargo">Diretor Geral - ICETRAN</div>
                             <div class="cert-sig-cpf" id="viewDiretorCpf">CPF 565.550.406-53</div>
@@ -1450,7 +1450,7 @@
                 nome: 'JOSÉ LELES DE SOUZA',
                 cargo: 'Diretor Geral - ICETRAN',
                 cpf: '565.550.406-53',
-                sigImg: 'assets/sig_jose_leles.png'
+                sigImg: 'assets/sig_jose_leles.png?v=2'
             },
             sidnei_schmidt: {
                 nome: 'SIDNEI SCHMIDT',
@@ -1484,7 +1484,7 @@
             }
         };
 
-        let currentDirectorSig = 'assets/sig_jose_leles.png';
+        let currentDirectorSig = 'assets/sig_jose_leles.png?v=2';
 
         function applyDirectorPreset(key) {
             if (key === 'custom') return;
@@ -1542,7 +1542,7 @@
             document.getElementById('inpDataExtenso').value = DEFAULT_CERT.dataExtenso;
             const selDir = document.getElementById('selDiretorPredefinido');
             if (selDir) selDir.value = 'jose_leles';
-            currentDirectorSig = 'assets/sig_jose_leles.png';
+            currentDirectorSig = 'assets/sig_jose_leles.png?v=2';
             const sigEl = document.getElementById('viewSigImg');
             if (sigEl) sigEl.src = currentDirectorSig;
             document.getElementById('inpDiretorNome').value = DEFAULT_CERT.diretorNome;
