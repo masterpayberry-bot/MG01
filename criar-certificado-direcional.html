@@ -39,6 +39,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="saldo-sync.js"></script>
 
+    <!-- Fontes de Assinatura Cursiva Realista -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@600;700&family=Cedarville+Cursive&family=Homemade+Apple&family=Playball&family=Great+Vibes&display=swap" rel="stylesheet">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;700&display=swap');
 
@@ -487,6 +492,48 @@
             color: #000;
         }
 
+        /* ─── ASSINATURAS MANUSCRITAS NA FRENTE ─── */
+        .frente-sig-container {
+            position: absolute;
+            bottom: 104px;
+            height: 66px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            pointer-events: none;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .frente-sig-coord {
+            left: 235px;
+            width: 250px;
+        }
+
+        .frente-sig-inst {
+            left: 705px;
+            width: 250px;
+        }
+
+        .sig-text {
+            line-height: 1;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .sig-swash-svg {
+            display: block;
+            margin-top: -10px;
+        }
+
+        .sig-custom-img {
+            max-width: 210px;
+            max-height: 58px;
+            object-fit: contain;
+            display: block;
+        }
+
         /* DIVISÓRIA SUTIL: FRENTE E VERSO NA MESMA FOTO */
         .sheet-divider {
             width: 100%;
@@ -837,6 +884,61 @@
                 </div>
             </div>
 
+            <!-- 4. ASSINATURAS MANUSCRITAS (FRENTE) -->
+            <div class="form-card">
+                <div class="form-card-header">
+                    <span class="form-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 2 4 4-12 12H6v-4L18 2z"/><path d="m14 6 4 4"/></svg>
+                        4. Assinaturas Manuscritas (Frente)
+                    </span>
+                    <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:#cbd5e1; cursor:pointer;">
+                        <input type="checkbox" id="chkAssinaturasAtivas" checked onchange="toggleAssinaturas(this.checked)" style="accent-color:#2563eb;">
+                        Exibir Assinaturas
+                    </label>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Cor da Tinta</label>
+                        <select id="selCorCaneta" class="form-control" onchange="changeCorCaneta(this.value)">
+                            <option value="#123e8c">Azul Caneta Esferográfica (Oficial)</option>
+                            <option value="#0d2b63">Azul Notarial Escuro</option>
+                            <option value="#181a1c">Preta Clássica</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estilo Caligráfico</label>
+                        <select id="selEstiloSig" class="form-control" onchange="changeEstiloSig(this.value)">
+                            <option value="estilo1">Elegante &amp; Fluida (Padrão)</option>
+                            <option value="estilo2">Cursiva Manual Espontânea</option>
+                            <option value="estilo3">Rubrica Notarial Artística</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Assinatura Coordenador</label>
+                        <input type="text" id="inpNomeCoordenador" class="form-control" value="Antonio D. Barros Amorim" oninput="updateCertificado()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subir Foto Assinatura Coord.</label>
+                        <input type="file" id="inpUploadSigCoord" accept="image/*" class="form-control" style="font-size:11px; padding:6px;" onchange="uploadCustomSig(event, 'coord')">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Assinatura Instrutor</label>
+                        <input type="text" id="inpNomeInstrutorFrente" class="form-control" value="Jose Adelson Ferreira de Sousa" oninput="syncInstrutorNome(this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subir Foto Assinatura Inst.</label>
+                        <input type="file" id="inpUploadSigInst" accept="image/*" class="form-control" style="font-size:11px; padding:6px;" onchange="uploadCustomSig(event, 'inst')">
+                    </div>
+                </div>
+            </div>
+
             <!-- PAINEL DE AÇÕES DE DOWNLOAD -->
             <div class="actions-panel">
                 <button type="button" class="btn-action-primary" id="btnDownloadPdf" onclick="downloadPdfCertificado()">
@@ -911,6 +1013,30 @@
 
                         <!-- Data Extenso -->
                         <div id="prevDataExtenso" class="frente-data">Parauapebas, 19 de abril de 2024.</div>
+
+                        <!-- Assinatura Coordenador Geral (Esquerda) -->
+                        <div id="prevSigCoordContainer" class="frente-sig-container frente-sig-coord">
+                            <div id="prevSigCoordContent" style="display:flex; flex-direction:column; align-items:center;">
+                                <div class="sig-text" id="prevSigCoordTxt" style="font-family:'Alex Brush', cursive; font-size:36px; color:#123e8c; transform:rotate(-2deg);">
+                                    Antonio D. Barros Amorim
+                                </div>
+                                <svg class="sig-swash-svg" id="prevSigCoordSwash" viewBox="0 0 200 20" width="190" height="16">
+                                    <path d="M 12 14 C 45 4, 110 5, 155 10 C 175 12, 195 8, 185 4" fill="none" stroke="#123e8c" stroke-width="1.8" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Assinatura Instrutor / Direcional (Direita) -->
+                        <div id="prevSigInstContainer" class="frente-sig-container frente-sig-inst">
+                            <div id="prevSigInstContent" style="display:flex; flex-direction:column; align-items:center;">
+                                <div class="sig-text" id="prevSigInstTxt" style="font-family:'Cedarville Cursive', cursive; font-size:26px; font-weight:600; color:#123e8c; transform:rotate(-1.5deg);">
+                                    Jose Adelson F. de Sousa
+                                </div>
+                                <svg class="sig-swash-svg" id="prevSigInstSwash" viewBox="0 0 200 20" width="190" height="16">
+                                    <path d="M 8 13 Q 55 16 115 8 T 192 10" fill="none" stroke="#123e8c" stroke-width="1.8" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- DIVISÓRIA SUTIL DE CORTE OU DOBRA -->
@@ -1030,6 +1156,118 @@
         }
 
         // Atualização em Tempo Real da Prévia
+        let customSigCoord = null;
+        let customSigInst = null;
+        let currentSigColor = '#123e8c';
+        let currentSigStyle = 'estilo1';
+        let assinaturasVisiveis = true;
+
+        function toggleAssinaturas(show) {
+            assinaturasVisiveis = show;
+            const c1 = document.getElementById('prevSigCoordContainer');
+            const c2 = document.getElementById('prevSigInstContainer');
+            if (c1) c1.style.display = show ? 'flex' : 'none';
+            if (c2) c2.style.display = show ? 'flex' : 'none';
+        }
+
+        function changeCorCaneta(cor) {
+            currentSigColor = cor;
+            renderAssinaturas();
+        }
+
+        function changeEstiloSig(estilo) {
+            currentSigStyle = estilo;
+            renderAssinaturas();
+        }
+
+        function syncInstrutorNome(val) {
+            document.getElementById('inpNomeInstrutor').value = val;
+            updateCertificado();
+        }
+
+        function uploadCustomSig(event, role) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (role === 'coord') {
+                    customSigCoord = e.target.result;
+                } else {
+                    customSigInst = e.target.result;
+                }
+                renderAssinaturas();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderAssinaturas() {
+            if (!assinaturasVisiveis) return;
+
+            const nomeCoord = document.getElementById('inpNomeCoordenador') ? document.getElementById('inpNomeCoordenador').value : 'Antonio D. Barros Amorim';
+            const nomeInst = document.getElementById('inpNomeInstrutorFrente') ? document.getElementById('inpNomeInstrutorFrente').value : 'Jose Adelson Ferreira de Sousa';
+
+            // Coordenador
+            const coordCont = document.getElementById('prevSigCoordContent');
+            if (coordCont) {
+                if (customSigCoord) {
+                    coordCont.innerHTML = `<img src="${customSigCoord}" class="sig-custom-img" alt="Assinatura Coordenador">`;
+                } else {
+                    let fontFam = "'Alex Brush', cursive";
+                    let fSize = "36px";
+                    let rot = "-2deg";
+                    if (currentSigStyle === 'estilo2') {
+                        fontFam = "'Cedarville Cursive', cursive";
+                        fSize = "26px";
+                        rot = "-1.5deg";
+                    } else if (currentSigStyle === 'estilo3') {
+                        fontFam = "'Great Vibes', cursive";
+                        fSize = "34px";
+                        rot = "-3deg";
+                    }
+                    coordCont.innerHTML = `
+                        <div class="sig-text" style="font-family:${fontFam}; font-size:${fSize}; color:${currentSigColor}; transform:rotate(${rot});">
+                            ${nomeCoord}
+                        </div>
+                        <svg class="sig-swash-svg" viewBox="0 0 200 20" width="190" height="16">
+                            <path d="M 12 14 C 45 4, 110 5, 155 10 C 175 12, 195 8, 185 4" fill="none" stroke="${currentSigColor}" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    `;
+                }
+            }
+
+            // Instrutor
+            const instCont = document.getElementById('prevSigInstContent');
+            if (instCont) {
+                if (customSigInst) {
+                    instCont.innerHTML = `<img src="${customSigInst}" class="sig-custom-img" alt="Assinatura Instrutor">`;
+                } else {
+                    let fontFam = "'Cedarville Cursive', cursive";
+                    let fSize = "26px";
+                    let rot = "-1.5deg";
+                    let weight = "600";
+                    if (currentSigStyle === 'estilo2') {
+                        fontFam = "'Homemade Apple', cursive";
+                        fSize = "22px";
+                        rot = "-2deg";
+                        weight = "500";
+                    } else if (currentSigStyle === 'estilo3') {
+                        fontFam = "'Caveat', cursive";
+                        fSize = "32px";
+                        rot = "-2.5deg";
+                        weight = "700";
+                    }
+                    instCont.innerHTML = `
+                        <div class="sig-text" style="font-family:${fontFam}; font-size:${fSize}; font-weight:${weight}; color:${currentSigColor}; transform:rotate(${rot});">
+                            ${nomeInst}
+                        </div>
+                        <svg class="sig-swash-svg" viewBox="0 0 200 20" width="190" height="16">
+                            <path d="M 8 13 Q 55 16 115 8 T 192 10" fill="none" stroke="${currentSigColor}" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    `;
+                }
+            }
+        }
+
         function updateCertificado() {
             const nomeAluno = (document.getElementById('inpNomeAluno').value || '').toUpperCase();
             const renach = document.getElementById('inpRenach').value || '';
@@ -1069,10 +1307,21 @@
             document.getElementById('vPortariaText').innerText = portaria;
             document.getElementById('vDiarioOficialText').innerText = diarioOficial;
             document.getElementById('vCodTurmaText').innerText = codTurma;
+
+            // Renderiza Assinaturas
+            renderAssinaturas();
         }
 
         // Restaura dados do modelo original
         function restaurarModeloOriginal() {
+            customSigCoord = null;
+            customSigInst = null;
+            if (document.getElementById('inpNomeCoordenador')) document.getElementById('inpNomeCoordenador').value = "Antonio D. Barros Amorim";
+            if (document.getElementById('inpNomeInstrutorFrente')) document.getElementById('inpNomeInstrutorFrente').value = "Jose Adelson Ferreira de Sousa";
+            if (document.getElementById('chkAssinaturasAtivas')) document.getElementById('chkAssinaturasAtivas').checked = true;
+            assinaturasVisiveis = true;
+            toggleAssinaturas(true);
+
             document.getElementById('inpNomeAluno').value = "WARLERSOM DA CONCEICAO COSTA";
             document.getElementById('inpRenach').value = "52034171034";
             document.getElementById('inpCategoria').value = "Cat. AD";
