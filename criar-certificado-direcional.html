@@ -495,10 +495,10 @@
         /* ─── ASSINATURAS MANUSCRITAS NA FRENTE ─── */
         .frente-sig-container {
             position: absolute;
-            top: 566px;
-            height: 64px;
+            top: 518px;
+            height: 94px;
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             justify-content: center;
             pointer-events: none;
             user-select: none;
@@ -506,19 +506,19 @@
         }
 
         .frente-sig-coord {
-            left: 245px;
-            width: 232px;
+            left: 236px;
+            width: 258px;
         }
 
         .frente-sig-inst {
-            left: 713px;
-            width: 232px;
+            left: 722px;
+            width: 252px;
         }
 
         .sig-img-render {
             width: 100%;
-            height: auto;
-            max-height: 62px;
+            height: 100%;
+            max-height: 94px;
             object-fit: contain;
             display: block;
         }
@@ -984,12 +984,12 @@
 
                         <!-- Assinatura Coordenador Geral (Esquerda) -->
                         <div id="prevSigCoordContainer" class="frente-sig-container frente-sig-coord">
-                            <img id="viewSigCoord" src="assets/sig_antonio_amorim.png" class="sig-img-render" alt="Assinatura Antonio D. Barros Amorim">
+                            <img id="viewSigCoord" src="assets/sig_antonio_amorim.png?v=3" class="sig-img-render" alt="Assinatura Antonio D. Barros Amorim">
                         </div>
 
                         <!-- Assinatura Instrutor / Direcional (Direita) -->
                         <div id="prevSigInstContainer" class="frente-sig-container frente-sig-inst">
-                            <img id="viewSigInst" src="assets/sig_jose_adelson.png" class="sig-img-render" alt="Assinatura Jose Adelson Ferreira de Sousa">
+                            <img id="viewSigInst" src="assets/sig_jose_adelson.png?v=3" class="sig-img-render" alt="Assinatura Jose Adelson Ferreira de Sousa">
                         </div>
                     </div>
 
@@ -1149,8 +1149,8 @@
             customSigInst = null;
             const imgC = document.getElementById('viewSigCoord');
             const imgI = document.getElementById('viewSigInst');
-            if (imgC) imgC.src = 'assets/sig_antonio_amorim.png';
-            if (imgI) imgI.src = 'assets/sig_jose_adelson.png';
+            if (imgC) imgC.src = 'assets/sig_antonio_amorim.png?v=3';
+            if (imgI) imgI.src = 'assets/sig_jose_adelson.png?v=3';
             const f1 = document.getElementById('inpUploadSigCoord');
             const f2 = document.getElementById('inpUploadSigInst');
             if (f1) f1.value = '';
