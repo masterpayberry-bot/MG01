@@ -659,6 +659,7 @@
 
         .box-registro {
             width: 44%;
+            box-sizing: border-box;
             border: 1.8px solid #000;
             padding: 8px 12px;
             font-family: Arial, Helvetica, sans-serif;
@@ -677,16 +678,23 @@
         }
 
         .box-credenciamento {
-            width: 54%;
+            flex: 1;
+            box-sizing: border-box;
             border: 1.8px solid #000;
-            padding: 10px 14px;
+            padding: 8px 14px;
             font-family: Arial, Helvetica, sans-serif;
             font-weight: 900;
-            font-size: 12.5px;
-            line-height: 1.35;
+            font-size: 12px;
+            line-height: 1.4;
             text-transform: uppercase;
             display: flex;
             align-items: center;
+        }
+
+        .box-credenciamento-inner {
+            width: 100%;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
 
         /* Rodapé com Proibido Plastificar e Cód Turma */
@@ -1100,7 +1108,9 @@
                             </div>
 
                             <div class="box-credenciamento">
-                                CREDENCIAMENTO DETRAN PA PORTARIA Nº <span id="vPortariaText">4676/2021-DG/DHCRV/CHC/GCCFF</span>, PUBLICADO NO DIÁRIO OFICIAL DE <span id="vDiarioOficialText">20/12/2021 Nº 2297768</span>.
+                                <div class="box-credenciamento-inner">
+                                    CREDENCIAMENTO DETRAN PA PORTARIA Nº <span id="vPortariaText">4676/2021-DG/DHCRV/CHC/GCCFF</span>, PUBLICADO NO DIÁRIO OFICIAL DE <span id="vDiarioOficialText">20/12/2021 Nº 2297768</span>.
+                                </div>
                             </div>
                         </div>
 
