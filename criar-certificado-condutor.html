@@ -803,6 +803,92 @@
                 break-inside: avoid !important;
             }
         }
+    
+        /* ─── LOGO DO DETRAN / ÓRGÃO DE TRÂNSITO (DINÂMICO COM UPLOAD) ─── */
+        .cert-detran-logo-container {
+            position: absolute;
+            top: 612px;
+            left: 766px;
+            width: 234px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .cert-detran-logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .logo-upload-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #0f1213;
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .logo-preview-thumb {
+            width: 110px;
+            height: 50px;
+            background: #ffffff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+        }
+        .logo-preview-thumb img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .logo-upload-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+        .btn-upload-label {
+            background: #181c1d;
+            border: 1px solid var(--border);
+            color: #e2e8f0;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-upload-label:hover {
+            background: #23292b;
+            border-color: #3b82f6;
+            color: #fff;
+        }
+        .btn-restore-logo {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            text-decoration: underline;
+            padding: 0;
+        }
+        .btn-restore-logo:hover {
+            color: #00dc82;
+        }
+
     </style>
 </head>
 <body>
@@ -1004,6 +1090,32 @@
                 </div>
             </div>
 
+            
+            <!-- 5. LOGO DO ÓRGÃO DE TRÂNSITO (DETRAN / FRENTE) COM UPLOAD -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <span>5. Logo do Detran / Órgão de Trânsito (Frente)</span>
+                </div>
+
+                <div class="logo-upload-box">
+                    <div class="logo-preview-thumb">
+                        <img id="thumbDetranLogo" src="assets/detran_mg_logo.png" alt="Prévia Logo">
+                    </div>
+                    <div class="logo-upload-controls">
+                        <label class="btn-upload-label" for="inpLogoDetran">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <span>Fazer Upload de Logo (PNG / JPG)</span>
+                        </label>
+                        <input type="file" id="inpLogoDetran" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
+                        <button type="button" class="btn-restore-logo" onclick="resetDefaultLogo()" title="Restaurar logo padrão DETRAN-MG">
+                            ↺ Restaurar Logo Padrão (DETRAN-MG)
+                        </button>
+                    </div>
+                </div>
+                <span style="font-size:11px; color:var(--text-muted); line-height:1.4;">Você pode subir o logo de qualquer estado (Detran SP, Detran MG, Detran RJ, etc.) com fundo transparente ou branco.</span>
+            </div>
+
             <!-- BOTÕES DE AÇÃO / CHECKOUT PADRÃO -->
             <div class="checkout-actions-card">
                 <div class="checkout-price-row">
@@ -1078,6 +1190,11 @@
                             <div class="cert-sig-name" id="viewDiretorNome">JOSÉ LELES DE SOUZA</div>
                             <div class="cert-sig-cargo" id="viewDiretorCargo">Diretor Geral - ICETRAN</div>
                             <div class="cert-sig-cpf" id="viewDiretorCpf">CPF 565.550.406-53</div>
+                        </div>
+
+                        <!-- LOGO DETRAN / ÓRGÃO DE TRÂNSITO (DINÂMICO COM UPLOAD) -->
+                        <div class="cert-detran-logo-container">
+                            <img id="viewDetranLogo" src="assets/detran_mg_logo.png" alt="Logo Detran">
                         </div>
                     </div>
 
@@ -1335,7 +1452,37 @@
         }
 
         // Restaurar Dados Padrão (Saulo de Santana Nascimento - ICETRAN Oficial)
+        
+        // Gerenciamento e Upload Dinâmico do Logo do DETRAN
+        let currentDetranLogoData = 'assets/detran_mg_logo.png';
+
+        function handleLogoUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentDetranLogoData = e.target.result;
+                    const viewImg = document.getElementById('viewDetranLogo');
+                    const thumbImg = document.getElementById('thumbDetranLogo');
+                    if (viewImg) viewImg.src = currentDetranLogoData;
+                    if (thumbImg) thumbImg.src = currentDetranLogoData;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetDefaultLogo() {
+            currentDetranLogoData = 'assets/detran_mg_logo.png';
+            const viewImg = document.getElementById('viewDetranLogo');
+            const thumbImg = document.getElementById('thumbDetranLogo');
+            const fileInp = document.getElementById('inpLogoDetran');
+            if (viewImg) viewImg.src = currentDetranLogoData;
+            if (thumbImg) thumbImg.src = currentDetranLogoData;
+            if (fileInp) fileInp.value = '';
+        }
+
         function restoreDefaultCertificate() {
+            resetDefaultLogo();
             document.getElementById('inpAlunoNome').value = DEFAULT_CERT.alunoNome;
             document.getElementById('inpAlunoCpf').value = DEFAULT_CERT.alunoCpf;
             document.getElementById('inpAlunoCnh').value = DEFAULT_CERT.alunoCnh;
