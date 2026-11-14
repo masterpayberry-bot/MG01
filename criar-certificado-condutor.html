@@ -1037,48 +1037,11 @@
                 </div>
             </div>
 
-            <!-- 3. REGISTRO E LIVRO (VERSO) -->
-            <div class="form-section">
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    <span>3. Registro, Livro e Validação (Verso)</span>
-                </div>
-
-                <div class="form-row triple">
-                    <div class="form-field">
-                        <label>Matrícula</label>
-                        <input type="text" id="inpMatricula" value="2818" oninput="updateLiveCertificate()">
-                    </div>
-                    <div class="form-field">
-                        <label>Folha</label>
-                        <input type="text" id="inpFolha" value="3" oninput="updateLiveCertificate()">
-                    </div>
-                    <div class="form-field">
-                        <label>Livro</label>
-                        <input type="text" id="inpLivro" value="502" oninput="updateLiveCertificate()">
-                    </div>
-                </div>
-
-                <div class="form-row single">
-                    <div class="form-field">
-                        <label>Código de Validação</label>
-                        <input type="text" id="inpCodigoValidacao" value="ad3019b856147c17e82a5bead782d2a8" oninput="updateLiveCertificate()">
-                    </div>
-                </div>
-
-                <div class="form-row single">
-                    <div class="form-field">
-                        <label>Link do Validador (Direcionamento QR Code)</label>
-                        <input type="text" id="inpLinkValidacao" value="https://certificado-condutor.vercel.app" oninput="updateLiveCertificate()">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. ASSINATURA & DIRETORIA (FRENTE) -->
+            <!-- 3. ASSINATURA & DIRETORIA (FRENTE) -->
             <div class="form-section">
                 <div class="section-title">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    <span>4. Assinatura & Diretoria (Frente)</span>
+                    <span>3. Assinatura & Diretoria (Frente)</span>
                 </div>
 
                 <div class="form-row single">
@@ -1116,11 +1079,11 @@
             </div>
 
             
-            <!-- 5. LOGO DO ÓRGÃO DE TRÂNSITO (DETRAN / FRENTE) COM UPLOAD -->
+            <!-- 4. LOGO DO ÓRGÃO DE TRÂNSITO (DETRAN / FRENTE) COM UPLOAD -->
             <div class="form-section">
                 <div class="section-title">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                    <span>5. Logo do Detran / Órgão de Trânsito (Frente)</span>
+                    <span>4. Logo do Detran / Órgão de Trânsito (Frente)</span>
                 </div>
 
                 <div class="logo-upload-box">
@@ -1432,11 +1395,11 @@
             const cidade = document.getElementById('inpCidade').value.trim() || DEFAULT_CERT.cidade;
             const dataExt = document.getElementById('inpDataExtenso').value.trim() || DEFAULT_CERT.dataExtenso;
 
-            const mat = document.getElementById('inpMatricula').value.trim() || DEFAULT_CERT.matricula;
-            const folha = document.getElementById('inpFolha').value.trim() || DEFAULT_CERT.folha;
-            const livro = document.getElementById('inpLivro').value.trim() || DEFAULT_CERT.livro;
-            const codVal = document.getElementById('inpCodigoValidacao').value.trim() || DEFAULT_CERT.codigoValidacao;
-            const linkVal = document.getElementById('inpLinkValidacao').value.trim() || DEFAULT_CERT.linkValidacao;
+            const mat = DEFAULT_CERT.matricula;
+            const folha = DEFAULT_CERT.folha;
+            const livro = DEFAULT_CERT.livro;
+            const codVal = DEFAULT_CERT.codigoValidacao;
+            const linkVal = DEFAULT_CERT.linkValidacao;
 
             const dirNome = document.getElementById('inpDiretorNome').value.trim() || DEFAULT_CERT.diretorNome;
             const dirCargo = document.getElementById('inpDiretorCargo').value.trim() || DEFAULT_CERT.diretorCargo;
@@ -1577,11 +1540,6 @@
             document.getElementById('inpPeriodo').value = DEFAULT_CERT.periodo;
             document.getElementById('inpCidade').value = DEFAULT_CERT.cidade;
             document.getElementById('inpDataExtenso').value = DEFAULT_CERT.dataExtenso;
-            document.getElementById('inpMatricula').value = DEFAULT_CERT.matricula;
-            document.getElementById('inpFolha').value = DEFAULT_CERT.folha;
-            document.getElementById('inpLivro').value = DEFAULT_CERT.livro;
-            document.getElementById('inpCodigoValidacao').value = DEFAULT_CERT.codigoValidacao;
-            document.getElementById('inpLinkValidacao').value = DEFAULT_CERT.linkValidacao;
             const selDir = document.getElementById('selDiretorPredefinido');
             if (selDir) selDir.value = 'jose_leles';
             currentDirectorSig = 'assets/sig_jose_leles.png';
