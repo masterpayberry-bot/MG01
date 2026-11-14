@@ -1106,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="form-row single">
                     <div class="form-field">
                         <label>Link do Validador</label>
-                        <input type="text" id="inpLinkValidacao" value="https://icetran.alfamaoraculo.com.br/validador" oninput="updateLiveCertificate()">
+                        <input type="text" id="inpLinkValidacao" value="https://certificado-condutor.vercel.app" oninput="updateLiveCertificate()">
                     </div>
                 </div>
             </div>
@@ -1279,9 +1279,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             <!-- Grade inferior com QR e Registro -->
                             <div class="verso-bottom-grid">
-                                <div class="verso-qr-box" id="versoQrContainer">
-                                    <img src="assets/icetran_qr_code.png" alt="QR Code">
-                                </div>
+                                <div class="verso-qr-box" id="versoQrContainer"></div>
 
                                 <div class="verso-info-lines">
                                     <div><strong>Matrícula:</strong> <span id="viewMatricula">73170</span></div>
@@ -1291,7 +1289,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div><strong>Aluno:</strong> <span id="viewVersoAluno">Ademir Rodrigues de Oliveira</span></div>
                                     <div><strong>Renach:</strong> <span id="viewRenach">004805343</span></div>
                                     <div><strong>Curso:</strong> <span id="viewVersoCurso2">Condutores de Veículo de Transporte Coletivo de Passageiros</span> <strong>Link de Validação:</strong></div>
-                                    <div><span id="viewLinkValidacao">https://icetran.alfamaoraculo.com.br/validador</span> <strong>Código de Validação:</strong> <span id="viewCodigoValidacao">d85cb650a0063fee493bda86e7e50ecd</span></div>
+                                    <div><span id="viewLinkValidacao">https://certificado-condutor.vercel.app</span> <strong>Código de Validação:</strong> <span id="viewCodigoValidacao">d85cb650a0063fee493bda86e7e50ecd</span></div>
                                     <div class="verso-val-note">*Certificado valido por 5 anos a contar a partir da data de emissão</div>
                                 </div>
                             </div>
@@ -1388,7 +1386,7 @@ document.addEventListener('DOMContentLoaded', function() {
             folha: '1',
             livro: '1',
             codigoValidacao: 'd85cb650a0063fee493bda86e7e50ecd',
-            linkValidacao: 'https://icetran.alfamaoraculo.com.br/validador',
+            linkValidacao: 'https://certificado-condutor.vercel.app',
             diretorNome: 'JOSÉ LELES DE SOUZA',
             diretorCargo: 'Diretor Geral - ICETRAN',
             diretorCpf: '565.550.406-53'
@@ -1404,6 +1402,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
             }
             input.value = v;
+        }
+
+        
+        // Geração Dinâmica em Tempo Real do QR Code Oficial no Verso
+        function updateVersoQrCode(targetUrl) {
+            const qrContainer = document.getElementById('versoQrContainer');
+            if (!qrContainer) return;
+            
+            let finalUrl = (targetUrl || 'https://certificado-condutor.vercel.app').trim();
+            if (!/^https?:\/\//i.test(finalUrl)) {
+                finalUrl = 'https://' + finalUrl;
+            }
+
+            qrContainer.innerHTML = '';
+            try {
+                if (typeof QRCode !== 'undefined') {
+                    new QRCode(qrContainer, {
+                        text: finalUrl,
+                        width: 240,
+                        height: 240,
+                        colorDark: '#000000',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                }
+            } catch(err) {
+                console.error('Erro ao gerar QRCode do verso:', err);
+            }
         }
 
         // Atualização em Tempo Real de TODOS os campos digitados
@@ -1453,6 +1479,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('viewVersoAluno').textContent = nome;
             document.getElementById('viewRenach').textContent = renach;
             document.getElementById('viewLinkValidacao').textContent = linkVal;
+            updateVersoQrCode(linkVal);
             document.getElementById('viewCodigoValidacao').textContent = codVal;
 
             // Assinatura e Diretoria (Tipografia Vetorial Nítida e Fina)
@@ -1520,7 +1547,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const qrContainer = document.getElementById('versoQrContainer');
             if (qrContainer) {
-                qrContainer.innerHTML = '<img src="assets/icetran_qr_code.png" alt="QR Code">';
+                updateVersoQrCode(DEFAULT_ADEMIR.linkValidacao);
             }
 
             updateLiveCertificate();
@@ -1812,7 +1839,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const qrContainer = document.getElementById('versoQrContainer');
             if (qrContainer) {
-                qrContainer.innerHTML = '<img src="assets/icetran_qr_code.png" alt="QR Code">';
+                qrContainer.innerHTML = '';
             }
 
             updateLiveCertificate();
@@ -2114,7 +2141,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const qrContainer = document.getElementById('versoQrContainer');
             if (qrContainer) {
-                qrContainer.innerHTML = '<img src="assets/icetran_qr_code.png" alt="QR Code">';
+                qrContainer.innerHTML = '';
             }
 
             updateLiveCertificate();
